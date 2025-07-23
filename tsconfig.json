@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "types": ["node", "@testing-library/jest-dom", "vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types.d.ts",
+    ".next/types/**/*.ts",
+    "database/init-db-data.ts",
+    "vitest.setup.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules"]
+}

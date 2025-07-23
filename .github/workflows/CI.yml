@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 10.13.1
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: init db
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
+        run: pnpm init-db --force
+
+      - name: Run Unit Tests by Vitest
+        # highlight-start
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
+          # Add any other environment variables needed specifically for tests
+        run: pnpm test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: john-data-chen/next-dnd-starter-kit
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+      - name: Run Playwright tests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: pnpm playwright
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
