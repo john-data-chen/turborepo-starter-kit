@@ -1,20 +1,18 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
+**/node_modules
+**/.pnp
 .pnp.js
 
 # testing
-/coverage
+**/coverage
 
 # next.js
-.next
-/.next/
-/out/
+apps/web/.next/
+apps/web/out/
 
 # production
-/build
+apps/web/build
+**/dist
 
 # misc
 .DS_Store
@@ -27,10 +25,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
 
 # vercel
 .vercel
@@ -40,18 +38,10 @@ CHANGELOG.md
 
 pnpm-lock.yaml
 
-# Other common ignores
-node_modules
-.next
-build
-dist
-ico
-
 # Shadcn UI
-src/components/ui
-src/components/ui/**/*
-src/hooks/use-mobile.ts
+apps/web/src/components/ui/**/*
+apps/web/src/hooks/use-mobile.ts
 
 # database
-database
-database/**/*
+apps/web/database
+apps/web/database/**/*
