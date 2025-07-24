@@ -11,7 +11,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "oxlint src --fix",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path ../../.prettierignore",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch",
