@@ -44,5 +44,3 @@ apps/web/next-env.d.ts
 
 # Turborepo
 .turbo
-
-CI.yml
