@@ -12,7 +12,7 @@
     "start": "node dist/main.js",
     "db:init": "tsx database/init-db-data.ts",
     "db:init:force": "tsx database/init-db-data.ts --force",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "oxlint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest run --coverage",
     "test:watch": "vitest --watch"
