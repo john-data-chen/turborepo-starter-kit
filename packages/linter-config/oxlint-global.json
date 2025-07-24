@@ -1,0 +1,9 @@
+{
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-debugger": "off",
+    "eqeqeq": "warn"
+  },
+  "ignorePatterns": ["node_modules/"]
+}

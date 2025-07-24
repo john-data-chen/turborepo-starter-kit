@@ -1,0 +1,94 @@
+{
+  "name": "next-dnd-starter-kit",
+  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "john.chen",
+    "url": "https://github.com/john-data-chen/next-dnd-starter-kit"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "oxlint src --fix",
+    "format": "prettier --write .",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "playwright": "npx playwright test",
+    "init-db": "tsx database/init-db-data.ts",
+    "init-db:force": "tsx database/init-db-data.ts --force"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@hookform/resolvers": "^3.10.0",
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/react-toast": "^1.2.14",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@vercel/analytics": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.514.0",
+    "mongoose": "^8.16.4",
+    "next": "^15.4.3",
+    "next-auth": "5.0.0-beta.29",
+    "next-intl": "^4.3.4",
+    "next-themes": "^0.4.6",
+    "nextjs-toploader": "^3.8.16",
+    "postcss": "^8.5.6",
+    "radix-ui": "latest",
+    "react": "^19.1.0",
+    "react-day-picker": "9.8.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.60.0",
+    "sonner": "^2.0.6",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^22.16.5",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "dotenv": "^16.6.1",
+    "jsdom": "^26.1.0",
+    "oxlint": "^1.8.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "tsx": "^4.20.3",
+    "tw-animate-css": "^1.3.5",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "linter-config": "workspace:*",
+    "style-formatter-config": "workspace:*"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ],
+    "overrides": {
+      "@types/react": "19.1.4",
+      "@types/react-dom": "19.1.5"
+    }
+  }
+}

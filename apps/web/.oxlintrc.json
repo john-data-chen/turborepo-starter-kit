@@ -1,21 +1,17 @@
 {
+  "extends": ["linter-config"],
   "plugins": [
     "react",
     "react-perf",
     "nextjs",
-    "typescript",
-    "unicorn",
-    "oxc",
     "jsx-a11y"
   ],
   "rules": {
-    "no-unused-vars": "error",
     "react/jsx-no-undef": "warn",
     "no-debugger": "off",
     "eqeqeq": "warn"
   },
   "ignorePatterns": [
-    "node_modules/",
     "__tests__/",
     "src/components/ui/",
     "src/styles/globals.css"

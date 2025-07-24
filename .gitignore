@@ -1,48 +1,46 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# Dependencies
+**/node_modules
+**/.pnp
 .pnp.js
 
-# testing
-/coverage
+# Debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
 
-# next.js
-/.next/
-/out/
+# OS & Editor Generated Files
+**/.DS_Store
+**/.vscode/
+**/*.pem
 
-# production
-/build
+# TypeScript Cache
+**/*.tsbuildinfo
 
-# misc
-.DS_Store
-*.pem
+# Environment variables
+**/.env*
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Next.js
+apps/web/.next/
+apps/web/out/
+apps/web/next-env.d.ts
 
-# local env files
-.env*
+# General Build Artifacts
+**/build/
+**/dist/
 
-# vercel
+# Testing
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
+
+# Vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# Playwright
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-# database by docker
+# Docker
 /database/mongodb/
 
-.vscode/
-.cursorrules
+# Turborepo
+.turbo

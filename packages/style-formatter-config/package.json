@@ -1,0 +1,9 @@
+{
+  "name": "style-formatter-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}
