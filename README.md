@@ -11,3 +11,10 @@ It has many issues and problems, and might not be fixed quickly, when it is read
 - Rspack (for faster build)
 - OxLint (for faster linting)
   ...etc
+
+## To-Do
+
+- [x] Move frontend code to `apps/web`
+- [x] Move backend code to `apps/api`
+- [x] Refactor configs and finish Turborepo setup
+- [] Reactor API functions from NextJS in `apps/web` into NestJS in `apps/api`
