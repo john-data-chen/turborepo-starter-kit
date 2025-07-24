@@ -1,0 +1,10 @@
+{
+  "extends": ["linter-config"],
+  "plugins": ["node"],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-debugger": "off",
+    "eqeqeq": "warn"
+  },
+  "ignorePatterns": ["node_modules", "test", "dist"]
+}
