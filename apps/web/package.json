@@ -74,21 +74,5 @@
     "vitest": "^3.2.4",
     "linter-config": "workspace:*",
     "style-formatter-config": "workspace:*"
-  },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "esbuild"
-    ],
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "@tailwindcss/oxide",
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@types/react": "19.1.4",
-      "@types/react-dom": "19.1.5"
-    }
   }
 }
