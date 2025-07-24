@@ -1,11 +1,6 @@
 {
   "extends": ["linter-config"],
-  "plugins": [
-    "react",
-    "react-perf",
-    "nextjs",
-    "jsx-a11y"
-  ],
+  "plugins": ["react", "react-perf", "nextjs", "jsx-a11y"],
   "rules": {
     "react/jsx-no-undef": "warn",
     "no-debugger": "off",

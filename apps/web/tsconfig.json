@@ -1,15 +1,12 @@
 {
+  "extends": "global-tsconfig/base-tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -31,9 +28,7 @@
     "**/*.tsx",
     "types.d.ts",
     ".next/types/**/*.ts",
-    "database/init-db-data.ts",
     "vitest.setup.ts",
     "vitest.config.ts"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

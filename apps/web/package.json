@@ -1,17 +1,17 @@
 {
-  "name": "next-dnd-starter-kit",
+  "name": "turborepo-starter-kit-web",
   "version": "1.0.0",
   "private": true,
   "author": {
     "name": "john.chen",
-    "url": "https://github.com/john-data-chen/next-dnd-starter-kit"
+    "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "oxlint src --fix",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path ../../.prettierignore",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch",
@@ -73,22 +73,7 @@
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "linter-config": "workspace:*",
-    "style-formatter-config": "workspace:*"
-  },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "esbuild"
-    ],
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "@tailwindcss/oxide",
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@types/react": "19.1.4",
-      "@types/react-dom": "19.1.5"
-    }
+    "style-formatter-config": "workspace:*",
+    "global-tsconfig": "workspace:*"
   }
 }
