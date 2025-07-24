@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "turborepo-starter-kit-api",
   "version": "1.0.0",
   "private": true,
   "author": {
@@ -51,6 +51,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "unplugin-swc": "^1.5.5",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "global-tsconfig": "workspace:*"
   }
 }

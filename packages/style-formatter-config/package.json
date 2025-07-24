@@ -2,7 +2,7 @@
   "name": "style-formatter-config",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "prettier-global.json",
   "devDependencies": {
     "prettier": "^3.6.2"
   }

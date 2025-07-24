@@ -1,10 +1,10 @@
 {
-  "name": "next-dnd-starter-kit",
+  "name": "turborepo-starter-kit-web",
   "version": "1.0.0",
   "private": true,
   "author": {
     "name": "john.chen",
-    "url": "https://github.com/john-data-chen/next-dnd-starter-kit"
+    "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
     "dev": "next dev --turbopack",
@@ -73,6 +73,7 @@
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "linter-config": "workspace:*",
-    "style-formatter-config": "workspace:*"
+    "style-formatter-config": "workspace:*",
+    "global-tsconfig": "workspace:*"
   }
 }

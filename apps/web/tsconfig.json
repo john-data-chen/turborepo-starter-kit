@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/base.json",
+  "extends": "global-tsconfig/base-tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -30,6 +30,5 @@
     ".next/types/**/*.ts",
     "vitest.setup.ts",
     "vitest.config.ts"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }
