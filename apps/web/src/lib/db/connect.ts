@@ -1,5 +1,10 @@
 'use server';
 
+import {
+  CONNECT_TIMEOUT_MS,
+  SERVER_SELECTION_TIMEOUT_MS,
+  SOCKET_TIMEOUT_MS
+} from '@/constants/db';
 import { connect, connection, ConnectOptions } from 'mongoose';
 
 // This file is used in both server and client components
@@ -14,9 +19,9 @@ const getClientOptions = (): ConnectOptions => {
 
   return {
     autoIndex: !isProduction, // Only auto-create indexes in development
-    connectTimeoutMS: 10000, // 10 seconds
-    socketTimeoutMS: 45000, // 45 seconds
-    serverSelectionTimeoutMS: 10000, // 10 seconds
+    connectTimeoutMS: CONNECT_TIMEOUT_MS,
+    socketTimeoutMS: SOCKET_TIMEOUT_MS,
+    serverSelectionTimeoutMS: SERVER_SELECTION_TIMEOUT_MS,
     ...(isProduction || process.env.CI
       ? {
           serverApi: {
