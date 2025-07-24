@@ -44,3 +44,6 @@ apps/web/next-env.d.ts
 
 # Turborepo
 .turbo
+
+.windsurfrules
+GEMINI.md

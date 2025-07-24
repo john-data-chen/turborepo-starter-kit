@@ -3,7 +3,8 @@
   "globalDependencies": [
     "**/.env.*",
     "packages/linter-config/*",
-    "packages/style-formatter-config/*"
+    "packages/style-formatter-config/*",
+    "packages/tsconfig/*"
   ],
   "tasks": {
     "build": {
@@ -12,16 +13,29 @@
       ],
       "outputs": [
         ".next/**",
-        "!.next/cache/**"
+        "!.next/cache/**",
+        "dist/**"
       ]
     },
-    "lint": {},
+    "lint": {
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "__tests__/**/*.{ts,tsx,js,jsx}"
+      ]
+    },
     "format": {
-      "cache": false
+      "cache": false,
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx,css,scss}",
+        "__tests__/**/*.{ts,tsx,js,jsx,css,scss}"
+      ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
     },
     "test": {
       "inputs": [
@@ -30,6 +44,18 @@
       ],
       "outputs": [
         "coverage/**"
+      ]
+    },
+    "db:init": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "db:init:force": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
       ]
     }
   }
