@@ -40,7 +40,7 @@ apps/web/next-env.d.ts
 .vercel
 
 # Docker
-/database/mongodb/
+/apps/api/database/mongodb/
 
 # Turborepo
 .turbo
