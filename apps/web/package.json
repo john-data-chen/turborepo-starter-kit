@@ -36,7 +36,6 @@
     "lucide-react": "^0.514.0",
     "mongoose": "^8.16.4",
     "next": "^15.4.3",
-    "next-auth": "5.0.0-beta.29",
     "next-intl": "^4.3.4",
     "next-themes": "^0.4.6",
     "nextjs-toploader": "^3.8.16",
@@ -64,16 +63,16 @@
     "@vitejs/plugin-react-swc": "^3.11.0",
     "@vitest/coverage-v8": "^3.2.4",
     "dotenv": "^16.6.1",
+    "global-tsconfig": "workspace:*",
     "jsdom": "^26.1.0",
+    "linter-config": "workspace:*",
     "oxlint": "^1.8.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "style-formatter-config": "workspace:*",
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "linter-config": "workspace:*",
-    "style-formatter-config": "workspace:*",
-    "global-tsconfig": "workspace:*"
+    "vitest": "^3.2.4"
   }
 }

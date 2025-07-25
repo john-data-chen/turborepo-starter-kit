@@ -3,11 +3,11 @@
 import { defaultEmail } from '@/constants/demoData';
 import { ROUTES } from '@/constants/routes';
 import { NAVIGATION_DELAY_MS } from '@/constants/ui';
+import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from '@/i18n/navigation';
 import { useTaskStore } from '@/lib/store';
 import { SignInFormValue, SignInValidation } from '@/types/authUserForm';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
@@ -27,6 +27,7 @@ export default function useAuthForm() {
   const params = useParams();
   const [status, setStatus] = useState<AuthFormState>({ status: 'idle' });
   const t = useTranslations('login');
+  const { login } = useAuth();
 
   const form = useForm<SignInFormValue>({
     resolver: zodResolver(SignInValidation),
@@ -36,23 +37,9 @@ export default function useAuthForm() {
   });
 
   const onSubmit = async (data: SignInFormValue) => {
-    const signInProcessPromise = async () => {
-      const result = await signIn('credentials', {
-        email: data.email,
-        redirect: false
-      });
+    const loginPromise = login(data.email);
 
-      if (result?.error) {
-        if (result.error === 'CredentialsSignin') {
-          throw new Error('Invalid email, retry again.');
-        }
-        throw new Error(result.error || 'Authentication failed.');
-      }
-      setUserInfo(data.email);
-    };
-
-    toast.promise(signInProcessPromise(), {
-      loading: 'Authenticating...',
+    toast.promise(loginPromise, {
       success: () => {
         const navigationDelay = NAVIGATION_DELAY_MS;
         const locale = (params.locale as string) || 'en';
@@ -66,12 +53,13 @@ export default function useAuthForm() {
           });
         }, navigationDelay);
 
+        setUserInfo(data.email);
         return t('authSuccessRedirect');
       },
-      error: (err: Error) => {
-        console.error('Sign-in promise error:', err);
+      error: (err) => {
+        console.error('Login failed:', err);
         setStatus({ status: 'error', message: err.message });
-        return err.message || 'An unknown authentication error occurred.';
+        return err.message || t('login_failed');
       }
     });
   };
