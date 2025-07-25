@@ -30,15 +30,6 @@ vi.mock('@/components/ui/sidebar', async (importOriginal) => {
   };
 });
 
-vi.mock('@/components/ui/sonner', () => ({
-  // Mock Toaster to check its props
-  Toaster: (props: any) => (
-    <div data-testid="mock-toaster" data-props={JSON.stringify(props)}>
-      Mock Toaster
-    </div>
-  )
-}));
-
 vi.mock('@/hooks/use-mobile', () => ({
   useIsMobile: vi.fn()
 }));
@@ -62,38 +53,7 @@ describe('RootWrapper Component', () => {
     // Check if mocked layout components are rendered
     expect(screen.getByTestId('mock-app-sidebar')).toBeInTheDocument();
     expect(screen.getByTestId('mock-header')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-toaster')).toBeInTheDocument();
     expect(screen.getByTestId('mock-sidebar-provider')).toBeInTheDocument();
     expect(screen.getByTestId('mock-sidebar-inset')).toBeInTheDocument();
-  });
-
-  it('should pass correct props to Toaster when isMobile is false', () => {
-    vi.mocked(useIsMobile).mockReturnValue(false);
-
-    render(
-      <RootWrapper>
-        <ChildComponent />
-      </RootWrapper>
-    );
-
-    const toaster = screen.getByTestId('mock-toaster');
-    const props = JSON.parse(toaster.getAttribute('data-props') || '{}');
-
-    expect(props.position).toBe('bottom-right');
-  });
-
-  it('should pass correct props to Toaster when isMobile is true', () => {
-    vi.mocked(useIsMobile).mockReturnValue(true);
-
-    render(
-      <RootWrapper>
-        <ChildComponent />
-      </RootWrapper>
-    );
-
-    const toaster = screen.getByTestId('mock-toaster');
-    const props = JSON.parse(toaster.getAttribute('data-props') || '{}');
-
-    expect(props.position).toBe('bottom-right');
   });
 });
