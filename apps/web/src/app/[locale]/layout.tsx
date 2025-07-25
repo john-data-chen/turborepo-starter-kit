@@ -1,6 +1,5 @@
 import Providers from '@/components/layout/Providers';
 import { routing } from '@/i18n/routing';
-import { auth } from '@/lib/auth';
 import '@/styles/globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import { Metadata } from 'next';
@@ -38,19 +37,19 @@ export default async function LocaleLayout({
   children,
   params
 }: Readonly<Props>) {
-  const session = await auth();
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={roboto.className}>
-        <NextTopLoader showSpinner={false} />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers session={session}>{children}</Providers>
+        <NextTopLoader color="#2563eb" showSpinner={false} />
+        <NextIntlClientProvider messages={messages}>
+          <Providers>{children}</Providers>
         </NextIntlClientProvider>
         <Analytics />
       </body>
