@@ -1,5 +1,7 @@
 'use client';
 
+import { SEARCH_DEBOUNCE_DELAY_MS } from '@/constants/common';
+import { useDebounce } from '@/hooks/useDebounce';
 import { User } from '@/types/dbInterface';
 import { TaskFormSchema } from '@/types/taskForm';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { useDebounce } from './useDebounce';
 
 interface UseTaskFormProps {
   defaultValues?: Partial<z.infer<typeof TaskFormSchema>>;
@@ -20,7 +21,10 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedSearchQuery = useDebounce(
+    searchQuery,
+    SEARCH_DEBOUNCE_DELAY_MS
+  );
 
   const form = useForm<z.infer<typeof TaskFormSchema>>({
     resolver: zodResolver(TaskFormSchema),

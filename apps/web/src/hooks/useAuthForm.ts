@@ -2,6 +2,7 @@
 
 import { defaultEmail } from '@/constants/demoData';
 import { ROUTES } from '@/constants/routes';
+import { NAVIGATION_DELAY_MS } from '@/constants/ui';
 import { useRouter } from '@/i18n/navigation';
 import { useTaskStore } from '@/lib/store';
 import { SignInFormValue, SignInValidation } from '@/types/authUserForm';
@@ -53,7 +54,7 @@ export default function useAuthForm() {
     toast.promise(signInProcessPromise(), {
       loading: 'Authenticating...',
       success: () => {
-        const navigationDelay = 500;
+        const navigationDelay = NAVIGATION_DELAY_MS;
         const locale = (params.locale as string) || 'en';
         const targetPath = `${ROUTES.BOARDS.ROOT}?login_success=true`;
 

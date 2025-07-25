@@ -3,8 +3,9 @@
 import AppSidebar from '@/components/layout/AppSidebar';
 import Header from '@/components/layout/Header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { Toaster } from '@/components/ui/sonner';
+import { TOAST_DURATION } from '@/constants/ui';
 import React from 'react';
+import { Toaster } from 'sonner';
 
 export default function RootWrapper({
   children
@@ -24,7 +25,7 @@ export default function RootWrapper({
         position={'bottom-right'}
         expand={false}
         toastOptions={{
-          duration: 1000
+          duration: TOAST_DURATION
         }}
         visibleToasts={1}
         closeButton
