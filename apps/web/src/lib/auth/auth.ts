@@ -1,4 +1,5 @@
 import { ROUTES } from '@/constants/routes';
+import Cookies from 'js-cookie';
 
 export interface User {
   id: string;
@@ -18,7 +19,7 @@ export class AuthService {
     if (!response.ok) {
       const error = await response.text().catch(() => 'Request failed');
       if (typeof window !== 'undefined' && response.status === 401) {
-        localStorage.removeItem('authToken');
+        Cookies.remove('jwt');
       }
       throw new Error(error || 'Request failed');
     }
@@ -30,19 +31,19 @@ export class AuthService {
     if (!response.ok) {
       const error = await response.text().catch(() => 'Request failed');
       if (typeof window !== 'undefined' && response.status === 401) {
-        localStorage.removeItem('authToken');
+        Cookies.remove('jwt');
       }
       throw new Error(error || 'Request failed');
     }
     return response.json();
   }
 
-  // Server-side session validation (static version)
-  static async validateSession(cookieHeader?: string): Promise<Session | null> {
+  static async validateSession(token?: string): Promise<Session | null> {
+    if (!token) return null;
     try {
-      const response = await fetch(`${API_BASE}/auth/validate-session`, {
+      const response = await fetch(`${API_BASE}/auth/profile`, {
         headers: {
-          ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
@@ -51,7 +52,8 @@ export class AuthService {
 
       if (!response.ok) return null;
 
-      return await response.json();
+      const user = await response.json();
+      return { user, accessToken: token };
     } catch (error) {
       console.error('Session validation error:', error);
       return null;
@@ -79,7 +81,7 @@ export class AuthService {
     const data = await this.handleResponse<{ access_token: string }>(response);
 
     if (typeof window !== 'undefined') {
-      localStorage.setItem('authToken', data.access_token);
+      Cookies.set('jwt', data.access_token, { expires: 7, path: '/' });
     }
 
     return data;
@@ -113,7 +115,7 @@ export class AuthService {
       throw new Error('getSession should only be called on the client side');
     }
 
-    const token = localStorage.getItem('authToken');
+    const token = Cookies.get('jwt');
     if (!token) return null;
 
     try {
@@ -131,7 +133,7 @@ export class AuthService {
 
   logout(): void {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
+      Cookies.remove('jwt');
     }
   }
 

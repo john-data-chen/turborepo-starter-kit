@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import AuthService from './nest-auth';
+import AuthService from './auth';
 
 export interface User {
   id: string;

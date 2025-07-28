@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { API_PORT } from "./constants/api";
+import cookieParser from "cookie-parser";
 
 declare const module: any;
 
@@ -25,6 +26,8 @@ async function bootstrap() {
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     exposedHeaders: ["Authorization"],
   });
+
+  app.use(cookieParser());
 
   // Enable global validation pipe
   app.useGlobalPipes(

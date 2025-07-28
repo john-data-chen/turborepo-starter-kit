@@ -31,6 +31,7 @@
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "cookie-parser": "^1.4.6",
     "reflect-metadata": "^0.2.2",
     "run-script-webpack-plugin": "^0.2.3",
     "rxjs": "^7.8.2"
@@ -47,6 +48,7 @@
     "@types/node": "^22.16.5",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
+    "@types/cookie-parser": "^1.4.7",
     "@vitest/coverage-v8": "^3.2.4",
     "cross-env": "^7.0.3",
     "global-tsconfig": "workspace:*",
