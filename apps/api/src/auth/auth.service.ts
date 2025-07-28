@@ -6,7 +6,7 @@ import { UserService } from "../user/user.service"; // 假設你有一個 UserSe
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   // Passport-local strategy 會呼叫這個方法

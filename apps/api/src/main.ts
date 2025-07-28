@@ -9,11 +9,11 @@ async function bootstrap() {
 
   // Enable CORS to allow requests from the frontend
   app.enableCors({
-    origin: 'http://localhost:3000', // Your frontend URL
+    origin: "http://localhost:3000", // Your frontend URL
     credentials: true, // Required when using credentials: 'include' in fetch
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Authorization']
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Authorization"],
   });
 
   await app.listen(API_PORT);
