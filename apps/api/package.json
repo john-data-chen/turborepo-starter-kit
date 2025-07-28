@@ -7,7 +7,7 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "dev": "rspack dev",
+    "dev": "rspack dev --watch",
     "build": "cross-env BUILD=true rspack build",
     "start": "node dist/main.js",
     "db:init": "tsx database/init-db-data.ts",
@@ -28,6 +28,7 @@
     "dotenv": "^16.6.1",
     "mongoose": "^8.16.5",
     "passport": "^0.7.0",
+    "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",

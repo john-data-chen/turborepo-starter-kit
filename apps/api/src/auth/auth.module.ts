@@ -4,19 +4,31 @@ import { AuthController } from "./auth.controller";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "../user/user.module";
-import { LocalStrategy } from "./strategies/local-auth.strategy";
+import { EmailStrategy } from "./strategies/email.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
-    UserModule, // 確保可以注入 UserService
-    PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET, // 從環境變數讀取
-      signOptions: { expiresIn: "1d" }, // Token 有效期
+    UserModule, // Ensure UserService is available for injection
+    PassportModule.register({ defaultStrategy: "jwt" }), // Set default strategy
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>("JWT_SECRET") || "your-secret-key",
+        signOptions: {
+          expiresIn: "1d",
+          algorithm: "HS256", // Specify the algorithm
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, EmailStrategy, JwtStrategy],
   controllers: [AuthController],
+  exports: [AuthService], // Export AuthService if needed by other modules
 })
 export class AuthModule {}
