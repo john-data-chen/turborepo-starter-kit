@@ -11,8 +11,10 @@ interface AppLayoutProps {
 }
 
 export default async function AppLayout(props: Readonly<AppLayoutProps>) {
-  const { children, params } = props;
-  const { locale } = params;
+  const {
+    children,
+    params: { locale }
+  } = props;
   const token = (await cookies()).get('jwt')?.value;
 
   // Server-side session validation
