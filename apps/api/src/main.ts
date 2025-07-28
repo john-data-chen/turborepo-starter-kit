@@ -44,7 +44,22 @@ async function bootstrap() {
   // Enable hot module replacement for development
   if (module.hot) {
     module.hot.accept();
-    module.hot.dispose(() => app.close());
+    module.hot.dispose(() => {
+      // Close the current app instance
+      app.close().then(() => {
+        // Clear the Node.js module cache for the user module
+        Object.keys(require.cache).forEach((key) => {
+          if (key.includes('user/')) {
+            delete require.cache[key];
+          }
+        });
+        // Re-import the app module to get fresh instances
+        import('./app.module').then(() => {
+          // Re-bootstrap the application
+          bootstrap();
+        });
+      });
+    });
   }
 }
 
