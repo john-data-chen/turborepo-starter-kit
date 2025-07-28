@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { useBoards } from '@/hooks/useBoards';
 import { useRouter } from '@/i18n/navigation';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/workspace-store';
 import { boardSchema } from '@/types/boardForm';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

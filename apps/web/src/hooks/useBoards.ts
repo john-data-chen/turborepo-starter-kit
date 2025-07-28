@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchBoardsFromDb } from '@/lib/db/board';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/workspace-store';
 import { Board } from '@/types/dbInterface';
 // Assuming Board type is needed for setMyBoards/setTeamBoards
 import { useCallback, useEffect, useState } from 'react';

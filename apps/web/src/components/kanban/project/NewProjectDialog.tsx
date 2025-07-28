@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';

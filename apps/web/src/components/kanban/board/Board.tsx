@@ -1,7 +1,7 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import DraggableData from '@/types/drag&drop';
 import {

@@ -3,7 +3,7 @@ import * as dbBoard from '@/lib/db/board';
 import * as dbProject from '@/lib/db/project';
 import * as dbTask from '@/lib/db/task';
 import * as dbUser from '@/lib/db/user';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/workspace-store';
 import {
   Board,
   Project,
