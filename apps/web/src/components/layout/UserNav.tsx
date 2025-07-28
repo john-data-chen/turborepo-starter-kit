@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuthStore } from '@/lib/auth/auth-store';
 import { useTranslations } from 'next-intl';
 
 export function UserNav() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout, isLoading } = useAuthStore();
   const t = useTranslations('user');
 
   // While loading, show a placeholder to prevent flicker

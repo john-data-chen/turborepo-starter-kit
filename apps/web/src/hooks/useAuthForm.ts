@@ -3,9 +3,9 @@
 import { defaultEmail } from '@/constants/demoData';
 import { ROUTES } from '@/constants/routes';
 import { NAVIGATION_DELAY_MS } from '@/constants/ui';
-import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from '@/i18n/navigation';
-import { useTaskStore } from '@/lib/store';
+import { useAuthStore } from '@/lib/auth/auth-store';
+import { useTaskStore } from '@/lib/workspace-store';
 import { SignInFormValue, SignInValidation } from '@/types/authUserForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -27,7 +27,7 @@ export default function useAuthForm() {
   const params = useParams();
   const [status, setStatus] = useState<AuthFormState>({ status: 'idle' });
   const t = useTranslations('login');
-  const { login } = useAuth();
+  const { login } = useAuthStore();
 
   const form = useForm<SignInFormValue>({
     resolver: zodResolver(SignInValidation),
@@ -37,31 +37,58 @@ export default function useAuthForm() {
   });
 
   const onSubmit = async (data: SignInFormValue) => {
-    const loginPromise = login(data.email);
+    console.log('Form submitted with data:', data);
 
-    toast.promise(loginPromise, {
-      success: () => {
-        const navigationDelay = NAVIGATION_DELAY_MS;
-        const locale = (params.locale as string) || 'en';
-        const targetPath = `${ROUTES.BOARDS.ROOT}?login_success=true`;
+    try {
+      console.log('Attempting to login with email:', data.email);
+      const loginPromise = login(data.email);
+      console.log('Login promise created, showing toast...');
 
-        setTimeout(() => {
-          startNavigationTransition(() => {
-            // Provide the base path and the target locale separately.
-            // The router will construct the correct path (e.g., /de/boards).
-            router.push(targetPath, { locale });
+      toast.promise(loginPromise, {
+        success: (result) => {
+          console.log('Login successful, result:', result);
+          const navigationDelay = NAVIGATION_DELAY_MS;
+          const locale = (params.locale as string) || 'en';
+          const targetPath = `${ROUTES.BOARDS.ROOT}?login_success=true`;
+
+          console.log(`Will navigate to ${targetPath} in ${navigationDelay}ms`);
+
+          setTimeout(() => {
+            console.log('Starting navigation transition...');
+            startNavigationTransition(() => {
+              console.log('Navigation transition started, pushing route...');
+              router.push(targetPath, { locale });
+              console.log('Route push complete');
+            });
+          }, navigationDelay);
+
+          console.log('Setting user info in store...');
+          setUserInfo(data.email);
+          console.log('User info set in store');
+          return t('authSuccessRedirect');
+        },
+        error: (err) => {
+          console.error('Login failed with error:', err);
+          console.error('Error details:', {
+            name: err.name,
+            message: err.message,
+            stack: err.stack
           });
-        }, navigationDelay);
-
-        setUserInfo(data.email);
-        return t('authSuccessRedirect');
-      },
-      error: (err) => {
-        console.error('Login failed:', err);
-        setStatus({ status: 'error', message: err.message });
-        return err.message || t('login_failed');
-      }
-    });
+          setStatus({
+            status: 'error',
+            message: err.message
+          });
+          return err.message || t('login_failed');
+        }
+      });
+    } catch (error) {
+      console.error('Unexpected error in onSubmit:', error);
+      toast.error('An unexpected error occurred');
+      setStatus({
+        status: 'error',
+        message: 'An unexpected error occurred'
+      });
+    }
   };
 
   return {

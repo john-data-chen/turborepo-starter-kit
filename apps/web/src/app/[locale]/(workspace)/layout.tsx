@@ -1,7 +1,7 @@
 import RootWrapper from '@/components/layout/RootWrapper';
-import { ROUTES } from '@/constants/routes';
-import { auth } from '@/lib/auth';
+import { AuthService } from '@/lib/auth/nest-auth';
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -12,13 +12,23 @@ interface AppLayoutProps {
 
 export default async function AppLayout(props: Readonly<AppLayoutProps>) {
   const { children, params } = props;
-  const { locale } = await params;
+  const { locale } = params;
+  const cookie = (await headers()).get('cookie') || '';
 
-  const session = await auth();
+  // Server-side session validation
+  let isAuthenticated = false;
+  try {
+    const session = await AuthService.validateSession(cookie);
+    isAuthenticated = !!session;
+  } catch (error) {
+    console.error('Session validation error:', error);
+  }
+
   const t = await getTranslations({ locale, namespace: 'sidebar' });
 
-  if (!session) {
-    redirect(ROUTES.AUTH.LOGIN);
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    redirect(`/${locale}/auth/login`);
   }
 
   return (

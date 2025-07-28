@@ -1,14 +1,14 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
-import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from '@/i18n/navigation';
+import { useAuthStore } from '@/lib/auth/auth-store';
 import { useEffect } from 'react';
 
 // This page acts as a client-side entry point to redirect users
 // based on their authentication status.
 export default function RootPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
