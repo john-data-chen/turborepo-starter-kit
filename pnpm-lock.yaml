@@ -335,9 +335,6 @@ importers:
       style-formatter-config:
         specifier: workspace:*
         version: link:../../packages/style-formatter-config
-      tsx:
-        specifier: ^4.20.3
-        version: 4.20.3
       tw-animate-css:
         specifier: ^1.3.6
         version: 1.3.6
