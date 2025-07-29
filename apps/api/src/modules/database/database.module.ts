@@ -20,7 +20,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DatabaseService.name);
 
   constructor(
-    @Inject('DATABASE_CONNECTION') private readonly connection: mongoose.Connection
+    @Inject("DATABASE_CONNECTION")
+    private readonly connection: mongoose.Connection,
   ) {}
 
   async onModuleInit() {
@@ -31,7 +32,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     this.connection.on("error", (error: Error) => {
       this.logger.error(
         `MongoDB connection error: ${error.message}`,
-        error.stack
+        error.stack,
       );
     });
 
@@ -63,14 +64,14 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async (
-        configService: ConfigService
+        configService: ConfigService,
       ): Promise<MongooseModuleOptions> => {
         const _logger = new Logger("MongoDB");
         const uri = configService.get<string>("DATABASE_URL");
 
         if (!uri) {
           throw new Error(
-            "MongoDB connection string (DATABASE_URL) is not defined"
+            "MongoDB connection string (DATABASE_URL) is not defined",
           );
         }
 
@@ -95,12 +96,12 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   ],
   providers: [
     {
-      provide: 'DATABASE_CONNECTION',
+      provide: "DATABASE_CONNECTION",
       useFactory: (connection: mongoose.Connection) => connection,
-      inject: [getConnectionToken()]
+      inject: [getConnectionToken()],
     },
-    DatabaseService
+    DatabaseService,
   ],
-  exports: [MongooseModule, 'DATABASE_CONNECTION', DatabaseService],
+  exports: [MongooseModule, "DATABASE_CONNECTION", DatabaseService],
 })
 export class DatabaseModule {}

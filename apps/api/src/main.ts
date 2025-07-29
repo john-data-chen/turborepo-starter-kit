@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { Logger, ValidationPipe } from "@nestjs/common";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { API_PORT } from "./constants/api";
 import cookieParser from "cookie-parser";
 
@@ -37,6 +38,33 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  // Swagger configuration
+  const config = new DocumentBuilder()
+    .setTitle("Task Management API")
+    .setDescription("API documentation for the Task Management System")
+    .setVersion("1.0")
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "JWT",
+        description: "Enter JWT token",
+        in: "header",
+      },
+      "JWT-auth", // This name should match the one used in @ApiBearerAuth() in controllers
+    )
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("api/docs", app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      tagsSorter: "alpha",
+      operationsSorter: "method",
+    },
+  });
 
   await app.listen(port);
   logger.log(`🚀 Application is running on: http://localhost:${port}`);

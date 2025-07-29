@@ -1,12 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { Logger, RequestMethod } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { DatabaseModule } from "./modules/database/database.module";
 import { AuthModule } from "./auth/auth.module";
-import { UserModule } from "./user/user.module";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { MongooseModule } from "@nestjs/mongoose";
-import { Logger, RequestMethod } from "@nestjs/common";
-import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
   imports: [
@@ -16,19 +14,11 @@ import { TasksModule } from "./tasks/tasks.module";
       envFilePath: ".env",
     }),
 
-    // Configure MongoDB connection
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>("DATABASE_URL"),
-      }),
-      inject: [ConfigService],
-    }),
+    // Database module with MongoDB connection
+    DatabaseModule,
 
-    // Feature modules
+    // Auth module
     AuthModule,
-    UserModule,
-    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
