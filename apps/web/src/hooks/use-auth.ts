@@ -1,6 +1,11 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
+// Import the implementations from the queries file
+import {
+  useLogin as useLoginQuery,
+  useLogout as useLogoutQuery
+} from '@/lib/api/auth/queries';
 import { useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
@@ -96,9 +101,6 @@ export function useSession() {
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
 }
-
-// Import the implementations from the queries file
-import { useLogin as useLoginQuery, useLogout as useLogoutQuery } from '@/lib/api/auth/queries';
 
 export function useLogin() {
   // Delegate to the implementation in queries.ts

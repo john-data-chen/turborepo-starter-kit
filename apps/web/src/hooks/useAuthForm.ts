@@ -52,10 +52,10 @@ export default function useAuthForm() {
           console.log('User info set in store');
 
           console.log(`Will navigate to ${targetPath} in ${navigationDelay}ms`);
-          
+
           // Wait for the navigation delay
-          await new Promise(resolve => setTimeout(resolve, navigationDelay));
-          
+          await new Promise((resolve) => setTimeout(resolve, navigationDelay));
+
           console.log('Starting navigation transition...');
           startNavigationTransition(() => {
             console.log('Navigation transition started, pushing route...');
