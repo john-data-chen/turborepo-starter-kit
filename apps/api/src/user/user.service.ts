@@ -85,4 +85,24 @@ export class UserService {
       throw error;
     }
   }
+
+  async searchByName(name: string): Promise<User[]> {
+    this.logger.log(`[UserService] Searching for users by name: ${name}`);
+    try {
+      const query = name ? { name: { $regex: name, $options: "i" } } : {};
+      const users = await this.userModel.find(query).exec();
+      this.logger.debug(
+        `[UserService] Found ${users.length} users for name: ${name}`,
+      );
+      return users;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error(
+        `[UserService] Error searching for users by name ${name}: ${errorMessage}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
+  }
 }
