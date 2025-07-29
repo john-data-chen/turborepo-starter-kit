@@ -315,6 +315,7 @@ describe('Zustand Store: useTaskStore', () => {
           await useTaskStore.getState().fetchProjects(mockBoardId);
         } catch (e) {
           // error is expected
+          console.error(e);
         }
       });
       expect(useTaskStore.getState().isLoadingProjects).toBe(true);
