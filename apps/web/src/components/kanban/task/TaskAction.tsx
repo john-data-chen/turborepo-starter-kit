@@ -25,30 +25,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useTaskStore } from '@/lib/workspace-store';
+import { type UpdateTaskInput } from '@/lib/api/tasks';
+import {
+  useDeleteTask,
+  useTask,
+  useUpdateTask,
+  useUpdateTaskStatus
+} from '@/lib/api/tasks/queries';
+import { useUser } from '@/lib/api/users/queries';
+import { TaskStatus } from '@/types/dbInterface';
 import { TaskFormSchema } from '@/types/taskForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-export interface TaskActionsProps {
+interface TaskActionsProps {
   id: string;
   title: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+  status: TaskStatus;
   description?: string;
   dueDate?: Date | null;
-  assignee?: string;
-  onUpdate?: (
-    id: string,
-    newTitle: string,
-    status: 'TODO' | 'IN_PROGRESS' | 'DONE',
-    newDescription?: string,
-    newDueDate?: Date | null,
-    assignee?: string
-  ) => void;
-  onDelete?: (id: string) => void;
+  assigneeId?: string;
+  projectId: string;
+  boardId: string;
 }
 
 export function TaskActions({
@@ -56,105 +57,110 @@ export function TaskActions({
   title,
   description,
   dueDate,
-  assignee,
+  assigneeId,
   status,
-  onDelete
+  projectId,
+  boardId
 }: TaskActionsProps) {
-  const updateTask = useTaskStore((state) => state.updateTask);
-  const removeTask = useTaskStore((state) => state.removeTask);
+  // State for dialogs
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [editEnable, setEditEnable] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Translations
   const t = useTranslations('kanban.task');
-  const [assigneeInfo, setAssigneeInfo] = useState<{
-    _id: string;
-    name: string | null;
-  } | null>(null);
 
-  useEffect(() => {
-    const fetchAssigneeInfo = async () => {
-      if (assignee) {
-        try {
-          const { getUserById } = await import('@/lib/api/users');
-          const user = await getUserById(assignee);
-          if (user) {
-            setAssigneeInfo({ _id: user._id, name: user.name });
-          }
-        } catch (error) {
-          console.error('Failed to fetch assignee details', error);
-        }
-      }
-    };
-    fetchAssigneeInfo();
-  }, [assignee]);
+  // Fetch task data to ensure we have the latest
+  const { data: task, isLoading: isLoadingTask } = useTask(id);
 
-  const [permissions, setPermissions] = React.useState<{
-    canEdit: boolean;
-    canDelete: boolean;
-  } | null>(null);
-  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(true);
+  // Mutation hooks
+  const updateTaskMutation = useUpdateTask();
+  const deleteTaskMutation = useDeleteTask();
+  const updateStatusMutation = useUpdateTaskStatus();
+
+  // Fetch assignee info if assignee exists
+  const { data: assigneeInfo } = useUser(assigneeId || '');
+
+  // Permissions (in a real app, this would come from auth context)
+  const canEdit = true;
+  const canDelete = true;
 
   const defaultValues = {
     title,
-    description,
-    status,
+    description: description || '',
+    status: status as TaskStatus, // Now properly typed with the enum
     dueDate: dueDate ? new Date(dueDate) : undefined,
-    assignee: assigneeInfo ?? undefined
+    assignee: assigneeInfo
+      ? { _id: assigneeInfo._id, name: assigneeInfo.name || '' }
+      : undefined,
+    projectId,
+    boardId
   };
 
+  // Handle form submission
   const handleSubmit = async (values: z.infer<typeof TaskFormSchema>) => {
-    const assigneeId = values.assignee?._id;
-    updateTask(
-      id,
-      values.title,
-      values.status ?? 'TODO',
-      values.description,
-      values.dueDate,
-      assigneeId
-    );
-    toast.success(t('updateSuccess', { title: values.title }));
-    setEditEnable(false);
-  };
+    const updateData: UpdateTaskInput = {
+      title: values.title,
+      description: values.description || null,
+      status: values.status,
+      dueDate: values.dueDate || null,
+      assigneeId: values.assignee?._id || null
+    };
 
-  const handleDelete = () => {
-    setTimeout(() => (document.body.style.pointerEvents = ''), 100);
-    setShowDeleteDialog(false);
-    removeTask(id);
-    onDelete?.(id);
-    toast.success(t('deleteSuccess'));
-  };
-
-  const checkPermissions = useCallback(async () => {
-    if (!id) {
-      setIsLoadingPermissions(false);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/tasks/${id}/permissions`);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || t('checkPermissionsFailed'));
+    updateTaskMutation.mutate(
+      { id, ...updateData },
+      {
+        onSuccess: () => {
+          toast.success(t('updateSuccess'));
+          setIsEditDialogOpen(false);
+        },
+        onError: () => {
+          toast.error(t('updateError'));
+        }
       }
+    );
+  };
 
-      const data = await response.json();
-      setPermissions(data);
-    } catch (error) {
-      console.error('Error checking task permissions:', error);
-      setPermissions({ canEdit: false, canDelete: false }); // Fallback on error
-      toast.error(
-        t('loadPermissionsFailed', { error: (error as Error).message })
-      );
-    } finally {
-      setIsLoadingPermissions(false);
-    }
-  }, [id, t]);
+  // Handle task deletion
+  const handleDelete = () => {
+    deleteTaskMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(t('deleteSuccess'));
+        setShowDeleteDialog(false);
+      },
+      onError: () => {
+        toast.error(t('deleteError'));
+      }
+    });
+  };
+
+  // Handle status change
+  const _handleStatusChange = (newStatus: TaskStatus) => {
+    updateStatusMutation.mutate(
+      { id, status: newStatus },
+      {
+        onSuccess: () => {
+          toast.success(t('statusUpdateSuccess'));
+        },
+        onError: () => {
+          toast.error(t('statusUpdateError'));
+        }
+      }
+    );
+  };
+
+  // Loading and error states
+  if (isLoadingTask) {
+    return <div className="px-2 py-1.5">Loading...</div>;
+  }
+
+  if (!task) {
+    return <div className="px-2 py-1.5 text-red-500">Task not found</div>;
+  }
 
   return (
     <>
-      <Dialog
-        open={editEnable && !!permissions?.canEdit}
-        onOpenChange={setEditEnable}
-      >
+      {/* Edit Task Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-md" data-testid="edit-task-dialog">
           <DialogHeader>
             <DialogTitle>{t('editTaskTitle')}</DialogTitle>
@@ -163,61 +169,54 @@ export function TaskActions({
           <TaskForm
             defaultValues={defaultValues}
             onSubmit={handleSubmit}
-            onCancel={() => setEditEnable(false)}
+            onCancel={() => setIsEditDialogOpen(false)}
             submitLabel={t('updateTask')}
           />
         </DialogContent>
       </Dialog>
-      <DropdownMenu modal={false} onOpenChange={checkPermissions}>
+
+      {/* Actions Dropdown */}
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="default"
+            variant="ghost"
             size="icon"
-            className="h-8 w-12"
+            className="h-8 w-8 p-0"
             data-testid="task-actions-trigger"
           >
             <span className="sr-only">{t('actions')}</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="w-40"
-          hidden={isLoadingPermissions}
-        >
+        <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
-            onSelect={() => setEditEnable(true)}
-            disabled={!permissions?.canEdit}
+            onSelect={() => setIsEditDialogOpen(true)}
+            disabled={!canEdit}
             className={
-              !permissions?.canEdit
-                ? 'text-muted-foreground line-through cursor-not-allowed'
-                : ''
+              !canEdit ? 'text-muted-foreground cursor-not-allowed' : ''
             }
           >
             {t('edit')}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
+
           <DropdownMenuItem
             onSelect={() => setShowDeleteDialog(true)}
-            disabled={!permissions?.canDelete}
-            className={`
-              w-full text-left
-              ${
-                !permissions?.canDelete
-                  ? 'text-muted-foreground line-through cursor-not-allowed'
-                  : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
-              }
-            `}
+            disabled={!canDelete}
+            className={
+              !canDelete
+                ? 'text-muted-foreground cursor-not-allowed'
+                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+            }
           >
             {t('delete')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDialog
-        open={showDeleteDialog && !!permissions?.canDelete}
-        onOpenChange={setShowDeleteDialog}
-      >
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent data-testid="delete-task-dialog">
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -235,8 +234,9 @@ export function TaskActions({
               variant="destructive"
               onClick={handleDelete}
               data-testid="confirm-delete-button"
+              disabled={deleteTaskMutation.isPending}
             >
-              {t('delete')}
+              {deleteTaskMutation.isPending ? t('deleting') : t('delete')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
