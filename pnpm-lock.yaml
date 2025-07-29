@@ -247,9 +247,6 @@ importers:
       lucide-react:
         specifier: ^0.532.0
         version: 0.532.0(react@19.1.1)
-      mongoose:
-        specifier: ^8.16.5
-        version: 8.16.5
       next:
         specifier: ^15.4.4
         version: 15.4.4(@playwright/test@1.54.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
