@@ -1,146 +1,168 @@
 import { Board, Project } from '@/types/dbInterface';
+import { TaskStatus } from '@/types/dbInterface';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { createBoardInDb, deleteBoardInDb, updateBoardInDb } from '../db/board';
+// Import API hooks
+import { useSession } from '../api/auth/queries';
 import {
-  createProjectInDb,
-  deleteProjectInDb,
-  getProjectsFromDb,
-  updateProjectInDb
-} from '../db/project';
+  useCreateBoard,
+  useDeleteBoard,
+  useUpdateBoard
+} from '../api/boards/queries';
 import {
-  createTaskInDb,
-  deleteTaskInDb,
-  getTasksByProjectId,
-  updateTaskInDb,
-  updateTaskProjectInDb
-} from '../db/task';
-import { getUserByEmail } from '../db/user';
+  useCreateProject,
+  useDeleteProject,
+  useProjects,
+  useUpdateProject
+} from '../api/projects/queries';
+import {
+  useCreateTask,
+  useDeleteTask,
+  useTasks,
+  useUpdateTask
+} from '../api/tasks/queries';
 
 interface State {
-  userEmail: string | null;
+  // User state
   userId: string | null;
+  userEmail: string | null;
   setUserInfo: (email: string) => void;
+
+  // Projects state
   projects: Project[];
   isLoadingProjects: boolean;
-  fetchProjects: (boardId: string) => Promise<void>;
   setProjects: (projects: Project[]) => void;
+
+  // Boards state
+  currentBoardId: string | null;
+  myBoards: Board[];
+  teamBoards: Board[];
+
+  // Filter state
+  filter: {
+    status: string | null;
+    search: string;
+  };
+
+  // Actions
+  fetchProjects: (boardId: string) => Promise<void>;
   addProject: (title: string, description: string) => Promise<string>;
   updateProject: (
     id: string,
     newTitle: string,
     newDescription?: string
-  ) => void;
+  ) => Promise<void>;
   removeProject: (id: string) => Promise<void>;
+
+  // Task actions
   addTask: (
     projectId: string,
     title: string,
-    status: 'TODO' | 'IN_PROGRESS' | 'DONE',
+    status: TaskStatus,
     description?: string,
     dueDate?: Date,
     assigneeId?: string
   ) => Promise<void>;
+
   updateTask: (
     taskId: string,
     title: string,
-    status: 'TODO' | 'IN_PROGRESS' | 'DONE',
+    status: TaskStatus,
     description?: string,
     dueDate?: Date,
-    assigneeId?: string
+    assigneeId?: string,
+    newProjectId?: string
   ) => Promise<void>;
+
   removeTask: (taskId: string) => Promise<void>;
   dragTaskOnProject: (taskId: string, newProjectId: string) => Promise<void>;
-  filter: {
-    status: string | null;
-    search: string;
-  };
-  setFilter: (filter: Partial<State['filter']>) => void;
-  currentBoardId: string | null;
+
+  // Board actions
   setCurrentBoardId: (boardId: string) => void;
   addBoard: (title: string, description?: string) => Promise<string>;
   updateBoard: (id: string, data: Partial<Board>) => Promise<void>;
   removeBoard: (id: string) => Promise<void>;
-  myBoards: Board[];
-  teamBoards: Board[];
+
+  // UI state
+  setFilter: (filter: Partial<State['filter']>) => void;
   setMyBoards: (boards: Board[]) => void;
   setTeamBoards: (boards: Board[]) => void;
   resetInBoards: () => void;
 }
 
-export const useTaskStore = create<State>()(
+// Custom hook to access the store's state and actions
+export const useWorkspaceStore = create<State>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      // Initial state
       userEmail: null,
       userId: null,
-      projects: [] as Project[],
+      projects: [],
       isLoadingProjects: false,
-      setUserInfo: (email: string) => {
-        // Start the async operation but don't wait for it
-        const updateUserInfo = async () => {
-          try {
-            const user = await getUserByEmail(email);
-            if (!user) {
-              console.error('User not found');
-              return;
-            }
-            set({ userEmail: email, userId: user.id });
-          } catch (error) {
-            console.error('Error in setUserInfo:', error);
-          }
-        };
-        void updateUserInfo();
+      currentBoardId: null,
+      myBoards: [],
+      teamBoards: [],
+      filter: {
+        status: null,
+        search: ''
       },
+
+      // User actions
+      setUserInfo: (email: string) => {
+        const { data: session } = useSession();
+
+        if (session?.user) {
+          set({
+            userEmail: session.user.email,
+            userId: session.user.id
+          });
+        } else {
+          // Fallback to just setting the email if session data isn't available
+          set({ userEmail: email });
+        }
+      },
+
+      // Project actions
       fetchProjects: async (boardId: string) => {
+        if (!boardId) return;
+
         set({ isLoadingProjects: true });
+
         try {
-          const projects = await getProjectsFromDb(boardId);
-          if (!projects || projects.length === 0) {
+          const { data: projects } = useProjects(boardId);
+
+          if (projects) {
+            set({
+              projects: projects.map((project) => ({
+                ...project,
+                tasks: [] // Tasks will be loaded separately if needed
+              }))
+            });
+          } else {
             set({ projects: [] });
-            return;
           }
-
-          const projectsWithTasks = await Promise.all(
-            projects.map(async (project) => {
-              try {
-                const tasks = await getTasksByProjectId(project._id);
-                return {
-                  ...project,
-                  tasks: tasks || []
-                };
-              } catch (error) {
-                console.error(
-                  `Error fetching tasks for project ${project._id}:`,
-                  error
-                );
-                return {
-                  ...project,
-                  tasks: []
-                };
-              }
-            })
-          );
-
-          set({ projects: projectsWithTasks });
         } catch (error) {
           console.error('Error fetching projects:', error);
           set({ projects: [] });
         } finally {
-          set({ isLoadingProjects: false }); // Set loading to false when done
+          set({ isLoadingProjects: false });
         }
       },
+
       setProjects: (projects: Project[]) => set({ projects }),
+
       addProject: async (title: string, description: string) => {
         try {
-          const state = useTaskStore.getState();
-          if (!state.userEmail || !state.currentBoardId) {
-            throw new Error('User email or board id not found');
+          const { currentBoardId } = get();
+          if (!currentBoardId) {
+            throw new Error('No board selected');
           }
 
-          const newProject = await createProjectInDb({
+          const createProject = useCreateProject();
+          const newProject = await createProject.mutateAsync({
             title,
             description,
-            userEmail: state.userEmail,
-            board: state.currentBoardId
+            boardId: currentBoardId
           });
 
           if (newProject) {
@@ -148,42 +170,52 @@ export const useTaskStore = create<State>()(
               projects: [...state.projects, newProject]
             }));
             return newProject._id;
-          } else {
-            throw new Error('Failed to create project');
           }
+
+          throw new Error('Failed to create project');
         } catch (error) {
           console.error('Error in addProject:', error);
           throw error;
         }
       },
-      updateProject: (
+
+      updateProject: async (
         id: string,
         newTitle: string,
         newDescription?: string
       ) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
-        updateProjectInDb({
-          projectId: id,
-          userEmail: userEmail,
-          newTitle: newTitle,
-          newDescription: newDescription || ''
-        });
-        set((state) => ({
-          projects: state.projects.map((project) =>
-            project._id === id ? { ...project, title: newTitle } : project
-          )
-        }));
-      },
-      removeProject: async (id: string) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          await deleteProjectInDb(id, userEmail);
+          const updateProject = useUpdateProject();
+          await updateProject.mutateAsync({
+            id,
+            title: newTitle,
+            description: newDescription
+          });
+
+          // Optimistic update
+          set((state) => ({
+            projects: state.projects.map((project) =>
+              project._id === id
+                ? {
+                    ...project,
+                    title: newTitle,
+                    description: newDescription || project.description
+                  }
+                : project
+            )
+          }));
+        } catch (error) {
+          console.error('Error updating project:', error);
+          throw error;
+        }
+      },
+
+      removeProject: async (id: string) => {
+        try {
+          const deleteProject = useDeleteProject();
+          await deleteProject.mutateAsync(id);
+
+          // Optimistic update
           set((state) => ({
             projects: state.projects.filter((project) => project._id !== id)
           }));
@@ -192,266 +224,271 @@ export const useTaskStore = create<State>()(
           throw error;
         }
       },
+
+      // Task actions
       addTask: async (
         projectId: string,
         title: string,
-        status: 'TODO' | 'IN_PROGRESS' | 'DONE',
+        status: TaskStatus = TaskStatus.TODO,
         description?: string,
         dueDate?: Date,
         assigneeId?: string
       ) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          const newTask = await createTaskInDb(
-            projectId,
-            title,
-            userEmail,
-            description,
-            dueDate,
-            assigneeId,
-            status
-          );
+          const { currentBoardId, userId } = get();
+          if (!currentBoardId) {
+            throw new Error('No board selected');
+          }
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
 
-          set((state) => ({
-            projects: state.projects.map((project) =>
-              project._id === projectId
-                ? { ...project, tasks: [...project.tasks, newTask] }
-                : project
-            )
-          }));
+          const createTask = useCreateTask();
+          const taskInput: any = {
+            title,
+            description,
+            status,
+            projectId,
+            boardId: currentBoardId,
+            creatorId: userId
+          };
+
+          if (dueDate) {
+            taskInput.dueDate = dueDate;
+          }
+
+          if (assigneeId) {
+            taskInput.assigneeId = assigneeId;
+          }
+
+          await createTask.mutateAsync(taskInput);
+
+          // Invalidate and refetch projects to get the new task
+          const { fetchProjects } = get();
+          await fetchProjects(currentBoardId);
         } catch (error) {
-          console.error('Error in addTask:', error);
+          console.error('Error adding task:', error);
           throw error;
         }
       },
-      updateTask: (
+
+      updateTask: async (
         taskId: string,
         title: string,
-        status: 'TODO' | 'IN_PROGRESS' | 'DONE',
+        status: TaskStatus = TaskStatus.TODO,
         description?: string,
         dueDate?: Date,
-        assigneeId?: string
+        assigneeId?: string,
+        newProjectId?: string
       ) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
-
-        return (async () => {
-          try {
-            const updatedTask = await updateTaskInDb(
-              taskId,
-              title,
-              userEmail,
-              status,
-              description,
-              dueDate,
-              assigneeId
-            );
-
-            if (!updatedTask) {
-              throw new Error('Failed to update task');
-            }
-
-            set((state) => ({
-              projects: state.projects.map((project) => ({
-                ...project,
-                tasks: project.tasks.map((task) =>
-                  task._id === taskId ? { ...task, ...updatedTask } : task
-                )
-              }))
-            }));
-          } catch (error) {
-            console.error('Error updating task:', error);
-            throw error;
-          }
-        })();
-      },
-      removeTask: (taskId: string) => {
-        return (async () => {
-          try {
-            await deleteTaskInDb(taskId);
-
-            set((state) => ({
-              projects: state.projects.map((project) => ({
-                ...project,
-                tasks: project.tasks.filter((task) => task._id !== taskId)
-              }))
-            }));
-          } catch (error) {
-            console.error('Error in removeTask:', error);
-            throw error;
-          }
-        })();
-      },
-      dragTaskOnProject: async (taskId: string, overlayProjectId: string) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          const state = useTaskStore.getState();
-          const task = state.projects
-            .flatMap((p) => p.tasks)
-            .find((t) => t._id === taskId);
-
-          if (!task) {
-            console.error('Task not found');
-            return;
+          const { userId, currentBoardId } = get();
+          if (!userId) {
+            throw new Error('User not authenticated');
           }
 
-          const oldProject = state.projects.find((p) => p._id === task.project);
-          const targetProject = state.projects.find(
-            (p) => p._id === overlayProjectId
-          );
-
-          if (!oldProject || !targetProject) {
-            console.error('Project not found', {
-              oldProjectId: task.project,
-              overlayProjectId
-            });
-            return;
-          }
-
-          if (oldProject._id === targetProject._id) {
-            const task = oldProject.tasks.find((t) => t._id === taskId);
-            if (!task) return;
-
-            const updatedProject = {
-              ...oldProject,
-              tasks: [...oldProject.tasks.filter((t) => t._id !== taskId), task]
-            };
-
-            set((state) => ({
-              projects: state.projects.map((project) =>
-                project._id === oldProject._id ? updatedProject : project
-              )
-            }));
-            return;
-          }
-
-          const updatedTask = await updateTaskProjectInDb(
-            userEmail,
-            taskId,
-            overlayProjectId
-          );
-
-          if (!updatedTask) {
-            console.error('Failed to update task project');
-            return;
-          }
-
-          const updatedOldProject = {
-            ...oldProject,
-            tasks: oldProject.tasks.filter((task) => task._id !== taskId)
+          const updateTask = useUpdateTask();
+          const updateData: any = {
+            id: taskId,
+            title,
+            description,
+            status,
+            lastModifierId: userId
           };
 
-          const updatedTargetProject = {
-            ...targetProject,
-            tasks: [...targetProject.tasks, updatedTask]
-          };
+          if (dueDate) {
+            updateData.dueDate = dueDate;
+          }
 
-          set((state) => ({
-            projects: state.projects.map((project) => {
-              if (project._id === oldProject._id) return updatedOldProject;
-              if (project._id === targetProject._id)
-                return updatedTargetProject;
-              return project;
-            })
-          }));
+          if (assigneeId) {
+            updateData.assigneeId = assigneeId;
+          }
+
+          if (newProjectId) {
+            updateData.projectId = newProjectId;
+          }
+
+          await updateTask.mutateAsync(updateData);
+
+          // Invalidate and refetch projects to get the updated task
+          if (currentBoardId) {
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
+          }
         } catch (error) {
-          console.error('Error in dragTaskIntoNewProject:', error);
+          console.error('Error updating task:', error);
           throw error;
         }
       },
-      filter: {
-        status: null,
-        search: ''
-      },
-      setFilter: (filter) => {
-        set((state) => ({
-          filter: {
-            ...state.filter,
-            ...filter
+
+      removeTask: async (taskId: string) => {
+        try {
+          const { currentBoardId } = get();
+          const deleteTask = useDeleteTask();
+          await deleteTask.mutateAsync(taskId);
+
+          // Invalidate and refetch projects to reflect the deleted task
+          if (currentBoardId) {
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
           }
-        }));
+        } catch (error) {
+          console.error('Error removing task:', error);
+          throw error;
+        }
       },
-      currentBoardId: null,
+
+      dragTaskOnProject: async (taskId: string, newProjectId: string) => {
+        try {
+          const { updateTask, currentBoardId } = get();
+
+          // First, find the task to get its current data
+          const { data: tasks } = useTasks();
+          const taskToMove = tasks?.find((t: any) => t._id === taskId);
+
+          if (!taskToMove) {
+            throw new Error('Task not found');
+          }
+
+          // Update the task's project
+          await updateTask(
+            taskId,
+            taskToMove.title,
+            taskToMove.status,
+            taskToMove.description,
+            taskToMove.dueDate ? new Date(taskToMove.dueDate) : undefined,
+            taskToMove.assignee?.id,
+            newProjectId
+          );
+
+          // Invalidate and refetch projects to update the UI
+          if (currentBoardId) {
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
+          }
+        } catch (error) {
+          console.error('Error moving task to project:', error);
+          throw error;
+        }
+      },
+
+      // Board actions
       setCurrentBoardId: (boardId: string) => {
         set({ currentBoardId: boardId });
       },
+
       addBoard: async (title: string, description?: string) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          const newBoard = await createBoardInDb({
+          const { userId } = get();
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
+
+          const createBoard = useCreateBoard();
+          const newBoard = await createBoard.mutateAsync({
             title,
-            userEmail,
             description
           });
-          if (!newBoard) {
-            throw new Error('Failed to create board');
+
+          if (newBoard) {
+            // Add to myBoards since the current user is the owner
+            const session = useSession();
+            const currentUser = session.data?.user;
+
+            if (!currentUser) {
+              throw new Error('User session not found');
+            }
+
+            const boardWithOwner: Board = {
+              ...newBoard,
+              owner: {
+                id: userId,
+                name: currentUser.name
+              },
+              members: [],
+              projects: [],
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
+
+            set((state) => ({
+              myBoards: [...state.myBoards, boardWithOwner]
+            }));
+            return newBoard._id;
           }
-          const boardId = newBoard._id.toString();
-          set({
-            currentBoardId: boardId,
-            projects: []
-          });
-          return boardId;
+
+          throw new Error('Failed to create board');
         } catch (error) {
           console.error('Error in addBoard:', error);
           throw error;
         }
       },
+
       updateBoard: async (id: string, data: Partial<Board>) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          const updatedBoard = await updateBoardInDb(id, data, userEmail);
-          if (!updatedBoard) throw new Error('Failed to update board');
+          const updateBoard = useUpdateBoard();
+          await updateBoard.mutateAsync({ id, ...data });
+
+          // Optimistic update
+          set((state) => ({
+            myBoards: state.myBoards.map((board) =>
+              board._id === id ? { ...board, ...data } : board
+            ),
+            teamBoards: state.teamBoards.map((board) =>
+              board._id === id ? { ...board, ...data } : board
+            )
+          }));
         } catch (error) {
-          console.error('Error in updateBoard:', error);
+          console.error('Error updating board:', error);
           throw error;
         }
       },
+
       removeBoard: async (id: string) => {
-        const userEmail = useTaskStore.getState().userEmail;
-        if (!userEmail) {
-          throw new Error('User email not found');
-        }
         try {
-          const success = await deleteBoardInDb(id, userEmail);
-          if (!success) throw new Error('Failed to delete board');
+          const deleteBoard = useDeleteBoard();
+          await deleteBoard.mutateAsync(id);
+
+          // Update state to remove the deleted board
+          set((state) => ({
+            myBoards: state.myBoards.filter((board) => board._id !== id),
+            teamBoards: state.teamBoards.filter((board) => board._id !== id),
+            // Reset current board if it's the one being deleted
+            currentBoardId:
+              state.currentBoardId === id ? null : state.currentBoardId
+          }));
         } catch (error) {
-          console.error('Error in removeBoard:', error);
+          console.error('Error removing board:', error);
           throw error;
         }
       },
-      myBoards: [],
-      teamBoards: [],
-      setMyBoards: (boards: Board[]) =>
+
+      // UI state
+      setFilter: (filter) =>
+        set((state) => ({
+          filter: { ...state.filter, ...filter }
+        })),
+
+      setMyBoards: (boards) => set({ myBoards: boards }),
+
+      setTeamBoards: (boards) => set({ teamBoards: boards }),
+
+      resetInBoards: () =>
         set({
-          myBoards: boards
-        }),
-      setTeamBoards: (boards: Board[]) => set({ teamBoards: boards }),
-      resetInBoards: () => {
-        set({
-          myBoards: [],
-          teamBoards: [],
+          projects: [],
           currentBoardId: null,
-          projects: []
-        });
-      }
+          filter: { status: null, search: '' }
+        })
     }),
     {
-      name: 'task-store'
+      name: 'workspace-store',
+      partialize: (state) => ({
+        // Only persist these parts of the state
+        currentBoardId: state.currentBoardId,
+        myBoards: state.myBoards,
+        teamBoards: state.teamBoards,
+        filter: state.filter
+      })
     }
   )
 );
