@@ -1,14 +1,5 @@
 import { API_URL } from '@/constants/routes';
 
-interface ApiResponse<T> {
-  data?: T;
-  error?: {
-    message: string;
-    code?: string;
-  };
-}
-
-// API Response User Type (from backend)
 interface ApiUser {
   _id: string;
   name: string;
@@ -27,7 +18,7 @@ export interface User {
 }
 
 function transformUserData(users: ApiUser[]): User[] {
-  return users.map(user => ({
+  return users.map((user) => ({
     _id: user._id,
     name: user.name,
     email: user.email,
@@ -38,12 +29,15 @@ function transformUserData(users: ApiUser[]): User[] {
 
 export async function searchUsers(search: string = ''): Promise<User[]> {
   try {
-    const response = await fetch(`${API_URL}/users/search?username=${encodeURIComponent(search)}`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/users/search?username=${encodeURIComponent(search)}`,
+      {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,8 +56,8 @@ export async function getUserById(id: string): Promise<User | null> {
     const response = await fetch(`${API_URL}/users/${id}`, {
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
