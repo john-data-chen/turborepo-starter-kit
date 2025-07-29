@@ -73,13 +73,11 @@ export function TaskActions({
   useEffect(() => {
     const fetchAssigneeInfo = async () => {
       if (assignee) {
-        // Assume an API endpoint to fetch user details by ID
-        // This is a placeholder, you might need to implement this endpoint
         try {
-          const response = await fetch(`/api/users/search?id=${assignee}`);
-          const data = await response.json();
-          if (data && data.length > 0) {
-            setAssigneeInfo({ _id: data[0]._id, name: data[0].name });
+          const { getUserById } = await import('@/lib/api/users');
+          const user = await getUserById(assignee);
+          if (user) {
+            setAssigneeInfo({ _id: user._id, name: user.name });
           }
         } catch (error) {
           console.error('Failed to fetch assignee details', error);

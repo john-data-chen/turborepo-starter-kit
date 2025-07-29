@@ -39,9 +39,8 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
   const searchUsers = async (search: string = '') => {
     try {
-      const response = await fetch(`/api/users/search?username=${search}`);
-      const data = await response.json();
-      return data.users || [];
+      const { searchUsers } = await import('@/lib/api/users');
+      return await searchUsers(search);
     } catch (error) {
       console.error('Error searching users:', error);
       return [];
