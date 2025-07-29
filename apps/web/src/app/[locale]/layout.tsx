@@ -1,5 +1,5 @@
-import Providers from '@/components/layout/Providers';
 import { routing } from '@/i18n/routing';
+import { ClientProviders } from '@/providers/client-providers';
 import '@/styles/globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import { Metadata } from 'next';
@@ -48,10 +48,12 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={roboto.className}>
         <NextTopLoader color="#2563eb" showSpinner={false} />
-        <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ClientProviders>
+            {children}
+            <Analytics />
+          </ClientProviders>
         </NextIntlClientProvider>
-        <Analytics />
       </body>
     </html>
   );

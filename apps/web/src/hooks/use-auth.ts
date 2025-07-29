@@ -1,9 +1,8 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -98,54 +97,17 @@ export function useSession() {
   });
 }
 
+// Import the implementations from the queries file
+import { useLogin as useLoginQuery, useLogout as useLogoutQuery } from '@/lib/api/auth/queries';
+
 export function useLogin() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  return useMutation({
-    mutationFn: async (email: string) => {
-      const data = await fetchWithAuth<{ access_token: string }>(
-        ROUTES.AUTH.LOGIN,
-        {
-          method: 'POST',
-          body: JSON.stringify({ email })
-        }
-      );
-
-      if (typeof window !== 'undefined') {
-        Cookies.set('jwt', data.access_token, { expires: 7, path: '/' });
-      }
-
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'session'] });
-      router.push('/dashboard');
-    }
-  });
+  // Delegate to the implementation in queries.ts
+  return useLoginQuery();
 }
 
 export function useLogout() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  return useMutation({
-    mutationFn: async () => {
-      try {
-        await fetchWithAuth(`${API_BASE}/auth/logout`, {
-          method: 'POST'
-        });
-      } finally {
-        if (typeof window !== 'undefined') {
-          Cookies.remove('jwt', { path: '/' });
-        }
-      }
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      router.push('/login');
-    }
-  });
+  // Delegate to the implementation in queries.ts
+  return useLogoutQuery();
 }
 
 // Main auth hook

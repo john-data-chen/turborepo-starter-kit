@@ -3,15 +3,13 @@
 import { defaultEmail } from '@/constants/demoData';
 import { ROUTES } from '@/constants/routes';
 import { NAVIGATION_DELAY_MS } from '@/constants/ui';
-import { useRouter } from '@/i18n/navigation';
-import { useAuthStore } from '@/lib/stores/auth-store';
+import { useAuth } from '@/hooks/use-auth';
 import { useTaskStore } from '@/lib/stores/workspace-store';
 import { SignInFormValue, SignInValidation } from '@/types/authUserForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
-import { useTransition } from 'react';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -22,12 +20,11 @@ interface AuthFormState {
 
 export default function useAuthForm() {
   const [isNavigating, startNavigationTransition] = useTransition();
-  const { setUserInfo } = useTaskStore();
+  const setUserInfo = useTaskStore((state) => state.setUserInfo);
   const router = useRouter();
-  const params = useParams();
   const [status, setStatus] = useState<AuthFormState>({ status: 'idle' });
   const t = useTranslations('login');
-  const { login } = useAuthStore();
+  const { login } = useAuth();
 
   const form = useForm<SignInFormValue>({
     resolver: zodResolver(SignInValidation),
@@ -45,26 +42,27 @@ export default function useAuthForm() {
       console.log('Login promise created, showing toast...');
 
       toast.promise(loginPromise, {
-        success: (result) => {
+        success: async (result) => {
           console.log('Login successful, result:', result);
           const navigationDelay = NAVIGATION_DELAY_MS;
-          const locale = (params.locale as string) || 'en';
           const targetPath = `${ROUTES.BOARDS.ROOT}?login_success=true`;
-
-          console.log(`Will navigate to ${targetPath} in ${navigationDelay}ms`);
-
-          setTimeout(() => {
-            console.log('Starting navigation transition...');
-            startNavigationTransition(() => {
-              console.log('Navigation transition started, pushing route...');
-              router.push(targetPath, { locale });
-              console.log('Route push complete');
-            });
-          }, navigationDelay);
 
           console.log('Setting user info in store...');
           setUserInfo(data.email);
           console.log('User info set in store');
+
+          console.log(`Will navigate to ${targetPath} in ${navigationDelay}ms`);
+          
+          // Wait for the navigation delay
+          await new Promise(resolve => setTimeout(resolve, navigationDelay));
+          
+          console.log('Starting navigation transition...');
+          startNavigationTransition(() => {
+            console.log('Navigation transition started, pushing route...');
+            router.push(targetPath);
+            console.log('Route push complete');
+          });
+
           return t('authSuccessRedirect');
         },
         error: (err) => {

@@ -1,9 +1,8 @@
 import RootWrapper from '@/components/layout/RootWrapper';
-import { AuthService } from '@/lib/auth/auth';
 import { getTranslations } from 'next-intl/server';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { isAuthenticated } from '@/actions/auth';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -14,26 +13,15 @@ export default async function AppLayout({
   children,
   params
 }: Readonly<AppLayoutProps>) {
-  // First, get the cookies in a separate step
-  const cookieStore = await cookies();
-  const token = cookieStore.get('jwt')?.value;
-
-  // Await the params object as it can be a Promise
+  // Get the current locale
   const { locale } = await Promise.resolve(params);
-
-  // Server-side session validation
-  let isAuthenticated = false;
-  try {
-    const session = await AuthService.validateSession(token);
-    isAuthenticated = !!session;
-  } catch (error) {
-    console.error('Session validation error:', error);
-  }
-
   const t = await getTranslations({ locale, namespace: 'sidebar' });
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
+  
+  // Check if user is authenticated
+  const { isAuthenticated: isUserAuthenticated } = await isAuthenticated();
+  
+  // If not authenticated, redirect to login
+  if (!isUserAuthenticated) {
     redirect(`/${locale}/auth/login`);
   }
 
