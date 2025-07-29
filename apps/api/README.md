@@ -16,6 +16,7 @@ This directory contains the client-side implementation for interacting with the 
 ### Queries
 
 #### `useTasks(projectId?, assigneeId?)`
+
 Fetch a list of tasks, optionally filtered by project or assignee.
 
 ```typescript
@@ -23,6 +24,7 @@ const { data: tasks, isLoading, error } = useTasks(projectId, assigneeId);
 ```
 
 #### `useTask(taskId)`
+
 Fetch a single task by ID.
 
 ```typescript
@@ -32,6 +34,7 @@ const { data: task, isLoading, error } = useTask(taskId);
 ### Mutations
 
 #### `useCreateTask()`
+
 Create a new task.
 
 ```typescript
@@ -39,15 +42,16 @@ const createTask = useCreateTask();
 
 // Usage:
 createTask.mutate({
-  title: 'New Task',
-  description: 'Task description',
-  projectId: 'project-123',
-  boardId: 'board-123',
+  title: "New Task",
+  description: "Task description",
+  projectId: "project-123",
+  boardId: "board-123",
   // ...other task properties
 });
 ```
 
 #### `useUpdateTask()`
+
 Update an existing task.
 
 ```typescript
@@ -55,14 +59,15 @@ const updateTask = useUpdateTask();
 
 // Usage:
 updateTask.mutate({
-  id: 'task-123',
-  title: 'Updated Task Title',
-  description: 'Updated description',
+  id: "task-123",
+  title: "Updated Task Title",
+  description: "Updated description",
   // ...other fields to update
 });
 ```
 
 #### `useUpdateTaskStatus()`
+
 Update a task's status.
 
 ```typescript
@@ -70,19 +75,20 @@ const updateStatus = useUpdateTaskStatus();
 
 // Usage:
 updateStatus.mutate({
-  id: 'task-123',
-  status: 'IN_PROGRESS' // or 'TODO' or 'DONE'
+  id: "task-123",
+  status: "IN_PROGRESS", // or 'TODO' or 'DONE'
 });
 ```
 
 #### `useDeleteTask()`
+
 Delete a task.
 
 ```typescript
 const deleteTask = useDeleteTask();
 
 // Usage:
-deleteTask.mutate('task-123');
+deleteTask.mutate("task-123");
 ```
 
 ## TypeScript Types
@@ -94,7 +100,7 @@ interface Task {
   id: string;
   title: string;
   description?: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+  status: "TODO" | "IN_PROGRESS" | "DONE";
   dueDate?: Date;
   board: string; // Board ID
   project: string; // Project ID
@@ -136,4 +142,5 @@ if (isLoading) {
   return <div>Loading tasks...</div>;
 }
 ```
+
 > Note: `isLoading` is true only on initial load, while `isFetching` is true during any data fetch.

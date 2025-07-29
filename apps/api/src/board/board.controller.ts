@@ -58,7 +58,7 @@ export class BoardController {
   create(@Body() createBoardDto: CreateBoardDto, @Req() req: RequestWithUser) {
     // Set the owner from the authenticated user
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     createBoardDto.owner = req.user.id;
     return this.boardService.create(createBoardDto);
@@ -77,7 +77,7 @@ export class BoardController {
   })
   findAll(@Req() req: RequestWithUser) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.findAll(req.user.id);
   }
@@ -101,7 +101,7 @@ export class BoardController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
   findOne(@Param("id") id: string, @Req() req: RequestWithUser) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.findOne(id, req.user.id);
   }
@@ -129,7 +129,7 @@ export class BoardController {
     @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.update(id, updateBoardDto, req.user.id);
   }
@@ -152,7 +152,7 @@ export class BoardController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
   remove(@Param("id") id: string, @Req() req: RequestWithUser) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.remove(id, req.user.id);
   }
@@ -181,7 +181,7 @@ export class BoardController {
     @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.addMember(id, req.user.id, memberId);
   }
@@ -213,7 +213,7 @@ export class BoardController {
     @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException("User not authenticated");
     }
     return this.boardService.removeMember(id, req.user.id, memberId);
   }
