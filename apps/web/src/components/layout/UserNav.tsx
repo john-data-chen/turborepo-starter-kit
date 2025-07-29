@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAuthStore } from '@/lib/auth/auth-store';
+import { useAuthStore } from '@/lib/stores/auth-store';
 import { useTranslations } from 'next-intl';
 
 export function UserNav() {

@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { TaskFormSchema } from '@/types/taskForm';
 import { useTranslations } from 'next-intl';
 import React from 'react';

@@ -1,6 +1,6 @@
 import { useBoards } from '@/hooks/useBoards';
 import { fetchBoardsFromDb } from '@/lib/db/board';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

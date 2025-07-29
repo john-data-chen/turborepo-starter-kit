@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 

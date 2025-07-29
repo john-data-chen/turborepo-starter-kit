@@ -1,5 +1,5 @@
 import { TaskFilter } from '@/components/kanban/task/TaskFilter';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';

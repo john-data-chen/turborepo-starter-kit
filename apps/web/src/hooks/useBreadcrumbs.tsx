@@ -2,7 +2,7 @@
 
 import { ROUTES } from '@/constants/routes';
 import { fetchBoardsFromDb } from '@/lib/db/board';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { Board } from '@/types/dbInterface';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';

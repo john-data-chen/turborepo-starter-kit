@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useBoards } from '@/hooks/useBoards';
-import { useTaskStore } from '@/lib/workspace-store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import { boardSchema } from '@/types/boardForm';
 import { Board } from '@/types/dbInterface';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';

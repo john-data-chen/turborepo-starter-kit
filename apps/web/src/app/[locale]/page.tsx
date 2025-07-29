@@ -2,7 +2,7 @@
 
 import { ROUTES } from '@/constants/routes';
 import { useRouter } from '@/i18n/navigation';
-import { useAuthStore } from '@/lib/auth/auth-store';
+import { useAuthStore } from '@/lib/stores/auth-store';
 import { useEffect } from 'react';
 
 // This page acts as a client-side entry point to redirect users
