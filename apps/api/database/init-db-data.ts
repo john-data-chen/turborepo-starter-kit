@@ -200,12 +200,6 @@ async function main() {
         owner: janeId,
         members: [janeId],
         board: createdBoards[3]._id,
-      },
-      {
-        ...demoProjects[3],
-        owner: johnId,
-        members: [johnId, markId, janeId],
-        board: createdBoards[3]._id,
       }
     ];
     const createdProjects = await projectModel.insertMany(projectsWithDefaults);
