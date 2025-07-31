@@ -2,7 +2,7 @@
 
 import { Board } from '@/components/kanban/board/Board';
 import PageContainer from '@/components/layout/PageContainer';
-import { useWorkspaceStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { memo, Suspense, useEffect } from 'react';

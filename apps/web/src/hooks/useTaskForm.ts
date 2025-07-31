@@ -2,7 +2,7 @@
 
 import { SEARCH_DEBOUNCE_DELAY_MS } from '@/constants/common';
 import { useDebounce } from '@/hooks/useDebounce';
-import { searchUsers } from '@/lib/api/users';
+import { userApi } from '@/lib/api/userApi';
 import { TaskStatus, User } from '@/types/dbInterface';
 import { TaskFormSchema } from '@/types/taskForm';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,7 +41,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
   const searchUsersLocal = async (search: string = ''): Promise<User[]> => {
     try {
-      return await searchUsers(search);
+      return await userApi.searchUsers(search);
     } catch (error) {
       console.error('Error searching users:', error);
       return [];

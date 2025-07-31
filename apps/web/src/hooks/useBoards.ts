@@ -1,9 +1,9 @@
 'use client';
 
 import { useBoards as useApiBoards } from '@/lib/api/boards/queries';
-import { useWorkspaceStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Board } from '@/types/dbInterface';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function useBoards() {
   const { userId } = useWorkspaceStore();
@@ -46,7 +46,7 @@ export function useBoards() {
   // Update the workspace store when data changes
   const { setMyBoards, setTeamBoards } = useWorkspaceStore();
 
-  useMemo(() => {
+  useEffect(() => {
     setMyBoards(myBoards);
     setTeamBoards(teamBoards);
   }, [myBoards, teamBoards, setMyBoards, setTeamBoards]);

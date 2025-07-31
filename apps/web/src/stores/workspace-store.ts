@@ -7,19 +7,19 @@ import {
   useCreateBoard,
   useDeleteBoard,
   useUpdateBoard
-} from '../api/boards/queries';
+} from '../lib/api/boards/queries';
 import {
   useCreateProject,
   useDeleteProject,
   useProjects,
   useUpdateProject
-} from '../api/projects/queries';
+} from '../lib/api/projects/queries';
 import {
   useCreateTask,
   useDeleteTask,
   useTasks,
   useUpdateTask
-} from '../api/tasks/queries';
+} from '../lib/api/tasks/queries';
 
 interface State {
   // User state
@@ -352,9 +352,9 @@ export const useWorkspaceStore = create<State>()(
             taskId,
             taskToMove.title,
             taskToMove.status,
-            taskToMove.description,
+            taskToMove.description || undefined,
             taskToMove.dueDate ? new Date(taskToMove.dueDate) : undefined,
-            taskToMove.assignee?.id,
+            taskToMove.assignee?.id || undefined,
             newProjectId
           );
 

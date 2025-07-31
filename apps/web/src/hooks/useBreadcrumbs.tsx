@@ -2,7 +2,7 @@
 
 import { ROUTES } from '@/constants/routes';
 import { useBoard } from '@/lib/api/boards/queries';
-import { useWorkspaceStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
