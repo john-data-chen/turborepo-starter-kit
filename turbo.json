@@ -15,6 +15,11 @@
         ".next/**",
         "!.next/cache/**",
         "dist/**"
+      ],
+      "env": [
+        "JWT_SECRET",
+        "DATABASE_URL",
+        "NODE_ENV"
       ]
     },
     "lint": {
