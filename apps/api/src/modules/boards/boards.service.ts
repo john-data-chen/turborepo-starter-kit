@@ -1,14 +1,14 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { Board, BoardDocument } from "./schemas/boards.schema";
-import { CreateBoardDto } from "./dto/create-boards.dto";
-import { UpdateBoardDto } from "./dto/update-boards.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Board, BoardDocument } from './schemas/boards.schema';
+import { CreateBoardDto } from './dto/create-boards.dto';
+import { UpdateBoardDto } from './dto/update-boards.dto';
 
 @Injectable()
 export class BoardService {
   constructor(
-    @InjectModel(Board.name) private boardModel: Model<BoardDocument>,
+    @InjectModel(Board.name) private boardModel: Model<BoardDocument>
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
@@ -19,10 +19,10 @@ export class BoardService {
   async findAll(userId: string): Promise<Board[]> {
     return this.boardModel
       .find({
-        $or: [{ owner: userId }, { members: userId }],
+        $or: [{ owner: userId }, { members: userId }]
       })
-      .populate("owner", "name email")
-      .populate("members", "name email")
+      .populate('owner', 'name email')
+      .populate('members', 'name email')
       .exec();
   }
 
@@ -30,11 +30,11 @@ export class BoardService {
     const board = await this.boardModel
       .findOne({
         _id: id,
-        $or: [{ owner: userId }, { members: userId }],
+        $or: [{ owner: userId }, { members: userId }]
       })
-      .populate("owner", "name email")
-      .populate("members", "name email")
-      .populate("projects")
+      .populate('owner', 'name email')
+      .populate('members', 'name email')
+      .populate('projects')
       .exec();
 
     if (!board) {
@@ -47,13 +47,13 @@ export class BoardService {
   async update(
     id: string,
     updateBoardDto: UpdateBoardDto,
-    userId: string,
+    userId: string
   ): Promise<Board> {
     const board = await this.boardModel
       .findOneAndUpdate(
         { _id: id, owner: userId },
         { $set: updateBoardDto },
-        { new: true },
+        { new: true }
       )
       .exec();
 
@@ -78,13 +78,13 @@ export class BoardService {
   async addMember(
     boardId: string,
     userId: string,
-    memberId: string,
+    memberId: string
   ): Promise<Board> {
     const board = await this.boardModel
       .findOneAndUpdate(
         { _id: boardId, owner: userId },
         { $addToSet: { members: memberId } },
-        { new: true },
+        { new: true }
       )
       .exec();
 
@@ -98,13 +98,13 @@ export class BoardService {
   async removeMember(
     boardId: string,
     userId: string,
-    memberId: string,
+    memberId: string
   ): Promise<Board> {
     const board = await this.boardModel
       .findOneAndUpdate(
         { _id: boardId, owner: userId },
         { $pull: { members: memberId } },
-        { new: true },
+        { new: true }
       )
       .exec();
 

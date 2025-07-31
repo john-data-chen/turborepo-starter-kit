@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
-import { Project, ProjectDocument } from "./schemas/project.schema";
-import { ProjectPermissionsDto } from "./dto/project-permissions.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { Project, ProjectDocument } from './schemas/project.schema';
+import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -14,13 +14,15 @@ export class ProjectsService {
     projectId: string,
     userId: string
   ): Promise<ProjectPermissionsDto> {
-    const project = await this.projectModel
+    const project = (await this.projectModel
       .findById(projectId)
-      .populate<{ board: { owner: Types.ObjectId } }>("board", "owner")
-      .lean() as unknown as ProjectDocument & { board: { owner: Types.ObjectId } };
+      .populate<{ board: { owner: Types.ObjectId } }>('board', 'owner')
+      .lean()) as unknown as ProjectDocument & {
+      board: { owner: Types.ObjectId };
+    };
 
     if (!project) {
-      throw new NotFoundException("Project not found");
+      throw new NotFoundException('Project not found');
     }
 
     const projectOwnerId = project.owner.toString();
@@ -33,7 +35,7 @@ export class ProjectsService {
 
     return {
       canEditProject: canModify,
-      canDeleteProject: canModify,
+      canDeleteProject: canModify
     };
   }
 }

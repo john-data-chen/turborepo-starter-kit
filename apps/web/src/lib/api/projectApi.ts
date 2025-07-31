@@ -70,8 +70,9 @@ export const projectApi = {
 
   // Get project permissions for current user
   async getProjectPermissions(projectId: string) {
-    return fetchWithAuth<{ canEditProject: boolean; canDeleteProject: boolean }>(
-      `${PROJECTS_ENDPOINT}/${projectId}/permissions`
-    );
+    return fetchWithAuth<{
+      canEditProject: boolean;
+      canDeleteProject: boolean;
+    }>(`${PROJECTS_ENDPOINT}/${projectId}/permissions`);
   }
 };

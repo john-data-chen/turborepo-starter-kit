@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import type { UpdateTaskInput } from '@/types/taskApi';
 import {
   useDeleteTask,
   useTask,
@@ -34,6 +33,7 @@ import {
 } from '@/lib/api/tasks/queries';
 import { useUser } from '@/lib/api/users/queries';
 import { TaskStatus } from '@/types/dbInterface';
+import type { UpdateTaskInput } from '@/types/taskApi';
 import { TaskFormSchema } from '@/types/taskForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';

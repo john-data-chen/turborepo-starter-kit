@@ -5,42 +5,42 @@ import {
   OnModuleInit,
   OnModuleDestroy,
   Injectable,
-  Inject,
-} from "@nestjs/common";
+  Inject
+} from '@nestjs/common';
 import {
   MongooseModule,
   MongooseModuleOptions,
-  getConnectionToken,
-} from "@nestjs/mongoose";
-import { ConfigService } from "@nestjs/config";
-import mongoose from "mongoose";
+  getConnectionToken
+} from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DatabaseService.name);
 
   constructor(
-    @Inject("DATABASE_CONNECTION")
-    private readonly connection: mongoose.Connection,
+    @Inject('DATABASE_CONNECTION')
+    private readonly connection: mongoose.Connection
   ) {}
 
   async onModuleInit() {
-    this.connection.on("connected", () => {
-      this.logger.log("Successfully connected to MongoDB");
+    this.connection.on('connected', () => {
+      this.logger.log('Successfully connected to MongoDB');
     });
 
-    this.connection.on("error", (error: Error) => {
+    this.connection.on('error', (error: Error) => {
       this.logger.error(
         `MongoDB connection error: ${error.message}`,
-        error.stack,
+        error.stack
       );
     });
 
-    this.connection.on("disconnected", () => {
-      this.logger.warn("MongoDB disconnected");
+    this.connection.on('disconnected', () => {
+      this.logger.warn('MongoDB disconnected');
     });
 
-    process.on("SIGINT", this.gracefulShutdown.bind(this));
+    process.on('SIGINT', this.gracefulShutdown.bind(this));
   }
 
   async onModuleDestroy() {
@@ -50,10 +50,10 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private async gracefulShutdown() {
     try {
       await this.connection.close();
-      this.logger.log("MongoDB connection closed through app termination");
+      this.logger.log('MongoDB connection closed through app termination');
       process.exit(0);
     } catch (error) {
-      this.logger.error("Error closing MongoDB connection", error);
+      this.logger.error('Error closing MongoDB connection', error);
       process.exit(1);
     }
   }
@@ -64,18 +64,18 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async (
-        configService: ConfigService,
+        configService: ConfigService
       ): Promise<MongooseModuleOptions> => {
-        const _logger = new Logger("MongoDB");
-        const uri = configService.get<string>("DATABASE_URL");
+        const _logger = new Logger('MongoDB');
+        const uri = configService.get<string>('DATABASE_URL');
 
         if (!uri) {
           throw new Error(
-            "MongoDB connection string (DATABASE_URL) is not defined",
+            'MongoDB connection string (DATABASE_URL) is not defined'
           );
         }
 
-        const isProduction = configService.get("NODE_ENV") === "production";
+        const isProduction = configService.get('NODE_ENV') === 'production';
 
         return {
           uri,
@@ -88,20 +88,20 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
           retryReads: true,
           retryAttempts: 3,
           ssl: isProduction,
-          autoIndex: !isProduction,
+          autoIndex: !isProduction
         };
       },
-      inject: [ConfigService],
-    }),
+      inject: [ConfigService]
+    })
   ],
   providers: [
     {
-      provide: "DATABASE_CONNECTION",
+      provide: 'DATABASE_CONNECTION',
       useFactory: (connection: mongoose.Connection) => connection,
-      inject: [getConnectionToken()],
+      inject: [getConnectionToken()]
     },
-    DatabaseService,
+    DatabaseService
   ],
-  exports: [MongooseModule, "DATABASE_CONNECTION", DatabaseService],
+  exports: [MongooseModule, 'DATABASE_CONNECTION', DatabaseService]
 })
 export class DatabaseModule {}

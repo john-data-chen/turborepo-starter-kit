@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
-import { CreateTaskDto } from "./dto/create-task.dto";
-import { UpdateTaskDto } from "./dto/update-task.dto";
-import { TaskResponseDto } from "./dto/task-response.dto";
-import { TaskPermissionsDto } from "./dto/task-permissions.dto";
-import { Task, TaskDocument, TaskStatus } from "./schemas/task.schema";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { TaskPermissionsDto } from './dto/task-permissions.dto';
+import { Task, TaskDocument, TaskStatus } from './schemas/task.schema';
 
 @Injectable()
 export class TasksService {
@@ -24,7 +24,7 @@ export class TasksService {
       creator: task.creator.toString(),
       lastModifier: task.lastModifier.toString(),
       createdAt: task.createdAt,
-      updatedAt: task.updatedAt,
+      updatedAt: task.updatedAt
     };
   }
 
@@ -35,7 +35,7 @@ export class TasksService {
     const createdTask = new this.taskModel({
       ...createTaskDto,
       creator: userId,
-      lastModifier: userId,
+      lastModifier: userId
     });
 
     const savedTask = await createdTask.save();
@@ -58,9 +58,9 @@ export class TasksService {
 
     const tasks = await this.taskModel
       .find(query)
-      .populate("creator", "name email")
-      .populate("assignee", "name email")
-      .populate("project", "title")
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('project', 'title')
       .sort({ createdAt: -1 })
       .exec();
 
@@ -83,13 +83,13 @@ export class TasksService {
   ): Promise<TaskPermissionsDto> {
     const task = await this.taskModel
       .findById(taskId)
-      .populate("creator", "_id")
-      .populate("board", "owner")
-      .populate("project", "owner")
+      .populate('creator', '_id')
+      .populate('board', 'owner')
+      .populate('project', 'owner')
       .lean();
 
     if (!task) {
-      throw new NotFoundException("Task not found");
+      throw new NotFoundException('Task not found');
     }
 
     const board = task.board as unknown as { owner: Types.ObjectId };
@@ -118,13 +118,13 @@ export class TasksService {
         {
           ...updateTaskDto,
           lastModifier: userId,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         },
         { new: true }
       )
-      .populate("creator", "name email")
-      .populate("assignee", "name email")
-      .populate("project", "title")
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('project', 'title')
       .exec();
 
     if (!updatedTask) {
@@ -152,13 +152,13 @@ export class TasksService {
         {
           status,
           lastModifier: userId,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         },
         { new: true }
       )
-      .populate("creator", "name email")
-      .populate("assignee", "name email")
-      .populate("project", "title")
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('project', 'title')
       .exec();
 
     if (!updatedTask) {

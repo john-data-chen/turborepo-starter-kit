@@ -23,9 +23,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { projectApi } from '@/lib/api/projectApi';
 import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
-import { projectApi } from '@/lib/api/projectApi';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
@@ -68,7 +68,7 @@ export function ProjectActions({
       setPermissions({ canEditProject: false, canDeleteProject: false });
       return;
     }
-    
+
     setIsLoadingPermissions(true);
     try {
       const permissions = await projectApi.getProjectPermissions(id);

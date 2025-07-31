@@ -1,6 +1,10 @@
 import { API_URL } from '@/constants/routes';
 import { Task, TaskStatus } from '@/types/dbInterface';
-import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from '@/types/taskApi';
+import {
+  CreateTaskInput,
+  TaskPermissions,
+  UpdateTaskInput
+} from '@/types/taskApi';
 
 // API Endpoint
 const TASKS_ENDPOINT = `${API_URL}/tasks`;
@@ -40,10 +44,10 @@ export const taskApi = {
     const params = new URLSearchParams();
     if (projectId) params.append('projectId', projectId);
     if (assigneeId) params.append('assigneeId', assigneeId);
-    
+
     const query = params.toString();
     const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT;
-    
+
     return fetchWithAuth(url);
   },
 
@@ -76,7 +80,7 @@ export const taskApi = {
   // Delete a task
   async deleteTask(id: string): Promise<void> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE'
     });
   },
 

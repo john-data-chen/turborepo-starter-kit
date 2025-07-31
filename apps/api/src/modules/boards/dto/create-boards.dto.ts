@@ -3,8 +3,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsArray,
-  IsMongoId,
-} from "class-validator";
+  IsMongoId
+} from 'class-validator';
 
 export class CreateBoardDto {
   @IsString()

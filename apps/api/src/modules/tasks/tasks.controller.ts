@@ -9,132 +9,132 @@ import {
   Query,
   UseGuards,
   Req,
-  ParseUUIDPipe,
-} from "@nestjs/common";
+  ParseUUIDPipe
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
-  ApiTags,
-} from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { TasksService } from "./tasks.service";
-import { CreateTaskDto } from "./dto/create-task.dto";
-import { UpdateTaskDto } from "./dto/update-task.dto";
-import { TaskResponseDto } from "./dto/task-response.dto";
-import { TaskStatus } from "./schemas/task.schema";
-import { TaskPermissionsDto } from "./dto/task-permissions.dto";
+  ApiTags
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TasksService } from './tasks.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { TaskStatus } from './schemas/task.schema';
+import { TaskPermissionsDto } from './dto/task-permissions.dto';
 
-@ApiTags("tasks")
+@ApiTags('tasks')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller("tasks")
+@Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  @ApiOperation({ summary: "Create a new task" })
+  @ApiOperation({ summary: 'Create a new task' })
   @ApiResponse({
     status: 201,
-    description: "Task created successfully",
-    type: TaskResponseDto,
+    description: 'Task created successfully',
+    type: TaskResponseDto
   })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req,
+    @Req() req
   ): Promise<TaskResponseDto> {
     return this.tasksService.create(createTaskDto, req.user.userId);
   }
 
   @Get()
   @ApiOperation({
-    summary: "Get all tasks (optionally filtered by project or assignee)",
+    summary: 'Get all tasks (optionally filtered by project or assignee)'
   })
   @ApiResponse({
     status: 200,
-    description: "List of tasks",
-    type: [TaskResponseDto],
+    description: 'List of tasks',
+    type: [TaskResponseDto]
   })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   findAll(
-    @Query("projectId") projectId?: string,
-    @Query("assigneeId") assigneeId?: string,
+    @Query('projectId') projectId?: string,
+    @Query('assigneeId') assigneeId?: string
   ): Promise<TaskResponseDto[]> {
     return this.tasksService.findAll(projectId, assigneeId);
   }
 
-  @Get(":id")
-  @ApiOperation({ summary: "Get a task by ID" })
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a task by ID' })
   @ApiResponse({
     status: 200,
-    description: "Task found",
-    type: TaskResponseDto,
+    description: 'Task found',
+    type: TaskResponseDto
   })
-  @ApiResponse({ status: 404, description: "Task not found" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  findOne(@Param("id", ParseUUIDPipe) id: string): Promise<TaskResponseDto> {
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<TaskResponseDto> {
     return this.tasksService.findOne(id);
   }
 
-  @Patch(":id")
-  @ApiOperation({ summary: "Update a task" })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a task' })
   @ApiResponse({
     status: 200,
-    description: "Task updated",
-    type: TaskResponseDto,
+    description: 'Task updated',
+    type: TaskResponseDto
   })
-  @ApiResponse({ status: 404, description: "Task not found" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   update(
-    @Param("id", ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Req() req,
+    @Req() req
   ): Promise<TaskResponseDto> {
     return this.tasksService.update(id, updateTaskDto, req.user.userId);
   }
 
-  @Delete(":id")
-  @ApiOperation({ summary: "Delete a task" })
-  @ApiResponse({ status: 200, description: "Task deleted successfully" })
-  @ApiResponse({ status: 404, description: "Task not found" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  remove(@Param("id", ParseUUIDPipe) id: string): Promise<void> {
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a task' })
+  @ApiResponse({ status: 200, description: 'Task deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.tasksService.remove(id);
   }
 
-  @Get(":id/permissions")
-  @ApiOperation({ summary: "Check user permissions for a task" })
+  @Get(':id/permissions')
+  @ApiOperation({ summary: 'Check user permissions for a task' })
   @ApiResponse({
     status: 200,
-    description: "Task permissions retrieved successfully",
-    type: TaskPermissionsDto,
+    description: 'Task permissions retrieved successfully',
+    type: TaskPermissionsDto
   })
-  @ApiResponse({ status: 404, description: "Task not found" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getTaskPermissions(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Req() req,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req
   ): Promise<TaskPermissionsDto> {
     return this.tasksService.checkTaskPermissions(id, req.user.userId);
   }
 
-  @Patch(":id/status")
-  @ApiOperation({ summary: "Update task status" })
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Update task status' })
   @ApiResponse({
     status: 200,
-    description: "Task status updated",
-    type: TaskResponseDto,
+    description: 'Task status updated',
+    type: TaskResponseDto
   })
-  @ApiResponse({ status: 404, description: "Task not found" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   updateStatus(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Body("status") status: TaskStatus,
-    @Req() req,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('status') status: TaskStatus,
+    @Req() req
   ): Promise<TaskResponseDto> {
     return this.tasksService.updateStatus(id, status, req.user.userId);
   }
