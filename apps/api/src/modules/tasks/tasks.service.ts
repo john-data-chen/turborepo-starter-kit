@@ -5,7 +5,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
-import { Task, TaskDocument, TaskStatus } from './schemas/task.schema';
+import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 
 @Injectable()
 export class TasksService {

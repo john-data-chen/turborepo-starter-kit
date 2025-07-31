@@ -17,13 +17,27 @@ export class BoardService {
   }
 
   async findAll(userId: string): Promise<Board[]> {
-    return this.boardModel
-      .find({
-        $or: [{ owner: userId }, { members: userId }]
-      })
+    console.log(`Finding boards for user: ${userId}`);
+
+    const query = {
+      $or: [{ owner: userId }, { members: userId }]
+    };
+
+    console.log('MongoDB query:', JSON.stringify(query));
+
+    const boards = await this.boardModel
+      .find(query)
       .populate('owner', 'name email')
       .populate('members', 'name email')
+      .lean()
       .exec();
+
+    console.log(`Found ${boards.length} boards for user ${userId}`);
+    if (boards.length > 0) {
+      console.log('Sample board:', JSON.stringify(boards[0]));
+    }
+
+    return boards;
   }
 
   async findOne(id: string, userId: string): Promise<Board> {

@@ -78,7 +78,7 @@ export class Task {
     description: 'The ID of the user who created the task',
     example: '507f1f77bcf86cd799439011'
   })
-  createdBy: Types.ObjectId;
+  creator: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({

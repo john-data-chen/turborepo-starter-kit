@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Project, ProjectDocument } from './schemas/project.schema';
+import { Project, ProjectDocument } from './schemas/projects.schema';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 
 @Injectable()

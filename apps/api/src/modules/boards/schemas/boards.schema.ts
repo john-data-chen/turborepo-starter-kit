@@ -5,10 +5,10 @@ export type BoardDocument = Board & Document;
 
 @Schema({ timestamps: true })
 export class Board {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   title: string;
 
-  @Prop()
+  @Prop({ type: String })
   description?: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
