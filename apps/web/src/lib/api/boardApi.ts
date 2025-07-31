@@ -10,24 +10,50 @@ async function fetchWithAuth<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const response = await fetch(url, {
-    ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
-    }
-  });
+  try {
+    console.log(`Fetching from ${url}`);
+    const response = await fetch(url, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    });
 
-  if (!response.ok) {
-    const error = await response.text().catch(() => 'Request failed');
-    if (typeof window !== 'undefined' && response.status === 401) {
-      // Handle unauthorized (e.g., redirect to login)
+    console.log(`Response status: ${response.status} ${response.statusText}`);
+
+    const responseText = await response.text();
+    console.log('Response data:', responseText);
+
+    if (!response.ok) {
+      let errorMessage = 'Request failed';
+      try {
+        const errorData = responseText ? JSON.parse(responseText) : {};
+        errorMessage =
+          errorData.message || response.statusText || 'Request failed';
+      } catch (parseError) {
+        console.error('Error parsing error response:', parseError);
+        errorMessage = responseText || 'Request failed';
+      }
+
+      if (typeof window !== 'undefined' && response.status === 401) {
+        console.error('Authentication error - redirecting to login');
+        // Handle unauthorized (e.g., redirect to login)
+        window.location.href = '/login';
+      }
+
+      throw new Error(errorMessage);
     }
-    throw new Error(error || 'Request failed');
+
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+    return JSON.parse(responseText) as T;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
   }
-
-  return response.json();
 }
 
 /**
