@@ -52,7 +52,7 @@ export const BoardActions = React.forwardRef<
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { updateBoard, removeBoard } = useWorkspaceStore();
   const router = useRouter();
-  const { fetchBoards } = useBoards();
+  const { refresh } = useBoards();
   const t = useTranslations('kanban.actions');
 
   async function onSubmit(values: z.infer<typeof boardSchema>) {
@@ -60,7 +60,7 @@ export const BoardActions = React.forwardRef<
       setIsSubmitting(true);
       await updateBoard(board._id, values);
       toast.success(t('boardUpdated', { title: values.title }));
-      await fetchBoards();
+      await refresh();
       setEditEnable(false);
       router.refresh();
     } catch (error) {
@@ -76,7 +76,7 @@ export const BoardActions = React.forwardRef<
       setShowDeleteDialog(false);
       toast.success(t('boardDeleted'));
       onDelete?.();
-      await fetchBoards();
+      await refresh();
       router.refresh();
     } catch (error) {
       toast.error(t('boardDeleteFailed', { error: String(error) }));

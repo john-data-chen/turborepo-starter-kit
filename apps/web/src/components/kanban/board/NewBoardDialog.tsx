@@ -29,7 +29,7 @@ type BoardFormData = z.infer<typeof boardSchema>;
 export default function NewBoardDialog({ children }: NewBoardDialogProps) {
   const [open, setOpen] = useState(false);
   const { addBoard } = useWorkspaceStore();
-  const { fetchBoards } = useBoards();
+  const { refresh } = useBoards();
   const router = useRouter();
   const t = useTranslations('kanban.actions');
 
@@ -38,7 +38,7 @@ export default function NewBoardDialog({ children }: NewBoardDialogProps) {
       const boardId = await addBoard(data.title, data.description);
       toast.success(t('boardCreatedSuccess'));
       setOpen(false);
-      await fetchBoards();
+      await refresh();
       router.push(`/boards/${boardId}`);
     } catch (error) {
       console.error(error);
