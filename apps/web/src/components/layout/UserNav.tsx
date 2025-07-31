@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAuthStore } from '@/lib/stores/auth-store';
+import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from 'next-intl';
 
 export function UserNav() {
-  const { user, logout, isLoading } = useAuthStore();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const t = useTranslations('user');
 
   // While loading, show a placeholder to prevent flicker
@@ -23,7 +23,7 @@ export function UserNav() {
   }
 
   // If the user is logged in, show the avatar and dropdown menu
-  if (user) {
+  if (isAuthenticated && user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

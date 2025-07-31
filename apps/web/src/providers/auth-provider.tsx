@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/lib/stores/auth-store';
+import { useAuth } from '@/hooks/useAuth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -16,8 +16,11 @@ const queryClient = new QueryClient({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // Sync auth store with session
-  useAuthStore();
+  // Initialize auth state when the provider mounts
+  useAuth();
+
+  // The useAuth hook automatically initializes the auth state
+  // No need for manual initialization
 
   return (
     <QueryClientProvider client={queryClient}>

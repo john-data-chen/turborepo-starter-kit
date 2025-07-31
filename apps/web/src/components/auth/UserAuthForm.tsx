@@ -10,12 +10,36 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import useAuthForm from '@/hooks/useAuthForm';
+import { defaultEmail } from '@/constants/demoData';
+import { useAuth } from '@/hooks/useAuth';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('Invalid email address')
+});
 
 export default function UserAuthForm() {
-  const { form, loading, onSubmit } = useAuthForm();
+  const { login, isLoading: _isLoading, error: _error } = useAuth();
   const t = useTranslations('login');
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: defaultEmail
+    }
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await login(values.email);
+    } catch (err) {
+      // Error is already handled by the useAuth hook
+      console.error('Login error:', err);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -35,7 +59,7 @@ export default function UserAuthForm() {
                 <Input
                   type="email"
                   placeholder={t('emailPlaceholder')}
-                  disabled={loading}
+                  disabled={_isLoading}
                   data-testid="email-input"
                   {...field}
                 />
@@ -46,12 +70,16 @@ export default function UserAuthForm() {
         />
 
         <Button
-          disabled={loading}
-          className="ml-auto w-full"
           type="submit"
+          className="w-full"
+          disabled={_isLoading}
           data-testid="submit-button"
         >
-          {t('continueButton')}
+          {_isLoading ? (
+            <div className="h-4 w-4 animate-spin" />
+          ) : (
+            t('continueButton')
+          )}
         </Button>
       </form>
     </Form>

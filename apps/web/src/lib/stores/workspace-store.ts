@@ -1,9 +1,8 @@
+import { useAuth } from '@/hooks/useAuth';
 import { Board, Project } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-// Import API hooks
-import { useSession } from '../api/auth/queries';
 import {
   useCreateBoard,
   useDeleteBoard,
@@ -108,16 +107,14 @@ export const useWorkspaceStore = create<State>()(
       },
 
       // User actions
-      setUserInfo: (email: string) => {
-        const { data: session } = useSession();
-
-        if (session?.user) {
+      setUserInfo: (email: string, userId?: string) => {
+        if (userId) {
           set({
-            userEmail: session.user.email,
-            userId: session.user.id
+            userEmail: email,
+            userId: userId
           });
         } else {
-          // Fallback to just setting the email if session data isn't available
+          // Fallback to just setting the email if user ID isn't available
           set({ userEmail: email });
         }
       },
@@ -392,8 +389,8 @@ export const useWorkspaceStore = create<State>()(
 
           if (newBoard) {
             // Add to myBoards since the current user is the owner
-            const session = useSession();
-            const currentUser = session.data?.user;
+            const session = useAuth();
+            const currentUser = session.user;
 
             if (!currentUser) {
               throw new Error('User session not found');
