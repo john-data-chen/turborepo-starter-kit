@@ -10,9 +10,9 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Board, BoardSchema } from '@/modules/boards/schemas/board.schema';
-import { Project, ProjectSchema } from '@/modules/projects/schemas/project.schema';
-import { Task, TaskSchema } from '@/modules/tasks/schemas/task.schema';
+import { Board, BoardSchema } from '@/modules/boards/schemas/boards.schema';
+import { Project, ProjectSchema } from '@/modules/projects/schemas/projects.schema';
+import { Task, TaskSchema } from '@/modules/tasks/schemas/tasks.schema';
 import { User, UserSchema } from '@/modules/users/schemas/users.schema';
 import { demoProjects, demoTasks, demoUsers, demoBoards } from '@/constants/demoData';
 import readline from 'readline';
@@ -142,15 +142,17 @@ async function main() {
       throw new Error('No users were created. Cannot proceed without users.');
     }
     // Mongoose documents store the actual data in _doc and add methods/properties
-    const firstUserDoc = createdUsers[0]._doc || createdUsers[0];
+    const markDoc = createdUsers[2]._doc || createdUsers[2]; // Mark.S
+    const johnDoc = createdUsers[0]._doc || createdUsers[0]; // John.Doe
+    const janeDoc = createdUsers[1]._doc || createdUsers[1]; // Jane.Doe`
     // Get the _id from the document
-    const userId = firstUserDoc._id;
+    const markId = markDoc._id;
+    const johnId = johnDoc._id;
+    const janeId = janeDoc._id;
     // Ensure we have a valid user ID
-    if (!userId) {
+    if (!markId) {
       throw new Error('First user does not have an _id field');
     }
-    // Convert to string to ensure it's in the correct format
-    const defaultUserId = userId.toString();
 
     // Insert demo boards with default owner first (needed for project references)
     console.log('\x1b[36mInserting demo boards...\x1b[0m');
@@ -159,25 +161,53 @@ async function main() {
       const boardData = {
         title: board.title,
         description: board.description || '',
-        owner: defaultUserId,
-        members: [defaultUserId],
+        owner: markId,
+        members: [markId],
         projects: [], // Will be updated after projects are created
         createdAt: currentDate,
         updatedAt: currentDate,
       };
       return boardData;
     });
+    boardsWithOwner[1].owner = johnId;
+    boardsWithOwner[1].members = [johnId];
+    boardsWithOwner[2].owner = janeId;
+    boardsWithOwner[2].members = [janeId];
+    boardsWithOwner[3].owner = johnId;
+    boardsWithOwner[3].members = [johnId, markId, janeId];
     const createdBoards = await boardModel.insertMany(boardsWithOwner);
     const defaultBoardId = createdBoards[0]._id;
 
     // Insert demo projects with required fields
     console.log('\x1b[36mInserting demo projects...\x1b[0m');
-    const projectsWithDefaults = demoProjects.map((project) => ({
-      ...project,
-      owner: defaultUserId,
-      members: [defaultUserId],
-      board: defaultBoardId, // Assign all projects to the first board by default
-    }));
+    
+    // Create projects with proper owner and member assignments
+    const projectsWithDefaults = [
+      {
+        ...demoProjects[0],
+        owner: markId,
+        members: [markId],
+        board: defaultBoardId,
+      },
+      {
+        ...demoProjects[1],
+        owner: johnId,
+        members: [johnId],
+        board: createdBoards[3]._id,
+      },
+      {
+        ...demoProjects[2],
+        owner: janeId,
+        members: [janeId],
+        board: createdBoards[3]._id,
+      },
+      {
+        ...demoProjects[3],
+        owner: johnId,
+        members: [johnId, markId, janeId],
+        board: createdBoards[3]._id,
+      }
+    ];
     const createdProjects = await projectModel.insertMany(projectsWithDefaults);
     const defaultProjectId = createdProjects[0]._id;
 
@@ -197,11 +227,19 @@ async function main() {
       ...task,
       project: defaultProjectId, // Assign to first project
       board: defaultBoardId,     // Assign to first board
-      assignee: defaultUserId,
-      createdBy: defaultUserId,
-      lastModifier: defaultUserId, // Add required lastModifier field
-      updatedBy: defaultUserId,
+      assignee: markId,
+      creator: markId,
+      lastModifier: markId, // Add required lastModifier field
+      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
     }));
+    tasksWithDefaults[1].assignee = janeId;
+    tasksWithDefaults[1].creator = janeId;
+    tasksWithDefaults[1].lastModifier = janeId;
+    tasksWithDefaults[1].dueDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+    tasksWithDefaults[2].assignee = johnId;
+    tasksWithDefaults[2].creator = johnId;
+    tasksWithDefaults[2].lastModifier = johnId;
+    tasksWithDefaults[2].dueDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
     await taskModel.insertMany(tasksWithDefaults);
 
     console.log('\x1b[32mDatabase initialized successfully!\x1b[0m');
