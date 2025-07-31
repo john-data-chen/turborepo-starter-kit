@@ -3,14 +3,14 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
-import { UserModule } from "../users/users.module";
+import { UsersModule } from "../users/users.module";
 import { EmailStrategy } from "./strategies/email.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
-    UserModule, // Ensure UserService is available for injection
+    UsersModule, // Ensure UserService is available for injection
     PassportModule.register({ defaultStrategy: "jwt" }), // Set default strategy
     JwtModule.registerAsync({
       imports: [ConfigModule],

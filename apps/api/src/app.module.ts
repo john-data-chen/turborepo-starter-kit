@@ -5,6 +5,10 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { DatabaseModule } from "./modules/database/database.module";
 import { AuthModule } from "./modules/auth/auth.module";
+import { BoardsModule } from "./modules/boards/boards.module";
+import { ProjectsModule } from "./modules/projects/projects.module";
+import { TasksModule } from "./modules/tasks/tasks.module";
+import { UsersModule } from "./modules/users/users.module";
 
 @Module({
   imports: [
@@ -14,11 +18,12 @@ import { AuthModule } from "./modules/auth/auth.module";
       envFilePath: ".env",
     }),
 
-    // Database module with MongoDB connection
     DatabaseModule,
-
-    // Auth module
     AuthModule,
+    BoardsModule,
+    ProjectsModule,
+    TasksModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -33,7 +38,7 @@ export class AppModule implements NestModule {
         // Log all incoming requests
         const { method, originalUrl, body } = req;
         this.logger.log(
-          `[${new Date().toISOString()}] ${method} ${originalUrl}`,
+          `[${new Date().toISOString()}] ${method} ${originalUrl}`
         );
 
         if (Object.keys(body || {}).length > 0) {
@@ -45,7 +50,7 @@ export class AppModule implements NestModule {
         res.on("finish", () => {
           const duration = Date.now() - start;
           this.logger.log(
-            `[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`,
+            `[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`
           );
         });
 
