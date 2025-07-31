@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
+import { projectApi } from '@/lib/api/projectApi';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
@@ -64,21 +65,17 @@ export function ProjectActions({
   async function fetchProjectPermissions() {
     if (!id) {
       setIsLoadingPermissions(false);
-      setPermissions({ canEditProject: false, canDeleteProject: false }); // Default to no permissions if no ID
+      setPermissions({ canEditProject: false, canDeleteProject: false });
       return;
     }
+    
     setIsLoadingPermissions(true);
     try {
-      const response = await fetch(`/api/projects/${id}/permissions`);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || t('fetchPermissionsFailed'));
-      }
-      const data = await response.json();
-      setPermissions(data);
+      const permissions = await projectApi.getProjectPermissions(id);
+      setPermissions(permissions);
     } catch (error) {
       console.error('Error fetching project permissions:', error);
-      setPermissions({ canEditProject: false, canDeleteProject: false }); // Fallback on error
+      setPermissions({ canEditProject: false, canDeleteProject: false });
       toast.error(
         t('loadPermissionsFailed', { error: (error as Error).message })
       );

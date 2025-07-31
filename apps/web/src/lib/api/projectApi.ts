@@ -63,8 +63,15 @@ export const projectApi = {
 
   // Delete a project
   async deleteProject(id: string): Promise<void> {
-    await fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
+    return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
       method: 'DELETE'
     });
+  },
+
+  // Get project permissions for current user
+  async getProjectPermissions(projectId: string) {
+    return fetchWithAuth<{ canEditProject: boolean; canDeleteProject: boolean }>(
+      `${PROJECTS_ENDPOINT}/${projectId}/permissions`
+    );
   }
 };
