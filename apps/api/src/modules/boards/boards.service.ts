@@ -39,22 +39,178 @@ export class BoardService {
       console.log('[BoardService] MongoDB query:', JSON.stringify(query));
 
       // First, find boards where user is the owner
-      const ownedBoards = await this.boardModel
-        .find({ owner: new Types.ObjectId(userId) })
-        .lean()
-        .exec();
+      const ownedBoards = await this.boardModel.aggregate([
+        { $match: { owner: new Types.ObjectId(userId) } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'owner',
+            foreignField: '_id',
+            as: 'owner'
+          }
+        },
+        { $unwind: '$owner' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'members',
+            foreignField: '_id',
+            as: 'members'
+          }
+        },
+        {
+          $lookup: {
+            from: 'projects',
+            localField: 'projects',
+            foreignField: '_id',
+            as: 'projects',
+            pipeline: [
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'owner',
+                  foreignField: '_id',
+                  as: 'owner'
+                }
+              },
+              { $unwind: '$owner' },
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'members',
+                  foreignField: '_id',
+                  as: 'members'
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  title: 1,
+                  description: 1,
+                  owner: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  },
+                  members: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            owner: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            members: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            projects: 1
+          }
+        }
+      ]);
       console.log(
         `[BoardService] Found ${ownedBoards.length} boards where user is owner`
       );
 
       // Then find boards where user is a member
-      const memberBoards = await this.boardModel
-        .find({
-          _id: { $nin: ownedBoards.map((b) => b._id) }, // Exclude already found boards
-          members: new Types.ObjectId(userId)
-        })
-        .lean()
-        .exec();
+      const memberBoards = await this.boardModel.aggregate([
+        {
+          $match: {
+            _id: { $nin: ownedBoards.map((b) => b._id) },
+            members: new Types.ObjectId(userId)
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'owner',
+            foreignField: '_id',
+            as: 'owner'
+          }
+        },
+        { $unwind: '$owner' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'members',
+            foreignField: '_id',
+            as: 'members'
+          }
+        },
+        {
+          $lookup: {
+            from: 'projects',
+            localField: 'projects',
+            foreignField: '_id',
+            as: 'projects',
+            pipeline: [
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'owner',
+                  foreignField: '_id',
+                  as: 'owner'
+                }
+              },
+              { $unwind: '$owner' },
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'members',
+                  foreignField: '_id',
+                  as: 'members'
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  title: 1,
+                  description: 1,
+                  owner: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  },
+                  members: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            owner: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            members: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            projects: 1
+          }
+        }
+      ]);
       console.log(
         `[BoardService] Found ${memberBoards.length} boards where user is member`
       );
@@ -71,6 +227,7 @@ export class BoardService {
                 _id: board._id,
                 title: board.title,
                 owner: board.owner,
+                projects: board.projects,
                 members: board.members
               },
               null,
@@ -98,19 +255,96 @@ export class BoardService {
         throw new NotFoundException('Invalid board or user ID format');
       }
 
-      const board = await this.boardModel
-        .findOne({
-          _id: new Types.ObjectId(id),
-          $or: [
-            { owner: new Types.ObjectId(userId) },
-            { members: new Types.ObjectId(userId) }
-          ]
-        })
-        .populate('owner', 'name email')
-        .populate('members', 'name email')
-        .populate('projects')
-        .lean()
-        .exec();
+      const [board] = await this.boardModel.aggregate([
+        {
+          $match: {
+            _id: new Types.ObjectId(id),
+            $or: [
+              { owner: new Types.ObjectId(userId) },
+              { members: new Types.ObjectId(userId) }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'owner',
+            foreignField: '_id',
+            as: 'owner'
+          }
+        },
+        { $unwind: '$owner' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'members',
+            foreignField: '_id',
+            as: 'members'
+          }
+        },
+        {
+          $lookup: {
+            from: 'projects',
+            localField: 'projects',
+            foreignField: '_id',
+            as: 'projects',
+            pipeline: [
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'owner',
+                  foreignField: '_id',
+                  as: 'owner'
+                }
+              },
+              { $unwind: '$owner' },
+              {
+                $lookup: {
+                  from: 'users',
+                  localField: 'members',
+                  foreignField: '_id',
+                  as: 'members'
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  title: 1,
+                  description: 1,
+                  owner: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  },
+                  members: {
+                    _id: 1,
+                    name: 1,
+                    email: 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            owner: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            members: {
+              _id: 1,
+              name: 1,
+              email: 1
+            },
+            projects: 1
+          }
+        },
+        { $limit: 1 }
+      ]);
 
       if (!board) {
         console.log(`[BoardService] Board not found or access denied: ${id}`);
