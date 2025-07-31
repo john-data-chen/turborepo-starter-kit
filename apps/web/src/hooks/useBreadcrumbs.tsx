@@ -1,12 +1,11 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
-import { fetchBoardsFromDb } from '@/lib/db/board';
-import { useTaskStore } from '@/lib/stores/workspace-store';
-import { Board } from '@/types/dbInterface';
+import { useBoard } from '@/lib/api/boards/queries';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 type BreadcrumbItem = {
   title: string;
@@ -18,27 +17,23 @@ export function useBreadcrumbs() {
   const params = useParams();
   const t = useTranslations('sidebar');
   const boardId = params.boardId as string;
-  const [board, setBoard] = useState<Board | null>(null);
-  const userEmail = useTaskStore((state) => state.userEmail);
 
-  useEffect(() => {
-    async function fetchBoard() {
-      if (!boardId || !userEmail) return;
-      try {
-        const boards = await fetchBoardsFromDb(userEmail);
-        const currentBoard = boards.find((b) => b._id === boardId);
-        if (currentBoard) {
-          setBoard(currentBoard);
-        }
-      } catch (error) {
-        console.error('Failed to fetch board:', error);
-      }
-    }
+  // Use the useBoard hook to fetch the current board
+  const {
+    data: board,
+    isLoading: _isLoading,
+    error: _error
+  } = useBoard(boardId);
 
-    if (boardId) {
-      fetchBoard();
+  // Update the workspace store with the current board ID
+  const { setCurrentBoardId } = useWorkspaceStore();
+
+  // Update the current board ID in the workspace store when it changes
+  useMemo(() => {
+    if (board?._id) {
+      setCurrentBoardId(board._id);
     }
-  }, [boardId, userEmail]);
+  }, [board?._id, setCurrentBoardId]);
 
   const items: BreadcrumbItem[] = [
     {
