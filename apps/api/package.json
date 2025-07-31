@@ -31,7 +31,7 @@
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.6.1",
-    "mongoose": "^8.16.5",
+    "mongoose": "^8.17.0",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
@@ -42,8 +42,8 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.8",
-    "@nestjs/schematics": "^11.0.5",
+    "@nestjs/cli": "^11.0.9",
+    "@nestjs/schematics": "^11.0.6",
     "@nestjs/testing": "^11.1.5",
     "@rspack/cli": "^1.4.10",
     "@rspack/core": "^1.4.10",
