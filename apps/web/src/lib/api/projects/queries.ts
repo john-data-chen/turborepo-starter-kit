@@ -1,5 +1,6 @@
+import { PROJECT_KEYS } from '@/types/projectApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { PROJECT_KEYS, projectApi } from '../projects';
+import { projectApi } from '../projectApi';
 
 export const useProjects = (boardId?: string) => {
   return useQuery({

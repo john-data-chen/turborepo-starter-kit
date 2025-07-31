@@ -1,19 +1,8 @@
 import { API_URL } from '@/constants/routes';
 import { Project } from '@/types/dbInterface';
+import { CreateProjectInput, UpdateProjectInput } from '@/types/projectApi';
 
-// Types
-export interface CreateProjectInput {
-  title: string;
-  description?: string;
-  boardId: string;
-}
-
-export interface UpdateProjectInput {
-  title?: string;
-  description?: string | null;
-}
-
-// API Endpoints
+// API Endpoint
 const PROJECTS_ENDPOINT = `${API_URL}/projects`;
 
 // Helper function to handle fetch requests
@@ -41,6 +30,10 @@ async function fetchWithAuth<T>(
   return response.json();
 }
 
+/**
+ * API client for project-related operations
+ * This should be used by React Query hooks, not directly in components
+ */
 export const projectApi = {
   // Get all projects for a board
   async getProjects(boardId: string): Promise<Project[]> {
@@ -74,16 +67,4 @@ export const projectApi = {
       method: 'DELETE'
     });
   }
-};
-
-// Query and Mutation Keys
-export const PROJECT_KEYS = {
-  all: ['projects'] as const,
-  lists: () => [...PROJECT_KEYS.all, 'list'] as const,
-  list: (boardId?: string) =>
-    boardId
-      ? ([...PROJECT_KEYS.lists(), { board: boardId }] as const)
-      : ([...PROJECT_KEYS.lists()] as const),
-  details: () => [...PROJECT_KEYS.all, 'detail'] as const,
-  detail: (id: string) => [...PROJECT_KEYS.details(), id] as const
 };

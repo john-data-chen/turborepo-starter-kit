@@ -1,18 +1,14 @@
-// Re-export everything from the main projects API file
-export * from '../projects';
+// Core API client
+export { projectApi } from '../projectApi';
 
-// Re-export all queries and mutations
-export * from './queries';
+// Types and constants
+export type {
+  CreateProjectInput,
+  UpdateProjectInput
+} from '@/types/projectApi';
+export { PROJECT_KEYS } from '@/types/projectApi';
 
-// Export the project API client and types
-export {
-  projectApi,
-  PROJECT_KEYS,
-  type CreateProjectInput,
-  type UpdateProjectInput
-} from '../projects';
-
-// Explicitly export all query hooks for better IDE support
+// Query and mutation hooks
 export {
   useProjects,
   useProject,
