@@ -15,10 +15,32 @@
         ".next/**",
         "!.next/cache/**",
         "dist/**"
+      ]
+    },
+    "web#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
       ],
       "env": [
-        "JWT_SECRET",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "NODE_ENV"
+      ]
+    },
+    "api#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "env": [
         "DATABASE_URL",
+        "JWT_SECRET",
         "NODE_ENV"
       ]
     },
