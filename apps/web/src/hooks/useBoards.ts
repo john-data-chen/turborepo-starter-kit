@@ -1,63 +1,61 @@
 'use client';
 
-import { fetchBoardsFromDb } from '@/lib/db/board';
-import { useTaskStore } from '@/lib/store';
+import { useBoards as useApiBoards } from '@/lib/api/boards/queries';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Board } from '@/types/dbInterface';
-// Assuming Board type is needed for setMyBoards/setTeamBoards
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function useBoards() {
-  const [loading, setLoading] = useState(true);
-  const {
-    userEmail,
-    userId,
-    myBoards, // Zustand state
-    teamBoards, // Zustand state
-    setMyBoards, // Zustand action
-    setTeamBoards // Zustand action
-  } = useTaskStore();
+  const { userId } = useWorkspaceStore();
+  const { data, isLoading, error, refetch } = useApiBoards();
 
-  const fetchBoards = useCallback(async () => {
-    if (!userEmail) {
-      setMyBoards([]); // If no userEmail, clear boards
-      setTeamBoards([]);
-      setLoading(false); // And set loading to false
-      return;
+  // Split boards into myBoards and teamBoards based on ownership
+  const { myBoards, teamBoards } = useMemo(() => {
+    if (!data) {
+      return { myBoards: [], teamBoards: [] };
     }
-    setLoading(true);
-    try {
-      const boardsFromDB = await fetchBoardsFromDb(userEmail); // Renamed to avoid conflict
 
-      const userMyBoards: Board[] = [];
-      const userTeamBoards: Board[] = [];
-
-      boardsFromDB.forEach((board) => {
-        // Ensure board.owner and board.owner.id exist before comparing
-        if (
-          board.owner &&
-          typeof board.owner !== 'string' &&
-          board.owner.id === userId
-        ) {
-          userMyBoards.push(board);
-        } else {
-          userTeamBoards.push(board);
-        }
-      });
-
-      setMyBoards(userMyBoards);
-      setTeamBoards(userTeamBoards);
-    } catch (error) {
-      console.error('Failed to fetch boards:', error);
-      setMyBoards([]); // Clear boards on error
-      setTeamBoards([]);
-    } finally {
-      setLoading(false);
+    // If we have separate myBoards and teamBoards from the API
+    if ('myBoards' in data && 'teamBoards' in data) {
+      return {
+        myBoards: data.myBoards || [],
+        teamBoards: data.teamBoards || []
+      };
     }
-  }, [userEmail, userId, setMyBoards, setTeamBoards]);
+
+    // Fallback: Split a single boards array based on ownership
+    const boards = Array.isArray(data) ? data : [];
+    const myBoards: Board[] = [];
+    const teamBoards: Board[] = [];
+
+    boards.forEach((board: Board) => {
+      if (
+        board.owner &&
+        typeof board.owner === 'object' &&
+        board.owner.id === userId
+      ) {
+        myBoards.push(board);
+      } else {
+        teamBoards.push(board);
+      }
+    });
+
+    return { myBoards, teamBoards };
+  }, [data, userId]);
+
+  // Update the workspace store when data changes
+  const { setMyBoards, setTeamBoards } = useWorkspaceStore();
 
   useEffect(() => {
-    fetchBoards();
-  }, [fetchBoards]);
+    setMyBoards(myBoards);
+    setTeamBoards(teamBoards);
+  }, [myBoards, teamBoards, setMyBoards, setTeamBoards]);
 
-  return { myBoards, teamBoards, loading, fetchBoards };
+  return {
+    myBoards,
+    teamBoards,
+    loading: isLoading,
+    error,
+    refresh: refetch
+  };
 }

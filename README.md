@@ -17,4 +17,14 @@ It has many issues and problems, and might not be fixed quickly, when it is read
 - [x] Move frontend code to `apps/web`
 - [x] Move backend code to `apps/api`
 - [x] Refactor configs and finish Turborepo setup
-- [ ] Reactor Auth functions from NextJS in `apps/web` into NestJS in `apps/api`
+- [x] Reactor Auth functions from NextJS in `apps/web` into NestJS in `apps/api`
+- [ ] Reactor Board / Project / Task / User functions from NextJS in `apps/web` into NestJS in `apps/api`
+- [ ] Update database init script for NestJS in `apps/api`
+- [ ] Update unit tests for NextJS in `apps/web`
+- [ ] Write unit tests for NestJS in `apps/api`
+- [ ] Update e2e tests for NextJS in `apps/web`
+- [ ] Update README.md in `apps/web`
+- [ ] Update README.md in `apps/api`
+- [ ] Update README.md in root
+- [ ] Add github actions for CI/CD
+- [ ] Add vercel for deployment

@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from 'next-intl';
 
 export function UserNav() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const t = useTranslations('user');
 
   // While loading, show a placeholder to prevent flicker
@@ -23,7 +23,7 @@ export function UserNav() {
   }
 
   // If the user is logged in, show the avatar and dropdown menu
-  if (user) {
+  if (isAuthenticated && user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -44,13 +44,9 @@ export function UserNav() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>{t('sign_out')}</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>{t('logOut')}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );
   }
-
-  // If not loading and no user, show a simple login button.
-  // The actual login form is on a separate page.
-  return <Button variant="outline">{t('sign_in')}</Button>;
 }

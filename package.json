@@ -7,20 +7,15 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "//": "--- DEVELOPMENT ---",
     "dev": "turbo dev",
-    "//": "--- BUILD & LINTING ---",
     "build": "turbo build",
     "lint": "turbo lint",
     "format": "turbo format",
-    "//": "--- TESTING ---",
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "playwright": "turbo run playwright --filter=web",
-    "//": "--- DATABASE ---",
     "db:init": "turbo run db:init --filter=api",
     "db:init:force": "turbo run db:init:force --filter=api",
-    "//": "--- GIT HOOKS ---",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "commit": "git-cz"
   },
@@ -49,14 +44,14 @@
     }
   },
   "devDependencies": {
-    "turbo": "^2.5.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/cz-commitlint": "^19.8.1",
     "commitizen": "^4.3.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.5"
   },
   "pnpm": {
     "overrides": {

@@ -130,10 +130,12 @@ export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
         <TaskActions
           id={task._id}
           title={task.title}
-          description={task.description}
-          dueDate={task.dueDate}
-          assignee={task.assignee?.name}
+          description={task.description || undefined}
+          dueDate={task.dueDate || undefined}
+          assigneeId={task.assignee?.id}
           status={task.status}
+          projectId={task.project}
+          boardId={task.board}
         />
       </CardHeader>
       <div className="space-y-0">

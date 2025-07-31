@@ -1,9 +1,3 @@
-import { BoardModel } from '@/models/board.model';
-import { ProjectModel } from '@/models/project.model';
-import { TaskModel } from '@/models/task.model';
-import { UserModel } from '@/models/user.model';
-import mongoose from 'mongoose';
-
 export interface Project {
   _id: string;
   title: string;
@@ -48,10 +42,11 @@ export enum TaskStatus {
 
 export interface Task {
   _id: string;
+  id: string; // Alias for _id for consistency
   title: string;
-  description?: string;
+  description?: string | null;
   status: TaskStatus;
-  dueDate?: Date;
+  dueDate?: Date | null;
   board: string;
   project: string;
   assignee?: UserInfo;
@@ -60,42 +55,6 @@ export interface Task {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export type ProjectModel = mongoose.InferSchemaType<
-  (typeof ProjectModel)['schema']
-> & {
-  _id: string;
-  title: string;
-  description?: string;
-  owner: string;
-  members: string[];
-  tasks: Task[];
-  board: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type UserModel = mongoose.InferSchemaType<
-  (typeof UserModel)['schema']
-> & {
-  _id: string;
-  email: string;
-  name: string;
-};
-
-export type TaskModel = mongoose.InferSchemaType<
-  (typeof TaskModel)['schema']
-> & {
-  _id: string;
-  title: string;
-  description?: string;
-  dueDate?: Date;
-  board: string;
-  project: string;
-  assignee?: string;
-  creator: string;
-  lastModifier: string;
-};
 
 export interface Board {
   _id: string;
@@ -107,16 +66,3 @@ export interface Board {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export type BoardModel = mongoose.InferSchemaType<
-  (typeof BoardModel)['schema']
-> & {
-  _id: string;
-  title: string;
-  description?: string;
-  owner: string;
-  members: string[];
-  projects: string[];
-  createdAt: Date;
-  updatedAt: Date;
-};

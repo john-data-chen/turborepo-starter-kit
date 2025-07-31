@@ -1,6 +1,5 @@
+import { isAuthenticated } from '@/actions/auth';
 import RootWrapper from '@/components/layout/RootWrapper';
-import { ROUTES } from '@/constants/routes';
-import { auth } from '@/lib/auth';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -10,15 +9,20 @@ interface AppLayoutProps {
   params: { locale: string };
 }
 
-export default async function AppLayout(props: Readonly<AppLayoutProps>) {
-  const { children, params } = props;
-  const { locale } = await params;
-
-  const session = await auth();
+export default async function AppLayout({
+  children,
+  params
+}: Readonly<AppLayoutProps>) {
+  // Get the current locale
+  const { locale } = await Promise.resolve(params);
   const t = await getTranslations({ locale, namespace: 'sidebar' });
 
-  if (!session) {
-    redirect(ROUTES.AUTH.LOGIN);
+  // Check if user is authenticated
+  const { isAuthenticated: isUserAuthenticated } = await isAuthenticated();
+
+  // If not authenticated, redirect to login
+  if (!isUserAuthenticated) {
+    redirect(`/${locale}/auth/login`);
   }
 
   return (

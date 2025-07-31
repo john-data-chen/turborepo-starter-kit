@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useBoards } from '@/hooks/useBoards';
-import { useTaskStore } from '@/lib/store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { boardSchema } from '@/types/boardForm';
 import { Board } from '@/types/dbInterface';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
@@ -50,9 +50,9 @@ export const BoardActions = React.forwardRef<
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const { updateBoard, removeBoard } = useTaskStore();
+  const { updateBoard, removeBoard } = useWorkspaceStore();
   const router = useRouter();
-  const { fetchBoards } = useBoards();
+  const { refresh } = useBoards();
   const t = useTranslations('kanban.actions');
 
   async function onSubmit(values: z.infer<typeof boardSchema>) {
@@ -60,7 +60,7 @@ export const BoardActions = React.forwardRef<
       setIsSubmitting(true);
       await updateBoard(board._id, values);
       toast.success(t('boardUpdated', { title: values.title }));
-      await fetchBoards();
+      await refresh();
       setEditEnable(false);
       router.refresh();
     } catch (error) {
@@ -76,7 +76,7 @@ export const BoardActions = React.forwardRef<
       setShowDeleteDialog(false);
       toast.success(t('boardDeleted'));
       onDelete?.();
-      await fetchBoards();
+      await refresh();
       router.refresh();
     } catch (error) {
       toast.error(t('boardDeleteFailed', { error: String(error) }));

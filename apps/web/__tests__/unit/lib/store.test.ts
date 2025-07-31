@@ -3,7 +3,7 @@ import * as dbBoard from '@/lib/db/board';
 import * as dbProject from '@/lib/db/project';
 import * as dbTask from '@/lib/db/task';
 import * as dbUser from '@/lib/db/user';
-import { useTaskStore } from '@/lib/store';
+import { useTaskStore } from '@/lib/stores/workspace-store';
 import {
   Board,
   Project,
@@ -315,6 +315,7 @@ describe('Zustand Store: useTaskStore', () => {
           await useTaskStore.getState().fetchProjects(mockBoardId);
         } catch (e) {
           // error is expected
+          console.error(e);
         }
       });
       expect(useTaskStore.getState().isLoadingProjects).toBe(true);

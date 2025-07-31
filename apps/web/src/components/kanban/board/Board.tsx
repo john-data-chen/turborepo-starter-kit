@@ -1,7 +1,7 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { useTaskStore } from '@/lib/store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import DraggableData from '@/types/drag&drop';
 import {
@@ -20,7 +20,6 @@ import {
   useSensors
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
-import mongoose from 'mongoose';
 import { Fragment, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import NewProjectDialog from '../project/NewProjectDialog';
@@ -29,11 +28,15 @@ import { TaskCard } from '../task/TaskCard';
 import { TaskFilter } from '../task/TaskFilter';
 
 export function Board() {
-  const projects = useTaskStore((state) => state.projects);
-  const isLoadingProjects = useTaskStore((state) => state.isLoadingProjects); // Get loading state
-  const filter = useTaskStore((state) => state.filter);
-  const setProjects = useTaskStore((state) => state.setProjects);
-  const dragTaskOnProject = useTaskStore((state) => state.dragTaskOnProject);
+  const projects = useWorkspaceStore((state) => state.projects);
+  const isLoadingProjects = useWorkspaceStore(
+    (state) => state.isLoadingProjects
+  ); // Get loading state
+  const filter = useWorkspaceStore((state) => state.filter);
+  const setProjects = useWorkspaceStore((state) => state.setProjects);
+  const dragTaskOnProject = useWorkspaceStore(
+    (state) => state.dragTaskOnProject
+  );
   const projectsId = useMemo(
     () => projects.map((project: Project) => project._id),
     [projects]
@@ -215,7 +218,7 @@ export function Board() {
     setProjects(arrayMove(projects, activeProjectIndex, overProjectIndex));
   }
 
-  const pickedUpTaskProject = useRef<mongoose.Types.ObjectId | null>(null);
+  const pickedUpTaskProject = useRef<string | null>(null);
 
   const announcements: Announcements = {
     onDragStart({ active }) {
@@ -229,9 +232,7 @@ export function Board() {
           startProjectIdx + 1
         } of ${projectsId.length}`;
       } else if (active.data.current?.type === 'Task') {
-        pickedUpTaskProject.current = new mongoose.Types.ObjectId(
-          active.data.current.task.project
-        );
+        pickedUpTaskProject.current = active.data.current.task.project;
         const { tasksInProject, taskPosition, project } = getDraggingTaskData(
           active.data.current.task._id,
           active.data.current.task.project.toString()

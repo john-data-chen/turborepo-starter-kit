@@ -7,8 +7,8 @@
     "eqeqeq": "warn"
   },
   "ignorePatterns": [
-    "__tests__/",
-    "src/components/ui/",
+    "__tests__/**/*",
+    "src/components/ui/**/*",
     "src/styles/globals.css"
   ]
 }

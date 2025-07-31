@@ -2,8 +2,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { useTaskStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -27,7 +27,7 @@ interface BoardProjectProps {
 }
 
 export function BoardProject({ project, tasks, isOverlay }: BoardProjectProps) {
-  const { filter } = useTaskStore();
+  const { filter } = useWorkspaceStore();
   const t = useTranslations('kanban.project');
 
   const filteredTasks = useMemo(() => {

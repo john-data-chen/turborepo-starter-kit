@@ -43,5 +43,4 @@ apps/web/src/components/ui/**/*
 apps/web/src/hooks/use-mobile.ts
 
 # database
-apps/web/database
-apps/web/database/**/*
+apps/api/database/**/*

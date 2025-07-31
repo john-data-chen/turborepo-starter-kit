@@ -10,12 +10,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useTaskStore } from '@/lib/store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
 export function TaskFilter() {
-  const { filter, setFilter, projects } = useTaskStore();
+  const { filter, setFilter, projects } = useWorkspaceStore();
   const t = useTranslations('kanban.task');
 
   const statusCounts = React.useMemo(() => {

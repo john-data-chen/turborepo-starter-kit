@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { useBoards } from '@/hooks/useBoards';
 import { useRouter } from '@/i18n/navigation';
-import { useTaskStore } from '@/lib/store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { boardSchema } from '@/types/boardForm';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -28,8 +28,8 @@ type BoardFormData = z.infer<typeof boardSchema>;
 
 export default function NewBoardDialog({ children }: NewBoardDialogProps) {
   const [open, setOpen] = useState(false);
-  const { addBoard } = useTaskStore();
-  const { fetchBoards } = useBoards();
+  const { addBoard } = useWorkspaceStore();
+  const { refresh } = useBoards();
   const router = useRouter();
   const t = useTranslations('kanban.actions');
 
@@ -38,7 +38,7 @@ export default function NewBoardDialog({ children }: NewBoardDialogProps) {
       const boardId = await addBoard(data.title, data.description);
       toast.success(t('boardCreatedSuccess'));
       setOpen(false);
-      await fetchBoards();
+      await refresh();
       router.push(`/boards/${boardId}`);
     } catch (error) {
       console.error(error);

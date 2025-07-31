@@ -2,7 +2,8 @@
 
 import { SEARCH_DEBOUNCE_DELAY_MS } from '@/constants/common';
 import { useDebounce } from '@/hooks/useDebounce';
-import { User } from '@/types/dbInterface';
+import { userApi } from '@/lib/api/userApi';
+import { TaskStatus, User } from '@/types/dbInterface';
 import { TaskFormSchema } from '@/types/taskForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
@@ -28,20 +29,19 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
   const form = useForm<z.infer<typeof TaskFormSchema>>({
     resolver: zodResolver(TaskFormSchema),
-    defaultValues: defaultValues || {
+    defaultValues: {
       title: '',
       description: '',
-      status: 'TODO',
+      status: TaskStatus.TODO,
       dueDate: undefined,
-      assignee: undefined
+      assignee: undefined,
+      ...defaultValues
     }
   });
 
-  const searchUsers = async (search: string = '') => {
+  const searchUsersLocal = async (search: string = ''): Promise<User[]> => {
     try {
-      const response = await fetch(`/api/users/search?username=${search}`);
-      const data = await response.json();
-      return data.users || [];
+      return await userApi.searchUsers(search);
     } catch (error) {
       console.error('Error searching users:', error);
       return [];
@@ -54,7 +54,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
       setIsSearching(true);
       try {
-        const results = await searchUsers(debouncedSearchQuery);
+        const results = await searchUsersLocal(debouncedSearchQuery);
         setUsers(results);
       } catch (error) {
         console.error('Error searching users:', error);
@@ -64,11 +64,11 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     };
 
     fetchUsers();
-  }, [debouncedSearchQuery, assignOpen]);
+  }, [assignOpen, debouncedSearchQuery]);
 
   useEffect(() => {
     if (assignOpen) {
-      searchUsers().then((initialUsers) => {
+      searchUsersLocal().then((initialUsers) => {
         setUsers(initialUsers);
       });
     }
