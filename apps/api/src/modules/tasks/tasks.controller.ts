@@ -42,7 +42,7 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req
+    @Req() req,
   ): Promise<TaskResponseDto> {
     return this.tasksService.create(createTaskDto, req.user.userId);
   }
@@ -59,7 +59,7 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   findAll(
     @Query("projectId") projectId?: string,
-    @Query("assigneeId") assigneeId?: string
+    @Query("assigneeId") assigneeId?: string,
   ): Promise<TaskResponseDto[]> {
     return this.tasksService.findAll(projectId, assigneeId);
   }
@@ -90,7 +90,7 @@ export class TasksController {
   update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Req() req
+    @Req() req,
   ): Promise<TaskResponseDto> {
     return this.tasksService.update(id, updateTaskDto, req.user.userId);
   }
@@ -117,7 +117,7 @@ export class TasksController {
   updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body("status") status: TaskStatus,
-    @Req() req
+    @Req() req,
   ): Promise<TaskResponseDto> {
     return this.tasksService.updateStatus(id, status, req.user.userId);
   }

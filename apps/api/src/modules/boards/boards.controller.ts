@@ -126,7 +126,7 @@ export class BoardController {
   update(
     @Param("id") id: string,
     @Body() updateBoardDto: UpdateBoardDto,
-    @Req() req: RequestWithUser
+    @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
       throw new UnauthorizedException("User not authenticated");
@@ -178,7 +178,7 @@ export class BoardController {
   addMember(
     @Param("id") id: string,
     @Param("memberId") memberId: string,
-    @Req() req: RequestWithUser
+    @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
       throw new UnauthorizedException("User not authenticated");
@@ -210,7 +210,7 @@ export class BoardController {
   removeMember(
     @Param("id") id: string,
     @Param("memberId") memberId: string,
-    @Req() req: RequestWithUser
+    @Req() req: RequestWithUser,
   ) {
     if (!req.user?.id) {
       throw new UnauthorizedException("User not authenticated");
