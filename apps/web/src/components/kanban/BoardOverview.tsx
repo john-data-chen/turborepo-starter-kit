@@ -24,7 +24,7 @@ import NewBoardDialog from './board/NewBoardDialog';
 type FilterType = 'all' | 'my' | 'team';
 
 export function BoardOverview() {
-  const { myBoards, teamBoards, loading, fetchBoards } = useBoards();
+  const { myBoards, teamBoards, loading, refresh } = useBoards();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const router = useRouter();
@@ -49,7 +49,7 @@ export function BoardOverview() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchBoards();
+        refresh();
       }
     };
 
@@ -58,7 +58,7 @@ export function BoardOverview() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchBoards]);
+  }, [refresh]);
 
   if (loading) {
     return <div>{t('loading')}</div>;
