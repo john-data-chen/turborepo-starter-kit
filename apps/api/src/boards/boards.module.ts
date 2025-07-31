@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Board, BoardSchema } from "./schemas/board.schema";
-import { BoardService } from "./board.service";
-import { BoardController } from "./board.controller";
+import { Board, BoardSchema } from "./schemas/boards.schema";
+import { BoardService } from "./boards.service";
+import { BoardController } from "./boards.controller";
 
 @Module({
   imports: [

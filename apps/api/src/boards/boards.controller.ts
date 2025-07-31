@@ -18,9 +18,9 @@ import {
   ApiBearerAuth,
   ApiParam,
 } from "@nestjs/swagger";
-import { BoardService } from "./board.service";
-import { CreateBoardDto } from "./dto/create-board.dto";
-import { UpdateBoardDto } from "./dto/update-board.dto";
+import { BoardService } from "./boards.service";
+import { CreateBoardDto } from "./dto/create-boards.dto";
+import { UpdateBoardDto } from "./dto/update-boards.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { Request } from "express";
 
@@ -31,7 +31,7 @@ interface RequestWithUser extends Request {
   };
 }
 
-import { Board } from "./schemas/board.schema";
+import { Board } from "./schemas/boards.schema";
 
 @ApiTags("boards")
 @ApiBearerAuth()
