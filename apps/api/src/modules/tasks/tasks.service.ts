@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TaskResponseDto } from "./dto/task-response.dto";
+import { TaskPermissionsDto } from "./dto/task-permissions.dto";
 import { Task, TaskDocument, TaskStatus } from "./schemas/task.schema";
 
 @Injectable()
@@ -29,7 +30,7 @@ export class TasksService {
 
   async create(
     createTaskDto: CreateTaskDto,
-    userId: string,
+    userId: string
   ): Promise<TaskResponseDto> {
     const createdTask = new this.taskModel({
       ...createTaskDto,
@@ -43,7 +44,7 @@ export class TasksService {
 
   async findAll(
     projectId?: string,
-    assigneeId?: string,
+    assigneeId?: string
   ): Promise<TaskResponseDto[]> {
     const query: any = {};
 
@@ -64,29 +65,52 @@ export class TasksService {
       .exec();
 
     return tasks.map((task) =>
-      this.toTaskResponse(task as unknown as TaskDocument),
+      this.toTaskResponse(task as unknown as TaskDocument)
     );
   }
 
   async findOne(id: string): Promise<TaskResponseDto> {
+    const task = await this.taskModel.findById(id).exec();
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return this.toTaskResponse(task);
+  }
+
+  async checkTaskPermissions(
+    taskId: string,
+    userId: string
+  ): Promise<TaskPermissionsDto> {
     const task = await this.taskModel
-      .findById(id)
-      .populate("creator", "name email")
-      .populate("assignee", "name email")
-      .populate("project", "title")
-      .exec();
+      .findById(taskId)
+      .populate("creator", "_id")
+      .populate("board", "owner")
+      .populate("project", "owner")
+      .lean();
 
     if (!task) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      throw new NotFoundException("Task not found");
     }
 
-    return this.toTaskResponse(task as unknown as TaskDocument);
+    const board = task.board as unknown as { owner: Types.ObjectId };
+    const project = task.project as unknown as { owner: Types.ObjectId };
+    const creator = task.creator as unknown as { _id: Types.ObjectId };
+
+    const isBoardOwner = board.owner.toString() === userId;
+    const isProjectOwner = project.owner.toString() === userId;
+    const isCreator = creator._id.toString() === userId;
+    const isAssignee = task.assignee?.toString() === userId;
+
+    const canDelete = isBoardOwner || isProjectOwner || isCreator;
+    const canEdit = canDelete || isAssignee;
+
+    return { canEdit, canDelete };
   }
 
   async update(
     id: string,
     updateTaskDto: UpdateTaskDto,
-    userId: string,
+    userId: string
   ): Promise<TaskResponseDto> {
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(
@@ -96,7 +120,7 @@ export class TasksService {
           lastModifier: userId,
           updatedAt: new Date(),
         },
-        { new: true },
+        { new: true }
       )
       .populate("creator", "name email")
       .populate("assignee", "name email")
@@ -120,7 +144,7 @@ export class TasksService {
   async updateStatus(
     id: string,
     status: TaskStatus,
-    userId: string,
+    userId: string
   ): Promise<TaskResponseDto> {
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(
@@ -130,7 +154,7 @@ export class TasksService {
           lastModifier: userId,
           updatedAt: new Date(),
         },
-        { new: true },
+        { new: true }
       )
       .populate("creator", "name email")
       .populate("assignee", "name email")

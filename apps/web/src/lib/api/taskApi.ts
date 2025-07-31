@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants/routes';
 import { Task, TaskStatus } from '@/types/dbInterface';
-import { CreateTaskInput, UpdateTaskInput } from '@/types/taskApi';
+import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from '@/types/taskApi';
 
 // API Endpoint
 const TASKS_ENDPOINT = `${API_URL}/tasks`;
@@ -75,8 +75,13 @@ export const taskApi = {
 
   // Delete a task
   async deleteTask(id: string): Promise<void> {
-    await fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
-      method: 'DELETE'
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
+      method: 'DELETE',
     });
+  },
+
+  // Check user permissions for a task
+  async getTaskPermissions(taskId: string): Promise<TaskPermissions> {
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`);
   }
 };

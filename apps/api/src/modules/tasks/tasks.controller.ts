@@ -23,6 +23,7 @@ import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TaskResponseDto } from "./dto/task-response.dto";
 import { TaskStatus } from "./schemas/task.schema";
+import { TaskPermissionsDto } from "./dto/task-permissions.dto";
 
 @ApiTags("tasks")
 @ApiBearerAuth()
@@ -97,11 +98,27 @@ export class TasksController {
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete a task" })
-  @ApiResponse({ status: 200, description: "Task deleted" })
+  @ApiResponse({ status: 200, description: "Task deleted successfully" })
   @ApiResponse({ status: 404, description: "Task not found" })
   @ApiResponse({ status: 401, description: "Unauthorized" })
   remove(@Param("id", ParseUUIDPipe) id: string): Promise<void> {
     return this.tasksService.remove(id);
+  }
+
+  @Get(":id/permissions")
+  @ApiOperation({ summary: "Check user permissions for a task" })
+  @ApiResponse({
+    status: 200,
+    description: "Task permissions retrieved successfully",
+    type: TaskPermissionsDto,
+  })
+  @ApiResponse({ status: 404, description: "Task not found" })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  getTaskPermissions(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Req() req,
+  ): Promise<TaskPermissionsDto> {
+    return this.tasksService.checkTaskPermissions(id, req.user.userId);
   }
 
   @Patch(":id/status")
