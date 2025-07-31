@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useBoards } from '@/hooks/useBoards';
-import { useTaskStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { boardSchema } from '@/types/boardForm';
 import { Board } from '@/types/dbInterface';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
@@ -50,7 +50,7 @@ export const BoardActions = React.forwardRef<
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const { updateBoard, removeBoard } = useTaskStore();
+  const { updateBoard, removeBoard } = useWorkspaceStore();
   const router = useRouter();
   const { fetchBoards } = useBoards();
   const t = useTranslations('kanban.actions');

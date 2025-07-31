@@ -4,7 +4,7 @@ import { defaultEmail } from '@/constants/demoData';
 import { ROUTES } from '@/constants/routes';
 import { NAVIGATION_DELAY_MS } from '@/constants/ui';
 import { useAuth } from '@/hooks/use-auth';
-import { useTaskStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { SignInFormValue, SignInValidation } from '@/types/authUserForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -20,7 +20,7 @@ interface AuthFormState {
 
 export default function useAuthForm() {
   const [isNavigating, startNavigationTransition] = useTransition();
-  const setUserInfo = useTaskStore((state) => state.setUserInfo);
+  const setUserInfo = useWorkspaceStore((state) => state.setUserInfo);
   const router = useRouter();
   const [status, setStatus] = useState<AuthFormState>({ status: 'idle' });
   const t = useTranslations('login');

@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { useTaskStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { TaskFormSchema } from '@/types/taskForm';
 import { useTranslations } from 'next-intl';
 import React from 'react';
@@ -22,7 +22,7 @@ export interface NewTaskDialogProps {
 }
 
 export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
-  const addTask = useTaskStore((state) => state.addTask);
+  const addTask = useWorkspaceStore((state) => state.addTask);
   const [addTaskOpen, setAddTaskOpen] = React.useState(false);
   const t = useTranslations('kanban.task');
 

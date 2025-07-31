@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { useTaskStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -29,7 +29,7 @@ type ProjectFormData = z.infer<typeof projectSchema>;
 export default function NewProjectDialog({
   onProjectAdd
 }: NewProjectDialogProps) {
-  const addProject = useTaskStore((state) => state.addProject);
+  const addProject = useWorkspaceStore((state) => state.addProject);
   const [isOpen, setIsOpen] = React.useState(false);
   const t = useTranslations('kanban.project');
 

@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useTaskStore } from '@/lib/stores/workspace-store';
+import { useWorkspaceStore } from '@/lib/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
@@ -45,10 +45,10 @@ export function ProjectActions({
 }: ProjectActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
-  const updateProject = useTaskStore((state) => state.updateProject);
-  const removeProject = useTaskStore((state) => state.removeProject);
-  const currentBoardId = useTaskStore((state) => state.currentBoardId);
-  const fetchProjects = useTaskStore((state) => state.fetchProjects);
+  const updateProject = useWorkspaceStore((state) => state.updateProject);
+  const removeProject = useWorkspaceStore((state) => state.removeProject);
+  const currentBoardId = useWorkspaceStore((state) => state.currentBoardId);
+  const fetchProjects = useWorkspaceStore((state) => state.fetchProjects);
   const t = useTranslations('kanban.project');
 
   // State for permissions
