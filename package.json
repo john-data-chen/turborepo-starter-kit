@@ -14,8 +14,8 @@
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "playwright": "turbo run playwright --filter=web",
-    "db:init": "turbo run db:init --filter=api",
-    "db:init:force": "turbo run db:init:force --filter=api",
+    "init-db": "pnpm --filter turborepo-starter-kit-api run init-db",
+    "init-db:force": "pnpm --filter turborepo-starter-kit-api run init-db:force",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "commit": "git-cz"
   },
@@ -57,6 +57,9 @@
     "overrides": {
       "@types/react": "19.1.4",
       "@types/react-dom": "19.1.5"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core"
+    ]
   }
 }
