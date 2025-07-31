@@ -5,25 +5,25 @@ export type BoardDocument = Board & Document;
 
 @Schema({ timestamps: true })
 export class Board {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   title: string;
 
-  @Prop()
+  @Prop({ type: String })
   description?: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: Types.ObjectId;
 
-  @Prop([{ type: Types.ObjectId, ref: 'User' }])
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   members: Types.ObjectId[];
 
-  @Prop([{ type: Types.ObjectId, ref: 'Project' }])
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Project' }], default: [] })
   projects: Types.ObjectId[];
 
-  @Prop({ default: Date.now })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ default: Date.now })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 

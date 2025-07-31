@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum TaskStatus {
@@ -12,20 +12,21 @@ export type TaskDocument = Task & Document;
 
 @Schema({ timestamps: true })
 export class Task {
+  @Prop({ type: Types.ObjectId })
   @ApiProperty({
     description: 'The unique identifier of the task',
     example: '507f1f77bcf86cd799439011'
   })
-  _id: string;
+  _id: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   @ApiProperty({
     description: 'The title of the task',
     example: 'Implement authentication'
   })
   title: string;
 
-  @Prop()
+  @Prop({ type: String })
   @ApiProperty({
     description: 'The description of the task',
     example: 'Implement JWT authentication with refresh tokens',
@@ -37,11 +38,12 @@ export class Task {
   @ApiProperty({
     description: 'The status of the task',
     enum: TaskStatus,
+    default: TaskStatus.TODO,
     example: TaskStatus.TODO
   })
   status: TaskStatus;
 
-  @Prop()
+  @Prop({ type: Date })
   @ApiProperty({
     description: 'The due date of the task',
     example: '2025-12-31T23:59:59.999Z',
@@ -49,51 +51,53 @@ export class Task {
   })
   dueDate?: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Board', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
   @ApiProperty({
     description: 'The ID of the board this task belongs to',
     example: '507f1f77bcf86cd799439011'
   })
-  board: string;
+  board: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Project', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Project', required: true })
   @ApiProperty({
     description: 'The ID of the project this task belongs to',
-    example: '507f1f77bcf86cd799439012'
+    example: '507f1f77bcf86cd799439011'
   })
-  project: string;
+  project: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'User' })
   @ApiProperty({
-    description: 'The ID of the user assigned to this task',
-    example: '507f1f77bcf86cd799439013',
-    required: false
+    description: 'The ID of the user assigned to the task',
+    required: false,
+    example: '507f1f77bcf86cd799439011'
   })
-  assignee?: string;
+  assignee?: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({
-    description: 'The ID of the user who created this task',
-    example: '507f1f77bcf86cd799439014'
+    description: 'The ID of the user who created the task',
+    example: '507f1f77bcf86cd799439011'
   })
-  creator: string;
+  createdBy: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({
     description: 'The ID of the user who last modified this task',
     example: '507f1f77bcf86cd799439015'
   })
-  lastModifier: string;
+  lastModifier: Types.ObjectId;
 
+  @Prop({ type: Date, default: Date.now })
   @ApiProperty({
     description: 'The date when the task was created',
-    example: '2025-07-29T08:30:00.000Z'
+    example: '2023-01-01T00:00:00.000Z'
   })
   createdAt: Date;
 
+  @Prop({ type: Date, default: Date.now })
   @ApiProperty({
     description: 'The date when the task was last updated',
-    example: '2025-07-29T08:30:00.000Z'
+    example: '2023-01-01T00:00:00.000Z'
   })
   updatedAt: Date;
 }
