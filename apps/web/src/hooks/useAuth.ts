@@ -70,7 +70,7 @@ export function useAuth() {
   const logout = useCallback(() => {
     AuthService.logout();
     queryClient.setQueryData(AUTH_KEYS.session(), null);
-    router.push(ROUTES.AUTH.LOGIN_API);
+    router.push(ROUTES.AUTH.LOGIN_PAGE);
   }, [queryClient, router]);
 
   // Update user info in store when session changes
