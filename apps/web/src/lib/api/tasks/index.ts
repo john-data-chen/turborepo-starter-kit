@@ -1,18 +1,11 @@
-// Re-export everything from the main tasks API file
-export * from '../tasks';
+// Core API client
+export { taskApi } from '../taskApi';
 
-// Re-export all queries and mutations
-export * from './queries';
+// Types and constants
+export type { CreateTaskInput, UpdateTaskInput } from '@/types/taskApi';
+export { TASK_KEYS } from '@/types/taskApi';
 
-// Export the task API client and types
-export {
-  taskApi,
-  TASK_KEYS,
-  type CreateTaskInput,
-  type UpdateTaskInput
-} from '../tasks';
-
-// Explicitly export all query hooks for better IDE support
+// Query and mutation hooks
 export {
   useTasks,
   useTask,

@@ -25,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { type UpdateTaskInput } from '@/lib/api/tasks';
+import type { UpdateTaskInput } from '@/types/taskApi';
 import {
   useDeleteTask,
   useTask,

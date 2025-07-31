@@ -1,6 +1,7 @@
-import type { Task, TaskStatus } from '@/types/dbInterface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { TASK_KEYS, taskApi } from '../tasks';
+import { TASK_KEYS } from '@/types/taskApi';
+import { taskApi } from '../taskApi';
+import type { Task, TaskStatus } from '@/types/dbInterface';
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
   return useQuery({

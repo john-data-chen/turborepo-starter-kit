@@ -42,10 +42,11 @@ export enum TaskStatus {
 
 export interface Task {
   _id: string;
+  id: string; // Alias for _id for consistency
   title: string;
-  description?: string;
+  description?: string | null;
   status: TaskStatus;
-  dueDate?: Date;
+  dueDate?: Date | null;
   board: string;
   project: string;
   assignee?: UserInfo;
