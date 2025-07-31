@@ -7,7 +7,6 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "//": "--- GIT HOOKS ---",
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
