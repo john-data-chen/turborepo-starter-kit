@@ -1,18 +1,11 @@
-// Re-export everything from the main boards API file
-export * from '../boards';
+// Core API client
+export { boardApi } from '../boardApi';
 
-// Re-export all queries and mutations
-export * from './queries';
+// Types and constants
+export type { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi';
+export { BOARD_KEYS } from '@/types/boardApi';
 
-// Export the board API client and types
-export {
-  boardApi,
-  BOARD_KEYS,
-  type CreateBoardInput,
-  type UpdateBoardInput
-} from '../boards';
-
-// Explicitly export all query hooks for better IDE support
+// Query and mutation hooks
 export {
   useBoards,
   useBoard,

@@ -1,18 +1,8 @@
 import { API_URL } from '@/constants/routes';
+import { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi';
 import { Board } from '@/types/dbInterface';
 
-// Types
-export interface CreateBoardInput {
-  title: string;
-  description?: string;
-}
-
-export interface UpdateBoardInput {
-  title?: string;
-  description?: string | null;
-}
-
-// API Endpoints
+// API Endpoint
 const BOARDS_ENDPOINT = `${API_URL}/boards`;
 
 // Helper function to handle fetch requests
@@ -40,6 +30,10 @@ async function fetchWithAuth<T>(
   return response.json();
 }
 
+/**
+ * API client for board-related operations
+ * This should be used by React Query hooks, not directly in components
+ */
 export const boardApi = {
   // Get all boards for the current user
   async getBoards(): Promise<{ myBoards: Board[]; teamBoards: Board[] }> {
@@ -87,13 +81,4 @@ export const boardApi = {
       method: 'DELETE'
     });
   }
-};
-
-// Query and Mutation Keys
-export const BOARD_KEYS = {
-  all: ['boards'] as const,
-  lists: () => [...BOARD_KEYS.all, 'list'] as const,
-  list: () => [...BOARD_KEYS.lists()] as const,
-  details: () => [...BOARD_KEYS.all, 'detail'] as const,
-  detail: (id: string) => [...BOARD_KEYS.details(), id] as const
 };

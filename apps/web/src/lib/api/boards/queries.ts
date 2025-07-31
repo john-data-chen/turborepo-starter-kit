@@ -1,5 +1,6 @@
+import { BOARD_KEYS } from '@/types/boardApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BOARD_KEYS, boardApi } from '../boards';
+import { boardApi } from '../boardApi';
 
 export const useBoards = () => {
   return useQuery({
