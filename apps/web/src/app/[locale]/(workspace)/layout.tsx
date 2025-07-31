@@ -22,7 +22,7 @@ export default async function AppLayout({
 
   // If not authenticated, redirect to login
   if (!isUserAuthenticated) {
-    redirect(`/${locale}/auth/login`);
+    redirect(`/${locale}/login`);
   }
 
   return (

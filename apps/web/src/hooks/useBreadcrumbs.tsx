@@ -38,7 +38,7 @@ export function useBreadcrumbs() {
   const items: BreadcrumbItem[] = [
     {
       title: t('overview'),
-      link: ROUTES.BOARDS.ROOT,
+      link: ROUTES.BOARDS.OVERVIEW_PAGE,
       isRoot: true
     }
   ];
@@ -46,12 +46,12 @@ export function useBreadcrumbs() {
   if (board) {
     items.push({
       title: board.title,
-      link: `/boards/${board._id}`
+      link: ROUTES.BOARDS.OVERVIEW_PAGE + '/' + board._id
     });
   }
 
   return {
     items,
-    rootLink: ROUTES.BOARDS.ROOT
+    rootLink: ROUTES.BOARDS.OVERVIEW_PAGE
   };
 }
