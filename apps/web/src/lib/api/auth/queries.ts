@@ -91,7 +91,7 @@ export function useLogin() {
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: AUTH_KEYS.session() });
-      router.push('/dashboard');
+      router.push(ROUTES.BOARDS.ROOT);
     }
   });
 }
