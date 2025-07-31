@@ -4,7 +4,7 @@ import { Logger, RequestMethod } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { DatabaseModule } from "./modules/database/database.module";
-import { AuthModule } from "./auth/auth.module";
+import { AuthModule } from "./modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ export class AppModule implements NestModule {
         // Log all incoming requests
         const { method, originalUrl, body } = req;
         this.logger.log(
-          `[${new Date().toISOString()}] ${method} ${originalUrl}`,
+          `[${new Date().toISOString()}] ${method} ${originalUrl}`
         );
 
         if (Object.keys(body || {}).length > 0) {
@@ -45,7 +45,7 @@ export class AppModule implements NestModule {
         res.on("finish", () => {
           const duration = Date.now() - start;
           this.logger.log(
-            `[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`,
+            `[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`
           );
         });
 

@@ -9,30 +9,30 @@ export class AuthService {
 
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async validateUser(email: string): Promise<User | null> {
     const requestId = Math.random().toString(36).substring(2, 8);
     this.logger.log(
-      `[${requestId}] [AuthService] Validating user with email: ${email}`,
+      `[${requestId}] [AuthService] Validating user with email: ${email}`
     );
 
     if (!email) {
       this.logger.warn(
-        `[${requestId}] [AuthService] Email is required for validation`,
+        `[${requestId}] [AuthService] Email is required for validation`
       );
       return null;
     }
 
     try {
       this.logger.debug(
-        `[${requestId}] [AuthService] Looking up user with email: ${email}`,
+        `[${requestId}] [AuthService] Looking up user with email: ${email}`
       );
 
       // Log the userService instance to ensure it's properly injected
       this.logger.debug(
-        `[${requestId}] [AuthService] UserService instance: ${this.userService ? "exists" : "missing"}`,
+        `[${requestId}] [AuthService] UserService instance: ${this.userService ? "exists" : "missing"}`
       );
 
       const user = await this.userService.findByEmail(email);
@@ -46,14 +46,14 @@ export class AuthService {
               name: user.name,
             },
             null,
-            2,
-          )}`,
+            2
+          )}`
         );
         return user;
       }
 
       this.logger.warn(
-        `[${requestId}] [AuthService] No user found with email: ${email}`,
+        `[${requestId}] [AuthService] No user found with email: ${email}`
       );
       return null;
     } catch (error: unknown) {
@@ -62,7 +62,7 @@ export class AuthService {
       const stack = error instanceof Error ? error.stack : undefined;
       this.logger.error(
         `[${requestId}] [AuthService] Error validating user: ${errorMessage}`,
-        stack,
+        stack
       );
       // Don't expose internal errors to the client
       throw new Error("Authentication failed. Please try again.");
@@ -80,8 +80,8 @@ export class AuthService {
           name: user.name,
         },
         null,
-        2,
-      )}`,
+        2
+      )}`
     );
 
     try {
@@ -99,7 +99,7 @@ export class AuthService {
       const stack = error instanceof Error ? error.stack : undefined;
       this.logger.error(
         `Error generating JWT for user ${user.email}: ${errorMessage}`,
-        stack,
+        stack
       );
       throw error;
     }
