@@ -25,7 +25,7 @@ interface State {
   // User state
   userId: string | null;
   userEmail: string | null;
-  setUserInfo: (email: string) => void;
+  setUserInfo: (email: string, userId: string) => void;
 
   // Projects state
   projects: Project[];
@@ -107,16 +107,28 @@ export const useWorkspaceStore = create<State>()(
       },
 
       // User actions
-      setUserInfo: (email: string, userId?: string) => {
-        if (userId) {
-          set({
+      setUserInfo: (email: string, userId: string) => {
+        if (!email || !userId) {
+          console.error('Invalid user info provided:', { email, userId });
+          throw new Error('Email and userId are required');
+        }
+        
+        console.log('Setting user info in workspace store:', { email, userId });
+        
+        set((state) => {
+          // Only update if the values have changed
+          if (state.userEmail === email && state.userId === userId) {
+            console.log('User info unchanged, skipping update');
+            return state;
+          }
+          
+          console.log('Updating workspace store with new user info');
+          return {
+            ...state,
             userEmail: email,
             userId: userId
-          });
-        } else {
-          // Fallback to just setting the email if user ID isn't available
-          set({ userEmail: email });
-        }
+          };
+        });
       },
 
       // Project actions
@@ -354,7 +366,7 @@ export const useWorkspaceStore = create<State>()(
             taskToMove.status,
             taskToMove.description || undefined,
             taskToMove.dueDate ? new Date(taskToMove.dueDate) : undefined,
-            taskToMove.assignee?.id || undefined,
+            taskToMove.assignee?._id || undefined,
             newProjectId
           );
 
@@ -399,8 +411,9 @@ export const useWorkspaceStore = create<State>()(
             const boardWithOwner: Board = {
               ...newBoard,
               owner: {
-                id: userId,
-                name: currentUser.name
+                _id: userId,
+                name: currentUser.name,
+                email: currentUser.email
               },
               members: [],
               projects: [],

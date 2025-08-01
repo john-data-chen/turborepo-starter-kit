@@ -1,12 +1,9 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
-import {
-  AuthService,
-  type Session,
-  type User
-} from '@/lib/services/auth.service';
+import { AuthService } from '@/lib/services/auth.service';
 import { useWorkspaceStore } from '@/stores/workspace-store';
+import { Session, UserInfo } from '@/types/dbInterface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
@@ -16,7 +13,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  user: User | null;
+  user: UserInfo | null;
   session: Session | null;
 }
 
@@ -51,7 +48,9 @@ export function useAuth() {
         if (typeof window !== 'undefined') {
           Cookies.set('jwt', data.access_token, { expires: 7, path: '/' });
         }
-        return data;
+        // Get user profile after successful login
+        const user = await AuthService.getProfile(data.access_token);
+        return { ...data, user };
       } catch (err) {
         console.error('Login error:', err);
         setError(err instanceof Error ? err.message : 'Login failed');
@@ -76,7 +75,16 @@ export function useAuth() {
   // Update user info in store when session changes
   useEffect(() => {
     if (session?.user) {
-      setUserInfo(session.user.email);
+      // Ensure we have both email and _id before updating
+      if (session.user.email && session.user._id) {
+        console.log('Setting user info in workspace store:', {
+          email: session.user.email,
+          userId: session.user._id
+        });
+        setUserInfo(session.user.email, session.user._id);
+      } else {
+        console.warn('Session user is missing email or _id:', session.user);
+      }
     }
   }, [session, setUserInfo]);
 
@@ -106,8 +114,14 @@ export function useAuthForm() {
 
   const handleSubmit = async (email: string) => {
     try {
-      await login(email);
-      setUserInfo(email);
+      const result = await login(email);
+      // The login mutation now returns the user profile
+      if (result?.user) {
+        setUserInfo(result.user.email, result.user._id);
+      } else {
+        // Fallback to just setting the email if user data is not available
+        setUserInfo(email, '');
+      }
 
       // Use startTransition for smoother navigation
       startNavigationTransition(true);

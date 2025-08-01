@@ -19,17 +19,23 @@ export interface User {
 }
 
 export interface UserInfo {
-  id: string;
+  _id: string;
   name: string;
+  email: string;
+}
+
+export interface Session {
+  user: UserInfo;
+  accessToken: string;
 }
 
 export interface BoardDocument {
   _id: string;
   title: string;
   description?: string;
-  owner: string | UserInfo;
-  members: (string | UserInfo)[];
-  projects: (string | Project)[];
+  owner: string;
+  members: string[];
+  projects: string[];
   createdAt: Date;
   updatedAt: Date;
 }

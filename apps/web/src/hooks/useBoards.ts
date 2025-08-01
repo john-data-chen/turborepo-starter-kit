@@ -40,7 +40,7 @@ export function useBoards() {
     const teamBoards: Board[] = [];
 
     boards.forEach((board: Board) => {
-      if (board.owner.id === userId) {
+      if (board.owner._id === userId) {
         myBoards.push(board);
       } else {
         teamBoards.push(board);

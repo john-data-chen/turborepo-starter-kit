@@ -10,6 +10,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { AuthService } from '@/lib/services/auth.service';
+import { useAuthStore } from '@/stores/auth-store';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { useBoards } from '@/hooks/useBoards';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -24,28 +27,59 @@ import NewBoardDialog from './board/NewBoardDialog';
 type FilterType = 'all' | 'my' | 'team';
 
 export function BoardOverview() {
-  const { myBoards, teamBoards, loading, refresh } = useBoards();
+  const { myBoards, teamBoards, loading: boardsLoading, refresh } = useBoards();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
+  const [isProcessingLogin, setIsProcessingLogin] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const t = useTranslations('kanban');
   const tLogin = useTranslations('login');
+  const { setUserInfo } = useWorkspaceStore();
+  const { setSession, session: authSession } = useAuthStore();
 
+  // Handle login success and user data initialization
   useEffect(() => {
     const loginSuccess = searchParams.get('login_success');
-    if (loginSuccess === 'true') {
-      const timer = setTimeout(() => {
-        toast.success(tLogin('success'));
-        const params = new URLSearchParams(searchParams.toString());
-        params.delete('login_success');
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [searchParams, router, pathname, tLogin]);
+    
+    const processLogin = async () => {
+      if (loginSuccess !== 'true') return;
+      
+      try {
+        setIsProcessingLogin(true);
+        
+        // Always fetch fresh session to ensure we have the latest data
+        const session = await AuthService.getSession();
+        
+        if (session?.user?._id) {
+          // Update both auth and workspace stores with the user info
+          setSession(session);
+          setUserInfo(session.user.email, session.user._id);
+          
+          // Show success message
+          toast.success(tLogin('success'));
+          
+          // Clean up URL
+          const params = new URLSearchParams(searchParams.toString());
+          params.delete('login_success');
+          const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+          await router.replace(newUrl, { scroll: false });
+        } else {
+          throw new Error('Failed to get user session');
+        }
+      } catch (error) {
+        console.error('Error processing login:', error);
+        toast.error(tLogin('error'));
+      } finally {
+        setIsProcessingLogin(false);
+      }
+    };
 
+    processLogin();
+  }, [searchParams, router, pathname, tLogin, setSession, setUserInfo]);
+
+  // Handle data refresh on tab visibility change
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -54,14 +88,21 @@ export function BoardOverview() {
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [refresh]);
 
-  if (loading) {
-    return <div>{t('loading')}</div>;
+  // Show loading state while processing login or loading boards
+  if (isProcessingLogin || boardsLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p>{t('loading')}</p>
+        </div>
+      </div>
+    );
   }
 
   const filteredMyBoards = myBoards?.filter((board) =>
