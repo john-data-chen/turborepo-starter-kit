@@ -10,11 +10,11 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useBoards } from '@/hooks/useBoards';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { AuthService } from '@/lib/services/auth.service';
 import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
-import { useBoards } from '@/hooks/useBoards';
-import { usePathname, useRouter } from '@/i18n/navigation';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
@@ -37,33 +37,35 @@ export function BoardOverview() {
   const t = useTranslations('kanban');
   const tLogin = useTranslations('login');
   const { setUserInfo } = useWorkspaceStore();
-  const { setSession, session: authSession } = useAuthStore();
+  const { setSession } = useAuthStore();
 
   // Handle login success and user data initialization
   useEffect(() => {
     const loginSuccess = searchParams.get('login_success');
-    
+
     const processLogin = async () => {
       if (loginSuccess !== 'true') return;
-      
+
       try {
         setIsProcessingLogin(true);
-        
+
         // Always fetch fresh session to ensure we have the latest data
         const session = await AuthService.getSession();
-        
+
         if (session?.user?._id) {
           // Update both auth and workspace stores with the user info
           setSession(session);
           setUserInfo(session.user.email, session.user._id);
-          
+
           // Show success message
           toast.success(tLogin('success'));
-          
+
           // Clean up URL
           const params = new URLSearchParams(searchParams.toString());
           params.delete('login_success');
-          const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+          const newUrl = params.toString()
+            ? `${pathname}?${params.toString()}`
+            : pathname;
           await router.replace(newUrl, { scroll: false });
         } else {
           throw new Error('Failed to get user session');

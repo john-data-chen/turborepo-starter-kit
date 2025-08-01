@@ -112,16 +112,16 @@ export const useWorkspaceStore = create<State>()(
           console.error('Invalid user info provided:', { email, userId });
           throw new Error('Email and userId are required');
         }
-        
+
         console.log('Setting user info in workspace store:', { email, userId });
-        
+
         set((state) => {
           // Only update if the values have changed
           if (state.userEmail === email && state.userId === userId) {
             console.log('User info unchanged, skipping update');
             return state;
           }
-          
+
           console.log('Updating workspace store with new user info');
           return {
             ...state,
