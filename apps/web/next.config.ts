@@ -24,13 +24,26 @@ const nextConfig: NextConfig = {
       allowedOrigins: []
     }
   },
-  // Ensure the output directory is set correctly
-  distDir: '.next',
   // Configure output for Vercel
   output: 'standalone',
   // Ensure public directory is included in the build
+  distDir: '.next',
+  // Configure static files handling
   images: {
     unoptimized: true // Disable image optimization if not needed
+  },
+  // Explicitly configure the output directory structure
+  webpack: (config, { isServer }) => {
+    // Ensure public files are properly copied to the output directory
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false
+      };
+    }
+    return config;
   }
 };
 
