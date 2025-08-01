@@ -117,13 +117,6 @@ This is a demo project, and I know little of German, so errors of translations m
   - Solution: Can be safely ignored as most modern browsers handle this correctly
   - Reason: Internal implementation of Radix UI's Dialog component
 
-### Server
-
-- **Slow response from server**:
-  - Server Region: Hong Kong
-  - Issue: Sometimes Server response is slow, especially for users are not in Asia
-  - Status: The resource of free tier is limited and no plan of CDN, it won't be fix in the near future
-
 ---
 
 ### 📃 License
