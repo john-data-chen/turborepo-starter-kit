@@ -71,12 +71,20 @@
       ]
     },
     "init-db": {
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL"
+      ],
       "cache": false,
       "dependsOn": [
         "^build"
       ]
     },
     "init-db:force": {
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL"
+      ],
       "cache": false,
       "dependsOn": [
         "^build"
