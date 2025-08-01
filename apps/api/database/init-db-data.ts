@@ -4,7 +4,8 @@ if (typeof process === 'undefined') {
 }
 
 // Load environment variables
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
+import { resolve } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
@@ -17,18 +18,46 @@ import { User, UserSchema } from '@/modules/users/schemas/users.schema';
 import { demoProjects, demoTasks, demoUsers, demoBoards } from '@/constants/demoData';
 import readline from 'readline';
 
-dotenv.config();
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Verify required environment variables
-if (!process.env.DATABASE_URL) {
-  console.error('\x1b[31mError: DATABASE_URL is required in .env file\x1b[0m');
+if (!isProduction) {
+  const envPath = resolve(process.cwd(), '../../.env');
+  const envConfig = config({ path: envPath });
+  if (envConfig.error) {
+    const fallbackPath = resolve(process.cwd(), '.env');
+    if (fallbackPath !== envPath) {
+      config({ path: fallbackPath });
+    } else {
+      console.warn('Warning: No .env file found at', envPath);
+      console.warn('Falling back to process environment variables');
+    }
+  }
+}
+
+// 验证必需的环境变量
+const requiredEnvVars = ['DATABASE_URL'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error('\x1b[31mError: The following environment variables are required but missing:\x1b[0m');
+  missingEnvVars.forEach(envVar => console.error(`- ${envVar}`));
   console.error('Current working directory:', process.cwd());
+  console.error('NODE_ENV:', process.env.NODE_ENV || 'development');
+  console.error('Environment variables available:', Object.keys(process.env).join(', '));
+  
+  if (!isProduction) {
+    console.error('\nFor local development, please create a .env file in the project root with the required variables.');
+  } else {
+    console.error('\nFor production, please make sure all required environment variables are set in your deployment environment.');
+  }
+  
   process.exit(1);
 }
 
 console.log('Environment:', {
   NODE_ENV: process.env.NODE_ENV || 'development',
   DATABASE_URL: process.env.DATABASE_URL ? '***' + process.env.DATABASE_URL.split('@').pop() : 'Not set',
+  Source: isProduction ? 'process.env (production)' : '.env file (development)'
 });
 
 // Create a temporary module to bootstrap our application
