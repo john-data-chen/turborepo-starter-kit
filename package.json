@@ -59,7 +59,12 @@
       "@types/react-dom": "19.1.5"
     },
     "onlyBuiltDependencies": [
-      "@swc/core"
+      "@nestjs/core",
+      "@scarf/scarf",
+      "@swc/core",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
     ]
   }
 }
