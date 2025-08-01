@@ -2,6 +2,7 @@
 
 import { ROUTES } from '@/constants/routes';
 import { AuthService } from '@/lib/services/auth.service';
+import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Session, UserInfo } from '@/types/dbInterface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -66,10 +67,36 @@ export function useAuth() {
   });
 
   // Logout function
-  const logout = useCallback(() => {
-    AuthService.logout();
-    queryClient.setQueryData(AUTH_KEYS.session(), null);
-    router.push(ROUTES.AUTH.LOGIN_PAGE);
+  const logout = useCallback(async () => {
+    try {
+      // Clear the JWT cookie
+      AuthService.logout();
+
+      // Clear all query cache to ensure no stale data remains
+      await queryClient.cancelQueries();
+      queryClient.removeQueries();
+
+      // Clear the session data
+      queryClient.setQueryData(AUTH_KEYS.session(), null);
+
+      // Clear the auth store if you're using one
+      const { clear: clearAuthStore } = useAuthStore.getState();
+      clearAuthStore();
+
+      // Clear the workspace store
+      const { setUserInfo } = useWorkspaceStore.getState();
+      setUserInfo('', '');
+
+      // Redirect to login page
+      router.push(ROUTES.AUTH.LOGIN_PAGE);
+
+      // Force a full page reload to ensure all state is cleared
+      window.location.href = ROUTES.AUTH.LOGIN_PAGE;
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Still redirect even if there was an error
+      window.location.href = ROUTES.AUTH.LOGIN_PAGE;
+    }
   }, [queryClient, router]);
 
   // Update user info in store when session changes
