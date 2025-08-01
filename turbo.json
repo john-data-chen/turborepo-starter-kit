@@ -8,12 +8,36 @@
   ],
   "tasks": {
     "build": {
+      "env": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "NODE_ENV",
+        "JWT_SECRET",
+        "DATABASE_URL"
+      ],
       "dependsOn": [
         "^build"
       ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
+        "dist/**"
+      ]
+    },
+    "web#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
+    "api#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
         "dist/**"
       ]
     },
@@ -46,13 +70,13 @@
         "coverage/**"
       ]
     },
-    "db:init": {
+    "init-db": {
       "cache": false,
       "dependsOn": [
         "^build"
       ]
     },
-    "db:init:force": {
+    "init-db:force": {
       "cache": false,
       "dependsOn": [
         "^build"

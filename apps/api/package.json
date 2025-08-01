@@ -10,8 +10,8 @@
     "dev": "rspack dev --watch",
     "build": "cross-env BUILD=true rspack build",
     "start": "node dist/main.js",
-    "db:init": "tsx database/init-db-data.ts",
-    "db:init:force": "tsx database/init-db-data.ts --force",
+    "init-db": "tsx database/init-db-data.ts",
+    "init-db:force": "tsx database/init-db-data.ts --force",
     "format": "prettier --write ./src --ignore-path ../../.prettierignore",
     "lint": "oxlint ./src --fix",
     "test": "vitest run --coverage",
@@ -42,11 +42,11 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.9",
-    "@nestjs/schematics": "^11.0.6",
+    "@nestjs/cli": "^11.0.10",
+    "@nestjs/schematics": "^11.0.7",
     "@nestjs/testing": "^11.1.5",
-    "@rspack/cli": "^1.4.10",
-    "@rspack/core": "^1.4.10",
+    "@rspack/cli": "^1.4.11",
+    "@rspack/core": "^1.4.11",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.13.3",
     "@types/cookie-parser": "^1.4.9",
@@ -68,7 +68,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "unplugin-swc": "^1.5.5",
     "vitest": "^3.2.4"
   }

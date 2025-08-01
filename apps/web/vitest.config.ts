@@ -23,7 +23,6 @@ export default defineConfig({
         'src/**/*.d.ts',
         '__tests__/**/*.test.{ts,tsx}',
         'src/components/ui/**/*',
-        'src/app/api/**/*',
         'src/hooks/use-mobile.ts',
         'src/types/**/*'
       ]

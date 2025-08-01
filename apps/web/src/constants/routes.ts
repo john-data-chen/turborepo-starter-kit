@@ -4,11 +4,10 @@ export const ROUTES = {
   HOME: '/',
   API: API_URL,
   AUTH: {
-    LOGIN: `${API_URL}/auth/login`, // Corrected path to match backend
-    CALLBACK: `${API_URL}/api/auth/callback`
+    LOGIN_API: `${API_URL}/auth/login`,
+    LOGIN_PAGE: `/login`
   },
   BOARDS: {
-    ROOT: '/boards',
-    VIEW: (id: string) => `/boards/${id}`
+    OVERVIEW_PAGE: '/boards'
   }
 } as const;

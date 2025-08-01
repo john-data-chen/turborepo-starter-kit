@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   static async login(email: string): Promise<{ access_token: string }> {
-    return this.fetchWithAuth<{ access_token: string }>(ROUTES.AUTH.LOGIN, {
+    return this.fetchWithAuth<{ access_token: string }>(ROUTES.AUTH.LOGIN_API, {
       method: 'POST',
       body: JSON.stringify({ email })
     });

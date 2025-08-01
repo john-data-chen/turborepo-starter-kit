@@ -22,7 +22,7 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
-import { TaskStatus } from './schemas/task.schema';
+import { TaskStatus } from './schemas/tasks.schema';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
 
 @ApiTags('tasks')

@@ -9,6 +9,17 @@ export function useBoards() {
   const { userId } = useWorkspaceStore();
   const { data, isLoading, error, refetch } = useApiBoards();
 
+  // Debug log for the current state
+  useEffect(() => {
+    if (data) {
+      console.log('Boards data received:', data);
+    }
+    if (error) {
+      console.error('Error fetching boards:', error);
+    }
+    console.log('useBoards state:', { userId, data, isLoading, error });
+  }, [userId, data, isLoading, error]);
+
   // Split boards into myBoards and teamBoards based on ownership
   const { myBoards, teamBoards } = useMemo(() => {
     if (!data) {
@@ -29,11 +40,7 @@ export function useBoards() {
     const teamBoards: Board[] = [];
 
     boards.forEach((board: Board) => {
-      if (
-        board.owner &&
-        typeof board.owner === 'object' &&
-        board.owner.id === userId
-      ) {
+      if (board.owner.id === userId) {
         myBoards.push(board);
       } else {
         teamBoards.push(board);

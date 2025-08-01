@@ -18,8 +18,9 @@ It has many issues and problems, and might not be fixed quickly, when it is read
 - [x] Move backend code to `apps/api`
 - [x] Refactor configs and finish Turborepo setup
 - [x] Reactor Auth functions from NextJS in `apps/web` into NestJS in `apps/api`
-- [ ] Reactor Board / Project / Task / User functions from NextJS in `apps/web` into NestJS in `apps/api`
-- [ ] Update database init script for NestJS in `apps/api`
+- [x] Reactor Board / Project / Task / User functions from NextJS in `apps/web` into NestJS in `apps/api`
+- [x] Update database init script for NestJS in `apps/api`
+- [ ] Fix the issues between NextJS and NestJS API format
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`

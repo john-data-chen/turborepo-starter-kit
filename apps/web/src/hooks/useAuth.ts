@@ -62,7 +62,7 @@ export function useAuth() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AUTH_KEYS.session() });
-      router.push(ROUTES.BOARDS.ROOT);
+      router.push(ROUTES.BOARDS.OVERVIEW_PAGE);
     }
   });
 
@@ -70,7 +70,7 @@ export function useAuth() {
   const logout = useCallback(() => {
     AuthService.logout();
     queryClient.setQueryData(AUTH_KEYS.session(), null);
-    router.push(ROUTES.AUTH.LOGIN);
+    router.push(ROUTES.AUTH.LOGIN_PAGE);
   }, [queryClient, router]);
 
   // Update user info in store when session changes
@@ -111,7 +111,7 @@ export function useAuthForm() {
 
       // Use startTransition for smoother navigation
       startNavigationTransition(true);
-      router.push(ROUTES.BOARDS.ROOT);
+      router.push(ROUTES.BOARDS.OVERVIEW_PAGE);
     } catch (err) {
       console.error('Login failed:', err);
       // Error is already handled by the login mutation

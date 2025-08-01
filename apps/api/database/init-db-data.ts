@@ -5,6 +5,18 @@ if (typeof process === 'undefined') {
 
 // Load environment variables
 import dotenv from 'dotenv';
+import { NestFactory } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { Module } from '@nestjs/common';
+import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Board, BoardSchema } from '@/modules/boards/schemas/boards.schema';
+import { Project, ProjectSchema } from '@/modules/projects/schemas/projects.schema';
+import { Task, TaskSchema } from '@/modules/tasks/schemas/tasks.schema';
+import { User, UserSchema } from '@/modules/users/schemas/users.schema';
+import { demoProjects, demoTasks, demoUsers, demoBoards } from '@/constants/demoData';
+import readline from 'readline';
+
 dotenv.config();
 
 // Verify required environment variables
@@ -19,26 +31,20 @@ console.log('Environment:', {
   DATABASE_URL: process.env.DATABASE_URL ? '***' + process.env.DATABASE_URL.split('@').pop() : 'Not set',
 });
 
-// Now import other dependencies
-import {
-  demoBoards,
-  demoProjects,
-  demoTasks,
-  demoUsers
-} from '@/constants/demoData';
-import { connectToDatabase } from '@/lib/db/connect';
-import mongoose from 'mongoose';
-import readline from 'readline';
-import { BoardModel } from '../src/models/board.model';
-import { ProjectModel } from '../src/models/project.model';
-import { TaskModel } from '../src/models/task.model';
-import { UserModel } from '../src/models/user.model';
-
-console.log('Environment:', {
-  NODE_ENV: process.env.NODE_ENV,
-  CI: process.env.CI,
-  DATABASE_URL: !!process.env.DATABASE_URL
-});
+// Create a temporary module to bootstrap our application
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(process.env.DATABASE_URL || ''),
+    MongooseModule.forFeature([
+      { name: Board.name, schema: BoardSchema },
+      { name: Project.name, schema: ProjectSchema },
+      { name: Task.name, schema: TaskSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
+  ],
+})
+class AppModule {}
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -62,9 +68,49 @@ async function confirmDatabaseReset(): Promise<boolean> {
 }
 
 async function main() {
+  let app;
   try {
-    console.log('\x1b[32mEnvironment variables verified successfully\x1b[0m');
+    // Create NestJS application context
+    app = await NestFactory.createApplicationContext(AppModule, {
+      logger: ['error', 'warn', 'log'],
+    });
+    // Get the Mongoose connection using the correct token
+    const connection = app.get(getConnectionToken());
     console.log('Connecting to database...');
+    // Check if already connected
+    if (connection.readyState === 1) {
+      console.log('Database already connected');
+    } else {
+      // Set up a promise that resolves when connected or rejects on error/timeout
+      await new Promise<void>((resolve, reject) => {
+        // Set a timeout to prevent hanging
+        const timeout = setTimeout(() => {
+          reject(new Error('Database connection timeout after 10 seconds'));
+        }, 10000);
+
+        const onConnected = () => {
+          clearTimeout(timeout);
+          connection.removeListener('error', onError);
+          console.log('Database connected successfully');
+          resolve();
+        };
+
+        const onError = (err: Error) => {
+          clearTimeout(timeout);
+          connection.removeListener('open', onConnected);
+          reject(err);
+        };
+
+        connection.once('open', onConnected);
+        connection.once('error', onError);
+      });
+    }
+
+    // Get the models directly from the connection
+    const boardModel = connection.model(Board.name, BoardSchema);
+    const projectModel = connection.model(Project.name, ProjectSchema);
+    const taskModel = connection.model(Task.name, TaskSchema);
+    const userModel = connection.model(User.name, UserSchema);
 
     const shouldContinue = await confirmDatabaseReset();
     if (!shouldContinue) {
@@ -72,139 +118,143 @@ async function main() {
       process.exit(0);
     }
     console.log('\x1b[36mInitializing database...\x1b[0m');
-    try {
-      await connectToDatabase();
-      console.log('\x1b[32mDatabase connected successfully\x1b[0m');
-    } catch (error) {
-      console.error(
-        '\x1b[31mFailed to connect to database. Please check your MongoDB service and .env configuration\x1b[0m'
-      );
-      throw error;
-    }
 
-    // Clear all collections
+    // Clear existing data
     console.log('\x1b[36mClearing existing data...\x1b[0m');
     await Promise.all([
-      UserModel.deleteMany({}),
-      BoardModel.deleteMany({}),
-      ProjectModel.deleteMany({}),
-      TaskModel.deleteMany({})
-    ]);
-    console.log('Database cleared');
-
-    // Create users
-    const users = await UserModel.insertMany(demoUsers);
-    console.log('Created users successfully');
-
-    // Create boards
-    const boards = await BoardModel.insertMany([
-      {
-        ...demoBoards[0], // Mark's Kanban
-        owner: users[2]._id, // Mark S
-        members: [users[2]._id],
-        projects: []
-      },
-      {
-        ...demoBoards[1], // John's Kanban
-        owner: users[0]._id, // John
-        members: [users[0]._id],
-        projects: []
-      },
-      {
-        ...demoBoards[2], // Jane's Kanban
-        owner: users[1]._id, // Jane
-        members: [users[1]._id],
-        projects: []
-      },
-      {
-        ...demoBoards[3], // Dev Team Board
-        owner: users[1]._id, // John
-        members: [users[0]._id, users[1]._id, users[2]._id], // All developers
-        projects: []
-      }
-    ]);
-    console.log('Created boards successfully');
-
-    // Create projects
-    const projects = await ProjectModel.insertMany([
-      {
-        ...demoProjects[0], // Mark's todo list
-        owner: users[2]._id, // Mark S
-        members: [users[2]._id],
-        board: boards[0]._id // In Mark's Kanban
-      },
-      {
-        ...demoProjects[1], // Demo Project 2
-        owner: users[0]._id, // John
-        members: [users[0]._id, users[2]._id],
-        board: boards[3]._id // In Dev Team Board
-      },
-      {
-        ...demoProjects[2], // Demo Project 3
-        owner: users[1]._id, // Jane
-        members: [users[1]._id, users[2]._id],
-        board: boards[3]._id // In Dev Team Board
-      }
-    ]);
-    console.log('Created projects successfully');
-
-    // Update boards with project references
-    await Promise.all([
-      BoardModel.findByIdAndUpdate(boards[0]._id, {
-        $push: { projects: projects[0]._id }
-      }),
-      BoardModel.findByIdAndUpdate(boards[3]._id, {
-        $push: { projects: { $each: [projects[1]._id, projects[2]._id] } }
-      })
+      boardModel.deleteMany({}),
+      projectModel.deleteMany({}),
+      taskModel.deleteMany({}),
+      userModel.deleteMany({}),
     ]);
 
-    // Create tasks
-    const tasks = await TaskModel.insertMany([
-      {
-        ...demoTasks[0],
-        board: boards[0]._id,
-        project: projects[0]._id,
-        assignee: users[2]._id, // Mark S
-        creator: users[2]._id,
-        lastModifier: users[2]._id,
-        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
-      },
-      {
-        ...demoTasks[1],
-        board: boards[1]._id,
-        project: projects[1]._id,
-        assignee: users[2]._id, // Mark
-        creator: users[1]._id, // Jane
-        lastModifier: users[1]._id,
-        dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) // 5 days from now
-      },
-      {
-        ...demoTasks[2],
-        board: boards[2]._id,
-        project: projects[2]._id,
-        assignee: users[1]._id, // Jane
-        creator: users[0]._id, // John
-        lastModifier: users[1]._id, // Jane
-        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
-      }
-    ]);
-    console.log('Created tasks successfully');
+    // Insert demo users with explicit _id
+    console.log('\x1b[36mInserting demo users...\x1b[0m');
+    // Create users with explicit _id
+    const usersToInsert = demoUsers.map(user => ({
+      _id: new Types.ObjectId(),
+      ...user,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
+    const createdUsers = await userModel.insertMany(usersToInsert);
+    if (!createdUsers || createdUsers.length === 0) {
+      throw new Error('No users were created. Cannot proceed without users.');
+    }
+    // Mongoose documents store the actual data in _doc and add methods/properties
+    const markDoc = createdUsers[2]._doc || createdUsers[2]; // Mark.S
+    const johnDoc = createdUsers[0]._doc || createdUsers[0]; // John.Doe
+    const janeDoc = createdUsers[1]._doc || createdUsers[1]; // Jane.Doe`
+    // Get the _id from the document
+    const markId = markDoc._id;
+    const johnId = johnDoc._id;
+    const janeId = janeDoc._id;
+    // Ensure we have a valid user ID
+    if (!markId) {
+      throw new Error('First user does not have an _id field');
+    }
 
-    // Final data summary
-    console.log('Final data:', {
-      users: users.length,
-      boards: boards.length,
-      projects: projects.length,
-      tasks: tasks.length
+    // Insert demo boards with default owner first (needed for project references)
+    console.log('\x1b[36mInserting demo boards...\x1b[0m');
+    const currentDate = new Date();
+    const boardsWithOwner = demoBoards.map((board) => {
+      const boardData = {
+        title: board.title,
+        description: board.description || '',
+        owner: markId,
+        members: [markId],
+        projects: [], // Will be updated after projects are created
+        createdAt: currentDate,
+        updatedAt: currentDate,
+      };
+      return boardData;
     });
+    boardsWithOwner[1].owner = johnId;
+    boardsWithOwner[1].members = [johnId];
+    boardsWithOwner[2].owner = janeId;
+    boardsWithOwner[2].members = [janeId];
+    boardsWithOwner[3].owner = johnId;
+    boardsWithOwner[3].members = [johnId, markId, janeId];
+    const createdBoards = await boardModel.insertMany(boardsWithOwner);
+    const defaultBoardId = createdBoards[0]._id;
+
+    // Insert demo projects with required fields
+    console.log('\x1b[36mInserting demo projects...\x1b[0m');
+    
+    // Create projects with proper owner and member assignments
+    const projectsWithDefaults = [
+      {
+        ...demoProjects[0],
+        owner: markId,
+        members: [markId],
+        board: defaultBoardId,
+      },
+      {
+        ...demoProjects[1],
+        owner: johnId,
+        members: [johnId],
+        board: createdBoards[3]._id,
+      },
+      {
+        ...demoProjects[2],
+        owner: janeId,
+        members: [janeId],
+        board: createdBoards[3]._id,
+      }
+    ];
+    const createdProjects = await projectModel.insertMany(projectsWithDefaults);
+    const defaultProjectId = createdProjects[0]._id;
+
+    // Update board with project references
+    await boardModel.updateOne(
+      { _id: defaultBoardId },
+      {
+        $addToSet: {
+          projects: { $each: createdProjects.map(p => p._id) }
+        }
+      }
+    );
+
+    // Insert demo tasks with default user assignments
+    console.log('\x1b[36mInserting demo tasks...\x1b[0m');
+    const tasksWithDefaults = demoTasks.map(task => ({
+      ...task,
+      project: defaultProjectId, // Assign to first project
+      board: defaultBoardId,     // Assign to first board
+      assignee: markId,
+      creator: markId,
+      lastModifier: markId, // Add required lastModifier field
+      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+    }));
+    tasksWithDefaults[1].assignee = janeId;
+    tasksWithDefaults[1].creator = janeId;
+    tasksWithDefaults[1].lastModifier = janeId;
+    tasksWithDefaults[1].dueDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+    tasksWithDefaults[2].assignee = johnId;
+    tasksWithDefaults[2].creator = johnId;
+    tasksWithDefaults[2].lastModifier = johnId;
+    tasksWithDefaults[2].dueDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    await taskModel.insertMany(tasksWithDefaults);
+
+    console.log('\x1b[32mDatabase initialized successfully!\x1b[0m');
+    console.log('\x1b[33mYou can now log in with the following test accounts:\x1b[0m');
+    createdUsers.forEach(user => {
+      console.log({
+        name: user.name,
+        email: user.email
+      });
+    });
+    // Close the app and exit
+    await app.close();
+    process.exit(0);
   } catch (error) {
     console.error('Error:', error);
+    if (app) {
+      await app.close();
+    }
     process.exit(1);
   } finally {
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
     rl.close();
-    process.exit(0);
   }
 }
 
