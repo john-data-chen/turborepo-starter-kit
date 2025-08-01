@@ -17,7 +17,20 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     // enable react compiler will increase build time 30~40%
-    reactCompiler: false
+    reactCompiler: false,
+    // Enable server actions
+    serverActions: {
+      bodySizeLimit: '2mb',
+      allowedOrigins: []
+    }
+  },
+  // Ensure the output directory is set correctly
+  distDir: '.next',
+  // Configure output for Vercel
+  output: 'standalone',
+  // Ensure public directory is included in the build
+  images: {
+    unoptimized: true // Disable image optimization if not needed
   }
 };
 
