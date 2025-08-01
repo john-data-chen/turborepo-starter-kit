@@ -8,6 +8,13 @@
   ],
   "tasks": {
     "build": {
+      "env": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "NODE_ENV",
+        "JWT_SECRET",
+        "DATABASE_URL"
+      ],
       "dependsOn": [
         "^build"
       ],
@@ -24,11 +31,6 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**"
-      ],
-      "env": [
-        "NEXT_PUBLIC_API_URL",
-        "NEXT_PUBLIC_APP_URL",
-        "NODE_ENV"
       ]
     },
     "api#build": {
@@ -37,11 +39,6 @@
       ],
       "outputs": [
         "dist/**"
-      ],
-      "env": [
-        "DATABASE_URL",
-        "JWT_SECRET",
-        "NODE_ENV"
       ]
     },
     "lint": {
