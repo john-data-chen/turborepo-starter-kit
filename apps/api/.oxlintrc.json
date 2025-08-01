@@ -6,5 +6,5 @@
     "no-debugger": "off",
     "eqeqeq": "warn"
   },
-  "ignorePatterns": ["node_modules", "test", "dist"]
+  "ignorePatterns": ["node_modules", "test", "dist", "database/mongodb"]
 }
