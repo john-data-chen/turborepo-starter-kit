@@ -144,3 +144,7 @@ if (isLoading) {
 ```
 
 > Note: `isLoading` is true only on initial load, while `isFetching` is true during any data fetch.
+
+## Technical Decision
+
+- **Database**: [MongoDB](https://www.mongodb.com/), [Docker compose](https://docs.docker.com/compose/), [Mongoose](https://github.com/Automattic/mongoose) - NoSQL database for storing data in a document-oriented format.
