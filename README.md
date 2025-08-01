@@ -179,7 +179,10 @@ pnpm build
 - **Slow response from server**:
   - Server Region: Hong Kong
   - Issue: Sometimes Server response is slow, especially for users are not in Asia
-  - Status: The resource of free tier is limited and no plan of CDN, it won't be fix in the near future
+  - Reason:
+    - The resource of free tier is limited.
+    - In this project, the backend is separated from the original NextJS app into a NestJS app, the response between NextJS and NestJS might be longer.
+  - Solution: I don't have budget for paid tier or CDN, so it won't be fixed in the near future.
 
 ---
 
