@@ -1,8 +1,9 @@
-import { Strategy } from 'passport-custom';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from '../auth.service';
+import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
+import { Strategy } from 'passport-custom';
+
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class EmailStrategy extends PassportStrategy(Strategy, 'email') {

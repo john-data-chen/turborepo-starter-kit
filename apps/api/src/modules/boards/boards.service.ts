@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Board, BoardDocument } from './schemas/boards.schema';
+
 import { CreateBoardDto } from './dto/create-boards.dto';
 import { UpdateBoardDto } from './dto/update-boards.dto';
+import { Board, BoardDocument } from './schemas/boards.schema';
 
 @Injectable()
 export class BoardService {

@@ -1,28 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Req,
+  Get,
   HttpStatus,
-  UnauthorizedException
+  Param,
+  Patch,
+  Post,
+  Req,
+  UnauthorizedException,
+  UseGuards
 } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
   ApiBearerAuth,
-  ApiParam
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags
 } from '@nestjs/swagger';
+import { Request } from 'express';
+
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BoardService } from './boards.service';
 import { CreateBoardDto } from './dto/create-boards.dto';
 import { UpdateBoardDto } from './dto/update-boards.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Request } from 'express';
+import { Board } from './schemas/boards.schema';
 
 interface RequestWithUser extends Request {
   user: {
@@ -30,8 +32,6 @@ interface RequestWithUser extends Request {
     email: string;
   };
 }
-
-import { Board } from './schemas/boards.schema';
 
 @ApiTags('boards')
 @ApiBearerAuth()

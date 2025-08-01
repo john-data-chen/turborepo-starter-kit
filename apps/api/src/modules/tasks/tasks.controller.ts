@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
   Query,
-  UseGuards,
   Req,
-  ParseUUIDPipe
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,13 +17,14 @@ import {
   ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskResponseDto } from './dto/task-response.dto';
-import { TaskStatus } from './schemas/tasks.schema';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskStatus } from './schemas/tasks.schema';
+import { TasksService } from './tasks.service';
 
 @ApiTags('tasks')
 @ApiBearerAuth()

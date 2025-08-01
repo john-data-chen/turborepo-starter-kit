@@ -1,22 +1,31 @@
+// Load environment variables
+import {
+  demoBoards,
+  demoProjects,
+  demoTasks,
+  demoUsers
+} from '@/constants/demoData';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
+import { config } from 'dotenv';
+import { Types } from 'mongoose';
+import { resolve } from 'path';
+import readline from 'readline';
+
+import { Board, BoardSchema } from '@/modules/boards/schemas/boards.schema';
+import {
+  Project,
+  ProjectSchema
+} from '@/modules/projects/schemas/projects.schema';
+import { Task, TaskSchema } from '@/modules/tasks/schemas/tasks.schema';
+import { User, UserSchema } from '@/modules/users/schemas/users.schema';
+
 // This script should only run in Node.js environment
 if (typeof process === 'undefined') {
   throw new Error('This script must be run in a Node.js environment');
 }
-
-// Load environment variables
-import { config } from 'dotenv';
-import { resolve } from 'path';
-import { NestFactory } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
-import { Board, BoardSchema } from '@/modules/boards/schemas/boards.schema';
-import { Project, ProjectSchema } from '@/modules/projects/schemas/projects.schema';
-import { Task, TaskSchema } from '@/modules/tasks/schemas/tasks.schema';
-import { User, UserSchema } from '@/modules/users/schemas/users.schema';
-import { demoProjects, demoTasks, demoUsers, demoBoards } from '@/constants/demoData';
-import readline from 'readline';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -36,27 +45,38 @@ if (!isProduction) {
 
 // 验证必需的环境变量
 const requiredEnvVars = ['DATABASE_URL'];
-const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
-  console.error('\x1b[31mError: The following environment variables are required but missing:\x1b[0m');
-  missingEnvVars.forEach(envVar => console.error(`- ${envVar}`));
+  console.error(
+    '\x1b[31mError: The following environment variables are required but missing:\x1b[0m'
+  );
+  missingEnvVars.forEach((envVar) => console.error(`- ${envVar}`));
   console.error('Current working directory:', process.cwd());
   console.error('NODE_ENV:', process.env.NODE_ENV || 'development');
-  console.error('Environment variables available:', Object.keys(process.env).join(', '));
-  
+  console.error(
+    'Environment variables available:',
+    Object.keys(process.env).join(', ')
+  );
+
   if (!isProduction) {
-    console.error('\nFor local development, please create a .env file in the project root with the required variables.');
+    console.error(
+      '\nFor local development, please create a .env file in the project root with the required variables.'
+    );
   } else {
-    console.error('\nFor production, please make sure all required environment variables are set in your deployment environment.');
+    console.error(
+      '\nFor production, please make sure all required environment variables are set in your deployment environment.'
+    );
   }
-  
+
   process.exit(1);
 }
 
 console.log('Environment:', {
   NODE_ENV: process.env.NODE_ENV || 'development',
-  DATABASE_URL: process.env.DATABASE_URL ? '***' + process.env.DATABASE_URL.split('@').pop() : 'Not set',
+  DATABASE_URL: process.env.DATABASE_URL
+    ? '***' + process.env.DATABASE_URL.split('@').pop()
+    : 'Not set',
   Source: isProduction ? 'process.env (production)' : '.env file (development)'
 });
 
@@ -69,9 +89,9 @@ console.log('Environment:', {
       { name: Board.name, schema: BoardSchema },
       { name: Project.name, schema: ProjectSchema },
       { name: Task.name, schema: TaskSchema },
-      { name: User.name, schema: UserSchema },
-    ]),
-  ],
+      { name: User.name, schema: UserSchema }
+    ])
+  ]
 })
 class AppModule {}
 
@@ -101,7 +121,7 @@ async function main() {
   try {
     // Create NestJS application context
     app = await NestFactory.createApplicationContext(AppModule, {
-      logger: ['error', 'warn', 'log'],
+      logger: ['error', 'warn', 'log']
     });
     // Get the Mongoose connection using the correct token
     const connection = app.get(getConnectionToken());
@@ -154,13 +174,13 @@ async function main() {
       boardModel.deleteMany({}),
       projectModel.deleteMany({}),
       taskModel.deleteMany({}),
-      userModel.deleteMany({}),
+      userModel.deleteMany({})
     ]);
 
     // Insert demo users with explicit _id
     console.log('\x1b[36mInserting demo users...\x1b[0m');
     // Create users with explicit _id
-    const usersToInsert = demoUsers.map(user => ({
+    const usersToInsert = demoUsers.map((user) => ({
       _id: new Types.ObjectId(),
       ...user,
       createdAt: new Date(),
@@ -194,7 +214,7 @@ async function main() {
         members: [markId],
         projects: [], // Will be updated after projects are created
         createdAt: currentDate,
-        updatedAt: currentDate,
+        updatedAt: currentDate
       };
       return boardData;
     });
@@ -209,26 +229,26 @@ async function main() {
 
     // Insert demo projects with required fields
     console.log('\x1b[36mInserting demo projects...\x1b[0m');
-    
+
     // Create projects with proper owner and member assignments
     const projectsWithDefaults = [
       {
         ...demoProjects[0],
         owner: markId,
         members: [markId],
-        board: defaultBoardId,
+        board: defaultBoardId
       },
       {
         ...demoProjects[1],
         owner: johnId,
         members: [johnId],
-        board: createdBoards[3]._id,
+        board: createdBoards[3]._id
       },
       {
         ...demoProjects[2],
         owner: janeId,
         members: [janeId],
-        board: createdBoards[3]._id,
+        board: createdBoards[3]._id
       }
     ];
     const createdProjects = await projectModel.insertMany(projectsWithDefaults);
@@ -239,35 +259,41 @@ async function main() {
       { _id: defaultBoardId },
       {
         $addToSet: {
-          projects: { $each: createdProjects.map(p => p._id) }
+          projects: { $each: createdProjects.map((p) => p._id) }
         }
       }
     );
 
     // Insert demo tasks with default user assignments
     console.log('\x1b[36mInserting demo tasks...\x1b[0m');
-    const tasksWithDefaults = demoTasks.map(task => ({
+    const tasksWithDefaults = demoTasks.map((task) => ({
       ...task,
       project: defaultProjectId, // Assign to first project
-      board: defaultBoardId,     // Assign to first board
+      board: defaultBoardId, // Assign to first board
       assignee: markId,
       creator: markId,
       lastModifier: markId, // Add required lastModifier field
-      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
     }));
     tasksWithDefaults[1].assignee = janeId;
     tasksWithDefaults[1].creator = janeId;
     tasksWithDefaults[1].lastModifier = janeId;
-    tasksWithDefaults[1].dueDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+    tasksWithDefaults[1].dueDate = new Date(
+      Date.now() + 5 * 24 * 60 * 60 * 1000
+    );
     tasksWithDefaults[2].assignee = johnId;
     tasksWithDefaults[2].creator = johnId;
     tasksWithDefaults[2].lastModifier = johnId;
-    tasksWithDefaults[2].dueDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    tasksWithDefaults[2].dueDate = new Date(
+      Date.now() + 3 * 24 * 60 * 60 * 1000
+    );
     await taskModel.insertMany(tasksWithDefaults);
 
     console.log('\x1b[32mDatabase initialized successfully!\x1b[0m');
-    console.log('\x1b[33mYou can now log in with the following test accounts:\x1b[0m');
-    createdUsers.forEach(user => {
+    console.log(
+      '\x1b[33mYou can now log in with the following test accounts:\x1b[0m'
+    );
+    createdUsers.forEach((user) => {
       console.log({
         name: user.name,
         email: user.email

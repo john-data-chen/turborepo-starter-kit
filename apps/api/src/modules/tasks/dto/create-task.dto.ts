@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsString,
-  IsOptional,
   IsDateString,
   IsEnum,
-  IsMongoId
+  IsMongoId,
+  IsOptional,
+  IsString
 } from 'class-validator';
 
 export enum TaskStatus {

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { TaskStatus } from './create-task.dto';
 
 export class TaskResponseDto {

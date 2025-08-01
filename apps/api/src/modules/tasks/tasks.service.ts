@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskResponseDto } from './dto/task-response.dto';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 
 @Injectable()

@@ -1,10 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { API_PORT } from './constants/api';
 import cookieParser from 'cookie-parser';
+
+import { AppModule } from './app.module';
+import { API_PORT } from './constants/api';
 
 declare const module: any;
 
