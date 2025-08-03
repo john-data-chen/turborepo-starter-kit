@@ -5,7 +5,7 @@ import { useBoard } from '@/lib/api/boards/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 type BreadcrumbItem = {
   title: string;
@@ -29,7 +29,7 @@ export function useBreadcrumbs() {
   const { setCurrentBoardId } = useWorkspaceStore();
 
   // Update the current board ID in the workspace store when it changes
-  useMemo(() => {
+  useEffect(() => {
     if (board?._id) {
       setCurrentBoardId(board._id);
     }
