@@ -85,33 +85,55 @@ export const BoardActions = React.forwardRef<
 
   return (
     <>
-      <Dialog open={editEnable} onOpenChange={setEditEnable}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('editBoardTitle')}</DialogTitle>
-            <DialogDescription>{t('editBoardDescription')}</DialogDescription>
-          </DialogHeader>
-          <BoardForm
-            defaultValues={{
-              title: board.title,
-              description: board.description
+      <Dialog
+        open={editEnable}
+        onOpenChange={(open) => {
+          setEditEnable(open);
+        }}
+      >
+        <button
+          type="button"
+          onClick={(e) => e.stopPropagation()}
+          className="w-full text-left"
+          style={{ background: 'transparent', border: 'none', padding: 0 }}
+        >
+          <DialogContent
+            className="sm:max-w-md"
+            onInteractOutside={(e) => {
+              e.preventDefault();
+              setEditEnable(false);
             }}
-            onSubmit={onSubmit}
+            onPointerDownOutside={(e) => {
+              e.preventDefault();
+              setEditEnable(false);
+            }}
           >
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditEnable(false)}
-              >
-                {t('cancel')}
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? t('saving') : t('saveChanges')}
-              </Button>
-            </div>
-          </BoardForm>
-        </DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('editBoardTitle')}</DialogTitle>
+              <DialogDescription>{t('editBoardDescription')}</DialogDescription>
+            </DialogHeader>
+            <BoardForm
+              defaultValues={{
+                title: board.title,
+                description: board.description
+              }}
+              onSubmit={onSubmit}
+            >
+              <div className="flex justify-end gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setEditEnable(false)}
+                >
+                  {t('cancel')}
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? t('saving') : t('saveChanges')}
+                </Button>
+              </div>
+            </BoardForm>
+          </DialogContent>
+        </button>
       </Dialog>
 
       <DropdownMenu modal={false}>
@@ -130,7 +152,13 @@ export const BoardActions = React.forwardRef<
             </Button>
           )}
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent
+          align="end"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
           <DropdownMenuItem
             data-testid="edit-board-button"
             onSelect={() => setEditEnable(true)}
