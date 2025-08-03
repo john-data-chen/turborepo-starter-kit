@@ -8,10 +8,10 @@ import {
   useDeleteBoard,
   useUpdateBoard
 } from '../lib/api/boards/queries';
+import { projectApi } from '../lib/api/projectApi';
 import {
   useCreateProject,
   useDeleteProject,
-  useProjects,
   useUpdateProject
 } from '../lib/api/projects/queries';
 import {
@@ -138,7 +138,7 @@ export const useWorkspaceStore = create<State>()(
         set({ isLoadingProjects: true });
 
         try {
-          const { data: projects } = useProjects(boardId);
+          const projects = await projectApi.getProjects(boardId);
 
           if (projects) {
             set({
