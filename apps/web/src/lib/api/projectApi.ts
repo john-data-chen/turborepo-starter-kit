@@ -37,7 +37,7 @@ async function fetchWithAuth<T>(
 export const projectApi = {
   // Get all projects for a board
   async getProjects(boardId: string): Promise<Project[]> {
-    return fetchWithAuth(`${PROJECTS_ENDPOINT}?board=${boardId}`);
+    return fetchWithAuth(`${PROJECTS_ENDPOINT}?boardId=${boardId}`);
   },
 
   // Get a single project by ID

@@ -11,6 +11,23 @@ export class ProjectsService {
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>
   ) {}
 
+  async findByBoardId(boardId: string): Promise<ProjectDocument[]> {
+    if (!Types.ObjectId.isValid(boardId)) {
+      throw new NotFoundException('Invalid board ID');
+    }
+
+    const projects = await this.projectModel
+      .find({ board: new Types.ObjectId(boardId) })
+      .populate('board', 'title')
+      .lean();
+
+    if (!projects || projects.length === 0) {
+      return [];
+    }
+
+    return projects as ProjectDocument[];
+  }
+
   async checkProjectPermissions(
     projectId: string,
     userId: string
