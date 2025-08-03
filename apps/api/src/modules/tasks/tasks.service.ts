@@ -50,7 +50,8 @@ export class TasksService {
     const query: any = {};
 
     if (projectId) {
-      query.project = projectId;
+      // Convert projectId to ObjectId for the query
+      query.project = new Types.ObjectId(projectId);
     }
 
     if (assigneeId) {
