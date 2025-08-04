@@ -4,13 +4,13 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
   Query,
   Req,
   UseGuards
 } from '@nestjs/common';
+import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -75,7 +75,7 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<TaskResponseDto> {
+  findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<TaskResponseDto> {
     return this.tasksService.findOne(id);
   }
 
@@ -90,7 +90,7 @@ export class TasksController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req
   ): Promise<TaskResponseDto> {
@@ -102,7 +102,7 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Task deleted successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  remove(@Param('id', ParseObjectIdPipe) id: string): Promise<void> {
     return this.tasksService.remove(id);
   }
 
@@ -116,7 +116,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getTaskPermissions(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Req() req
   ): Promise<TaskPermissionsDto> {
     return this.tasksService.checkTaskPermissions(id, req.user.userId);
@@ -133,7 +133,7 @@ export class TasksController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   updateStatus(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body('status') status: TaskStatus,
     @Req() req
   ): Promise<TaskResponseDto> {

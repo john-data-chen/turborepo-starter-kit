@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
-import { Board, Project } from '@/types/dbInterface';
+import { taskApi } from '@/lib/api/taskApi';
+import { Board, Project, Task } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -45,6 +46,7 @@ interface State {
 
   // Actions
   fetchProjects: (boardId: string) => Promise<void>;
+  fetchTasksByProject: (projectId: string) => Promise<Task[]>;
   addProject: (title: string, description: string) => Promise<string>;
   updateProject: (
     id: string,
@@ -155,6 +157,40 @@ export const useWorkspaceStore = create<State>()(
           set({ projects: [] });
         } finally {
           set({ isLoadingProjects: false });
+        }
+      },
+
+      // Fetch tasks for a specific project
+      fetchTasksByProject: async (projectId: string) => {
+        if (!projectId) {
+          console.log('No project ID provided to fetchTasksByProject');
+          return [];
+        }
+
+        console.log('Fetching tasks for project:', projectId);
+        
+        try {
+          // Ensure we're using the correct parameter name that matches the backend
+          const tasks = await taskApi.getTasks(projectId);
+          console.log('Fetched tasks for project', projectId, ':', tasks);
+          
+          if (!Array.isArray(tasks)) {
+            console.error('Invalid tasks data received:', tasks);
+            return [];
+          }
+
+          // Update the tasks for this project in the store
+          set((state) => {
+            const updatedProjects = state.projects.map((project) =>
+              project._id === projectId ? { ...project, tasks } : project
+            );
+            return { projects: updatedProjects };
+          });
+
+          return tasks;
+        } catch (error) {
+          console.error('Error fetching tasks for project:', error);
+          return [];
         }
       },
 

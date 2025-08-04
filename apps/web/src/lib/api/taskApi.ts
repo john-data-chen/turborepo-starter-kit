@@ -53,7 +53,9 @@ export const taskApi = {
 
   // Get a single task by ID
   async getTaskById(id: string): Promise<Task> {
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`);
+    // Ensure the ID is properly encoded to handle special characters
+    const encodedId = encodeURIComponent(id);
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`);
   },
 
   // Create a new task

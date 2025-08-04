@@ -35,7 +35,8 @@ export class TasksService {
   ): Promise<TaskResponseDto> {
     const createdTask = new this.taskModel({
       ...createTaskDto,
-      creator: userId,
+      creator: new Types.ObjectId(userId),
+      status: createTaskDto.status || TaskStatus.TODO,
       lastModifier: userId
     });
 
@@ -71,11 +72,21 @@ export class TasksService {
     );
   }
 
-  async findOne(id: string): Promise<TaskResponseDto> {
-    const task = await this.taskModel.findById(id).exec();
+  async findOne(id: string | Types.ObjectId): Promise<TaskResponseDto> {
+    // Convert string ID to ObjectId if needed
+    const taskId = typeof id === 'string' ? new Types.ObjectId(id) : id;
+    
+    const task = await this.taskModel
+      .findById(taskId)
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('project', 'title')
+      .exec();
+      
     if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+    
     return this.toTaskResponse(task);
   }
 

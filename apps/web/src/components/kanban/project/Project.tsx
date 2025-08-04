@@ -4,13 +4,13 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useWorkspaceStore } from '@/stores/workspace-store';
-import { Project, Task } from '@/types/dbInterface';
+import { Project, type Task } from '@/types/dbInterface';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { PointerIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import NewTaskDialog from '../task/NewTaskDialog';
 import { TaskCard } from '../task/TaskCard';
 import { ProjectActions } from './ProjectAction';
@@ -26,19 +26,44 @@ interface BoardProjectProps {
   isOverlay?: boolean;
 }
 
-export function BoardProject({ project, tasks, isOverlay }: BoardProjectProps) {
-  const { filter } = useWorkspaceStore();
+export function BoardProject({ project, tasks: initialTasks, isOverlay }: BoardProjectProps) {
+  const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations('kanban.project');
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [_isLoading, setIsLoading] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
+
+  // Fetch tasks when the component mounts or when the project changes
+  useEffect(() => {
+    const loadTasks = async () => {
+      if (!project?._id) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const fetchedTasks = await fetchTasksByProject(project._id);
+        setTasks(fetchedTasks);
+      } catch (err) {
+        console.error('Failed to load tasks:', err);
+        setError('Failed to load tasks');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTasks();
+  }, [project?._id, fetchTasksByProject]);
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks.length) return tasks;
+    if (!filter.status || !tasks?.length) return tasks || [];
     return tasks.filter((task) => task.status === filter.status);
   }, [tasks, filter.status]);
 
   // Memoize task IDs for better performance
   const tasksIds = useMemo(
-    () => project.tasks.map((task) => task._id),
-    [project.tasks]
+    () => tasks?.map((task) => task._id) || [],
+    [tasks]
   );
 
   // Setup drag & drop functionality
