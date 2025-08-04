@@ -5,6 +5,17 @@ import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Board } from '@/types/dbInterface';
 import { useEffect, useMemo } from 'react';
 
+// Helper function to ensure consistent board data structure
+function normalizeBoard(board: Board): Board {
+  return {
+    ...board,
+    // Ensure members is always an array
+    members: Array.isArray(board.members) ? board.members : [],
+    // Ensure projects is always an array
+    projects: Array.isArray(board.projects) ? board.projects : [],
+  };
+}
+
 export function useBoards() {
   const { userId } = useWorkspaceStore();
   const { data, isLoading, error, refetch } = useApiBoards();
@@ -29,8 +40,8 @@ export function useBoards() {
     // If we have separate myBoards and teamBoards from the API
     if ('myBoards' in data && 'teamBoards' in data) {
       return {
-        myBoards: data.myBoards || [],
-        teamBoards: data.teamBoards || []
+        myBoards: (data.myBoards || []).map(normalizeBoard),
+        teamBoards: (data.teamBoards || []).map(normalizeBoard)
       };
     }
 
@@ -40,10 +51,15 @@ export function useBoards() {
     const teamBoards: Board[] = [];
 
     boards.forEach((board: Board) => {
-      if (board.owner._id === userId) {
-        myBoards.push(board);
+      const normalizedBoard = normalizeBoard(board);
+      const ownerId = typeof normalizedBoard.owner === 'string' 
+        ? normalizedBoard.owner 
+        : normalizedBoard.owner?._id;
+
+      if (ownerId === userId) {
+        myBoards.push(normalizedBoard);
       } else {
-        teamBoards.push(board);
+        teamBoards.push(normalizedBoard);
       }
     });
 

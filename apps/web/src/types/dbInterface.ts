@@ -66,9 +66,9 @@ export interface Board {
   _id: string;
   title: string;
   description?: string;
-  owner: UserInfo;
+  owner: string | UserInfo;  // Can be string (ID) or UserInfo object
   members: UserInfo[];
   projects: Project[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }

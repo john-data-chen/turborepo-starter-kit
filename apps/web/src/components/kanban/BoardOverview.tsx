@@ -282,7 +282,7 @@ export function BoardOverview() {
                         </p>
                         <div className="mt-2 space-y-1">
                           <p className="text-sm">
-                            {t('owner')}: {board.owner.name}
+                            {t('owner')}: {typeof board.owner === 'string' ? board.owner : board.owner?.name || 'Unknown'}
                           </p>
                           <p className="text-sm">
                             {t('projects')}:{' '}

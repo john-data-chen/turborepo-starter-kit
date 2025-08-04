@@ -65,6 +65,17 @@ export class BoardService {
         },
         { $unwind: '$owner' },
         {
+          $project: {
+            title: 1,
+            description: 1,
+            owner: 1,
+            members: 1,
+            projects: 1,
+            createdAt: 1,
+            updatedAt: 1
+          }
+        },
+        {
           $lookup: {
             from: 'users',
             localField: 'members',
@@ -120,6 +131,7 @@ export class BoardService {
           $project: {
             _id: 1,
             title: 1,
+            description: 1,
             owner: {
               _id: 1,
               name: 1,
@@ -130,7 +142,9 @@ export class BoardService {
               name: 1,
               email: 1
             },
-            projects: 1
+            projects: 1,
+            createdAt: 1,
+            updatedAt: 1
           }
         }
       ]);
@@ -138,12 +152,12 @@ export class BoardService {
         `[BoardService] Found ${ownedBoards.length} boards where user is owner`
       );
 
-      // Then find boards where user is a member
+      // Then find boards where user is a member but not the owner
       const memberBoards = await this.boardModel.aggregate([
         {
           $match: {
-            _id: { $nin: ownedBoards.map((b) => b._id) },
-            members: new Types.ObjectId(userId)
+            members: new Types.ObjectId(userId),
+            owner: { $ne: new Types.ObjectId(userId) }
           }
         },
         {
@@ -211,6 +225,7 @@ export class BoardService {
           $project: {
             _id: 1,
             title: 1,
+            description: 1,
             owner: {
               _id: 1,
               name: 1,
@@ -221,7 +236,9 @@ export class BoardService {
               name: 1,
               email: 1
             },
-            projects: 1
+            projects: 1,
+            createdAt: 1,
+            updatedAt: 1
           }
         }
       ]);
@@ -344,6 +361,7 @@ export class BoardService {
           $project: {
             _id: 1,
             title: 1,
+            description: 1,
             owner: {
               _id: 1,
               name: 1,
@@ -354,7 +372,9 @@ export class BoardService {
               name: 1,
               email: 1
             },
-            projects: 1
+            projects: 1,
+            createdAt: 1,
+            updatedAt: 1
           }
         },
         { $limit: 1 }
