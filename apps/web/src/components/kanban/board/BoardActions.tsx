@@ -47,7 +47,7 @@ interface BoardActionsProps {
 export const BoardActions = React.forwardRef<
   HTMLButtonElement,
   BoardActionsProps
->(({ board, onDelete, asChild = false, className, children }, ref) => {
+>(({ board, onDelete, asChild = false, children }, ref) => {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -146,52 +146,60 @@ export const BoardActions = React.forwardRef<
           setEditEnable(open);
         }}
       >
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={(e) => {
             e.preventDefault();
+            setEditEnable(false);
           }}
-          className={`w-full text-left ${className || ''}`}
-          style={{ background: 'transparent', border: 'none', padding: 0 }}
+          onPointerDownOutside={(e) => {
+            e.preventDefault();
+            setEditEnable(false);
+          }}
+          onKeyDown={(e) => {
+            // Prevent form submission on Enter key in input fields
+            if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+              e.stopPropagation();
+            }
+          }}
         >
-          <DialogContent
-            className="sm:max-w-md"
-            onInteractOutside={(e) => {
-              e.preventDefault();
-              setEditEnable(false);
+          <DialogHeader>
+            <DialogTitle>{t('editBoardTitle')}</DialogTitle>
+            <DialogDescription>{t('editBoardDescription')}</DialogDescription>
+          </DialogHeader>
+          <BoardForm
+            defaultValues={{
+              title: board.title,
+              description: board.description || ''
             }}
-            onPointerDownOutside={(e) => {
-              e.preventDefault();
-              setEditEnable(false);
+            onSubmit={async (values: z.infer<typeof boardSchema>) => {
+              await onSubmit(values);
             }}
           >
-            <DialogHeader>
-              <DialogTitle>{t('editBoardTitle')}</DialogTitle>
-              <DialogDescription>{t('editBoardDescription')}</DialogDescription>
-            </DialogHeader>
-            <BoardForm
-              defaultValues={{
-                title: board.title,
-                description: board.description
-              }}
-              onSubmit={onSubmit}
-            >
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setEditEnable(false)}
-                >
-                  {t('cancel')}
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? t('saving') : t('saveChanges')}
-                </Button>
-              </div>
-            </BoardForm>
-          </DialogContent>
-        </button>
+            <div className="flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setEditEnable(false);
+                }}
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                {isSubmitting ? t('saving') : t('saveChanges')}
+              </Button>
+            </div>
+          </BoardForm>
+        </DialogContent>
       </Dialog>
 
       <DropdownMenu modal={false}>
