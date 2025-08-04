@@ -19,7 +19,7 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { BoardActions } from './board/BoardActions';
 import NewBoardDialog from './board/NewBoardDialog';
@@ -38,6 +38,61 @@ export function BoardOverview() {
   const tLogin = useTranslations('login');
   const { setUserInfo } = useWorkspaceStore();
   const { setSession } = useAuthStore();
+  const [recentlyDeleted, setRecentlyDeleted] = useState<Set<string>>(
+    new Set()
+  );
+
+  // Handle board click with proper event handling
+  const handleBoardClick = useCallback(
+    (boardId: string, e?: React.MouseEvent) => {
+      // Always prevent default to avoid any default link behavior
+      e?.preventDefault();
+      e?.stopPropagation();
+
+      // If this is a click on the actions menu or a recently deleted board, don't navigate
+      const isActionsClick = (e?.target as HTMLElement)?.closest(
+        '.board-actions'
+      );
+
+      if (recentlyDeleted.has(boardId) || isActionsClick) {
+        return;
+      }
+
+      // Only navigate if we have a valid board ID and it's not recently deleted
+      if (boardId && !recentlyDeleted.has(boardId)) {
+        router.push(`/boards/${boardId}`);
+      }
+    },
+    [recentlyDeleted, router]
+  );
+
+  // Handle board deletion
+  const handleBoardDelete = useCallback(
+    (boardId: string) => {
+      // Store the current path
+      const currentPath = window.location.pathname;
+
+      // Add to recently deleted set
+      setRecentlyDeleted((prev) => new Set(prev).add(boardId));
+
+      // Immediately redirect to /boards if we're on a board page
+      if (currentPath.includes(`/board/`)) {
+        window.location.href = '/boards';
+        return;
+      }
+
+      // Refresh the board list
+      refresh();
+
+      // Force a hard refresh to ensure we're on the correct page
+      if (!currentPath.endsWith('/boards')) {
+        window.location.href = '/boards';
+      } else {
+        window.location.reload();
+      }
+    },
+    [refresh]
+  );
 
   // Handle login success and user data initialization
   useEffect(() => {
@@ -118,10 +173,6 @@ export function BoardOverview() {
   const shouldShowMyBoards = filter === 'all' || filter === 'my';
   const shouldShowTeamBoards = filter === 'all' || filter === 'team';
 
-  const handleBoardClick = (boardId: string) => {
-    router.push(`/boards/${boardId}`);
-  };
-
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-4 bg-background sticky top-0 z-10">
@@ -200,7 +251,12 @@ export function BoardOverview() {
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>{board.title}</CardTitle>
-                        <BoardActions board={board} asChild>
+                        <BoardActions
+                          board={board}
+                          asChild
+                          className="board-actions"
+                          onDelete={() => handleBoardDelete(board._id)}
+                        >
                           <Button
                             variant="ghost"
                             size="icon"
@@ -282,7 +338,10 @@ export function BoardOverview() {
                         </p>
                         <div className="mt-2 space-y-1">
                           <p className="text-sm">
-                            {t('owner')}: {typeof board.owner === 'string' ? board.owner : board.owner?.name || 'Unknown'}
+                            {t('owner')}:{' '}
+                            {typeof board.owner === 'string'
+                              ? board.owner
+                              : board.owner?.name || 'Unknown'}
                           </p>
                           <p className="text-sm">
                             {t('projects')}:{' '}

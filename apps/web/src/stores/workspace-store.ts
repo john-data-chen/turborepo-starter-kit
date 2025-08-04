@@ -1,13 +1,10 @@
-import { taskApi } from '@/lib/api/taskApi';
 import { boardApi } from '@/lib/api/boardApi';
+import { taskApi } from '@/lib/api/taskApi';
 import { Board, Project, Task } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
-  useDeleteBoard,
-  useUpdateBoard
-} from '../lib/api/boards/queries';
+import { useUpdateBoard } from '../lib/api/boards/queries';
 import { projectApi } from '../lib/api/projectApi';
 import {
   useCreateProject,
@@ -81,7 +78,10 @@ interface State {
   setCurrentBoardId: (boardId: string) => void;
   addBoard: (title: string, description?: string) => Promise<string>;
   updateBoard: (id: string, data: Partial<Board>) => Promise<void>;
-  removeBoard: (id: string) => Promise<void>;
+  removeBoard: (
+    id: string,
+    deleteFn: (id: string) => Promise<void>
+  ) => Promise<void>;
 
   // UI state
   setFilter: (filter: Partial<State['filter']>) => void;
@@ -471,10 +471,12 @@ export const useWorkspaceStore = create<State>()(
         }
       },
 
-      removeBoard: async (id: string) => {
+      removeBoard: async (
+        id: string,
+        deleteFn: (id: string) => Promise<void>
+      ) => {
         try {
-          const deleteBoard = useDeleteBoard();
-          await deleteBoard.mutateAsync(id);
+          await deleteFn(id);
 
           // Update state to remove the deleted board
           set((state) => ({

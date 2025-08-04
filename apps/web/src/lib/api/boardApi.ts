@@ -89,9 +89,46 @@ export const boardApi = {
 
   // Delete a board
   async deleteBoard(id: string): Promise<void> {
-    await fetchWithAuth(`${BOARDS_ENDPOINT}/${id}`, {
-      method: 'DELETE'
-    });
+    try {
+      const response = await fetch(`${BOARDS_ENDPOINT}/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log(`Delete board ${id} response status:`, response.status);
+
+      // For 204 No Content responses, we don't expect a response body
+      if (response.status === 204) {
+        return;
+      }
+
+      // For other successful responses, try to parse the response
+      if (response.ok) {
+        const responseText = await response.text();
+        if (!responseText) {
+          return; // Empty response is acceptable for DELETE
+        }
+        return JSON.parse(responseText);
+      }
+
+      // Handle error responses
+      const errorText = await response.text();
+      let errorMessage = 'Failed to delete board';
+      try {
+        const errorData = errorText ? JSON.parse(errorText) : {};
+        errorMessage = errorData.message || response.statusText || errorMessage;
+      } catch (e) {
+        errorMessage = errorText || errorMessage;
+        console.error('Error parsing error response:', e);
+      }
+      throw new Error(errorMessage);
+    } catch (error) {
+      console.error('Error in deleteBoard:', error);
+      throw error;
+    }
   },
 
   // Add a member to a board

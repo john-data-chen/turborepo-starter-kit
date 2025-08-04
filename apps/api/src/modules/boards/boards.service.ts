@@ -15,18 +15,20 @@ export class BoardService {
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
     // Convert owner string to ObjectId
     const ownerId = new Types.ObjectId(createBoardDto.owner);
-    
+
     // Create the board with the owner as ObjectId
     const createdBoard = new this.boardModel({
       ...createBoardDto,
       owner: ownerId,
       // Add owner to members if not already present
-      members: [...new Set([
-        ownerId,
-        ...(createBoardDto.members || []).map(id => new Types.ObjectId(id))
-      ])]
+      members: [
+        ...new Set([
+          ownerId,
+          ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))
+        ])
+      ]
     });
-    
+
     return createdBoard.save();
   }
 
@@ -416,13 +418,38 @@ export class BoardService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    const result = await this.boardModel
-      .deleteOne({ _id: id, owner: userId })
-      .exec();
+    console.log(
+      `[BoardService] Attempting to delete board ${id} for user ${userId}`
+    );
 
-    if (result.deletedCount === 0) {
+    // First, check if the board exists and the user has permission
+    const board = await this.boardModel.findById(id).exec();
+
+    if (!board) {
+      console.error(`[BoardService] Board with ID "${id}" not found`);
       throw new NotFoundException(`Board with ID "${id}" not found`);
     }
+
+    // Check if the user is the owner
+    if (board.owner.toString() !== userId) {
+      console.error(
+        `[BoardService] User ${userId} is not the owner of board ${id}`
+      );
+      throw new NotFoundException(`Board with ID "${id}" not found`);
+    }
+
+    // If we get here, the board exists and the user is the owner, so delete it
+    const result = await this.boardModel.deleteOne({ _id: id }).exec();
+
+    if (result.deletedCount === 0) {
+      // This should theoretically never happen because we already checked the board exists
+      console.error(
+        `[BoardService] Failed to delete board ${id} for unknown reason`
+      );
+      throw new NotFoundException(`Failed to delete board with ID "${id}"`);
+    }
+
+    console.log(`[BoardService] Successfully deleted board ${id}`);
   }
 
   // Additional methods for board management

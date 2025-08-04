@@ -12,7 +12,7 @@ function normalizeBoard(board: Board): Board {
     // Ensure members is always an array
     members: Array.isArray(board.members) ? board.members : [],
     // Ensure projects is always an array
-    projects: Array.isArray(board.projects) ? board.projects : [],
+    projects: Array.isArray(board.projects) ? board.projects : []
   };
 }
 
@@ -52,9 +52,10 @@ export function useBoards() {
 
     boards.forEach((board: Board) => {
       const normalizedBoard = normalizeBoard(board);
-      const ownerId = typeof normalizedBoard.owner === 'string' 
-        ? normalizedBoard.owner 
-        : normalizedBoard.owner?._id;
+      const ownerId =
+        typeof normalizedBoard.owner === 'string'
+          ? normalizedBoard.owner
+          : normalizedBoard.owner?._id;
 
       if (ownerId === userId) {
         myBoards.push(normalizedBoard);
