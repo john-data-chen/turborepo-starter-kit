@@ -71,11 +71,13 @@ export class ProjectsService {
       throw new BadRequestException('Invalid board ID');
     }
 
+    const ownerId = new Types.ObjectId(creatorId);
     const createdProject = new this.projectModel({
       title,
       description,
       board: new Types.ObjectId(boardId),
-      owner: new Types.ObjectId(creatorId)
+      owner: ownerId,
+      members: [ownerId] // Add the owner to members array by default
     });
 
     return createdProject.save();
