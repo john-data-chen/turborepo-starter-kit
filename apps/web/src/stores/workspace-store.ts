@@ -1,11 +1,10 @@
-import { useAuth } from '@/hooks/useAuth';
 import { taskApi } from '@/lib/api/taskApi';
+import { boardApi } from '@/lib/api/boardApi';
 import { Board, Project, Task } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
-  useCreateBoard,
   useDeleteBoard,
   useUpdateBoard
 } from '../lib/api/boards/queries';
@@ -429,37 +428,19 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated');
           }
 
-          const createBoard = useCreateBoard();
-          const newBoard = await createBoard.mutateAsync({
+          // Call the API to create the board with the current user as owner
+          const newBoard = await boardApi.createBoard({
             title,
-            description
+            description,
+            owner: userId // Add the current user's ID as the board owner
           });
 
           if (newBoard) {
-            // Add to myBoards since the current user is the owner
-            const session = useAuth();
-            const currentUser = session.user;
-
-            if (!currentUser) {
-              throw new Error('User session not found');
-            }
-
-            const boardWithOwner: Board = {
-              ...newBoard,
-              owner: {
-                _id: userId,
-                name: currentUser.name,
-                email: currentUser.email
-              },
-              members: [],
-              projects: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-
+            // Add the new board to the myBoards array
             set((state) => ({
-              myBoards: [...state.myBoards, boardWithOwner]
+              myBoards: [...state.myBoards, newBoard]
             }));
+
             return newBoard._id;
           }
 

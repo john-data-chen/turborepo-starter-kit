@@ -13,7 +13,20 @@ export class BoardService {
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
-    const createdBoard = new this.boardModel(createBoardDto);
+    // Convert owner string to ObjectId
+    const ownerId = new Types.ObjectId(createBoardDto.owner);
+    
+    // Create the board with the owner as ObjectId
+    const createdBoard = new this.boardModel({
+      ...createBoardDto,
+      owner: ownerId,
+      // Add owner to members if not already present
+      members: [...new Set([
+        ownerId,
+        ...(createBoardDto.members || []).map(id => new Types.ObjectId(id))
+      ])]
+    });
+    
     return createdBoard.save();
   }
 
