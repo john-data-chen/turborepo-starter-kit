@@ -10,7 +10,6 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common';
-import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -18,6 +17,7 @@ import {
   ApiTags
 } from '@nestjs/swagger';
 
+import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
@@ -75,7 +75,9 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<TaskResponseDto> {
+  findOne(
+    @Param('id', ParseObjectIdPipe) id: string
+  ): Promise<TaskResponseDto> {
     return this.tasksService.findOne(id);
   }
 

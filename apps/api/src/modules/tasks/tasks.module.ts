@@ -11,10 +11,7 @@ import { TasksService } from './tasks.service';
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }])
   ],
   controllers: [TasksController],
-  providers: [
-    TasksService,
-    ParseObjectIdPipe
-  ],
+  providers: [TasksService, ParseObjectIdPipe],
   exports: [TasksService]
 })
 export class TasksModule {}

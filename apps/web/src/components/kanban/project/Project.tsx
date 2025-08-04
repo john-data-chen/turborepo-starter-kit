@@ -10,7 +10,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { PointerIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import NewTaskDialog from '../task/NewTaskDialog';
 import { TaskCard } from '../task/TaskCard';
 import { ProjectActions } from './ProjectAction';
@@ -26,7 +26,11 @@ interface BoardProjectProps {
   isOverlay?: boolean;
 }
 
-export function BoardProject({ project, tasks: initialTasks, isOverlay }: BoardProjectProps) {
+export function BoardProject({
+  project,
+  tasks: initialTasks,
+  isOverlay
+}: BoardProjectProps) {
   const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations('kanban.project');
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -37,10 +41,10 @@ export function BoardProject({ project, tasks: initialTasks, isOverlay }: BoardP
   useEffect(() => {
     const loadTasks = async () => {
       if (!project?._id) return;
-      
+
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const fetchedTasks = await fetchTasksByProject(project._id);
         setTasks(fetchedTasks);
@@ -61,10 +65,7 @@ export function BoardProject({ project, tasks: initialTasks, isOverlay }: BoardP
   }, [tasks, filter.status]);
 
   // Memoize task IDs for better performance
-  const tasksIds = useMemo(
-    () => tasks?.map((task) => task._id) || [],
-    [tasks]
-  );
+  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
 
   // Setup drag & drop functionality
   const {

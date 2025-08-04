@@ -168,12 +168,12 @@ export const useWorkspaceStore = create<State>()(
         }
 
         console.log('Fetching tasks for project:', projectId);
-        
+
         try {
           // Ensure we're using the correct parameter name that matches the backend
           const tasks = await taskApi.getTasks(projectId);
           console.log('Fetched tasks for project', projectId, ':', tasks);
-          
+
           if (!Array.isArray(tasks)) {
             console.error('Invalid tasks data received:', tasks);
             return [];
