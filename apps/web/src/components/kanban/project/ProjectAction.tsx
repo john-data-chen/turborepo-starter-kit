@@ -58,7 +58,7 @@ export function ProjectActions({
     canEditProject: boolean;
     canDeleteProject: boolean;
   } | null>(null);
-  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false); // Initialize to false
+  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false);
   const deleteProjectMutation = useDeleteProject();
   const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
@@ -67,21 +67,35 @@ export function ProjectActions({
 
   async function fetchProjectPermissions() {
     if (!id) {
+      console.error('No project ID provided');
       setIsLoadingPermissions(false);
       setPermissions({ canEditProject: false, canDeleteProject: false });
       return;
     }
 
+    // Ensure the ID is a string and trim any whitespace
+    const projectId = String(id).trim();
+    
+    // Basic validation for MongoDB ObjectId format
+    const isValidId = /^[0-9a-fA-F]{24}$/.test(projectId);
+    
+    if (!isValidId) {
+      console.error('Invalid project ID format:', projectId);
+      setPermissions({ canEditProject: false, canDeleteProject: false });
+      setIsLoadingPermissions(false);
+      return;
+    }
+
     setIsLoadingPermissions(true);
+    
     try {
-      const permissions = await projectApi.getProjectPermissions(id);
+      console.log('Fetching permissions for project ID:', projectId);
+      const permissions = await projectApi.getProjectPermissions(projectId);
       setPermissions(permissions);
     } catch (error) {
       console.error('Error fetching project permissions:', error);
+      // Set default permissions to most restrictive without showing error message
       setPermissions({ canEditProject: false, canDeleteProject: false });
-      toast.error(
-        t('loadPermissionsFailed', { error: (error as Error).message })
-      );
     } finally {
       setIsLoadingPermissions(false);
     }
@@ -159,13 +173,14 @@ export function ProjectActions({
             }}
             disabled={isLoadingPermissions || !permissions?.canEditProject}
             className={
-              !isLoadingPermissions && !permissions?.canEditProject
+              !permissions?.canEditProject || isLoadingPermissions
                 ? 'text-muted-foreground line-through cursor-not-allowed'
                 : ''
             }
             data-testid="edit-project-button"
           >
             {t('edit')}
+            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -175,16 +190,15 @@ export function ProjectActions({
               }
             }}
             disabled={isLoadingPermissions || !permissions?.canDeleteProject}
-            className={`
-              ${
-                isLoadingPermissions || !permissions?.canDeleteProject
-                  ? 'text-muted-foreground line-through cursor-not-allowed'
-                  : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
-              }
-            `}
+            className={
+              !permissions?.canDeleteProject || isLoadingPermissions
+                ? 'text-muted-foreground line-through cursor-not-allowed'
+                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+            }
             data-testid="delete-project-button"
           >
             {t('delete')}
+            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

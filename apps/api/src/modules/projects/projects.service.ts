@@ -39,29 +39,57 @@ export class ProjectsService {
     projectId: string,
     userId: string
   ): Promise<ProjectPermissionsDto> {
-    const project = (await this.projectModel
-      .findById(projectId)
-      .populate<{ board: { owner: Types.ObjectId } }>('board', 'owner')
-      .lean()) as unknown as ProjectDocument & {
-      board: { owner: Types.ObjectId };
-    };
-
-    if (!project) {
-      throw new NotFoundException('Project not found');
+    // Input validation
+    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid project or user ID');
     }
 
-    const projectOwnerId = project.owner.toString();
-    const boardOwnerId = project.board.owner.toString();
-    const currentUserId = userId.toString();
+    try {
+      // Find the project with board and owner information
+      const project = await this.projectModel
+        .findById(projectId)
+        .populate({
+          path: 'board',
+          select: 'owner',
+          populate: {
+            path: 'owner',
+            select: '_id'
+          }
+        })
+        .lean();
 
-    const isProjectOwner = projectOwnerId === currentUserId;
-    const isBoardOwner = boardOwnerId === currentUserId;
-    const canModify = isProjectOwner || isBoardOwner;
+      if (!project) {
+        throw new NotFoundException('Project not found');
+      }
 
-    return {
-      canEditProject: canModify,
-      canDeleteProject: canModify
-    };
+      // Type assertion for the populated board
+      const board = project.board as unknown as { owner: Types.ObjectId };
+      if (!board?.owner) {
+        throw new NotFoundException('Board owner information not found');
+      }
+
+      // Get owner IDs as strings for comparison
+      const projectOwnerId = project.owner?.toString();
+      const boardOwnerId = board.owner.toString();
+      const currentUserId = new Types.ObjectId(userId).toString();
+
+      // Check permissions
+      const isProjectOwner = projectOwnerId === currentUserId;
+      const isBoardOwner = boardOwnerId === currentUserId;
+      const canModify = isProjectOwner || isBoardOwner;
+
+      return {
+        canEditProject: canModify,
+        canDeleteProject: canModify
+      };
+    } catch (error) {
+      console.error('Error checking project permissions:', error);
+      // Default to most restrictive permissions on error
+      return {
+        canEditProject: false,
+        canDeleteProject: false
+      };
+    }
   }
 
   async create(

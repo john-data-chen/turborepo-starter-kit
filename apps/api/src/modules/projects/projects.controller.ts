@@ -72,8 +72,9 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Check user permissions for a project' })
   async getProjectPermissions(
     @Param('id') projectId: string,
-    @CurrentUser() user: { userId: string }
+    @CurrentUser() user: { id: string; email: string }
   ): Promise<ProjectPermissionsDto> {
-    return this.projectsService.checkProjectPermissions(projectId, user.userId);
+    console.log('Current user in permissions endpoint:', { userId: user.id, email: user.email });
+    return this.projectsService.checkProjectPermissions(projectId, user.id);
   }
 }
