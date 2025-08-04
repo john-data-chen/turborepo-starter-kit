@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useWorkspaceStore } from '@/stores/workspace-store';
-import { Project, type Task } from '@/types/dbInterface';
+import { Project, type Task, UserInfo } from '@/types/dbInterface';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
@@ -36,6 +36,17 @@ export function BoardProject({
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [_isLoading, setIsLoading] = useState(false);
   const [_error, setError] = useState<string | null>(null);
+
+  // Helper function to get display name from user object or ID
+  const getUserDisplayName = (
+    user: string | UserInfo | null | undefined
+  ): string => {
+    if (!user) return 'Unknown';
+    if (typeof user === 'string') return user;
+    return user.name || user.email || user._id || 'Unknown';
+  };
+
+  console.log('project:', JSON.stringify(project));
 
   // Fetch tasks when the component mounts or when the project changes
   useEffect(() => {
@@ -145,12 +156,17 @@ export function BoardProject({
               {t('description')}: {project.description || t('noDescription')}
             </Badge>
             <Badge variant="outline" className="text-xs truncate">
-              {t('owner')}: {project.owner.name}
+              {t('owner')}: {getUserDisplayName(project.owner)}
             </Badge>
-            <Badge variant="outline" className="text-xs truncate">
-              {t('members')}:{' '}
-              {project.members.map((member) => member.name).join(', ')}
-            </Badge>
+            {Array.isArray(project.members) && project.members.length > 0 && (
+              <Badge variant="outline" className="text-xs truncate">
+                {t('members')}:{' '}
+                {project.members
+                  .map((member) => getUserDisplayName(member))
+                  .filter(Boolean)
+                  .join(', ')}
+              </Badge>
+            )}
           </div>
           <div className="px-2">
             <NewTaskDialog projectId={project._id} />

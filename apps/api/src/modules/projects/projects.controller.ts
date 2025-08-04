@@ -42,11 +42,12 @@ export class ProjectsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() createProjectDto: CreateProjectDto,
-    @CurrentUser() user: { userId: string }
+    @CurrentUser() user: { id: string; email: string }
   ) {
+    console.log('Current user in controller:', user);
     return this.projectsService.create({
       ...createProjectDto,
-      creatorId: user.userId
+      creatorId: user.id
     });
   }
 

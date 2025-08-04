@@ -2,12 +2,12 @@ export interface Project {
   _id: string;
   title: string;
   description?: string;
-  owner: UserInfo;
-  members: UserInfo[];
+  owner: string | UserInfo;
+  members: Array<string | UserInfo>;
   createdAt: string;
   updatedAt: string;
   tasks: Task[];
-  board: string;
+  board: string | { _id: string; title: string };
 }
 
 export interface User {
