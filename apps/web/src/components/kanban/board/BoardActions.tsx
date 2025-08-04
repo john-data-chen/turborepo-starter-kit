@@ -24,7 +24,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-// Import hooks directly from the board API
 import { useDeleteBoard, useUpdateBoard } from '@/lib/api/boards/queries';
 import { boardSchema } from '@/types/boardForm';
 import { Board } from '@/types/dbInterface';
@@ -61,29 +60,44 @@ export const BoardActions = React.forwardRef<
 
   const onSubmit = async (values: z.infer<typeof boardSchema>) => {
     try {
+      if (!board?._id) {
+        throw new Error('Board ID is missing');
+      }
+
       setIsSubmitting(true);
       await updateBoard.mutateAsync(
         { id: board._id, ...values },
         {
           onSuccess: () => {
             setEditEnable(false);
-            toast.success(t('boardUpdated'));
+            toast.success(t('boardUpdated', { title: board.title }));
             // The query invalidation is handled by the mutation's onSuccess
             router.refresh();
           },
           onError: (error: Error) => {
             console.error('Error updating board:', error);
-            toast.error(t('boardUpdateFailed', { error: error.message }));
+
+            if (error.message.includes('not found')) {
+              // If board is not found, refresh the board list
+              toast.error('Board not found. The board may have been deleted.');
+              router.refresh();
+            } else {
+              toast.error(`Failed to update board: ${error.message}`);
+            }
           }
         }
       );
     } catch (error) {
       console.error('Error updating board:', error);
-      toast.error(
-        t('boardUpdateFailed', {
-          error: error instanceof Error ? error.message : String(error)
-        })
-      );
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (errorMessage.includes('not found')) {
+        toast.error('Board not found. The board may have been deleted.');
+        router.refresh();
+      } else {
+        toast.error(`Failed to update board: ${errorMessage}`);
+      }
     } finally {
       setIsSubmitting(false);
     }

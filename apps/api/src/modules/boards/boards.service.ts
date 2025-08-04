@@ -402,19 +402,36 @@ export class BoardService {
     updateBoardDto: UpdateBoardDto,
     userId: string
   ): Promise<Board> {
-    const board = await this.boardModel
-      .findOneAndUpdate(
-        { _id: id, owner: userId },
-        { $set: updateBoardDto },
-        { new: true }
-      )
-      .exec();
+    // First, verify the board exists and the user has permission
+    const board = await this.boardModel.findById(id).exec();
 
     if (!board) {
       throw new NotFoundException(`Board with ID "${id}" not found`);
     }
 
-    return board;
+    // Check if the user is the owner or a member
+    const isOwner = board.owner.toString() === userId;
+    const isMember = board.members.some(
+      (memberId) => memberId.toString() === userId
+    );
+
+    if (!isOwner && !isMember) {
+      throw new NotFoundException(
+        `Board with ID "${id}" not found or access denied`
+      );
+    }
+
+    // Update the board
+    const updatedBoard = await this.boardModel
+      .findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true })
+      .exec();
+
+    if (!updatedBoard) {
+      // This should theoretically never happen since we already checked the board exists
+      throw new NotFoundException(`Failed to update board with ID "${id}"`);
+    }
+
+    return updatedBoard;
   }
 
   async remove(id: string, userId: string): Promise<void> {
