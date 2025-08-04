@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
+import { useCreateTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { TaskFormSchema } from '@/types/taskForm';
 import { useTranslations } from 'next-intl';
@@ -25,12 +26,14 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
   const addTask = useWorkspaceStore((state) => state.addTask);
   const [addTaskOpen, setAddTaskOpen] = React.useState(false);
   const t = useTranslations('kanban.task');
+  const { mutateAsync: createTask } = useCreateTask();
 
   const handleSubmit = async (values: z.infer<typeof TaskFormSchema>) => {
     await addTask(
       projectId!,
       values.title!,
       values.status!,
+      createTask,
       values.description ?? '',
       values.dueDate ?? undefined,
       values.assignee?._id ?? undefined

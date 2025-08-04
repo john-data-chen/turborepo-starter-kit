@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
+import { useCreateProject } from '@/lib/api/projects/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,19 +42,27 @@ export default function NewProjectDialog({
     }
   });
 
+  const createProjectMutation = useCreateProject();
+
   const handleSubmit = async (data: ProjectFormData) => {
     try {
-      const projectId = await addProject(data.title, data.description || '');
+      const projectId = await addProject(
+        data.title,
+        data.description || '',
+        (projectData) => createProjectMutation.mutateAsync(projectData)
+      );
+
       if (!projectId) {
         toast.error(t('createFailed'));
         return;
       }
+
       onProjectAdd?.(data.title, data.description);
       toast.success(t('createSuccess'));
       setIsOpen(false);
       form.reset();
     } catch (error) {
-      console.error(error);
+      console.error('Error creating project:', error);
       toast.error(t('createFailed'));
     }
   };

@@ -1,6 +1,15 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -9,6 +18,7 @@ import {
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { ProjectsService } from './projects.service';
 import { Project } from './schemas/projects.schema';
@@ -19,6 +29,26 @@ import { Project } from './schemas/projects.schema';
 @ApiBearerAuth()
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new project' })
+  @ApiBody({ type: CreateProjectDto })
+  @ApiResponse({
+    status: 201,
+    description: 'The project has been successfully created.',
+    type: Project
+  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+    @CurrentUser() user: { userId: string }
+  ) {
+    return this.projectsService.create({
+      ...createProjectDto,
+      creatorId: user.userId
+    });
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get all projects for a board' })

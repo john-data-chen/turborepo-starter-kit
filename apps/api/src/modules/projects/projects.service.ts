@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
 
@@ -55,5 +60,24 @@ export class ProjectsService {
       canEditProject: canModify,
       canDeleteProject: canModify
     };
+  }
+
+  async create(
+    createProjectDto: CreateProjectDto & { creatorId: string }
+  ): Promise<ProjectDocument> {
+    const { title, description, boardId, creatorId } = createProjectDto;
+
+    if (!Types.ObjectId.isValid(boardId)) {
+      throw new BadRequestException('Invalid board ID');
+    }
+
+    const createdProject = new this.projectModel({
+      title,
+      description,
+      board: new Types.ObjectId(boardId),
+      owner: new Types.ObjectId(creatorId)
+    });
+
+    return createdProject.save();
   }
 }

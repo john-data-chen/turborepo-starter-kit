@@ -53,8 +53,8 @@ export function BoardForm({
             <FormItem>
               <FormLabel>{t('boardTitleLabel')}</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={t('boardTitlePlaceholder')} 
+                <Input
+                  placeholder={t('boardTitlePlaceholder')}
                   {...field}
                   onClick={(e) => e.stopPropagation()}
                   onMouseDown={(e) => e.stopPropagation()}

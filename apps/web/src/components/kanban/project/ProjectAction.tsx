@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { projectApi } from '@/lib/api/projectApi';
+import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
@@ -58,6 +59,8 @@ export function ProjectActions({
     canDeleteProject: boolean;
   } | null>(null);
   const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false); // Initialize to false
+  const deleteProjectMutation = useDeleteProject();
+  const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
 
   type ProjectFormData = z.infer<typeof projectSchema>;
@@ -86,7 +89,9 @@ export function ProjectActions({
 
   async function onSubmit(values: ProjectFormData) {
     try {
-      await updateProject(id, values.title, values.description);
+      await updateProject(id, values.title, values.description, (id, data) =>
+        updateProjectMutation.mutateAsync({ id, ...data })
+      );
       await fetchProjects(currentBoardId!);
       toast.success(t('updateSuccess'));
       setEditEnable(false);
@@ -200,7 +205,9 @@ export function ProjectActions({
               variant="destructive"
               onClick={() => {
                 setShowDeleteDialog(false);
-                removeProject(id);
+                removeProject(id, (id) =>
+                  deleteProjectMutation.mutateAsync(id)
+                );
                 toast.success(t('deleteSuccess', { title }));
               }}
             >
