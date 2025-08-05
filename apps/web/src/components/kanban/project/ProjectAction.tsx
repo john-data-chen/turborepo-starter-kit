@@ -100,14 +100,29 @@ export function ProjectActions({
     }
   }
 
+  const { userId } = useWorkspaceStore();
+
   async function onSubmit(values: ProjectFormData) {
+    if (!userId) {
+      toast.error(t('userNotAuthenticated'));
+      return;
+    }
+
     try {
-      await updateProject(id, values.title, values.description, (id, data) =>
-        updateProjectMutation.mutateAsync({
-          id,
-          ...data,
-          owner: ''
-        })
+      await updateProject(
+        id,
+        values.title,
+        values.description ?? undefined, // Convert null to undefined
+        async (id, data) => {
+          const updateData = {
+            id,
+            title: data.title,
+            description: data.description || null,
+            owner: userId
+          };
+
+          return updateProjectMutation.mutateAsync(updateData);
+        }
       );
       await fetchProjects(currentBoardId!);
       toast.success(t('updateSuccess'));

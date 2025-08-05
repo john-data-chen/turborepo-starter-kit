@@ -1,7 +1,7 @@
 export interface Project {
   _id: string;
   title: string;
-  description?: string;
+  description: string | null;
   owner: string | UserInfo;
   members: Array<string | UserInfo>;
   createdAt: string;

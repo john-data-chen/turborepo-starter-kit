@@ -27,4 +27,13 @@ export class Project {
   updatedAt: Date;
 }
 
-export const ProjectSchema = SchemaFactory.createForClass(Project);
+// Create the schema
+const ProjectSchema = SchemaFactory.createForClass(Project);
+
+// Add pre-save hook to update the updatedAt timestamp
+ProjectSchema.pre<ProjectDocument>('save', function (next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+export { ProjectSchema };

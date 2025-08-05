@@ -2,14 +2,15 @@
 
 export interface CreateProjectInput {
   title: string;
-  description?: string;
+  description: string | null;
   boardId: string;
   owner: string;
 }
 
 export interface UpdateProjectInput {
-  title?: string;
-  description?: string | null;
+  title: string;
+  description: string | null;
+  modifier: string;
 }
 
 // Query and Mutation Keys for React Query

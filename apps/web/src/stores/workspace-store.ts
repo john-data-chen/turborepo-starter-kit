@@ -250,7 +250,7 @@ export const useWorkspaceStore = create<State>()(
         newDescription: string | undefined,
         updateFn: (
           id: string,
-          data: { title: string; description?: string; owner: string }
+          data: { title: string; description?: string }
         ) => Promise<Project>
       ) => {
         try {
@@ -261,24 +261,30 @@ export const useWorkspaceStore = create<State>()(
                 ? {
                     ...project,
                     title: newTitle,
-                    description: newDescription,
+                    description: newDescription ?? project.description ?? null,
                     updatedAt: new Date().toISOString()
                   }
                 : project
             )
           }));
 
-          const { userId } = get();
-          if (!userId) {
+          const modifier = get().userId;
+          if (!modifier) {
             throw new Error('User not authenticated');
           }
 
           // Call the update function provided by the component
-          await updateFn(id, {
+          const updateData: {
+            title: string;
+            description: string;
+            modifier: string;
+          } = {
             title: newTitle,
-            description: newDescription,
-            owner: userId
-          });
+            description: newDescription ?? '',
+            modifier
+          };
+
+          await updateFn(id, updateData);
         } catch (error) {
           console.error('Error updating project:', error);
           // Revert optimistic update on error

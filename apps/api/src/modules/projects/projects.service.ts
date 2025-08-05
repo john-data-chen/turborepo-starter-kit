@@ -8,6 +8,7 @@ import { Model, Types } from 'mongoose';
 
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
 
 @Injectable()
@@ -89,6 +90,82 @@ export class ProjectsService {
         canEditProject: false,
         canDeleteProject: false
       };
+    }
+  }
+
+  async update(
+    id: string,
+    updateProjectDto: UpdateProjectDto,
+    userId: string
+  ): Promise<ProjectDocument> {
+    console.log('Update request received:', { id, updateProjectDto, userId });
+
+    if (!Types.ObjectId.isValid(id)) {
+      const error = 'Invalid project ID';
+      console.error(error, { id });
+      throw new BadRequestException(error);
+    }
+
+    if (!Types.ObjectId.isValid(userId)) {
+      const error = 'Invalid user ID';
+      console.error(error, { userId });
+      throw new BadRequestException(error);
+    }
+
+    console.log('Finding project with ID:', id);
+    const project = await this.projectModel.findById(id);
+    if (!project) {
+      const error = 'Project not found';
+      console.error(error, { id });
+      throw new NotFoundException(error);
+    }
+
+    console.log('Found project:', project);
+    console.log('Checking permissions...');
+
+    // Check if the user has permission to update the project
+    const permissions = await this.checkProjectPermissions(id, userId);
+    console.log('Permissions:', permissions);
+
+    if (!permissions.canEditProject) {
+      const error = 'You do not have permission to update this project';
+      console.error(error, { userId, projectId: id });
+      throw new BadRequestException(error);
+    }
+
+    console.log('Updating project with data:', updateProjectDto);
+
+    // Only update the fields that are provided in the DTO
+    if (updateProjectDto.title !== undefined) {
+      console.log(
+        'Updating title from',
+        project.title,
+        'to',
+        updateProjectDto.title
+      );
+      project.title = updateProjectDto.title;
+    }
+
+    // Handle null/undefined for description
+    if ('description' in updateProjectDto) {
+      const newDescription = updateProjectDto.description ?? '';
+      console.log(
+        'Updating description from',
+        project.description,
+        'to',
+        newDescription
+      );
+      project.description = newDescription;
+    }
+
+    try {
+      console.log('Saving project...');
+      const updatedProject = await project.save();
+      console.log('Project saved successfully:', updatedProject);
+      return updatedProject;
+    } catch (error) {
+      console.error('Error saving project:', error);
+      throw error;
     }
   }
 

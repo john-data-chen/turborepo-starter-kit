@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards
@@ -20,6 +21,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
 import { Project } from './schemas/projects.schema';
 
@@ -75,5 +77,41 @@ export class ProjectsController {
     @CurrentUser() user: { _id: string; email: string }
   ): Promise<ProjectPermissionsDto> {
     return this.projectsService.checkProjectPermissions(projectId, user._id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a project' })
+  @ApiBody({ type: UpdateProjectDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The project has been successfully updated.',
+    type: Project
+  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  async update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+    @CurrentUser() user: { _id: string }
+  ) {
+    try {
+      console.log('Update endpoint called with:', {
+        id,
+        updateProjectDto,
+        userId: user._id
+      });
+      const updatedProject = await this.projectsService.update(
+        id,
+        updateProjectDto,
+        user._id
+      );
+      console.log('Update successful, returning:', updatedProject);
+      return updatedProject;
+    } catch (error) {
+      console.error('Error in update endpoint:', error);
+      throw error; // Let the global exception filter handle it
+    }
   }
 }
