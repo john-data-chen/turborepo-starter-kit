@@ -4,7 +4,7 @@
     "**/.env.*",
     "packages/linter-config/*",
     "packages/style-formatter-config/*",
-    "packages/tsconfig/*"
+    "packages/global-tsconfig/*"
   ],
   "tasks": {
     "build": {

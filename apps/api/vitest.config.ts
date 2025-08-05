@@ -6,14 +6,14 @@ export default defineConfig({
     globals: true,
     alias: {
       '@src': './src',
-      '@test': './test'
+      '@tests': './__tests__'
     },
     root: './'
   },
   resolve: {
     alias: {
       '@src': './src',
-      '@test': './test'
+      '@tests': './__tests__'
     }
   },
   plugins: [swc.vite()]
