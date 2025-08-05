@@ -2549,8 +2549,8 @@ packages:
       '@swc/helpers':
         optional: true
 
-  '@rspack/dev-server@1.1.3':
-    resolution: {integrity: sha512-jWPeyiZiGpbLYGhwHvwxhaa4rsr8CQvsWkWslqeMLb2uXwmyy3UWjUR1q+AhAPnf0gs3lZoFZ1hjBQVecHKUvg==}
+  '@rspack/dev-server@1.1.4':
+    resolution: {integrity: sha512-kGHYX2jYf3ZiHwVl0aUEPBOBEIG1aWleCDCAi+Jg32KUu3qr/zDUpCEd0wPuHfLEgk0X0xAEYCS6JMO7nBStNQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       '@rspack/core': '*'
@@ -8672,7 +8672,7 @@ snapshots:
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 1.4.11
-      '@rspack/dev-server': 1.1.3(@rspack/core@1.4.11)(@types/express@5.0.3)(webpack@5.100.2(@swc/core@1.13.3))
+      '@rspack/dev-server': 1.1.4(@rspack/core@1.4.11)(@types/express@5.0.3)(webpack@5.100.2(@swc/core@1.13.3))
       colorette: 2.0.20
       exit-hook: 4.0.0
       interpret: 3.1.1
@@ -8694,7 +8694,7 @@ snapshots:
       '@rspack/binding': 1.4.11
       '@rspack/lite-tapable': 1.0.1
 
-  '@rspack/dev-server@1.1.3(@rspack/core@1.4.11)(@types/express@5.0.3)(webpack@5.100.2(@swc/core@1.13.3))':
+  '@rspack/dev-server@1.1.4(@rspack/core@1.4.11)(@types/express@5.0.3)(webpack@5.100.2(@swc/core@1.13.3))':
     dependencies:
       '@rspack/core': 1.4.11
       chokidar: 3.6.0

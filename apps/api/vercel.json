@@ -2,20 +2,27 @@
   "version": 2,
   "builds": [
     {
-      "src": "apps/api/src/main.ts",
+      "src": "src/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["apps/api/src/**/*.ts", "apps/api/package.json"],
-        "zeroConfig": false
+        "includeFiles": [
+          "src/**/*.ts",
+          "package.json",
+          "tsconfig.json",
+          "nest-cli.json"
+        ]
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "apps/api/src/main.ts"
+      "dest": "src/main.ts"
     }
   ],
+  "env": {
+    "NODE_ENV": "production"
+  },
   "build": {
     "env": {
       "NODE_ENV": "production"
