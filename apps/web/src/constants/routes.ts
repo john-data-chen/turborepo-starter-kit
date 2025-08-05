@@ -1,5 +1,5 @@
 // Get API URL from environment variable or fallback to local development URL
-const API_URL = process.env.NEST_API_URL || 'http://localhost:3001';
+export const API_URL = process.env.NEST_API_URL || 'http://localhost:3001';
 
 export const ROUTES = {
   HOME: '/',
