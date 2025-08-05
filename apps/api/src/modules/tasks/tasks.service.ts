@@ -187,7 +187,9 @@ export class TasksService {
   }
 
   async remove(id: string): Promise<void> {
-    const result = await this.taskModel.deleteOne({ _id: id }).exec();
+    // Convert string ID to ObjectId
+    const objectId = new Types.ObjectId(id);
+    const result = await this.taskModel.deleteOne({ _id: objectId }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
