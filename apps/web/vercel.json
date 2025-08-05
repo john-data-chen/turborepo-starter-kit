@@ -1,14 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "includeFiles": ["public/**/*", "next.config.js", "next-env.d.ts"]
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -18,11 +9,6 @@
       }
     }
   ],
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   },
