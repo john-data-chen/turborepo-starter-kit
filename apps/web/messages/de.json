@@ -99,6 +99,7 @@
       "createSuccess": "Neue Aufgabe: {title}",
       "updateSuccess": "Aufgabe wurde aktualisiert: {title}",
       "deleteSuccess": "Aufgabe wurde gelöscht.",
+      "deleteError": "Löschen der Aufgabe fehlgeschlagen. Bitte versuchen Sie es erneut.",
       "checkPermissionsFailed": "Berechtigungen konnten nicht geprüft werden",
       "loadPermissionsFailed": "Aufgabenberechtigungen konnten nicht geladen werden: {error}",
       "editTaskTitle": "Aufgabe bearbeiten",

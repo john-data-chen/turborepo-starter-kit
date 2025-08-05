@@ -1,13 +1,13 @@
 export interface Project {
   _id: string;
   title: string;
-  description?: string;
-  owner: UserInfo;
-  members: UserInfo[];
+  description: string | null;
+  owner: string | UserInfo;
+  members: Array<string | UserInfo>;
   createdAt: string;
   updatedAt: string;
   tasks: Task[];
-  board: string;
+  board: string | { _id: string; title: string };
 }
 
 export interface User {
@@ -19,17 +19,23 @@ export interface User {
 }
 
 export interface UserInfo {
-  id: string;
+  _id: string;
   name: string;
+  email: string;
+}
+
+export interface Session {
+  user: UserInfo;
+  accessToken: string;
 }
 
 export interface BoardDocument {
   _id: string;
   title: string;
   description?: string;
-  owner: string | UserInfo;
-  members: (string | UserInfo)[];
-  projects: (string | Project)[];
+  owner: string;
+  members: string[];
+  projects: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,7 +48,7 @@ export enum TaskStatus {
 
 export interface Task {
   _id: string;
-  id: string; // Alias for _id for consistency
+  id?: string; // Make id optional for compatibility
   title: string;
   description?: string | null;
   status: TaskStatus;
@@ -60,9 +66,9 @@ export interface Board {
   _id: string;
   title: string;
   description?: string;
-  owner: UserInfo;
+  owner: string | UserInfo; // Can be string (ID) or UserInfo object
   members: UserInfo[];
   projects: Project[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }

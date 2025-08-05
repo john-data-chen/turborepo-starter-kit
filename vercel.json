@@ -1,24 +1,25 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "apps/api/src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["apps/api/src/**/*.ts", "apps/api/package.json"],
+        "zeroConfig": false
+      }
+    }
+  ],
   "routes": [
     {
-      "src": "/_next/static/(.*)",
-      "dest": "/_next/static/$1"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "apps/api/src/main.ts"
     }
   ],
   "build": {
     "env": {
-      "NEXT_PUBLIC_API_URL": "$NEXT_PUBLIC_API_URL",
-      "NEXT_PUBLIC_APP_URL": "$NEXT_PUBLIC_APP_URL",
-      "NODE_ENV": "$NODE_ENV"
+      "NODE_ENV": "production"
     }
-  }
+  },
+  "outputDirectory": "dist"
 }

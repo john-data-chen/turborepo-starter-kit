@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsString,
-  IsOptional,
   IsDateString,
   IsEnum,
-  IsMongoId
+  IsMongoId,
+  IsOptional,
+  IsString
 } from 'class-validator';
 
 export enum TaskStatus {
@@ -53,14 +53,21 @@ export class CreateTaskDto {
     example: '507f1f77bcf86cd799439011'
   })
   @IsMongoId()
-  boardId: string;
+  board: string;
 
   @ApiProperty({
     description: 'The ID of the project this task belongs to',
     example: '507f1f77bcf86cd799439012'
   })
   @IsMongoId()
-  projectId: string;
+  project: string;
+
+  @ApiProperty({
+    description: 'The ID of the user who created this task',
+    example: '507f1f77bcf86cd799439014'
+  })
+  @IsMongoId()
+  creator: string;
 
   @ApiProperty({
     description: 'The ID of the user assigned to this task',
@@ -69,5 +76,5 @@ export class CreateTaskDto {
   })
   @IsMongoId()
   @IsOptional()
-  assigneeId?: string;
+  assignee?: string;
 }

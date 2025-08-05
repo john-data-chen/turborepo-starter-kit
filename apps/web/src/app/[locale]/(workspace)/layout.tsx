@@ -1,5 +1,5 @@
-import { isAuthenticated } from '@/actions/auth';
 import RootWrapper from '@/components/layout/RootWrapper';
+import { isAuthenticated } from '@/lib/auth/authChecker';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';

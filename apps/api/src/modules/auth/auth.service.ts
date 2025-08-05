@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../users/users.service';
+
 import { User } from '../users/schemas/users.schema';
+import { UserService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -69,7 +70,6 @@ export class AuthService {
     }
   }
 
-  // 登入成功後，產生 JWT
   async login(user: User) {
     this.logger.log(`[AuthService] Generating JWT for user: ${user.email}`);
     this.logger.debug(

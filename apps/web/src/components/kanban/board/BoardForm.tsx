@@ -53,7 +53,12 @@ export function BoardForm({
             <FormItem>
               <FormLabel>{t('boardTitleLabel')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('boardTitlePlaceholder')} {...field} />
+                <Input
+                  placeholder={t('boardTitlePlaceholder')}
+                  {...field}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,6 +75,8 @@ export function BoardForm({
                   placeholder={t('descriptionPlaceholder')}
                   className="resize-none"
                   {...field}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
                 />
               </FormControl>
               <FormMessage />

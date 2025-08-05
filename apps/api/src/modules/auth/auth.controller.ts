@@ -1,12 +1,13 @@
 import {
   Controller,
-  Post,
-  UseGuards,
-  Request,
   Get,
   Logger,
-  UnauthorizedException
+  Post,
+  Request,
+  UnauthorizedException,
+  UseGuards
 } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 import { EmailAuthGuard } from './guards/email-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -67,13 +68,9 @@ export class AuthController {
     }
   }
 
-  // 這是一個受保護的範例端點，用來驗證 token
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    this.logger.log(
-      `Profile accessed for user: ${req.user?.email || 'unknown'}`
-    );
     return req.user;
   }
 }

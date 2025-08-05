@@ -4,16 +4,16 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useWorkspaceStore } from '@/stores/workspace-store';
-import { Project, Task } from '@/types/dbInterface';
+import { Project, type Task, UserInfo } from '@/types/dbInterface';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { PointerIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import NewTaskDialog from '../task/NewTaskDialog';
 import { TaskCard } from '../task/TaskCard';
-import { ProjectActions } from './ProjectAction';
+import { ProjectActions as ProjectActionsComponent } from './ProjectAction';
 
 export interface ProjectDragData {
   type: 'Project';
@@ -26,20 +26,100 @@ interface BoardProjectProps {
   isOverlay?: boolean;
 }
 
-export function BoardProject({ project, tasks, isOverlay }: BoardProjectProps) {
-  const { filter } = useWorkspaceStore();
+// Memoize the component to prevent unnecessary re-renders
+export const BoardProject = memo(
+  BoardProjectComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if these props change
+    return (
+      prevProps.project._id === nextProps.project._id &&
+      prevProps.project.title === nextProps.project.title &&
+      prevProps.project.description === nextProps.project.description &&
+      JSON.stringify(prevProps.tasks) === JSON.stringify(nextProps.tasks) &&
+      prevProps.isOverlay === nextProps.isOverlay
+    );
+  }
+);
+
+// Set display name for better dev tools
+BoardProject.displayName = 'BoardProject';
+
+function BoardProjectComponent({
+  project,
+  tasks: initialTasks,
+  isOverlay = false
+}: BoardProjectProps) {
+  const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations('kanban.project');
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [_isLoading, setIsLoading] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
+
+  // Memoize the helper function
+  const getUserDisplayName = useCallback(
+    (user: string | UserInfo | null | undefined): string => {
+      if (!user) return 'Unassigned';
+      if (typeof user === 'string') return user;
+      return user.name || user.email || 'Unknown User';
+    },
+    []
+  );
+
+  // Update local state when initialTasks changes
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
+
+  // Memoize the project actions to prevent unnecessary re-renders
+  const _projectActions = useMemo(
+    () => (
+      <ProjectActionsComponent
+        id={project._id}
+        title={project.title}
+        description={project.description ?? undefined}
+      />
+    ),
+    [project._id, project.title, project.description]
+  );
+
+  // Memoize the loadTasks function
+  const loadTasks = useCallback(async () => {
+    if (!project?._id) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const fetchedTasks = await fetchTasksByProject(project._id);
+      setTasks(fetchedTasks);
+    } catch (err) {
+      console.error('Failed to load tasks:', err);
+      setError('Failed to load tasks');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [project?._id, fetchTasksByProject]);
+
+  // Memoize the task list to prevent unnecessary re-renders
+  const _taskItems = useMemo(() => {
+    return tasks.map((task) => ({
+      id: task._id,
+      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
+    }));
+  }, [tasks, loadTasks]);
+
+  // Fetch tasks when the project changes
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks.length) return tasks;
+    if (!filter.status || !tasks?.length) return tasks || [];
     return tasks.filter((task) => task.status === filter.status);
   }, [tasks, filter.status]);
 
   // Memoize task IDs for better performance
-  const tasksIds = useMemo(
-    () => project.tasks.map((task) => task._id),
-    [project.tasks]
-  );
+  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
 
   // Setup drag & drop functionality
   const {
@@ -105,11 +185,7 @@ export function BoardProject({ project, tasks, isOverlay }: BoardProjectProps) {
           </Button>
           <h3 className="text-lg font-semibold">{project.title}</h3>
         </div>
-        <ProjectActions
-          id={project._id}
-          title={project.title}
-          description={project.description}
-        />
+        {_projectActions}
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4 p-0 overflow-hidden">
@@ -119,12 +195,17 @@ export function BoardProject({ project, tasks, isOverlay }: BoardProjectProps) {
               {t('description')}: {project.description || t('noDescription')}
             </Badge>
             <Badge variant="outline" className="text-xs truncate">
-              {t('owner')}: {project.owner.name}
+              {t('owner')}: {getUserDisplayName(project.owner)}
             </Badge>
-            <Badge variant="outline" className="text-xs truncate">
-              {t('members')}:{' '}
-              {project.members.map((member) => member.name).join(', ')}
-            </Badge>
+            {Array.isArray(project.members) && project.members.length > 0 && (
+              <Badge variant="outline" className="text-xs truncate">
+                {t('members')}:{' '}
+                {project.members
+                  .map((member) => getUserDisplayName(member))
+                  .filter(Boolean)
+                  .join(', ')}
+              </Badge>
+            )}
           </div>
           <div className="px-2">
             <NewTaskDialog projectId={project._id} />

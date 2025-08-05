@@ -1,31 +1,18 @@
-import { useAuth } from '@/hooks/useAuth';
-import { Board, Project } from '@/types/dbInterface';
+import { boardApi } from '@/lib/api/boardApi';
+import { projectApi } from '@/lib/api/projectApi';
+import { taskApi } from '@/lib/api/taskApi';
+import { useDeleteTask } from '@/lib/api/tasks';
+import { Board, Project, Task } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
+import { CreateTaskInput } from '@/types/taskApi';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
-  useCreateBoard,
-  useDeleteBoard,
-  useUpdateBoard
-} from '../lib/api/boards/queries';
-import {
-  useCreateProject,
-  useDeleteProject,
-  useProjects,
-  useUpdateProject
-} from '../lib/api/projects/queries';
-import {
-  useCreateTask,
-  useDeleteTask,
-  useTasks,
-  useUpdateTask
-} from '../lib/api/tasks/queries';
 
 interface State {
   // User state
   userId: string | null;
   userEmail: string | null;
-  setUserInfo: (email: string) => void;
+  setUserInfo: (email: string, userId: string) => void;
 
   // Projects state
   projects: Project[];
@@ -45,19 +32,36 @@ interface State {
 
   // Actions
   fetchProjects: (boardId: string) => Promise<void>;
-  addProject: (title: string, description: string) => Promise<string>;
+  fetchTasksByProject: (projectId: string) => Promise<Task[]>;
+  addProject: (
+    title: string,
+    description: string,
+    createProject: (project: {
+      title: string;
+      description: string;
+      boardId: string;
+    }) => Promise<Project>
+  ) => Promise<string>;
   updateProject: (
     id: string,
     newTitle: string,
-    newDescription?: string
+    newDescription: string | undefined,
+    updateFn: (
+      id: string,
+      data: { title: string; description?: string }
+    ) => Promise<Project>
   ) => Promise<void>;
-  removeProject: (id: string) => Promise<void>;
+  removeProject: (
+    id: string,
+    deleteFn: (id: string) => Promise<void>
+  ) => Promise<void>;
 
   // Task actions
   addTask: (
     projectId: string,
     title: string,
     status: TaskStatus,
+    createTask: (task: CreateTaskInput) => Promise<Task>,
     description?: string,
     dueDate?: Date,
     assigneeId?: string
@@ -74,13 +78,20 @@ interface State {
   ) => Promise<void>;
 
   removeTask: (taskId: string) => Promise<void>;
-  dragTaskOnProject: (taskId: string, newProjectId: string) => Promise<void>;
+  dragTaskOnProject: (
+    taskId: string,
+    newProjectId: string,
+    getTask: (taskId: string) => Promise<Task | undefined>
+  ) => Promise<void>;
 
   // Board actions
   setCurrentBoardId: (boardId: string) => void;
   addBoard: (title: string, description?: string) => Promise<string>;
   updateBoard: (id: string, data: Partial<Board>) => Promise<void>;
-  removeBoard: (id: string) => Promise<void>;
+  removeBoard: (
+    id: string,
+    deleteFn: (id: string) => Promise<void>
+  ) => Promise<void>;
 
   // UI state
   setFilter: (filter: Partial<State['filter']>) => void;
@@ -107,16 +118,24 @@ export const useWorkspaceStore = create<State>()(
       },
 
       // User actions
-      setUserInfo: (email: string, userId?: string) => {
-        if (userId) {
-          set({
+      setUserInfo: (email: string, userId: string) => {
+        if (!email || !userId) {
+          console.error('Invalid user info provided:', { email, userId });
+          throw new Error('Email and userId are required');
+        }
+
+        set((state) => {
+          // Only update if the values have changed
+          if (state.userEmail === email && state.userId === userId) {
+            return state;
+          }
+
+          return {
+            ...state,
             userEmail: email,
             userId: userId
-          });
-        } else {
-          // Fallback to just setting the email if user ID isn't available
-          set({ userEmail: email });
-        }
+          };
+        });
       },
 
       // Project actions
@@ -126,7 +145,7 @@ export const useWorkspaceStore = create<State>()(
         set({ isLoadingProjects: true });
 
         try {
-          const { data: projects } = useProjects(boardId);
+          const projects = await projectApi.getProjects(boardId);
 
           if (projects) {
             set({
@@ -146,20 +165,61 @@ export const useWorkspaceStore = create<State>()(
         }
       },
 
+      // Fetch tasks for a specific project
+      fetchTasksByProject: async (projectId: string) => {
+        if (!projectId) {
+          return [];
+        }
+
+        try {
+          // Ensure we're using the correct parameter name that matches the backend
+          const tasks = await taskApi.getTasks(projectId);
+
+          if (!Array.isArray(tasks)) {
+            return [];
+          }
+
+          // Update the tasks for this project in the store
+          set((state) => {
+            const updatedProjects = state.projects.map((project) =>
+              project._id === projectId ? { ...project, tasks } : project
+            );
+            return { projects: updatedProjects };
+          });
+
+          return tasks;
+        } catch (error) {
+          console.error('Error fetching tasks for project:', error);
+          return [];
+        }
+      },
+
       setProjects: (projects: Project[]) => set({ projects }),
 
-      addProject: async (title: string, description: string) => {
+      addProject: async (
+        title: string,
+        description: string,
+        createProject: (project: {
+          title: string;
+          description: string;
+          boardId: string;
+          owner: string;
+        }) => Promise<Project>
+      ) => {
         try {
-          const { currentBoardId } = get();
+          const { currentBoardId, userId } = get();
           if (!currentBoardId) {
             throw new Error('No board selected');
           }
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
 
-          const createProject = useCreateProject();
-          const newProject = await createProject.mutateAsync({
+          const newProject = await createProject({
             title,
             description,
-            boardId: currentBoardId
+            boardId: currentBoardId,
+            owner: userId
           });
 
           if (newProject) {
@@ -179,16 +239,13 @@ export const useWorkspaceStore = create<State>()(
       updateProject: async (
         id: string,
         newTitle: string,
-        newDescription?: string
+        newDescription: string | undefined,
+        updateFn: (
+          id: string,
+          data: { title: string; description?: string }
+        ) => Promise<Project>
       ) => {
         try {
-          const updateProject = useUpdateProject();
-          await updateProject.mutateAsync({
-            id,
-            title: newTitle,
-            description: newDescription
-          });
-
           // Optimistic update
           set((state) => ({
             projects: state.projects.map((project) =>
@@ -196,21 +253,50 @@ export const useWorkspaceStore = create<State>()(
                 ? {
                     ...project,
                     title: newTitle,
-                    description: newDescription || project.description
+                    description: newDescription ?? project.description ?? null,
+                    updatedAt: new Date().toISOString()
                   }
                 : project
             )
           }));
+
+          const modifier = get().userId;
+          if (!modifier) {
+            throw new Error('User not authenticated');
+          }
+
+          // Call the update function provided by the component
+          const updateData: {
+            title: string;
+            description: string;
+            modifier: string;
+          } = {
+            title: newTitle,
+            description: newDescription ?? '',
+            modifier
+          };
+
+          await updateFn(id, updateData);
         } catch (error) {
           console.error('Error updating project:', error);
+          // Revert optimistic update on error
+          set((state) => ({
+            projects: state.projects.map((project) =>
+              project._id === id
+                ? project // Revert to original project data
+                : project
+            )
+          }));
           throw error;
         }
       },
 
-      removeProject: async (id: string) => {
+      removeProject: async (
+        id: string,
+        deleteFn: (id: string) => Promise<void>
+      ) => {
         try {
-          const deleteProject = useDeleteProject();
-          await deleteProject.mutateAsync(id);
+          await deleteFn(id);
 
           // Optimistic update
           set((state) => ({
@@ -227,38 +313,29 @@ export const useWorkspaceStore = create<State>()(
         projectId: string,
         title: string,
         status: TaskStatus = TaskStatus.TODO,
+        createTask: (task: CreateTaskInput) => Promise<Task>,
         description?: string,
         dueDate?: Date,
         assigneeId?: string
       ) => {
         try {
-          const { currentBoardId, userId } = get();
-          if (!currentBoardId) {
-            throw new Error('No board selected');
-          }
-          if (!userId) {
-            throw new Error('User not authenticated');
+          const { userId, currentBoardId } = get();
+          if (!userId || !currentBoardId) {
+            throw new Error('User not authenticated or no board selected');
           }
 
-          const createTask = useCreateTask();
-          const taskInput: any = {
+          const taskInput: CreateTaskInput = {
             title,
             description,
             status,
-            projectId,
-            boardId: currentBoardId,
-            creatorId: userId
+            project: projectId, // Changed from projectId to project
+            board: currentBoardId, // Changed from boardId to board
+            creator: userId, // Changed from creatorId to creator
+            ...(dueDate && { dueDate }),
+            ...(assigneeId && { assignee: assigneeId }) // Changed from assigneeId to assignee
           };
 
-          if (dueDate) {
-            taskInput.dueDate = dueDate;
-          }
-
-          if (assigneeId) {
-            taskInput.assigneeId = assigneeId;
-          }
-
-          await createTask.mutateAsync(taskInput);
+          await createTask(taskInput);
 
           // Invalidate and refetch projects to get the new task
           const { fetchProjects } = get();
@@ -284,28 +361,17 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated');
           }
 
-          const updateTask = useUpdateTask();
-          const updateData: any = {
-            id: taskId,
+          const updateData = {
             title,
             description,
             status,
-            lastModifierId: userId
+            lastModifierId: userId,
+            dueDate,
+            assigneeId,
+            ...(newProjectId && { projectId: newProjectId })
           };
 
-          if (dueDate) {
-            updateData.dueDate = dueDate;
-          }
-
-          if (assigneeId) {
-            updateData.assigneeId = assigneeId;
-          }
-
-          if (newProjectId) {
-            updateData.projectId = newProjectId;
-          }
-
-          await updateTask.mutateAsync(updateData);
+          await taskApi.updateTask(taskId, updateData);
 
           // Invalidate and refetch projects to get the updated task
           if (currentBoardId) {
@@ -335,13 +401,16 @@ export const useWorkspaceStore = create<State>()(
         }
       },
 
-      dragTaskOnProject: async (taskId: string, newProjectId: string) => {
+      dragTaskOnProject: async (
+        taskId: string,
+        newProjectId: string,
+        getTask: (taskId: string) => Promise<Task | undefined>
+      ) => {
         try {
           const { updateTask, currentBoardId } = get();
 
           // First, find the task to get its current data
-          const { data: tasks } = useTasks();
-          const taskToMove = tasks?.find((t: any) => t._id === taskId);
+          const taskToMove = await getTask(taskId);
 
           if (!taskToMove) {
             throw new Error('Task not found');
@@ -354,7 +423,7 @@ export const useWorkspaceStore = create<State>()(
             taskToMove.status,
             taskToMove.description || undefined,
             taskToMove.dueDate ? new Date(taskToMove.dueDate) : undefined,
-            taskToMove.assignee?.id || undefined,
+            taskToMove.assignee?._id || undefined,
             newProjectId
           );
 
@@ -381,36 +450,19 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated');
           }
 
-          const createBoard = useCreateBoard();
-          const newBoard = await createBoard.mutateAsync({
+          // Call the API to create the board with the current user as owner
+          const newBoard = await boardApi.createBoard({
             title,
-            description
+            description,
+            owner: userId // Add the current user's ID as the board owner
           });
 
           if (newBoard) {
-            // Add to myBoards since the current user is the owner
-            const session = useAuth();
-            const currentUser = session.user;
-
-            if (!currentUser) {
-              throw new Error('User session not found');
-            }
-
-            const boardWithOwner: Board = {
-              ...newBoard,
-              owner: {
-                id: userId,
-                name: currentUser.name
-              },
-              members: [],
-              projects: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-
+            // Add the new board to the myBoards array
             set((state) => ({
-              myBoards: [...state.myBoards, boardWithOwner]
+              myBoards: [...state.myBoards, newBoard]
             }));
+
             return newBoard._id;
           }
 
@@ -423,8 +475,8 @@ export const useWorkspaceStore = create<State>()(
 
       updateBoard: async (id: string, data: Partial<Board>) => {
         try {
-          const updateBoard = useUpdateBoard();
-          await updateBoard.mutateAsync({ id, ...data });
+          // Update the board using the API directly
+          await boardApi.updateBoard(id, data);
 
           // Optimistic update
           set((state) => ({
@@ -441,10 +493,12 @@ export const useWorkspaceStore = create<State>()(
         }
       },
 
-      removeBoard: async (id: string) => {
+      removeBoard: async (
+        id: string,
+        deleteFn: (id: string) => Promise<void>
+      ) => {
         try {
-          const deleteBoard = useDeleteBoard();
-          await deleteBoard.mutateAsync(id);
+          await deleteFn(id);
 
           // Update state to remove the deleted board
           set((state) => ({

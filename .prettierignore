@@ -42,5 +42,7 @@ pnpm-lock.yaml
 apps/web/src/components/ui/**/*
 apps/web/src/hooks/use-mobile.ts
 
-# database
-apps/api/database/**/*
+# mongodb docker volumes
+apps/api/database/mongodb/**/*
+
+env.example

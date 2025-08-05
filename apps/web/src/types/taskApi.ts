@@ -12,9 +12,10 @@ export interface CreateTaskInput {
   description?: string;
   status?: TaskStatus;
   dueDate?: Date;
-  boardId: string;
-  projectId: string;
-  assigneeId?: string;
+  board: string; // Changed from boardId to match backend
+  project: string; // Changed from projectId to match backend
+  creator: string; // Added to match backend
+  assignee?: string; // Changed from assigneeId to match backend
 }
 
 export interface UpdateTaskInput {
@@ -29,11 +30,11 @@ export interface UpdateTaskInput {
 export const TASK_KEYS = {
   all: ['tasks'] as const,
   lists: () => [...TASK_KEYS.all, 'list'] as const,
-  list: (filters: { projectId?: string; assigneeId?: string } = {}) =>
+  list: (filters: { project?: string; assignee?: string } = {}) =>
     [
       ...TASK_KEYS.lists(),
-      ...(filters.projectId ? [{ projectId: filters.projectId }] : []),
-      ...(filters.assigneeId ? [{ assigneeId: filters.assigneeId }] : [])
+      ...(filters.project ? [{ project: filters.project }] : []),
+      ...(filters.assignee ? [{ assignee: filters.assignee }] : [])
     ] as const,
   details: () => [...TASK_KEYS.all, 'detail'] as const,
   detail: (id: string) => [...TASK_KEYS.details(), id] as const

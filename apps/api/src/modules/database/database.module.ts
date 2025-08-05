@@ -1,18 +1,18 @@
 import {
   Global,
+  Inject,
+  Injectable,
   Logger,
   Module,
-  OnModuleInit,
   OnModuleDestroy,
-  Injectable,
-  Inject
+  OnModuleInit
 } from '@nestjs/common';
-import {
-  MongooseModule,
-  MongooseModuleOptions,
-  getConnectionToken
-} from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import {
+  getConnectionToken,
+  MongooseModule,
+  MongooseModuleOptions
+} from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 @Injectable()

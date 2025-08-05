@@ -1,13 +1,19 @@
 import type { Task, TaskStatus } from '@/types/dbInterface';
-import { TASK_KEYS } from '@/types/taskApi';
+import { TASK_KEYS, UpdateTaskInput } from '@/types/taskApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { taskApi } from '../taskApi';
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
-  return useQuery({
-    queryKey: TASK_KEYS.list({ projectId, assigneeId }),
+  return useQuery<Task[]>({
+    queryKey: TASK_KEYS.list({
+      project: projectId,
+      assignee: assigneeId
+    }),
     queryFn: () => taskApi.getTasks(projectId, assigneeId),
-    enabled: !!projectId || !!assigneeId
+    enabled: !!projectId || !!assigneeId,
+    // Ensure we always get fresh data when the component mounts
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000 // 5 minutes
   });
 };
 
@@ -23,17 +29,37 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: taskApi.createTask,
+    mutationFn: (input: {
+      title: string;
+      description?: string;
+      status?: TaskStatus;
+      dueDate?: Date;
+      board: string;
+      project: string;
+      creator: string;
+      assignee?: string;
+    }) => {
+      return taskApi.createTask({
+        title: input.title,
+        description: input.description,
+        status: input.status,
+        dueDate: input.dueDate,
+        board: input.board,
+        project: input.project,
+        creator: input.creator,
+        assignee: input.assignee
+      });
+    },
     onSuccess: (newTask, variables) => {
       // Invalidate the tasks list query to refetch
       queryClient.invalidateQueries({
-        queryKey: TASK_KEYS.list({ projectId: variables.projectId })
+        queryKey: TASK_KEYS.list({ project: variables.project })
       });
 
       // Also invalidate the assignee's tasks if applicable
-      if (variables.assigneeId) {
+      if (variables.assignee) {
         queryClient.invalidateQueries({
-          queryKey: TASK_KEYS.list({ assigneeId: variables.assigneeId })
+          queryKey: TASK_KEYS.list({ assignee: variables.assignee })
         });
       }
     }
@@ -47,27 +73,101 @@ export const useUpdateTask = () => {
     mutationFn: ({
       id,
       ...updates
-    }: { id: string } & Parameters<typeof taskApi.updateTask>[1]) =>
-      taskApi.updateTask(id, updates),
+    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId'> & {
+        assigneeId?: string | null;
+      }) => {
+      // Create a clean update object with only the fields we want to send
+      const apiUpdates: UpdateTaskInput = {};
+
+      // Only include fields that are defined in the updates
+      if (updates.title !== undefined) apiUpdates.title = updates.title;
+      if (updates.description !== undefined)
+        apiUpdates.description = updates.description;
+      if (updates.status !== undefined) apiUpdates.status = updates.status;
+      if (updates.dueDate !== undefined) apiUpdates.dueDate = updates.dueDate;
+
+      // Handle assigneeId separately to ensure it's not sent as undefined
+      if ('assigneeId' in updates) {
+        apiUpdates.assigneeId = updates.assigneeId ?? null;
+      }
+
+      return taskApi.updateTask(id, apiUpdates);
+    },
 
     // Optimistic updates
     onMutate: async (updatedTask) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({
-        queryKey: TASK_KEYS.detail(updatedTask.id)
-      });
+      const taskId = updatedTask.id;
+      const taskQueryKey = TASK_KEYS.detail(taskId);
 
-      // Snapshot the previous value
-      const previousTask = queryClient.getQueryData<Task>(
-        TASK_KEYS.detail(updatedTask.id)
-      );
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+
+      // Snapshot the previous values
+      const previousTask = queryClient.getQueryData<Task>(taskQueryKey);
 
       // Optimistically update to the new value
       if (previousTask) {
-        queryClient.setQueryData<Task>(TASK_KEYS.detail(updatedTask.id), {
+        // Create a clean update object with only the fields that were actually updated
+        const updateFields: Partial<Task> = {};
+
+        // Only include fields that were actually provided in the update
+        if ('title' in updatedTask) updateFields.title = updatedTask.title;
+        if ('description' in updatedTask)
+          updateFields.description = updatedTask.description;
+        if ('status' in updatedTask) updateFields.status = updatedTask.status;
+        if ('dueDate' in updatedTask)
+          updateFields.dueDate = updatedTask.dueDate;
+
+        // Handle assignee update - we need to include all required UserInfo fields
+        if ('assigneeId' in updatedTask) {
+          if (updatedTask.assigneeId) {
+            // If we have an assigneeId, we need to get the user info from the previous task
+            // or from the current assignee if it exists
+            const previousTask = queryClient.getQueryData<Task>(taskQueryKey);
+            const previousAssignee = previousTask?.assignee;
+
+            if (
+              previousAssignee &&
+              previousAssignee._id === updatedTask.assigneeId
+            ) {
+              // If the assignee is the same, keep the existing user info
+              updateFields.assignee = { ...previousAssignee };
+            } else {
+              // Otherwise, we need to fetch the user info
+              // For now, we'll just include the ID and placeholder values for required fields
+              // The next data fetch will update this with the full user info
+              updateFields.assignee = {
+                _id: updatedTask.assigneeId,
+                name: 'Loading...',
+                email: 'loading@example.com'
+              };
+            }
+          } else {
+            // If assigneeId is null or undefined, set assignee to undefined
+            updateFields.assignee = undefined;
+          }
+        }
+
+        const newTask = {
           ...previousTask,
-          ...updatedTask
-        });
+          ...updateFields,
+          updatedAt: new Date().toISOString(),
+          _id: taskId // Ensure _id is always set
+        };
+
+        // Update the task in the cache
+        queryClient.setQueryData(taskQueryKey, newTask);
+
+        // Also update the task in any lists it might be in
+        queryClient.setQueriesData(
+          { queryKey: TASK_KEYS.lists() },
+          (old: Task[] | undefined) => {
+            if (!old) return old;
+            return old.map((task) =>
+              task._id === taskId ? { ...task, ...updateFields } : task
+            );
+          }
+        );
       }
 
       return { previousTask };
@@ -83,14 +183,20 @@ export const useUpdateTask = () => {
       }
     },
 
-    // Always refetch after error or success:
+    // Always refetch after error or success to ensure consistency
     onSettled: (data, error, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: TASK_KEYS.detail(variables.id)
-      });
-
-      // Also invalidate any list queries that might include this task
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
+      const taskId = variables.id;
+      // Invalidate both the specific task and any lists that might contain it
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: TASK_KEYS.detail(taskId),
+          refetchType: 'all'
+        }),
+        queryClient.invalidateQueries({
+          queryKey: TASK_KEYS.lists(),
+          refetchType: 'active'
+        })
+      ]);
     }
   });
 };
@@ -135,33 +241,53 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => taskApi.deleteTask(id),
-
-    // Optimistically remove the task from the list
-    onMutate: async (id) => {
+    mutationFn: (taskId: string) => {
+      return taskApi.deleteTask(taskId);
+    },
+    onMutate: async (taskId) => {
+      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: TASK_KEYS.lists() });
+      await queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(taskId) });
 
-      // Store the previous tasks list for rollback
+      // Snapshot the previous values
       const previousTasks = queryClient.getQueryData(TASK_KEYS.lists());
+      const previousTask = queryClient.getQueryData(TASK_KEYS.detail(taskId));
 
-      // Remove the task from all lists
-      queryClient.setQueryData(TASK_KEYS.lists(), (old: any) =>
-        old?.filter((task: Task) => task.id !== id)
+      // Optimistically remove the task from the list
+      queryClient.setQueryData(TASK_KEYS.lists(), (old: Task[] = []) =>
+        old.filter((task) => task._id !== taskId)
       );
 
-      return { previousTasks };
+      // Remove the task from the cache
+      queryClient.removeQueries({ queryKey: TASK_KEYS.detail(taskId) });
+
+      return { previousTasks, previousTask };
     },
 
-    // On error, roll back to the previous tasks list
-    onError: (err, id, context) => {
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, taskId, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(TASK_KEYS.lists(), context.previousTasks);
+      }
+      if (context?.previousTask) {
+        queryClient.setQueryData(
+          TASK_KEYS.detail(taskId),
+          context.previousTask
+        );
       }
     },
 
     // Always refetch after error or success
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
+    onSettled: (data, error, taskId) => {
+      // Invalidate both the specific task and task lists
+      queryClient.invalidateQueries({
+        queryKey: TASK_KEYS.lists(),
+        refetchType: 'active'
+      });
+      queryClient.invalidateQueries({
+        queryKey: TASK_KEYS.detail(taskId),
+        refetchType: 'all'
+      });
     }
   });
 };

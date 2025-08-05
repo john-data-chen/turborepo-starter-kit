@@ -26,8 +26,14 @@ export function TaskFilter() {
       DONE: 0
     };
 
+    if (!Array.isArray(projects)) {
+      return counts;
+    }
+
     projects.forEach((project) => {
-      project.tasks.forEach((task) => {
+      const tasks = Array.isArray(project?.tasks) ? project.tasks : [];
+      tasks.forEach((task) => {
+        if (!task) return;
         counts.TOTAL++;
         if (task.status && counts.hasOwnProperty(task.status)) {
           counts[task.status as keyof typeof counts]++;

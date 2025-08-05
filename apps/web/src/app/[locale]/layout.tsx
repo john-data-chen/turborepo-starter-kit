@@ -46,7 +46,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={roboto.className}>
+      <body className={roboto.className} suppressHydrationWarning>
         <NextTopLoader color="#2563eb" showSpinner={false} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders>

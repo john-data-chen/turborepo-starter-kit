@@ -99,6 +99,7 @@
       "createSuccess": "New Task: {title}",
       "updateSuccess": "Task is updated: {title}",
       "deleteSuccess": "Task has been deleted.",
+      "deleteError": "Failed to delete task. Please try again.",
       "checkPermissionsFailed": "Failed to check permissions",
       "loadPermissionsFailed": "Could not load task permissions: {error}",
       "editTaskTitle": "Edit Task",

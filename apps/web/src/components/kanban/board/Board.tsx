@@ -1,6 +1,7 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import DraggableData from '@/types/drag&drop';
@@ -44,8 +45,24 @@ export function Board() {
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const { data: taskData } = useTask(activeTask?._id || '');
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  const getTask = async (taskId: string) => {
+    if (taskId === activeTask?._id && taskData) {
+      return taskData;
+    }
+    // Fallback to fetching the task if not in cache
+    try {
+      const response = await fetch(`/api/tasks/${taskId}`);
+      if (!response.ok) throw new Error('Failed to fetch task');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching task:', error);
+      return undefined;
+    }
+  };
 
   function hasDraggableData<T extends Active | Over>(
     entry: T | null | undefined
@@ -129,7 +146,7 @@ export function Board() {
         console.error('Target project not found');
         return;
       }
-      dragTaskOnProject(activeTask._id, overProject._id)
+      dragTaskOnProject(activeTask._id, overProject._id, getTask)
         .then(() => {
           activeTask.project = overProject._id;
           overProject.tasks.push(activeTask);
@@ -161,7 +178,7 @@ export function Board() {
       );
       // move task to a different project
       if (overTask.project !== activeTask.project) {
-        dragTaskOnProject(activeTask._id, overTask.project)
+        dragTaskOnProject(activeTask._id, overTask.project, getTask)
           .then(() => {
             activeTask.project = overTask.project;
             overProject!.tasks.splice(overTaskIdx, 0, activeTask);
@@ -325,7 +342,10 @@ export function Board() {
     }
   };
 
-  const filterTasks = (tasks: Task[]) => {
+  const filterTasks = (tasks: Task[] = []) => {
+    if (!Array.isArray(tasks)) {
+      return [];
+    }
     return tasks.filter((task) => {
       if (filter.status && task.status !== filter.status) {
         return false;

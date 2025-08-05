@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Document, Types } from 'mongoose';
 
 export enum TaskStatus {
   TODO = 'TODO',
@@ -12,12 +12,7 @@ export type TaskDocument = Task & Document;
 
 @Schema({ timestamps: true })
 export class Task {
-  @Prop({ type: Types.ObjectId })
-  @ApiProperty({
-    description: 'The unique identifier of the task',
-    example: '507f1f77bcf86cd799439011'
-  })
-  _id: Types.ObjectId;
+  // _id is automatically added by Mongoose
 
   @Prop({ type: String, required: true })
   @ApiProperty({
@@ -51,6 +46,31 @@ export class Task {
   })
   dueDate?: Date;
 
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @ApiProperty({
+    description: 'The user who created the task',
+    type: 'string',
+    example: '507f1f77bcf86cd799439011'
+  })
+  creator: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @ApiProperty({
+    description: 'The user assigned to the task',
+    type: 'string',
+    required: false,
+    example: '507f1f77bcf86cd799439012'
+  })
+  assignee?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @ApiProperty({
+    description: 'The user who last modified the task',
+    type: 'string',
+    example: '507f1f77bcf86cd799439011'
+  })
+  lastModifier: Types.ObjectId;
+
   @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
   @ApiProperty({
     description: 'The ID of the board this task belongs to',
@@ -65,27 +85,7 @@ export class Task {
   })
   project: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
-  @ApiProperty({
-    description: 'The ID of the user assigned to the task',
-    required: false,
-    example: '507f1f77bcf86cd799439011'
-  })
-  assignee?: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  @ApiProperty({
-    description: 'The ID of the user who created the task',
-    example: '507f1f77bcf86cd799439011'
-  })
-  creator: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  @ApiProperty({
-    description: 'The ID of the user who last modified this task',
-    example: '507f1f77bcf86cd799439015'
-  })
-  lastModifier: Types.ObjectId;
+  // User reference fields are defined above with proper documentation
 
   @Prop({ type: Date, default: Date.now })
   @ApiProperty({

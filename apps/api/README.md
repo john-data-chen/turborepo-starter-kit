@@ -42,10 +42,10 @@ const createTask = useCreateTask();
 
 // Usage:
 createTask.mutate({
-  title: "New Task",
-  description: "Task description",
-  projectId: "project-123",
-  boardId: "board-123",
+  title: 'New Task',
+  description: 'Task description',
+  projectId: 'project-123',
+  boardId: 'board-123'
   // ...other task properties
 });
 ```
@@ -59,9 +59,9 @@ const updateTask = useUpdateTask();
 
 // Usage:
 updateTask.mutate({
-  id: "task-123",
-  title: "Updated Task Title",
-  description: "Updated description",
+  id: 'task-123',
+  title: 'Updated Task Title',
+  description: 'Updated description'
   // ...other fields to update
 });
 ```
@@ -75,8 +75,8 @@ const updateStatus = useUpdateTaskStatus();
 
 // Usage:
 updateStatus.mutate({
-  id: "task-123",
-  status: "IN_PROGRESS", // or 'TODO' or 'DONE'
+  id: 'task-123',
+  status: 'IN_PROGRESS' // or 'TODO' or 'DONE'
 });
 ```
 
@@ -88,7 +88,7 @@ Delete a task.
 const deleteTask = useDeleteTask();
 
 // Usage:
-deleteTask.mutate("task-123");
+deleteTask.mutate('task-123');
 ```
 
 ## TypeScript Types
@@ -100,7 +100,7 @@ interface Task {
   id: string;
   title: string;
   description?: string;
-  status: "TODO" | "IN_PROGRESS" | "DONE";
+  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
   dueDate?: Date;
   board: string; // Board ID
   project: string; // Project ID
@@ -144,3 +144,7 @@ if (isLoading) {
 ```
 
 > Note: `isLoading` is true only on initial load, while `isFetching` is true during any data fetch.
+
+## Technical Decision
+
+- **Database**: [MongoDB](https://www.mongodb.com/), [Docker compose](https://docs.docker.com/compose/), [Mongoose](https://github.com/Automattic/mongoose) - NoSQL database for storing data in a document-oriented format.

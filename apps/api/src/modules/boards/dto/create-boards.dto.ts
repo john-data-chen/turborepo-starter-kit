@@ -1,9 +1,9 @@
 import {
-  IsString,
+  IsArray,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
-  IsArray,
-  IsMongoId
+  IsString
 } from 'class-validator';
 
 export class CreateBoardDto {

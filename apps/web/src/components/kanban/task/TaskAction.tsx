@@ -33,9 +33,10 @@ import {
 } from '@/lib/api/tasks/queries';
 import { useUser } from '@/lib/api/users/queries';
 import { TaskStatus } from '@/types/dbInterface';
-import type { UpdateTaskInput } from '@/types/taskApi';
+import { TASK_KEYS } from '@/types/taskApi';
 import { TaskFormSchema } from '@/types/taskForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -50,6 +51,7 @@ interface TaskActionsProps {
   assigneeId?: string;
   projectId: string;
   boardId: string;
+  onUpdate?: () => void;
 }
 
 export function TaskActions({
@@ -60,7 +62,8 @@ export function TaskActions({
   assigneeId,
   status,
   projectId,
-  boardId
+  boardId,
+  onUpdate
 }: TaskActionsProps) {
   // State for dialogs
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -72,7 +75,8 @@ export function TaskActions({
   // Fetch task data to ensure we have the latest
   const { data: task, isLoading: isLoadingTask } = useTask(id);
 
-  // Mutation hooks
+  // Query and mutation hooks
+  const queryClient = useQueryClient();
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
   const updateStatusMutation = useUpdateTaskStatus();
@@ -98,54 +102,70 @@ export function TaskActions({
 
   // Handle form submission
   const handleSubmit = async (values: z.infer<typeof TaskFormSchema>) => {
-    const updateData: UpdateTaskInput = {
-      title: values.title,
-      description: values.description || null,
-      status: values.status,
-      dueDate: values.dueDate || null,
-      assigneeId: values.assignee?._id || null
-    };
+    try {
+      const { title, description, status, dueDate, assignee } = values;
 
-    updateTaskMutation.mutate(
-      { id, ...updateData },
-      {
-        onSuccess: () => {
-          toast.success(t('updateSuccess'));
-          setIsEditDialogOpen(false);
+      await updateTaskMutation.mutateAsync(
+        {
+          id,
+          title,
+          description: description || null,
+          status,
+          dueDate: dueDate || null,
+          assigneeId: assignee?._id || null
         },
-        onError: () => {
-          toast.error(t('updateError'));
+        {
+          onSuccess: () => {
+            // Invalidate both the specific task and task lists
+            queryClient.invalidateQueries({
+              queryKey: TASK_KEYS.detail(id),
+              refetchType: 'all'
+            });
+            queryClient.invalidateQueries({
+              queryKey: TASK_KEYS.lists(),
+              refetchType: 'active'
+            });
+
+            toast.success(t('updateSuccess', { title }));
+            setIsEditDialogOpen(false);
+            onUpdate?.();
+          },
+          onError: (error) => {
+            console.error('Error updating task:', error);
+            toast.error(t('updateError'));
+          }
         }
-      }
-    );
+      );
+    } catch (error) {
+      console.error('Error in task update handler:', error);
+      toast.error(t('updateError'));
+    }
   };
 
   // Handle task deletion
-  const handleDelete = () => {
-    deleteTaskMutation.mutate(id, {
-      onSuccess: () => {
-        toast.success(t('deleteSuccess'));
-        setShowDeleteDialog(false);
-      },
-      onError: () => {
-        toast.error(t('deleteError'));
-      }
-    });
-  };
-
-  // Handle status change
-  const _handleStatusChange = (newStatus: TaskStatus) => {
-    updateStatusMutation.mutate(
-      { id, status: newStatus },
-      {
-        onSuccess: () => {
-          toast.success(t('statusUpdateSuccess'));
-        },
-        onError: () => {
-          toast.error(t('statusUpdateError'));
+  const handleDelete = async () => {
+    try {
+      await deleteTaskMutation.mutateAsync(id, {
+        onSettled: () => {
+          // Invalidate both the specific task and task lists
+          queryClient.invalidateQueries({
+            queryKey: TASK_KEYS.detail(id),
+            refetchType: 'all'
+          });
+          queryClient.invalidateQueries({
+            queryKey: TASK_KEYS.lists(),
+            refetchType: 'active'
+          });
+          onUpdate?.();
         }
-      }
-    );
+      });
+      toast.success(t('deleteSuccess'));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      toast.error(t('deleteError'));
+    } finally {
+      setShowDeleteDialog(false);
+    }
   };
 
   // Loading and error states

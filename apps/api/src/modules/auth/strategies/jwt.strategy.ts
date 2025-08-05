@@ -1,7 +1,7 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -24,7 +24,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    if (!payload.sub || !payload.email) {
+      throw new Error('Invalid token payload - missing required fields');
+    }
+
     // The returned object will be attached to the request object as req.user
-    return { id: payload.sub, email: payload.email };
+    // Make sure to use _id instead of id to match MongoDB schema
+    return {
+      _id: payload.sub, // This should match the user._id in MongoDB
+      email: payload.email
+    };
   }
 }

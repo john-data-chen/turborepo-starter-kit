@@ -1,45 +1,98 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskResponseDto } from './dto/task-response.dto';
 import { TaskPermissionsDto } from './dto/task-permissions.dto';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 
 @Injectable()
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
-  private toTaskResponse(task: TaskDocument): TaskResponseDto {
-    return {
-      _id: task._id.toString(),
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      dueDate: task.dueDate,
-      board: task.board.toString(),
-      project: task.project.toString(),
-      assignee: task.assignee?.toString(),
-      creator: task.creator.toString(),
-      lastModifier: task.lastModifier.toString(),
-      createdAt: task.createdAt,
-      updatedAt: task.updatedAt
+  private async toTaskResponse(task: TaskDocument): Promise<TaskResponseDto> {
+    // First populate the user fields
+    const populatedTask = await this.taskModel.populate(task, [
+      {
+        path: 'creator',
+        select: 'name email'
+      },
+      {
+        path: 'assignee',
+        select: 'name email'
+      },
+      {
+        path: 'lastModifier',
+        select: 'name email'
+      }
+    ]);
+
+    // Helper function to create user response object
+    const toUserResponse = (user: any) => {
+      if (!user) return null;
+      return {
+        _id: user._id?.toString() || '',
+        name: user.name,
+        email: user.email
+      };
     };
+
+    // Build the response object
+    const response: any = {
+      _id: populatedTask._id.toString(),
+      title: populatedTask.title,
+      status: populatedTask.status,
+      board: populatedTask.board?.toString(),
+      project: populatedTask.project?.toString(),
+      creator: toUserResponse(populatedTask.creator),
+      lastModifier: toUserResponse(populatedTask.lastModifier),
+      createdAt: populatedTask.createdAt,
+      updatedAt: populatedTask.updatedAt
+    };
+
+    // Handle optional fields
+    if (populatedTask.description) {
+      response.description = populatedTask.description;
+    }
+
+    if (populatedTask.dueDate) {
+      response.dueDate = populatedTask.dueDate;
+    }
+
+    if (populatedTask.assignee) {
+      response.assignee = toUserResponse(populatedTask.assignee);
+    }
+
+    return response as TaskResponseDto;
   }
 
   async create(
     createTaskDto: CreateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
-    const createdTask = new this.taskModel({
-      ...createTaskDto,
-      creator: userId,
-      lastModifier: userId
-    });
+    try {
+      // Convert string IDs to ObjectIds
+      const taskData = {
+        ...createTaskDto,
+        project: new Types.ObjectId(createTaskDto.project),
+        board: new Types.ObjectId(createTaskDto.board),
+        creator: new Types.ObjectId(createTaskDto.creator),
+        status: createTaskDto.status || TaskStatus.TODO,
+        lastModifier: new Types.ObjectId(userId),
+        ...(createTaskDto.assignee && {
+          assignee: new Types.ObjectId(createTaskDto.assignee)
+        })
+      };
 
-    const savedTask = await createdTask.save();
-    return this.toTaskResponse(savedTask);
+      const createdTask = new this.taskModel(taskData);
+      const savedTask = await createdTask.save();
+      return await this.toTaskResponse(savedTask);
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
   }
 
   async findAll(
@@ -49,32 +102,23 @@ export class TasksService {
     const query: any = {};
 
     if (projectId) {
-      query.project = projectId;
+      query.project = new Types.ObjectId(projectId);
     }
 
     if (assigneeId) {
-      query.assignee = assigneeId;
+      query.assignee = new Types.ObjectId(assigneeId);
     }
 
-    const tasks = await this.taskModel
-      .find(query)
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('project', 'title')
-      .sort({ createdAt: -1 })
-      .exec();
-
-    return tasks.map((task) =>
-      this.toTaskResponse(task as unknown as TaskDocument)
-    );
+    const tasks = await this.taskModel.find(query).exec();
+    return Promise.all(tasks.map((task) => this.toTaskResponse(task)));
   }
 
   async findOne(id: string): Promise<TaskResponseDto> {
     const task = await this.taskModel.findById(id).exec();
     if (!task) {
-      throw new NotFoundException(`Task with ID ${id} not found`);
+      throw new NotFoundException('Task not found');
     }
-    return this.toTaskResponse(task);
+    return await this.toTaskResponse(task);
   }
 
   async checkTaskPermissions(
@@ -112,16 +156,24 @@ export class TasksService {
     updateTaskDto: UpdateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
+    // Prepare update data
+    const updateData: any = {
+      ...updateTaskDto,
+      lastModifier: new Types.ObjectId(userId),
+      updatedAt: new Date()
+    };
+
+    // Handle assigneeId if provided
+    if ('assigneeId' in updateTaskDto) {
+      updateData.assignee = updateTaskDto.assigneeId
+        ? new Types.ObjectId(updateTaskDto.assigneeId)
+        : null;
+      // Remove assigneeId to prevent it from being saved directly
+      delete updateData.assigneeId;
+    }
+
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(
-        id,
-        {
-          ...updateTaskDto,
-          lastModifier: userId,
-          updatedAt: new Date()
-        },
-        { new: true }
-      )
+      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
       .populate('creator', 'name email')
       .populate('assignee', 'name email')
       .populate('project', 'title')
@@ -135,7 +187,9 @@ export class TasksService {
   }
 
   async remove(id: string): Promise<void> {
-    const result = await this.taskModel.deleteOne({ _id: id }).exec();
+    // Convert string ID to ObjectId
+    const objectId = new Types.ObjectId(id);
+    const result = await this.taskModel.deleteOne({ _id: objectId }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }

@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { projectApi } from '@/lib/api/projectApi';
+import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
@@ -57,36 +58,72 @@ export function ProjectActions({
     canEditProject: boolean;
     canDeleteProject: boolean;
   } | null>(null);
-  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false); // Initialize to false
+  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false);
+  const deleteProjectMutation = useDeleteProject();
+  const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
 
   type ProjectFormData = z.infer<typeof projectSchema>;
 
   async function fetchProjectPermissions() {
     if (!id) {
+      console.error('No project ID provided');
       setIsLoadingPermissions(false);
       setPermissions({ canEditProject: false, canDeleteProject: false });
       return;
     }
 
+    // Ensure the ID is a string and trim any whitespace
+    const projectId = String(id).trim();
+
+    // Basic validation for MongoDB ObjectId format
+    const isValidId = /^[0-9a-fA-F]{24}$/.test(projectId);
+
+    if (!isValidId) {
+      console.error('Invalid project ID format:', projectId);
+      setPermissions({ canEditProject: false, canDeleteProject: false });
+      setIsLoadingPermissions(false);
+      return;
+    }
+
     setIsLoadingPermissions(true);
+
     try {
-      const permissions = await projectApi.getProjectPermissions(id);
+      const permissions = await projectApi.getProjectPermissions(projectId);
       setPermissions(permissions);
     } catch (error) {
       console.error('Error fetching project permissions:', error);
+      // Set default permissions to most restrictive without showing error message
       setPermissions({ canEditProject: false, canDeleteProject: false });
-      toast.error(
-        t('loadPermissionsFailed', { error: (error as Error).message })
-      );
     } finally {
       setIsLoadingPermissions(false);
     }
   }
 
+  const { userId } = useWorkspaceStore();
+
   async function onSubmit(values: ProjectFormData) {
+    if (!userId) {
+      toast.error(t('userNotAuthenticated'));
+      return;
+    }
+
     try {
-      await updateProject(id, values.title, values.description);
+      await updateProject(
+        id,
+        values.title,
+        values.description ?? undefined, // Convert null to undefined
+        async (id, data) => {
+          const updateData = {
+            id,
+            title: data.title,
+            description: data.description || null,
+            owner: userId
+          };
+
+          return updateProjectMutation.mutateAsync(updateData);
+        }
+      );
       await fetchProjects(currentBoardId!);
       toast.success(t('updateSuccess'));
       setEditEnable(false);
@@ -154,13 +191,14 @@ export function ProjectActions({
             }}
             disabled={isLoadingPermissions || !permissions?.canEditProject}
             className={
-              !isLoadingPermissions && !permissions?.canEditProject
+              !permissions?.canEditProject || isLoadingPermissions
                 ? 'text-muted-foreground line-through cursor-not-allowed'
                 : ''
             }
             data-testid="edit-project-button"
           >
             {t('edit')}
+            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -170,16 +208,15 @@ export function ProjectActions({
               }
             }}
             disabled={isLoadingPermissions || !permissions?.canDeleteProject}
-            className={`
-              ${
-                isLoadingPermissions || !permissions?.canDeleteProject
-                  ? 'text-muted-foreground line-through cursor-not-allowed'
-                  : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
-              }
-            `}
+            className={
+              !permissions?.canDeleteProject || isLoadingPermissions
+                ? 'text-muted-foreground line-through cursor-not-allowed'
+                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+            }
             data-testid="delete-project-button"
           >
             {t('delete')}
+            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -200,7 +237,9 @@ export function ProjectActions({
               variant="destructive"
               onClick={() => {
                 setShowDeleteDialog(false);
-                removeProject(id);
+                removeProject(id, (id) =>
+                  deleteProjectMutation.mutateAsync(id)
+                );
                 toast.success(t('deleteSuccess', { title }));
               }}
             >

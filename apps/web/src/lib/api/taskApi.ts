@@ -31,6 +31,14 @@ async function fetchWithAuth<T>(
     throw new Error(error || 'Request failed');
   }
 
+  // Handle 204 No Content or empty responses
+  if (
+    response.status === 204 ||
+    response.headers.get('content-length') === '0'
+  ) {
+    return null as unknown as T;
+  }
+
   return response.json();
 }
 
@@ -53,14 +61,22 @@ export const taskApi = {
 
   // Get a single task by ID
   async getTaskById(id: string): Promise<Task> {
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`);
+    // Ensure the ID is properly encoded to handle special characters
+    const encodedId = encodeURIComponent(id);
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`);
   },
 
   // Create a new task
   async createTask(input: CreateTaskInput): Promise<Task> {
+    // Ensure the input matches the backend's expected format
+    const requestBody = {
+      ...input
+      // No need to transform fields since we updated the CreateTaskInput type
+    };
+
     return fetchWithAuth(TASKS_ENDPOINT, {
       method: 'POST',
-      body: JSON.stringify(input)
+      body: JSON.stringify(requestBody)
     });
   },
 
