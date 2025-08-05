@@ -12,21 +12,60 @@ import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
-  private toTaskResponse(task: TaskDocument): TaskResponseDto {
-    return {
-      _id: task._id.toString(),
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      dueDate: task.dueDate,
-      board: task.board.toString(),
-      project: task.project.toString(),
-      assignee: task.assignee?.toString(),
-      creator: task.creator.toString(),
-      lastModifier: task.lastModifier.toString(),
-      createdAt: task.createdAt,
-      updatedAt: task.updatedAt
+  private async toTaskResponse(task: TaskDocument): Promise<TaskResponseDto> {
+    // First populate the user fields
+    const populatedTask = await this.taskModel.populate(task, [
+      {
+        path: 'creator',
+        select: 'name email'
+      },
+      {
+        path: 'assignee',
+        select: 'name email'
+      },
+      {
+        path: 'lastModifier',
+        select: 'name email'
+      }
+    ]);
+
+    // Helper function to create user response object
+    const toUserResponse = (user: any) => {
+      if (!user) return null;
+      return {
+        _id: user._id?.toString() || '',
+        name: user.name,
+        email: user.email
+      };
     };
+
+    // Build the response object
+    const response: any = {
+      _id: populatedTask._id.toString(),
+      title: populatedTask.title,
+      status: populatedTask.status,
+      board: populatedTask.board?.toString(),
+      project: populatedTask.project?.toString(),
+      creator: toUserResponse(populatedTask.creator),
+      lastModifier: toUserResponse(populatedTask.lastModifier),
+      createdAt: populatedTask.createdAt,
+      updatedAt: populatedTask.updatedAt
+    };
+
+    // Handle optional fields
+    if (populatedTask.description) {
+      response.description = populatedTask.description;
+    }
+
+    if (populatedTask.dueDate) {
+      response.dueDate = populatedTask.dueDate;
+    }
+
+    if (populatedTask.assignee) {
+      response.assignee = toUserResponse(populatedTask.assignee);
+    }
+
+    return response as TaskResponseDto;
   }
 
   async create(
@@ -37,11 +76,11 @@ export class TasksService {
       ...createTaskDto,
       creator: new Types.ObjectId(userId),
       status: createTaskDto.status || TaskStatus.TODO,
-      lastModifier: userId
+      lastModifier: new Types.ObjectId(userId)
     });
 
     const savedTask = await createdTask.save();
-    return this.toTaskResponse(savedTask);
+    return await this.toTaskResponse(savedTask);
   }
 
   async findAll(
@@ -51,43 +90,23 @@ export class TasksService {
     const query: any = {};
 
     if (projectId) {
-      // Convert projectId to ObjectId for the query
       query.project = new Types.ObjectId(projectId);
     }
 
     if (assigneeId) {
-      query.assignee = assigneeId;
+      query.assignee = new Types.ObjectId(assigneeId);
     }
 
-    const tasks = await this.taskModel
-      .find(query)
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('project', 'title')
-      .sort({ createdAt: -1 })
-      .exec();
-
-    return tasks.map((task) =>
-      this.toTaskResponse(task as unknown as TaskDocument)
-    );
+    const tasks = await this.taskModel.find(query).exec();
+    return Promise.all(tasks.map((task) => this.toTaskResponse(task)));
   }
 
-  async findOne(id: string | Types.ObjectId): Promise<TaskResponseDto> {
-    // Convert string ID to ObjectId if needed
-    const taskId = typeof id === 'string' ? new Types.ObjectId(id) : id;
-
-    const task = await this.taskModel
-      .findById(taskId)
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('project', 'title')
-      .exec();
-
+  async findOne(id: string): Promise<TaskResponseDto> {
+    const task = await this.taskModel.findById(id).exec();
     if (!task) {
-      throw new NotFoundException(`Task with ID ${id} not found`);
+      throw new NotFoundException('Task not found');
     }
-
-    return this.toTaskResponse(task);
+    return await this.toTaskResponse(task);
   }
 
   async checkTaskPermissions(

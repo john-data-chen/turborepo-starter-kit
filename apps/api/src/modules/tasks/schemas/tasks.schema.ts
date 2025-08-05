@@ -51,6 +51,31 @@ export class Task {
   })
   dueDate?: Date;
 
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @ApiProperty({
+    description: 'The user who created the task',
+    type: 'string',
+    example: '507f1f77bcf86cd799439011'
+  })
+  creator: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @ApiProperty({
+    description: 'The user assigned to the task',
+    type: 'string',
+    required: false,
+    example: '507f1f77bcf86cd799439012'
+  })
+  assignee?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @ApiProperty({
+    description: 'The user who last modified the task',
+    type: 'string',
+    example: '507f1f77bcf86cd799439011'
+  })
+  lastModifier: Types.ObjectId;
+
   @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
   @ApiProperty({
     description: 'The ID of the board this task belongs to',
@@ -65,27 +90,7 @@ export class Task {
   })
   project: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
-  @ApiProperty({
-    description: 'The ID of the user assigned to the task',
-    required: false,
-    example: '507f1f77bcf86cd799439011'
-  })
-  assignee?: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  @ApiProperty({
-    description: 'The ID of the user who created the task',
-    example: '507f1f77bcf86cd799439011'
-  })
-  creator: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  @ApiProperty({
-    description: 'The ID of the user who last modified this task',
-    example: '507f1f77bcf86cd799439015'
-  })
-  lastModifier: Types.ObjectId;
+  // User reference fields are defined above with proper documentation
 
   @Prop({ type: Date, default: Date.now })
   @ApiProperty({

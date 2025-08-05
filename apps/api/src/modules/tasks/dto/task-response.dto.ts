@@ -2,6 +2,26 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { TaskStatus } from './create-task.dto';
 
+class UserResponseDto {
+  @ApiProperty({
+    description: 'The unique identifier of the user',
+    example: '507f1f77bcf86cd799439011'
+  })
+  _id: string;
+
+  @ApiProperty({
+    description: 'The name of the user',
+    example: 'John Doe'
+  })
+  name?: string;
+
+  @ApiProperty({
+    description: 'The email of the user',
+    example: 'john@example.com'
+  })
+  email?: string;
+}
+
 export class TaskResponseDto {
   @ApiProperty({
     description: 'The unique identifier of the task',
@@ -49,23 +69,23 @@ export class TaskResponseDto {
   project: string;
 
   @ApiProperty({
-    description: 'The ID of the user assigned to this task',
-    example: '507f1f77bcf86cd799439013',
+    description: 'The user assigned to the task',
+    type: UserResponseDto,
     required: false
   })
-  assignee?: string;
+  assignee?: UserResponseDto | null;
 
   @ApiProperty({
-    description: 'The ID of the user who created this task',
-    example: '507f1f77bcf86cd799439014'
+    description: 'The user who created the task',
+    type: UserResponseDto
   })
-  creator: string;
+  creator: UserResponseDto;
 
   @ApiProperty({
-    description: 'The ID of the user who last modified this task',
-    example: '507f1f77bcf86cd799439015'
+    description: 'The user who last modified the task',
+    type: UserResponseDto
   })
-  lastModifier: string;
+  lastModifier: UserResponseDto;
 
   @ApiProperty({
     description: 'The date when the task was created',
