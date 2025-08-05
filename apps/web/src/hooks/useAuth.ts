@@ -1,7 +1,7 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
-import { AuthService } from '@/lib/services/auth.service';
+import { AuthService } from '@/lib/auth/authService';
 import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Session, UserInfo } from '@/types/dbInterface';

@@ -1,5 +1,5 @@
-import { isAuthenticated } from '@/actions/auth';
 import RootWrapper from '@/components/layout/RootWrapper';
+import { isAuthenticated } from '@/lib/auth/authChecker';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -19,6 +19,8 @@ export default async function AppLayout({
 
   // Check if user is authenticated
   const { isAuthenticated: isUserAuthenticated } = await isAuthenticated();
+
+  console.log('User authentication status:', isUserAuthenticated);
 
   // If not authenticated, redirect to login
   if (!isUserAuthenticated) {

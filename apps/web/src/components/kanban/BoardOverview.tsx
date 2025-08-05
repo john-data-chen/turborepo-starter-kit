@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { useBoards } from '@/hooks/useBoards';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { AuthService } from '@/lib/services/auth.service';
+import { AuthService } from '@/lib/auth/authService';
 import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
