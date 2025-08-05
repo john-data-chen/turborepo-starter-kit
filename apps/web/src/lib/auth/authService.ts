@@ -50,7 +50,7 @@ export class AuthService {
     }
     // Map the backend user to our frontend User type
     const userInfo: UserInfo = {
-      _id: user.id,
+      _id: user._id,
       email: user.email,
       name: user.name || user.email.split('@')[0] || 'User'
     };
