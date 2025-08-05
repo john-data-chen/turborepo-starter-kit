@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -112,6 +113,31 @@ export class ProjectsController {
     } catch (error) {
       console.error('Error in update endpoint:', error);
       throw error; // Let the global exception filter handle it
+    }
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a project' })
+  @ApiResponse({
+    status: 200,
+    description: 'The project has been successfully deleted.'
+  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  async remove(@Param('id') id: string, @CurrentUser() user: { _id: string }) {
+    try {
+      console.log('Delete endpoint called for project:', {
+        id,
+        userId: user._id
+      });
+      await this.projectsService.remove(id, user._id);
+      console.log('Project deleted successfully:', { id });
+      return { success: true, message: 'Project deleted successfully' };
+    } catch (error) {
+      console.error('Error in delete endpoint:', error);
+      throw error;
     }
   }
 }

@@ -169,6 +169,51 @@ export class ProjectsService {
     }
   }
 
+  async remove(id: string, userId: string): Promise<void> {
+    console.log('Delete request received:', { id, userId });
+
+    if (!Types.ObjectId.isValid(id)) {
+      const error = 'Invalid project ID';
+      console.error(error, { id });
+      throw new BadRequestException(error);
+    }
+
+    if (!Types.ObjectId.isValid(userId)) {
+      const error = 'Invalid user ID';
+      console.error(error, { userId });
+      throw new BadRequestException(error);
+    }
+
+    console.log('Finding project with ID:', id);
+    const project = await this.projectModel.findById(id);
+    if (!project) {
+      const error = 'Project not found';
+      console.error(error, { id });
+      throw new NotFoundException(error);
+    }
+
+    console.log('Checking permissions...');
+    const permissions = await this.checkProjectPermissions(id, userId);
+    console.log('Permissions:', permissions);
+
+    if (!permissions.canDeleteProject) {
+      const error = 'You do not have permission to delete this project';
+      console.error(error, { userId, projectId: id });
+      throw new BadRequestException(error);
+    }
+
+    console.log('Deleting project...');
+    const result = await this.projectModel.deleteOne({ _id: id });
+
+    if (result.deletedCount === 0) {
+      const error = 'Failed to delete project';
+      console.error(error, { id });
+      throw new Error(error);
+    }
+
+    console.log('Project deleted successfully');
+  }
+
   async create(
     createProjectDto: CreateProjectDto & { owner: string }
   ): Promise<ProjectDocument> {
