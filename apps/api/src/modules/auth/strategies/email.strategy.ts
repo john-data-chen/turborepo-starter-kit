@@ -14,7 +14,8 @@ export class EmailStrategy extends PassportStrategy(Strategy, 'email') {
   }
 
   async validate(req: Request): Promise<any> {
-    const requestId = Math.random().toString(36).substring(2, 8);
+    const { v4: uuidv4 } = require('uuid');
+    const requestId = uuidv4();
     this.logger.log(
       `[${requestId}] [EmailStrategy] Starting validation for request`
     );
