@@ -20,17 +20,6 @@ export function useBoards() {
   const { userId } = useWorkspaceStore();
   const { data, isLoading, error, refetch } = useApiBoards();
 
-  // Debug log for the current state
-  useEffect(() => {
-    if (data) {
-      console.log('Boards data received:', data);
-    }
-    if (error) {
-      console.error('Error fetching boards:', error);
-    }
-    console.log('useBoards state:', { userId, data, isLoading, error });
-  }, [userId, data, isLoading, error]);
-
   // Split boards into myBoards and teamBoards based on ownership
   const { myBoards, teamBoards } = useMemo(() => {
     if (!data) {

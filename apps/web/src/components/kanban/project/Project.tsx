@@ -46,8 +46,6 @@ export function BoardProject({
     return user.name || user.email || user._id || 'Unknown';
   };
 
-  console.log('project:', JSON.stringify(project));
-
   // Fetch tasks when the component mounts or when the project changes
   useEffect(() => {
     const loadTasks = async () => {

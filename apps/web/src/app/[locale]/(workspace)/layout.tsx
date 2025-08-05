@@ -20,8 +20,6 @@ export default async function AppLayout({
   // Check if user is authenticated
   const { isAuthenticated: isUserAuthenticated } = await isAuthenticated();
 
-  console.log('User authentication status:', isUserAuthenticated);
-
   // If not authenticated, redirect to login
   if (!isUserAuthenticated) {
     redirect(`/${locale}/login`);

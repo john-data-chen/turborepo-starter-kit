@@ -11,7 +11,6 @@ async function fetchWithAuth<T>(
   options: RequestInit = {}
 ): Promise<T> {
   try {
-    console.log(`Fetching from ${url}`);
     const response = await fetch(url, {
       ...options,
       credentials: 'include',
@@ -21,10 +20,7 @@ async function fetchWithAuth<T>(
       }
     });
 
-    console.log(`Response status: ${response.status} ${response.statusText}`);
-
     const responseText = await response.text();
-    console.log('Response data:', responseText);
 
     if (!response.ok) {
       let errorMessage = 'Request failed';
@@ -97,8 +93,6 @@ export const boardApi = {
           'Content-Type': 'application/json'
         }
       });
-
-      console.log(`Delete board ${id} response status:`, response.status);
 
       // For 204 No Content responses, we don't expect a response body
       if (response.status === 204) {

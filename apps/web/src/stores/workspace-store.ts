@@ -132,16 +132,12 @@ export const useWorkspaceStore = create<State>()(
           throw new Error('Email and userId are required');
         }
 
-        console.log('Setting user info in workspace store:', { email, userId });
-
         set((state) => {
           // Only update if the values have changed
           if (state.userEmail === email && state.userId === userId) {
-            console.log('User info unchanged, skipping update');
             return state;
           }
 
-          console.log('Updating workspace store with new user info');
           return {
             ...state,
             userEmail: email,
@@ -180,19 +176,14 @@ export const useWorkspaceStore = create<State>()(
       // Fetch tasks for a specific project
       fetchTasksByProject: async (projectId: string) => {
         if (!projectId) {
-          console.log('No project ID provided to fetchTasksByProject');
           return [];
         }
-
-        console.log('Fetching tasks for project:', projectId);
 
         try {
           // Ensure we're using the correct parameter name that matches the backend
           const tasks = await taskApi.getTasks(projectId);
-          console.log('Fetched tasks for project', projectId, ':', tasks);
 
           if (!Array.isArray(tasks)) {
-            console.error('Invalid tasks data received:', tasks);
             return [];
           }
 
@@ -259,7 +250,7 @@ export const useWorkspaceStore = create<State>()(
         newDescription: string | undefined,
         updateFn: (
           id: string,
-          data: { title: string; description?: string }
+          data: { title: string; description?: string; owner: string }
         ) => Promise<Project>
       ) => {
         try {
@@ -277,8 +268,17 @@ export const useWorkspaceStore = create<State>()(
             )
           }));
 
+          const { userId } = get();
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
+
           // Call the update function provided by the component
-          await updateFn(id, { title: newTitle, description: newDescription });
+          await updateFn(id, {
+            title: newTitle,
+            description: newDescription,
+            owner: userId
+          });
         } catch (error) {
           console.error('Error updating project:', error);
           // Revert optimistic update on error

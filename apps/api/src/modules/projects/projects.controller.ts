@@ -44,13 +44,10 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @CurrentUser() user: { _id: string; email: string }
   ) {
-    console.log('Current user in controller:', user);
-    // Ensure owner is set to the current user's ID
     const projectData = {
       ...createProjectDto,
       owner: user._id
     };
-    console.log('Sending to service:', JSON.stringify(projectData, null, 2));
     return this.projectsService.create(projectData);
   }
 
@@ -77,10 +74,6 @@ export class ProjectsController {
     @Param('id') projectId: string,
     @CurrentUser() user: { _id: string; email: string }
   ): Promise<ProjectPermissionsDto> {
-    console.log('Current user in permissions endpoint:', {
-      userId: user._id,
-      email: user.email
-    });
     return this.projectsService.checkProjectPermissions(projectId, user._id);
   }
 }

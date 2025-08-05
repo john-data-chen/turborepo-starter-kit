@@ -89,7 +89,6 @@ export function ProjectActions({
     setIsLoadingPermissions(true);
 
     try {
-      console.log('Fetching permissions for project ID:', projectId);
       const permissions = await projectApi.getProjectPermissions(projectId);
       setPermissions(permissions);
     } catch (error) {
@@ -104,7 +103,11 @@ export function ProjectActions({
   async function onSubmit(values: ProjectFormData) {
     try {
       await updateProject(id, values.title, values.description, (id, data) =>
-        updateProjectMutation.mutateAsync({ id, ...data })
+        updateProjectMutation.mutateAsync({
+          id,
+          ...data,
+          owner: ''
+        })
       );
       await fetchProjects(currentBoardId!);
       toast.success(t('updateSuccess'));

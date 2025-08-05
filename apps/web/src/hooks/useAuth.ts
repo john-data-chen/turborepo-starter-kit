@@ -104,10 +104,6 @@ export function useAuth() {
     if (session?.user) {
       // Ensure we have both email and _id before updating
       if (session.user.email && session.user._id) {
-        console.log('Setting user info in workspace store:', {
-          email: session.user.email,
-          userId: session.user._id
-        });
         setUserInfo(session.user.email, session.user._id);
       } else {
         console.warn('Session user is missing email or _id:', session.user);

@@ -8,7 +8,6 @@ import { beforeAll, vi } from 'vitest';
 
 // Determine the correct path to the .env.test file relative to the project root
 const envPath = path.resolve(process.cwd(), '.env.test');
-console.log(`Attempting to load environment variables from: ${envPath}`); // Debugging line
 
 // Load environment variables from .env.test specifically for tests
 const result = dotenv.config({ path: envPath });
@@ -17,7 +16,7 @@ if (result.error) {
   console.error('Error loading .env.test file:', result.error); // Debugging line
 } else {
   console.log('.env.test file loaded successfully.'); // Debugging line
-  // console.log('DATABASE_URL loaded:', process.env.DATABASE_URL); // Optional: Check if variable is loaded
+  console.log('DATABASE_URL loaded:', process.env.DATABASE_URL); // Optional: Check if variable is loaded
 }
 
 console.log('Current NODE_ENV:', process.env.NODE_ENV);

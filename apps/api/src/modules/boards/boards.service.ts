@@ -33,10 +33,6 @@ export class BoardService {
   }
 
   async findAll(userId: string): Promise<Board[]> {
-    console.log(
-      `[BoardService] Finding boards for user ID: ${userId} (type: ${typeof userId})`
-    );
-
     try {
       // Ensure userId is a valid ObjectId
       const isValidObjectId = Types.ObjectId.isValid(userId);
@@ -44,16 +40,6 @@ export class BoardService {
         console.error(`[BoardService] Invalid user ID format: ${userId}`);
         return [];
       }
-
-      const query = {
-        $or: [
-          { owner: new Types.ObjectId(userId) }, // Ensure owner is compared with ObjectId
-          { members: new Types.ObjectId(userId) } // Ensure members contains ObjectId
-        ]
-      };
-
-      console.log('[BoardService] MongoDB query:', JSON.stringify(query));
-
       // First, find boards where user is the owner
       const ownedBoards = await this.boardModel.aggregate([
         { $match: { owner: new Types.ObjectId(userId) } },
@@ -150,9 +136,6 @@ export class BoardService {
           }
         }
       ]);
-      console.log(
-        `[BoardService] Found ${ownedBoards.length} boards where user is owner`
-      );
 
       // Then find boards where user is a member but not the owner
       const memberBoards = await this.boardModel.aggregate([
@@ -244,12 +227,8 @@ export class BoardService {
           }
         }
       ]);
-      console.log(
-        `[BoardService] Found ${memberBoards.length} boards where user is member`
-      );
 
       const allBoards = [...ownedBoards, ...memberBoards];
-      console.log(`[BoardService] Total boards found: ${allBoards.length}`);
 
       if (allBoards.length > 0) {
         allBoards.forEach((board) => {
@@ -278,10 +257,6 @@ export class BoardService {
   }
 
   async findOne(id: string, userId: string): Promise<Board> {
-    console.log(
-      `[BoardService] Finding board with ID: ${id} for user: ${userId}`
-    );
-
     try {
       // Validate ObjectIds
       if (!Types.ObjectId.isValid(id) || !Types.ObjectId.isValid(userId)) {
@@ -381,15 +356,6 @@ export class BoardService {
         },
         { $limit: 1 }
       ]);
-
-      if (!board) {
-        console.log(`[BoardService] Board not found or access denied: ${id}`);
-        throw new NotFoundException(
-          `Board with ID "${id}" not found or access denied`
-        );
-      }
-
-      console.log(`[BoardService] Found board: ${board.title} (${board._id})`);
       return board;
     } catch (error) {
       console.error(`[BoardService] Error finding board ${id}:`, error);
@@ -435,10 +401,6 @@ export class BoardService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    console.log(
-      `[BoardService] Attempting to delete board ${id} for user ${userId}`
-    );
-
     // First, check if the board exists and the user has permission
     const board = await this.boardModel.findById(id).exec();
 
@@ -465,8 +427,6 @@ export class BoardService {
       );
       throw new NotFoundException(`Failed to delete board with ID "${id}"`);
     }
-
-    console.log(`[BoardService] Successfully deleted board ${id}`);
   }
 
   // Additional methods for board management

@@ -42,8 +42,6 @@ export class AuthService {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    console.log('Raw user profile from API:', user);
-
     // Ensure we have required fields
     if (!user || !user.email) {
       throw new Error('Invalid user data received from server');
@@ -55,7 +53,6 @@ export class AuthService {
       name: user.name || user.email.split('@')[0] || 'User'
     };
 
-    console.log('Processed user info:', userInfo);
     return userInfo;
   }
 
@@ -63,23 +60,15 @@ export class AuthService {
     try {
       const token = Cookies.get('jwt');
       if (!token) {
-        console.log('No JWT token found in cookies');
         return null;
       }
 
-      console.log('Fetching user profile with token');
       const user = await this.getProfile(token);
 
       // getProfile now handles the case where _id is undefined
       if (!user) {
-        console.error('Failed to get user profile');
         return null;
       }
-
-      console.log('Successfully retrieved user session:', {
-        userId: user._id,
-        email: user.email
-      });
 
       return {
         user: {

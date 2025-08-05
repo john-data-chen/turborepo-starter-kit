@@ -123,35 +123,29 @@ async function main() {
     });
     // Get the Mongoose connection using the correct token
     const connection = app.get(getConnectionToken());
-    console.log('Connecting to database...');
-    // Check if already connected
-    if (connection.readyState === 1) {
-      console.log('Database already connected');
-    } else {
-      // Set up a promise that resolves when connected or rejects on error/timeout
-      await new Promise<void>((resolve, reject) => {
-        // Set a timeout to prevent hanging
-        const timeout = setTimeout(() => {
-          reject(new Error('Database connection timeout after 10 seconds'));
-        }, 10000);
+    // Set up a promise that resolves when connected or rejects on error/timeout
+    await new Promise<void>((resolve, reject) => {
+      // Set a timeout to prevent hanging
+      const timeout = setTimeout(() => {
+        reject(new Error('Database connection timeout after 10 seconds'));
+      }, 10000);
 
-        const onConnected = () => {
-          clearTimeout(timeout);
-          connection.removeListener('error', onError);
-          console.log('Database connected successfully');
-          resolve();
-        };
+      const onConnected = () => {
+        clearTimeout(timeout);
+        connection.removeListener('error', onError);
+        console.log('Database connected successfully');
+        resolve();
+      };
 
-        const onError = (err: Error) => {
-          clearTimeout(timeout);
-          connection.removeListener('open', onConnected);
-          reject(err);
-        };
+      const onError = (err: Error) => {
+        clearTimeout(timeout);
+        connection.removeListener('open', onConnected);
+        reject(err);
+      };
 
-        connection.once('open', onConnected);
-        connection.once('error', onError);
-      });
-    }
+      connection.once('open', onConnected);
+      connection.once('error', onError);
+    });
 
     // Get the models directly from the connection
     const boardModel = connection.model(Board.name, BoardSchema);
