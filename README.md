@@ -7,6 +7,8 @@
 This is a test project, a playground for me to test and import new tools into my stack.
 It has many issues and problems, and might not be fixed quickly, when it is ready, I will update README.md.
 
+---
+
 ## Tech Stack
 
 - Next.js (it comes from my previous project: [next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit))
@@ -143,6 +145,8 @@ pnpm build
 - E2E Tests: Critical user flows, such as the Login page, are validated end-to-end using Playwright, simulating real user interactions to guarantee system integrity.
 - Cross-browser Testing Strategy: Ensures consistent functionality and user experience across a carefully selected range of desktop and mobile browsers based on market share, mitigating compatibility issues.
 
+---
+
 ## Experimental Tools
 
 ### Oxlint
@@ -154,6 +158,8 @@ pnpm build
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
 
+---
+
 ## To-Do
 
 - [x] Move frontend code to `apps/web`
@@ -163,14 +169,16 @@ pnpm build
 - [x] Reactor Board / Project / Task / User functions from NextJS in `apps/web` into NestJS in `apps/api`
 - [x] Update database init script for NestJS in `apps/api`
 - [ ] Fix the issues between NextJS and NestJS API format
+- [ ] Update README.md in root
+- [ ] Update README.md in `apps/web`
+- [ ] Update README.md in `apps/api`
+- [ ] Add Vercel deployment
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
-- [ ] Update README.md in `apps/web`
-- [ ] Update README.md in `apps/api`
-- [ ] Update README.md in root
-- [ ] Add github actions for CI/CD
-- [ ] Add vercel for deployment
+- [ ] Add github actions for CI
+
+---
 
 ## Known Issues & Limitations
 
@@ -181,7 +189,7 @@ pnpm build
   - Issue: Sometimes Server response is slow, especially for users are not in Asia
   - Reason:
     - The resource of free tier is limited.
-    - In this project, the backend is separated from the original NextJS app into a NestJS app, the response between NextJS and NestJS might be longer.
+    - In this monorepo project, the backend is separated from the original NextJS App into NestJS app, the response between two services is longer.
   - Solution: I don't have budget for paid tier or CDN, so it won't be fixed in the near future.
 
 ---
