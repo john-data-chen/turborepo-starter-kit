@@ -42,13 +42,16 @@ export class ProjectsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() createProjectDto: CreateProjectDto,
-    @CurrentUser() user: { id: string; email: string }
+    @CurrentUser() user: { _id: string; email: string }
   ) {
     console.log('Current user in controller:', user);
-    return this.projectsService.create({
+    // Ensure owner is set to the current user's ID
+    const projectData = {
       ...createProjectDto,
-      creatorId: user.id
-    });
+      owner: user._id
+    };
+    console.log('Sending to service:', JSON.stringify(projectData, null, 2));
+    return this.projectsService.create(projectData);
   }
 
   @Get()
@@ -63,7 +66,7 @@ export class ProjectsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getProjectsByBoard(
     @Query('boardId') boardId: string,
-    @CurrentUser() _user: { userId: string }
+    @CurrentUser() _user: { _id: string }
   ) {
     return this.projectsService.findByBoardId(boardId);
   }
@@ -72,12 +75,12 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Check user permissions for a project' })
   async getProjectPermissions(
     @Param('id') projectId: string,
-    @CurrentUser() user: { id: string; email: string }
+    @CurrentUser() user: { _id: string; email: string }
   ): Promise<ProjectPermissionsDto> {
     console.log('Current user in permissions endpoint:', {
-      userId: user.id,
+      userId: user._id,
       email: user.email
     });
-    return this.projectsService.checkProjectPermissions(projectId, user.id);
+    return this.projectsService.checkProjectPermissions(projectId, user._id);
   }
 }

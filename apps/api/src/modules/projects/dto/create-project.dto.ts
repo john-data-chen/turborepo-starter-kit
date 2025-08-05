@@ -19,4 +19,9 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   boardId: string;
+
+  @ApiProperty({ description: 'The ID of the user who owns this project' })
+  @IsString()
+  @IsNotEmpty()
+  owner: string;
 }

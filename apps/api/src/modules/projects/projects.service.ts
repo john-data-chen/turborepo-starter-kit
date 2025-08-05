@@ -93,18 +93,24 @@ export class ProjectsService {
   }
 
   async create(
-    createProjectDto: CreateProjectDto & { creatorId: string }
+    createProjectDto: CreateProjectDto & { owner: string }
   ): Promise<ProjectDocument> {
     try {
-      const { title, description, boardId, creatorId } = createProjectDto;
+      console.log(
+        'Raw createProjectDto received in service:',
+        JSON.stringify(createProjectDto, null, 2)
+      );
 
-      console.log('Received create project request with data:', {
+      const { title, description, boardId, owner } = createProjectDto;
+
+      console.log('Processed fields in service:', {
         title,
         description,
         boardId,
-        creatorId,
+        owner,
         isBoardIdValid: Types.ObjectId.isValid(boardId),
-        isCreatorIdValid: Types.ObjectId.isValid(creatorId)
+        isOwnerValid: Types.ObjectId.isValid(owner),
+        ownerType: typeof owner
       });
 
       if (!Types.ObjectId.isValid(boardId)) {
@@ -112,12 +118,12 @@ export class ProjectsService {
         throw new BadRequestException(`Invalid board ID: ${boardId}`);
       }
 
-      if (!Types.ObjectId.isValid(creatorId)) {
-        console.error('Invalid creator ID:', creatorId);
-        throw new BadRequestException(`Invalid creator ID: ${creatorId}`);
+      if (!Types.ObjectId.isValid(owner)) {
+        console.error('Invalid owner ID:', owner);
+        throw new BadRequestException(`Invalid owner ID: ${owner}`);
       }
 
-      const ownerId = new Types.ObjectId(creatorId);
+      const ownerId = new Types.ObjectId(owner);
 
       // Create the project with only the fields defined in the schema
       const project = new this.projectModel({
@@ -135,8 +141,8 @@ export class ProjectsService {
             title,
             description: description || '',
             board: boardId,
-            owner: creatorId,
-            members: [creatorId]
+            owner: owner,
+            members: [owner]
           },
           null,
           2

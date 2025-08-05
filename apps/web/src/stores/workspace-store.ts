@@ -220,18 +220,23 @@ export const useWorkspaceStore = create<State>()(
           title: string;
           description: string;
           boardId: string;
+          owner: string;
         }) => Promise<Project>
       ) => {
         try {
-          const { currentBoardId } = get();
+          const { currentBoardId, userId } = get();
           if (!currentBoardId) {
             throw new Error('No board selected');
+          }
+          if (!userId) {
+            throw new Error('User not authenticated');
           }
 
           const newProject = await createProject({
             title,
             description,
-            boardId: currentBoardId
+            boardId: currentBoardId,
+            owner: userId
           });
 
           if (newProject) {

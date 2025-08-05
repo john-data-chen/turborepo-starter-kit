@@ -4,6 +4,7 @@ export interface CreateProjectInput {
   title: string;
   description?: string;
   boardId: string;
+  owner: string;
 }
 
 export interface UpdateProjectInput {
