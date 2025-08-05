@@ -1,24 +1,22 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "apps/api/src/main.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
-      "src": "/_next/static/(.*)",
-      "dest": "/_next/static/$1"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "apps/api/src/main.ts"
     }
   ],
   "build": {
     "env": {
+      "NODE_ENV": "production",
       "NEXT_PUBLIC_API_URL": "$NEXT_PUBLIC_API_URL",
-      "NEXT_PUBLIC_APP_URL": "$NEXT_PUBLIC_APP_URL",
-      "NODE_ENV": "$NODE_ENV"
+      "NEXT_PUBLIC_APP_URL": "$NEXT_PUBLIC_APP_URL"
     }
   }
 }

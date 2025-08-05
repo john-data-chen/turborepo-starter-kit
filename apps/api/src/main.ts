@@ -1,5 +1,4 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
@@ -15,19 +14,22 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log', 'debug', 'verbose']
   });
 
-  const configService = app.get(ConfigService);
-  const logger = new Logger('Bootstrap');
-  const port = configService.get<number>('PORT') || API_PORT;
+  const port = process.env.PORT || API_PORT;
+
+  // Get frontend URL from environment variable or fallback to local development URL
+  const frontendUrl = process.env.NEXT_URL || 'http://localhost:3000';
 
   // Enable CORS for the frontend
   app.enableCors({
-    origin:
-      configService.get<string>('FRONTEND_URL') || 'http://localhost:3000',
+    origin: frontendUrl,
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     exposedHeaders: ['Authorization']
   });
+
+  // Log CORS configuration for debugging
+  console.log(`CORS enabled for origin: ${frontendUrl}`);
 
   app.use(cookieParser());
 
@@ -67,32 +69,31 @@ async function bootstrap() {
     }
   });
 
+  // For Vercel deployment, we'll export the NestJS app's HTTP adapter
+  if (process.env.VERCEL) {
+    await app.init();
+    return app.getHttpAdapter().getInstance();
+  }
+
+  // For local development
   await app.listen(port);
-  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  console.log(`🚀 Application is running on: http://localhost:${port}`);
+  console.log(
+    `API Documentation available at: http://localhost:${port}/api/docs`
+  );
 
   // Enable hot module replacement for development
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => {
-      // Close the current app instance
-      app.close().then(() => {
-        // Clear the Node.js module cache for the user module
-        Object.keys(require.cache).forEach((key) => {
-          if (key.includes('user/')) {
-            delete require.cache[key];
-          }
-        });
-        // Re-import the app module to get fresh instances
-        import('./app.module').then(() => {
-          // Re-bootstrap the application
-          bootstrap();
-        });
-      });
+      app.close();
     });
   }
+
+  return app;
 }
 
-bootstrap().catch((error) => {
-  console.error('Failed to start the application', error);
-  process.exit(1);
-});
+// Export the serverless function for Vercel
+const server = bootstrap();
+
+export default server;
