@@ -70,7 +70,6 @@ export class AuthService {
     }
   }
 
-  // 登入成功後，產生 JWT
   async login(user: User) {
     this.logger.log(`[AuthService] Generating JWT for user: ${user.email}`);
     this.logger.debug(
