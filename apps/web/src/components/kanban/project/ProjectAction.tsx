@@ -75,10 +75,10 @@ export function ProjectActions({
 
     // Ensure the ID is a string and trim any whitespace
     const projectId = String(id).trim();
-    
+
     // Basic validation for MongoDB ObjectId format
     const isValidId = /^[0-9a-fA-F]{24}$/.test(projectId);
-    
+
     if (!isValidId) {
       console.error('Invalid project ID format:', projectId);
       setPermissions({ canEditProject: false, canDeleteProject: false });
@@ -87,7 +87,7 @@ export function ProjectActions({
     }
 
     setIsLoadingPermissions(true);
-    
+
     try {
       console.log('Fetching permissions for project ID:', projectId);
       const permissions = await projectApi.getProjectPermissions(projectId);

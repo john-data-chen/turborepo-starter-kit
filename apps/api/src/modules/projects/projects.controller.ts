@@ -74,7 +74,10 @@ export class ProjectsController {
     @Param('id') projectId: string,
     @CurrentUser() user: { id: string; email: string }
   ): Promise<ProjectPermissionsDto> {
-    console.log('Current user in permissions endpoint:', { userId: user.id, email: user.email });
+    console.log('Current user in permissions endpoint:', {
+      userId: user.id,
+      email: user.email
+    });
     return this.projectsService.checkProjectPermissions(projectId, user.id);
   }
 }
