@@ -68,7 +68,6 @@ export class AuthController {
     }
   }
 
-  // 這是一個受保護的範例端點，用來驗證 token
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
