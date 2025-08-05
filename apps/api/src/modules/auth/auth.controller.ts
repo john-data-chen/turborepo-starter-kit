@@ -71,9 +71,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    this.logger.log(
-      `Profile accessed for user: ${req.user?.email || 'unknown'}`
-    );
     return req.user;
   }
 }

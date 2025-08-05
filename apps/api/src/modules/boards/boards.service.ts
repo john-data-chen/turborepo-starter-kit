@@ -230,25 +230,6 @@ export class BoardService {
 
       const allBoards = [...ownedBoards, ...memberBoards];
 
-      if (allBoards.length > 0) {
-        allBoards.forEach((board) => {
-          console.log(
-            '[BoardService]',
-            JSON.stringify(
-              {
-                _id: board._id,
-                title: board.title,
-                owner: board.owner,
-                projects: board.projects,
-                members: board.members
-              },
-              null,
-              2
-            )
-          );
-        });
-      }
-
       return allBoards;
     } catch (error) {
       console.error('[BoardService] Error finding boards:', error);
