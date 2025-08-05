@@ -12,9 +12,10 @@ export interface CreateTaskInput {
   description?: string;
   status?: TaskStatus;
   dueDate?: Date;
-  boardId: string;
-  projectId: string;
-  assigneeId?: string;
+  board: string; // Changed from boardId to match backend
+  project: string; // Changed from projectId to match backend
+  creator: string; // Added to match backend
+  assignee?: string; // Changed from assigneeId to match backend
 }
 
 export interface UpdateTaskInput {

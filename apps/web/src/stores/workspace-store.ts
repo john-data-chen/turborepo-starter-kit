@@ -4,6 +4,7 @@ import { taskApi } from '@/lib/api/taskApi';
 import { useDeleteTask } from '@/lib/api/tasks';
 import { Board, Project, Task } from '@/types/dbInterface';
 import { TaskStatus } from '@/types/dbInterface';
+import { CreateTaskInput } from '@/types/taskApi';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -60,16 +61,7 @@ interface State {
     projectId: string,
     title: string,
     status: TaskStatus,
-    createTask: (task: {
-      title: string;
-      description?: string;
-      status: TaskStatus;
-      projectId: string;
-      boardId: string;
-      creatorId: string;
-      dueDate?: Date;
-      assigneeId?: string;
-    }) => Promise<Task>,
+    createTask: (task: CreateTaskInput) => Promise<Task>,
     description?: string,
     dueDate?: Date,
     assigneeId?: string
@@ -321,16 +313,7 @@ export const useWorkspaceStore = create<State>()(
         projectId: string,
         title: string,
         status: TaskStatus = TaskStatus.TODO,
-        createTask: (task: {
-          title: string;
-          description?: string;
-          status: TaskStatus;
-          projectId: string;
-          boardId: string;
-          creatorId: string;
-          dueDate?: Date;
-          assigneeId?: string;
-        }) => Promise<Task>,
+        createTask: (task: CreateTaskInput) => Promise<Task>,
         description?: string,
         dueDate?: Date,
         assigneeId?: string
@@ -341,15 +324,15 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated or no board selected');
           }
 
-          const taskInput = {
+          const taskInput: CreateTaskInput = {
             title,
             description,
             status,
-            projectId,
-            boardId: currentBoardId,
-            creatorId: userId,
+            project: projectId, // Changed from projectId to project
+            board: currentBoardId, // Changed from boardId to board
+            creator: userId, // Changed from creatorId to creator
             ...(dueDate && { dueDate }),
-            ...(assigneeId && { assigneeId })
+            ...(assigneeId && { assignee: assigneeId }) // Changed from assigneeId to assignee
           };
 
           await createTask(taskInput);

@@ -72,15 +72,27 @@ export class TasksService {
     createTaskDto: CreateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
-    const createdTask = new this.taskModel({
-      ...createTaskDto,
-      creator: new Types.ObjectId(userId),
-      status: createTaskDto.status || TaskStatus.TODO,
-      lastModifier: new Types.ObjectId(userId)
-    });
+    try {
+      // Convert string IDs to ObjectIds
+      const taskData = {
+        ...createTaskDto,
+        project: new Types.ObjectId(createTaskDto.project),
+        board: new Types.ObjectId(createTaskDto.board),
+        creator: new Types.ObjectId(createTaskDto.creator),
+        status: createTaskDto.status || TaskStatus.TODO,
+        lastModifier: new Types.ObjectId(userId),
+        ...(createTaskDto.assignee && {
+          assignee: new Types.ObjectId(createTaskDto.assignee)
+        })
+      };
 
-    const savedTask = await createdTask.save();
-    return await this.toTaskResponse(savedTask);
+      const createdTask = new this.taskModel(taskData);
+      const savedTask = await createdTask.save();
+      return await this.toTaskResponse(savedTask);
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
   }
 
   async findAll(

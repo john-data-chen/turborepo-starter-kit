@@ -12,12 +12,7 @@ export type TaskDocument = Task & Document;
 
 @Schema({ timestamps: true })
 export class Task {
-  @Prop({ type: Types.ObjectId })
-  @ApiProperty({
-    description: 'The unique identifier of the task',
-    example: '507f1f77bcf86cd799439011'
-  })
-  _id: Types.ObjectId;
+  // _id is automatically added by Mongoose
 
   @Prop({ type: String, required: true })
   @ApiProperty({

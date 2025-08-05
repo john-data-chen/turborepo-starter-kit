@@ -60,9 +60,15 @@ export const taskApi = {
 
   // Create a new task
   async createTask(input: CreateTaskInput): Promise<Task> {
+    // Ensure the input matches the backend's expected format
+    const requestBody = {
+      ...input
+      // No need to transform fields since we updated the CreateTaskInput type
+    };
+
     return fetchWithAuth(TASKS_ENDPOINT, {
       method: 'POST',
-      body: JSON.stringify(input)
+      body: JSON.stringify(requestBody)
     });
   },
 
