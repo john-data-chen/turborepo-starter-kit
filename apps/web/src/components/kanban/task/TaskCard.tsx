@@ -16,6 +16,7 @@ import { TaskActions } from './TaskAction';
 interface TaskCardProps {
   task: Task;
   isOverlay?: boolean;
+  onUpdate?: () => void;
 }
 
 export type TaskType = 'Task';
@@ -37,7 +38,7 @@ function getLastField(task: Task): string {
   return visibleFields[visibleFields.length - 1] || '';
 }
 
-export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
+export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
   const t = useTranslations('kanban.task');
   const {
     setNodeRef,
@@ -137,6 +138,7 @@ export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
           status={task.status}
           projectId={task.project}
           boardId={task.board}
+          onUpdate={onUpdate}
         />
       </CardHeader>
       <div className="space-y-0">

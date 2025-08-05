@@ -156,16 +156,24 @@ export class TasksService {
     updateTaskDto: UpdateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
+    // Prepare update data
+    const updateData: any = {
+      ...updateTaskDto,
+      lastModifier: new Types.ObjectId(userId),
+      updatedAt: new Date()
+    };
+
+    // Handle assigneeId if provided
+    if ('assigneeId' in updateTaskDto) {
+      updateData.assignee = updateTaskDto.assigneeId
+        ? new Types.ObjectId(updateTaskDto.assigneeId)
+        : null;
+      // Remove assigneeId to prevent it from being saved directly
+      delete updateData.assigneeId;
+    }
+
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(
-        id,
-        {
-          ...updateTaskDto,
-          lastModifier: userId,
-          updatedAt: new Date()
-        },
-        { new: true }
-      )
+      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
       .populate('creator', 'name email')
       .populate('assignee', 'name email')
       .populate('project', 'title')

@@ -48,6 +48,7 @@ export enum TaskStatus {
 
 export interface Task {
   _id: string;
+  id?: string; // Make id optional for compatibility
   title: string;
   description?: string | null;
   status: TaskStatus;

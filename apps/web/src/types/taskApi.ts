@@ -30,11 +30,11 @@ export interface UpdateTaskInput {
 export const TASK_KEYS = {
   all: ['tasks'] as const,
   lists: () => [...TASK_KEYS.all, 'list'] as const,
-  list: (filters: { projectId?: string; assigneeId?: string } = {}) =>
+  list: (filters: { project?: string; assignee?: string } = {}) =>
     [
       ...TASK_KEYS.lists(),
-      ...(filters.projectId ? [{ projectId: filters.projectId }] : []),
-      ...(filters.assigneeId ? [{ assigneeId: filters.assigneeId }] : [])
+      ...(filters.project ? [{ project: filters.project }] : []),
+      ...(filters.assignee ? [{ assignee: filters.assignee }] : [])
     ] as const,
   details: () => [...TASK_KEYS.all, 'detail'] as const,
   detail: (id: string) => [...TASK_KEYS.details(), id] as const

@@ -82,14 +82,6 @@ function BoardProjectComponent({
     [project._id, project.title, project.description]
   );
 
-  // Memoize the task list to prevent unnecessary re-renders
-  const _taskItems = useMemo(() => {
-    return tasks.map((task) => ({
-      id: task._id,
-      element: <TaskCard key={task._id} task={task} />
-    }));
-  }, [tasks]);
-
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
     if (!project?._id) return;
@@ -107,6 +99,14 @@ function BoardProjectComponent({
       setIsLoading(false);
     }
   }, [project?._id, fetchTasksByProject]);
+
+  // Memoize the task list to prevent unnecessary re-renders
+  const _taskItems = useMemo(() => {
+    return tasks.map((task) => ({
+      id: task._id,
+      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
+    }));
+  }, [tasks, loadTasks]);
 
   // Fetch tasks when the project changes
   useEffect(() => {

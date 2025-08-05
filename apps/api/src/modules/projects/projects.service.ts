@@ -135,37 +135,58 @@ export class ProjectsService {
 
     console.log('Updating project with data:', updateProjectDto);
 
+    // Prepare update data
+    const updateData: Partial<Project> = {};
+
     // Only update the fields that are provided in the DTO
     if (updateProjectDto.title !== undefined) {
-      console.log(
-        'Updating title from',
-        project.title,
-        'to',
-        updateProjectDto.title
-      );
-      project.title = updateProjectDto.title;
+      updateData.title = updateProjectDto.title;
     }
 
-    // Handle null/undefined for description
-    if ('description' in updateProjectDto) {
-      const newDescription = updateProjectDto.description ?? '';
-      console.log(
-        'Updating description from',
-        project.description,
-        'to',
-        newDescription
-      );
-      project.description = newDescription;
+    if (updateProjectDto.description !== undefined) {
+      updateData.description = updateProjectDto.description;
     }
+
+    if (updateProjectDto.status) {
+      updateData.status = updateProjectDto.status;
+    }
+
+    if (updateProjectDto.dueDate) {
+      updateData.dueDate = new Date(updateProjectDto.dueDate);
+    }
+
+    if (updateProjectDto.assigneeId !== undefined) {
+      updateData.assignee = updateProjectDto.assigneeId
+        ? new Types.ObjectId(updateProjectDto.assigneeId)
+        : null;
+    }
+
+    console.log('Updating project with data:', updateData);
 
     try {
-      console.log('Saving project...');
-      const updatedProject = await project.save();
-      console.log('Project saved successfully:', updatedProject);
-      return updatedProject;
+      const updatedProject = await this.projectModel
+        .findByIdAndUpdate(
+          id,
+          { $set: updateData },
+          { new: true, runValidators: true }
+        )
+        .populate('owner', 'name email')
+        .populate('members', 'name email')
+        .populate('assignee', 'name email')
+        .lean();
+
+      if (!updatedProject) {
+        throw new NotFoundException('Project not found after update');
+      }
+
+      console.log('Project updated successfully:', updatedProject);
+      return updatedProject as ProjectDocument;
     } catch (error) {
-      console.error('Error saving project:', error);
-      throw error;
+      console.error('Error updating project:', error);
+      if (error instanceof Error && error.name === 'ValidationError') {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Failed to update project');
     }
   }
 
