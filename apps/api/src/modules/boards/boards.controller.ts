@@ -28,7 +28,7 @@ import { Board } from './schemas/boards.schema';
 
 interface RequestWithUser extends Request {
   user: {
-    id: string;
+    _id: string;
     email: string;
   };
 }
@@ -57,10 +57,10 @@ export class BoardController {
   })
   create(@Body() createBoardDto: CreateBoardDto, @Req() req: RequestWithUser) {
     // Set the owner from the authenticated user
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    createBoardDto.owner = req.user.id;
+    createBoardDto.owner = req.user._id;
     return this.boardService.create(createBoardDto);
   }
 
@@ -76,10 +76,10 @@ export class BoardController {
     description: 'Unauthorized.'
   })
   findAll(@Req() req: RequestWithUser) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.findAll(req.user.id);
+    return this.boardService.findAll(req.user._id);
   }
 
   @Get(':id')
@@ -100,10 +100,10 @@ export class BoardController {
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   findOne(@Param('id') id: string, @Req() req: RequestWithUser) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.findOne(id, req.user.id);
+    return this.boardService.findOne(id, req.user._id);
   }
 
   @Patch(':id')
@@ -128,10 +128,10 @@ export class BoardController {
     @Body() updateBoardDto: UpdateBoardDto,
     @Req() req: RequestWithUser
   ) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.update(id, updateBoardDto, req.user.id);
+    return this.boardService.update(id, updateBoardDto, req.user._id);
   }
 
   @Delete(':id')
@@ -151,10 +151,10 @@ export class BoardController {
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   remove(@Param('id') id: string, @Req() req: RequestWithUser) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.remove(id, req.user.id);
+    return this.boardService.remove(id, req.user._id);
   }
 
   @Post(':id/members/:memberId')
@@ -180,10 +180,10 @@ export class BoardController {
     @Param('memberId') memberId: string,
     @Req() req: RequestWithUser
   ) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.addMember(id, req.user.id, memberId);
+    return this.boardService.addMember(id, req.user._id, memberId);
   }
 
   @Delete(':id/members/:memberId')
@@ -212,9 +212,9 @@ export class BoardController {
     @Param('memberId') memberId: string,
     @Req() req: RequestWithUser
   ) {
-    if (!req.user?.id) {
+    if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.boardService.removeMember(id, req.user.id, memberId);
+    return this.boardService.removeMember(id, req.user._id, memberId);
   }
 }
