@@ -153,7 +153,7 @@ pnpm build
 
 - status: enabled
 - benefit:
-  - 50~100 times faster than ESLint (it can lint this small project in 15ms, it has more potential in big projects with thousands of files)
+  - 50~100 times faster than ESLint (it can lint this small project in 500 ms, it has more potential in big projects with thousands of files)
   - easier to setup
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
@@ -162,9 +162,9 @@ pnpm build
 
 ## To-Do
 
+- [ ] Add Vercel deployment
 - [ ] Add a refresh after edit a task
 - [ ] Add a refresh after delete a task
-- [ ] Add Vercel deployment
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`
