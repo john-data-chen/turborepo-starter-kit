@@ -168,36 +168,6 @@ export function TaskActions({
     }
   };
 
-  // Handle status change
-  const _handleStatusChange = async (newStatus: TaskStatus) => {
-    try {
-      await updateStatusMutation.mutateAsync(
-        {
-          id,
-          status: newStatus
-        },
-        {
-          onSettled: () => {
-            // Invalidate both the specific task and task lists
-            queryClient.invalidateQueries({
-              queryKey: TASK_KEYS.detail(id),
-              refetchType: 'all'
-            });
-            queryClient.invalidateQueries({
-              queryKey: TASK_KEYS.lists(),
-              refetchType: 'active'
-            });
-            onUpdate?.();
-          }
-        }
-      );
-      toast.success(t('statusUpdateSuccess'));
-    } catch (error) {
-      console.error('Error updating task status:', error);
-      toast.error(t('statusUpdateError'));
-    }
-  };
-
   // Loading and error states
   if (isLoadingTask) {
     return <div className="px-2 py-1.5">Loading...</div>;
