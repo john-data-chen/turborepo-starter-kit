@@ -162,17 +162,12 @@ pnpm build
 
 ## To-Do
 
-- [x] Move frontend code to `apps/web`
-- [x] Move backend code to `apps/api`
-- [x] Refactor configs and finish Turborepo setup
-- [x] Reactor Auth functions from NextJS in `apps/web` into NestJS in `apps/api`
-- [x] Reactor Board / Project / Task / User functions from NextJS in `apps/web` into NestJS in `apps/api`
-- [x] Update database init script for NestJS in `apps/api`
-- [ ] Fix the issues between NextJS and NestJS API format
+- [ ] Add a refresh after edit a task
+- [ ] Add a refresh after delete a task
+- [ ] Add Vercel deployment
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`
-- [ ] Add Vercel deployment
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
