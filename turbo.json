@@ -8,13 +8,7 @@
   ],
   "tasks": {
     "build": {
-      "env": [
-        "NEXT_PUBLIC_API_URL",
-        "NEXT_PUBLIC_WEB_URL",
-        "NODE_ENV",
-        "JWT_SECRET",
-        "DATABASE_URL"
-      ],
+      
       "dependsOn": [
         "^build"
       ],
