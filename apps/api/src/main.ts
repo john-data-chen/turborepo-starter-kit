@@ -19,38 +19,55 @@ async function bootstrap() {
   // Parse cookies before CORS middleware
   app.use(cookieParser());
 
-  // Get allowed origins from environment variables
-  const _frontendUrl =
+  // Get frontend URL from environment
+  const frontendUrl =
     process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
-  const additionalOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
-    : [];
 
+  // Parse allowed origins from environment or use defaults
   const allowedOrigins = [
-    _frontendUrl,
+    frontendUrl,
     'http://localhost:3000',
-    ...additionalOrigins
-  ].filter(Boolean); // Remove any falsy values
+    ...(process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+      : [])
+  ].filter(Boolean);
 
-  // Enable CORS with proper configuration
-  app.enableCors({
+  // For Vercel, we need to allow all subdomains
+  const isVercel = process.env.VERCEL === '1';
+  const _vercelDomain = isVercel ? '.vercel.app' : '';
+
+  // Enable CORS with proper configuration for Vercel
+  const corsOptions = {
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (
-        allowedOrigins.some(
-          (allowedOrigin) =>
-            origin === allowedOrigin ||
-            origin.match(
-              new RegExp(`^https?://[^/]+${allowedOrigin.replace('*', '')}$`)
-            )
-        )
-      ) {
+      // For Vercel preview URLs, we need to be more permissive
+      if (isVercel && origin.endsWith('.vercel.app')) {
         return callback(null, true);
       }
 
-      const msg = `CORS not allowed for origin: ${origin}`;
+      // Check against allowed origins
+      const isAllowed = allowedOrigins.some((allowedOrigin) => {
+        // Exact match
+        if (origin === allowedOrigin) return true;
+
+        // Wildcard match (e.g., '*.example.com')
+        if (allowedOrigin.includes('*')) {
+          const regex = new RegExp(
+            `^${allowedOrigin.replace(/\./g, '\\.').replace(/\*/g, '.*')}$`
+          );
+          return regex.test(origin);
+        }
+
+        return false;
+      });
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+
+      const msg = `CORS not allowed for origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`;
       console.warn(msg);
       return callback(new Error(msg), false);
     },
@@ -64,9 +81,19 @@ async function bootstrap() {
       'Authorization',
       'X-XSRF-TOKEN'
     ],
-    exposedHeaders: ['Authorization', 'XSRF-TOKEN'],
+    exposedHeaders: ['Authorization', 'XSRF-TOKEN', 'set-cookie', 'Set-Cookie'],
     preflightContinue: false,
     optionsSuccessStatus: 204
+  };
+
+  app.enableCors(corsOptions);
+
+  // Log CORS configuration for debugging
+  console.log('CORS Configuration:', {
+    allowedOrigins,
+    isVercel,
+    nodeEnv: process.env.NODE_ENV,
+    frontendUrl: process.env.NEXT_PUBLIC_WEB_URL
   });
 
   // Log CORS configuration for debugging
