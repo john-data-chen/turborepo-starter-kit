@@ -57,19 +57,33 @@ export class AuthController {
         `[AuthController] Login successful for user: ${req.user.email}`
       );
 
-      // Set secure, cross-domain cookie
-      const domain =
-        process.env.NODE_ENV === 'production'
-          ? '.vercel.app' // Top-level domain for all Vercel apps
-          : undefined;
+      // Set cookie with proper domain for Vercel
+      const isProduction = process.env.NODE_ENV === 'production';
+      const isVercel = process.env.VERCEL === '1';
 
+      // For Vercel production, we need to set the domain to .vercel.app
+      // For local development, we don't set the domain
+      const domain = isProduction && isVercel ? '.vercel.app' : undefined;
+
+      // Set the JWT cookie
       res.cookie('jwt', result.access_token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Use secure in production
-        sameSite: 'lax', // Lax for better cross-site compatibility
-        domain, // Allow subdomains
+        secure: isProduction, // Use secure in production
+        sameSite: isProduction ? 'none' : 'lax', // none for cross-site in production
+        domain, // Set the domain for cross-subdomain cookies
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        path: '/'
+        path: '/',
+        // Required for cross-site cookies
+        ...(isProduction ? { sameSite: 'none', secure: true } : {})
+      });
+
+      // Log the cookie settings for debugging
+      console.log('Setting cookie with settings:', {
+        domain,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        isVercel,
+        isProduction
       });
 
       // Return user data without the token (it's in the cookie)
@@ -95,14 +109,23 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   async logout(@Res({ passthrough: true }) res) {
-    // Clear the JWT cookie
-    res.clearCookie('jwt', {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = process.env.VERCEL === '1';
+
+    // Clear the JWT cookie with the same options used when setting it
+    const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined,
-      path: '/'
-    });
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: isProduction && isVercel ? '.vercel.app' : undefined,
+      path: '/',
+      maxAge: 0 // Expire immediately
+    };
+
+    res.clearCookie('jwt', cookieOptions);
+
+    // Log the cookie clearing for debugging
+    console.log('Clearing cookie with options:', cookieOptions);
 
     return { message: 'Successfully logged out' };
   }
