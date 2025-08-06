@@ -52,7 +52,10 @@ export class AuthController {
     );
 
     try {
+      // Generate JWT token
       const result = await this.authService.login(req.user);
+      console.log('[AuthController] Login successful, token generated');
+
       this.logger.log(
         `[AuthController] Login successful for user: ${req.user.email}`
       );
