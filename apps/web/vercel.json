@@ -9,7 +9,5 @@
     "NODE_ENV": "production"
   },
   "framework": "nextjs",
-  "regions": [
-    "hkg1"
-  ]
+  "regions": ["hkg1"]
 }

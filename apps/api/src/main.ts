@@ -79,9 +79,6 @@ async function bootstrap() {
   // For local development
   await app.listen(port);
   console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(
-    `API Documentation available at: http://localhost:${port}/api/docs`
-  );
 
   // Enable hot module replacement for development
   if (module.hot) {
