@@ -19,79 +19,43 @@ async function bootstrap() {
   // Parse cookies before CORS middleware
   app.use(cookieParser());
 
-  // Get frontend URL from environment
-  const frontendUrl =
-    process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
-
-  // Parse allowed origins from environment or use defaults
+  // Define allowed origins
   const allowedOrigins = [
-    frontendUrl,
-    'http://localhost:3000',
-    ...(process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
-      : [])
-  ].filter(Boolean);
+    // Production frontend URL from environment variables
+    process.env.NEXT_PUBLIC_WEB_URL,
+    // Regex for Vercel preview URLs for this project
+    /^https:\/\/turborepo-starter-kit-web.*\.vercel\.app$/,
+    // Local development
+    'http://localhost:3000'
+  ].filter(Boolean); // Filter out any undefined/null values from env vars
 
-  // For Vercel, we need to allow all subdomains
-  const isVercel = process.env.VERCEL === '1';
-  const _vercelDomain = isVercel ? '.vercel.app' : '';
-
-  // Enable CORS with proper configuration for Vercel
-  const corsOptions = {
+  app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      // For Vercel preview URLs, we need to be more permissive
-      if (isVercel && origin.endsWith('.vercel.app')) {
+      if (!origin) {
         return callback(null, true);
       }
 
-      // Check against allowed origins
-      const isAllowed = allowedOrigins.some((allowedOrigin) => {
-        // Exact match
-        if (origin === allowedOrigin) return true;
-
-        // Wildcard match (e.g., '*.example.com')
-        if (allowedOrigin.includes('*')) {
-          const regex = new RegExp(
-            `^${allowedOrigin.replace(/\./g, '\\.').replace(/\*/g, '.*')}$`
-          );
-          return regex.test(origin);
-        }
-
-        return false;
-      });
-
-      if (isAllowed) {
+      if (
+        allowedOrigins.some((o) =>
+          typeof o === 'string' ? o === origin : o.test(origin)
+        )
+      ) {
         return callback(null, true);
       }
 
-      const msg = `CORS not allowed for origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`;
-      console.warn(msg);
-      return callback(new Error(msg), false);
+      return callback(new Error(`CORS error: Origin ${origin} not allowed.`));
     },
     credentials: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'Accept',
-      'Authorization',
-      'X-XSRF-TOKEN'
-    ],
-    exposedHeaders: ['Authorization', 'XSRF-TOKEN', 'set-cookie', 'Set-Cookie'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-  };
-
-  app.enableCors(corsOptions);
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders:
+      'Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN',
+    exposedHeaders: 'Authorization, XSRF-TOKEN, set-cookie'
+  });
 
   // Log CORS configuration for debugging
   console.log('CORS Configuration:', {
     allowedOrigins,
-    isVercel,
     nodeEnv: process.env.NODE_ENV,
     frontendUrl: process.env.NEXT_PUBLIC_WEB_URL
   });
