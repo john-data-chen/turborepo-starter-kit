@@ -4,6 +4,7 @@ import {
   Logger,
   Post,
   Request,
+  Res,
   UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
@@ -19,7 +20,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(EmailAuthGuard)
-  async login(@Request() req) {
+  async login(@Request() req, @Res({ passthrough: true }) res) {
     this.logger.log(`[AuthController] Login endpoint called`);
     this.logger.debug(`[AuthController] Request method: ${req.method}`);
     this.logger.debug(
@@ -55,7 +56,24 @@ export class AuthController {
       this.logger.log(
         `[AuthController] Login successful for user: ${req.user.email}`
       );
-      return result;
+
+      // Set secure, cross-domain cookie
+      const domain =
+        process.env.NODE_ENV === 'production'
+          ? '.vercel.app' // Top-level domain for all Vercel apps
+          : undefined;
+
+      res.cookie('jwt', result.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Use secure in production
+        sameSite: 'lax', // Lax for better cross-site compatibility
+        domain, // Allow subdomains
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        path: '/'
+      });
+
+      // Return user data without the token (it's in the cookie)
+      return { user: result.user };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -72,5 +90,20 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Res({ passthrough: true }) res) {
+    // Clear the JWT cookie
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined,
+      path: '/'
+    });
+
+    return { message: 'Successfully logged out' };
   }
 }
