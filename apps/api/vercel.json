@@ -3,13 +3,15 @@
   "builds": [
     {
       "src": "src/main.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "src/**/*.ts",
+          "package.json",
+          "tsconfig.json",
+          "nest-cli.json"
+        ]
+      }
     }
   ],
   "headers": [
