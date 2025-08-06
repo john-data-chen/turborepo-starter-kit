@@ -4,14 +4,9 @@ import {
   demoTasks,
   demoUsers
 } from '@/constants/demoData';
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
-import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import { config } from 'dotenv';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { resolve } from 'path';
-import readline from 'readline';
 
 import { Board, BoardSchema } from '@/modules/boards/schemas/boards.schema';
 import {
@@ -21,13 +16,14 @@ import {
 import { Task, TaskSchema } from '@/modules/tasks/schemas/tasks.schema';
 import { User, UserSchema } from '@/modules/users/schemas/users.schema';
 
-// This script should only run in Node.js environment
+// This script should only run in a Node.js environment
 if (typeof process === 'undefined') {
   throw new Error('This script must be run in a Node.js environment');
 }
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Load .env file for local development
 if (!isProduction) {
   const envPath = resolve(process.cwd(), '../../.env');
   const envConfig = config({ path: envPath });
@@ -42,6 +38,7 @@ if (!isProduction) {
   }
 }
 
+// Validate required environment variables
 const requiredEnvVars = ['DATABASE_URL'];
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
@@ -50,23 +47,11 @@ if (missingEnvVars.length > 0) {
     '\x1b[31mError: The following environment variables are required but missing:\x1b[0m'
   );
   missingEnvVars.forEach((envVar) => console.error(`- ${envVar}`));
-  console.error('Current working directory:', process.cwd());
-  console.error('NODE_ENV:', process.env.NODE_ENV || 'development');
-  console.error(
-    'Environment variables available:',
-    Object.keys(process.env).join(', ')
-  );
-
   if (!isProduction) {
     console.error(
       '\nFor local development, please create a .env file in the project root with the required variables.'
     );
-  } else {
-    console.error(
-      '\nFor production, please make sure all required environment variables are set in your deployment environment.'
-    );
   }
-
   process.exit(1);
 }
 
@@ -74,90 +59,37 @@ console.log('Environment:', {
   NODE_ENV: process.env.NODE_ENV || 'development',
   DATABASE_URL: process.env.DATABASE_URL
     ? '***' + process.env.DATABASE_URL.split('@').pop()
-    : 'Not set',
-  Source: isProduction ? 'process.env (production)' : '.env file (development)'
+    : 'Not set'
 });
-
-// Create a temporary module to bootstrap our application
-@Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.DATABASE_URL || ''),
-    MongooseModule.forFeature([
-      { name: Board.name, schema: BoardSchema },
-      { name: Project.name, schema: ProjectSchema },
-      { name: Task.name, schema: TaskSchema },
-      { name: User.name, schema: UserSchema }
-    ])
-  ]
-})
-class AppModule {}
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-async function confirmDatabaseReset(): Promise<boolean> {
-  if (process.argv.includes('--force')) {
-    return true;
-  }
-
-  return new Promise((resolve) => {
-    rl.question(
-      '\x1b[33mWarning: This will initialize the database with demo data.\nMake sure your MongoDB is running and .env is configured correctly.\nContinue? (y/N) \x1b[0m',
-      (answer) => {
-        resolve(answer.toLowerCase() === 'y');
-        rl.close();
-      }
-    );
-  });
-}
 
 async function main() {
-  let app;
+  // Non-interactive check for CI/Vercel or --force flag
+  const isForced = process.argv.includes('--force');
+  const isCI = process.env.CI === 'true' || process.env.VERCEL === 'true';
+
+  if (!isForced && !isCI) {
+    console.log(
+      '\x1b[33mThis script will reset the database. To run it, use the --force flag.\x1b[0m'
+    );
+    process.exit(0);
+  }
+
   try {
-    // Create NestJS application context
-    app = await NestFactory.createApplicationContext(AppModule, {
-      logger: ['error', 'warn', 'log']
+    // Connect to MongoDB directly
+    console.log('Connecting to database...');
+    await mongoose.connect(process.env.DATABASE_URL!, {
+      serverSelectionTimeoutMS: 10000
     });
-    // Get the Mongoose connection using the correct token
-    const connection = app.get(getConnectionToken());
-    // Set up a promise that resolves when connected or rejects on error/timeout
-    await new Promise<void>((resolve, reject) => {
-      // Set a timeout to prevent hanging
-      const timeout = setTimeout(() => {
-        reject(new Error('Database connection timeout after 10 seconds'));
-      }, 10000);
+    console.log('Database connected successfully.');
 
-      const onConnected = () => {
-        clearTimeout(timeout);
-        connection.removeListener('error', onError);
-        console.log('Database connected successfully');
-        resolve();
-      };
+    const connection = mongoose.connection;
 
-      const onError = (err: Error) => {
-        clearTimeout(timeout);
-        connection.removeListener('open', onConnected);
-        reject(err);
-      };
-
-      connection.once('open', onConnected);
-      connection.once('error', onError);
-    });
-
-    // Get the models directly from the connection
+    // Get models from the connection
     const boardModel = connection.model(Board.name, BoardSchema);
     const projectModel = connection.model(Project.name, ProjectSchema);
     const taskModel = connection.model(Task.name, TaskSchema);
     const userModel = connection.model(User.name, UserSchema);
 
-    const shouldContinue = await confirmDatabaseReset();
-    if (!shouldContinue) {
-      console.log('\x1b[33mOperation cancelled\x1b[0m');
-      process.exit(0);
-    }
     console.log('\x1b[36mInitializing database...\x1b[0m');
 
     // Clear existing data
@@ -282,17 +214,15 @@ async function main() {
         email: user.email
       });
     });
-    // Close the app and exit
-    await app.close();
+
+    await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
-    console.error('Error:', error);
-    if (app) {
-      await app.close();
-    }
+    console.error('Error during database initialization:', error);
+    await mongoose.connection.close().catch((err) => {
+      console.error('Failed to close connection:', err);
+    });
     process.exit(1);
-  } finally {
-    rl.close();
   }
 }
 
