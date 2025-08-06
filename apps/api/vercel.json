@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "pnpm init-db:force && pnpm build",
-  "installCommand": "pnpm install",
   "builds": [
     {
       "src": "src/main.ts",
