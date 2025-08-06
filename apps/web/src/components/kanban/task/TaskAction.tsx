@@ -25,12 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import {
-  useDeleteTask,
-  useTask,
-  useUpdateTask,
-  useUpdateTaskStatus
-} from '@/lib/api/tasks/queries';
+import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries';
 import { useUser } from '@/lib/api/users/queries';
 import { TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS } from '@/types/taskApi';
@@ -79,7 +74,6 @@ export function TaskActions({
   const queryClient = useQueryClient();
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
-  const updateStatusMutation = useUpdateTaskStatus();
 
   // Fetch assignee info if assignee exists
   const { data: assigneeInfo } = useUser(assigneeId || '');

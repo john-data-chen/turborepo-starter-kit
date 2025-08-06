@@ -17,7 +17,8 @@ async function bootstrap() {
   const port = process.env.PORT || API_PORT;
 
   // Get frontend URL from environment variable or fallback to local development URL
-  const frontendUrl = process.env.NEXT_URL || 'http://localhost:3000';
+  const frontendUrl =
+    process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
 
   // Enable CORS for the frontend
   app.enableCors({

@@ -4,13 +4,13 @@
     "**/.env.*",
     "packages/linter-config/*",
     "packages/style-formatter-config/*",
-    "packages/tsconfig/*"
+    "packages/global-tsconfig/*"
   ],
   "tasks": {
     "build": {
       "env": [
-        "NEST_API_URL",
-        "NEXT_URL",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_WEB_URL",
         "NODE_ENV",
         "JWT_SECRET",
         "DATABASE_URL"
