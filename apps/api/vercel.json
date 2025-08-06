@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "pnpm --filter turborepo-starter-kit-api init-db:force && pnpm build",
   "builds": [
     {
       "src": "src/main.ts",
