@@ -1,32 +1,15 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/en/login",
-      "permanent": false
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "build": {
     "env": {
       "NODE_ENV": "production"
     }
   },
-  "regions": ["hkg1"],
-  "framework": "nextjs"
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "framework": "nextjs",
+  "regions": [
+    "hkg1"
+  ]
 }
