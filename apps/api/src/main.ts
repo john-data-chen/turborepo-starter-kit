@@ -24,27 +24,38 @@ async function bootstrap() {
     // Production frontend URL from environment variables
     process.env.NEXT_PUBLIC_WEB_URL,
     // Regex for Vercel preview URLs for this project
-    /^https:\/\/turborepo-starter-kit-web.*\.vercel\.app$/,
+    /^https:\/\/turborepo-starter-kit-web-*\.vercel\.app$/,
     // Local development
     'http://localhost:3000'
   ].filter(Boolean); // Filter out any undefined/null values from env vars
 
   app.enableCors({
     origin: (origin, callback) => {
+      console.log('CORS - Request origin:', origin);
+      console.log('CORS - Allowed origins:', allowedOrigins);
+
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) {
+        console.log('CORS - No origin, allowing request');
         return callback(null, true);
       }
 
-      if (
-        allowedOrigins.some((o) =>
-          typeof o === 'string' ? o === origin : o.test(origin)
-        )
-      ) {
+      const isAllowed = allowedOrigins.some((o) => {
+        const matches = typeof o === 'string' ? o === origin : o.test(origin);
+        if (matches) {
+          console.log(`CORS - Origin ${origin} matches allowed origin:`, o);
+        }
+        return matches;
+      });
+
+      if (isAllowed) {
+        console.log('CORS - Origin allowed');
         return callback(null, true);
       }
 
-      return callback(new Error(`CORS error: Origin ${origin} not allowed.`));
+      const errorMsg = `CORS error: Origin ${origin} not allowed.`;
+      console.error(errorMsg);
+      return callback(new Error(errorMsg));
     },
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
