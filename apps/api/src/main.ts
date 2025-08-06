@@ -16,13 +16,44 @@ async function bootstrap() {
 
   const port = process.env.PORT || API_PORT;
 
-  // Get frontend URL from environment variable or fallback to local development URL
-  const frontendUrl =
-    process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
+  // Parse cookies before CORS middleware
+  app.use(cookieParser());
 
-  // Enable CORS for the frontend
+  // Get allowed origins from environment variables
+  const _frontendUrl =
+    process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
+  const additionalOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+    : [];
+
+  const allowedOrigins = [
+    _frontendUrl,
+    'http://localhost:3000',
+    ...additionalOrigins
+  ].filter(Boolean); // Remove any falsy values
+
+  // Enable CORS with proper configuration
   app.enableCors({
-    origin: frontendUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.some(
+          (allowedOrigin) =>
+            origin === allowedOrigin ||
+            origin.match(
+              new RegExp(`^https?://[^/]+${allowedOrigin.replace('*', '')}$`)
+            )
+        )
+      ) {
+        return callback(null, true);
+      }
+
+      const msg = `CORS not allowed for origin: ${origin}`;
+      console.warn(msg);
+      return callback(new Error(msg), false);
+    },
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -30,15 +61,19 @@ async function bootstrap() {
       'X-Requested-With',
       'Content-Type',
       'Accept',
-      'Authorization'
+      'Authorization',
+      'X-XSRF-TOKEN'
     ],
-    exposedHeaders: ['Authorization']
+    exposedHeaders: ['Authorization', 'XSRF-TOKEN'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   });
 
   // Log CORS configuration for debugging
-  console.log(`CORS enabled for origin: ${frontendUrl}`);
-
-  app.use(cookieParser());
+  console.log('CORS enabled with the following configuration:', {
+    allowedOrigins,
+    credentials: true
+  });
 
   // Enable global validation pipe
   app.useGlobalPipes(

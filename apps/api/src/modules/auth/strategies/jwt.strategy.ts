@@ -20,6 +20,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (req.cookies && req.cookies.jwt) {
       return req.cookies.jwt;
     }
+    // Also check Authorization header as fallback
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return authHeader.substring(7); // Remove 'Bearer ' prefix
+    }
     return null;
   }
 
