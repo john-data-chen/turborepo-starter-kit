@@ -1,9 +1,20 @@
 {
   "version": 2,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/dist/main.js"
+      "src": "/(.*)",
+      "dest": "/src/main.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "OPTIONS",
+        "DELETE",
+        "HEAD",
+        "CONNECT",
+        "TRACE"
+      ]
     }
   ]
 }
