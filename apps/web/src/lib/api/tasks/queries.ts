@@ -43,7 +43,7 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: {
+    mutationFn: async (input: {
       title: string;
       description?: string;
       status?: TaskStatus;
@@ -53,6 +53,12 @@ export const useCreateTask = () => {
       creator: string;
       assignee?: string;
     }) => {
+      // Get the last task's orderInProject to set the new task's order
+      const tasks = await taskApi.getTasks(input.project);
+      const lastOrder = tasks.length > 0 
+        ? Math.max(...tasks.map(t => t.orderInProject || 0))
+        : 0;
+        
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -62,7 +68,8 @@ export const useCreateTask = () => {
         project: input.project,
         creator: input.creator,
         assignee: input.assignee,
-        lastModifier: input.creator
+        lastModifier: input.creator,
+        orderInProject: lastOrder + 1
       });
     },
     onSuccess: (newTask, variables) => {

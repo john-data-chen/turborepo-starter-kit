@@ -324,16 +324,24 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated or no board selected');
           }
 
+          // Get the current project to find the next orderInProject
+          const currentProject = get().projects.find(p => p._id === projectId);
+          const currentTasks = currentProject?.tasks || [];
+          const lastOrder = currentTasks.length > 0 
+            ? Math.max(...currentTasks.map(t => t.orderInProject || 0))
+            : 0;
+
           const taskInput: CreateTaskInput = {
             title,
             description,
             status,
-            project: projectId, // Changed from projectId to project
-            board: currentBoardId, // Changed from boardId to board
-            creator: userId, // Changed from creatorId to creator
-            lastModifier: userId, // Changed from lastModifierId to lastModifier
+            project: projectId,
+            board: currentBoardId,
+            creator: userId,
+            lastModifier: userId,
+            orderInProject: lastOrder + 1,
             ...(dueDate && { dueDate }),
-            ...(assigneeId && { assignee: assigneeId }) // Changed from assigneeId to assignee
+            ...(assigneeId && { assignee: assigneeId })
           };
 
           await createTask(taskInput);
