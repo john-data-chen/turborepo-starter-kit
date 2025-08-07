@@ -26,7 +26,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries';
-import { useUser } from '@/lib/api/users/queries';
 import { TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS } from '@/types/taskApi';
 import { TaskFormSchema } from '@/types/taskForm';
@@ -75,20 +74,23 @@ export function TaskActions({
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
 
-  // Fetch assignee info if assignee exists
-  const { data: assigneeInfo } = useUser(assigneeId || '');
-
   // Permissions (in a real app, this would come from auth context)
   const canEdit = true;
   const canDelete = true;
 
+  // Prepare default values for the form
   const defaultValues = {
     title,
     description: description || '',
-    status: status as TaskStatus, // Now properly typed with the enum
+    status: status as TaskStatus,
     dueDate: dueDate ? new Date(dueDate) : undefined,
-    assignee: assigneeInfo
-      ? { _id: assigneeInfo._id, name: assigneeInfo.name || '' }
+    // Pass the assignee with required fields - the form will handle loading the full user data
+    assignee: assigneeId
+      ? {
+          _id: assigneeId,
+          name: null, // Will be populated by the form
+          email: undefined // Optional field
+        }
       : undefined,
     projectId,
     boardId
@@ -99,6 +101,9 @@ export function TaskActions({
     try {
       const { title, description, status, dueDate, assignee } = values;
 
+      // Get the current user ID (you might need to get this from your auth context)
+      const currentUserId = 'current-user-id'; // Replace this with actual user ID from your auth context
+
       await updateTaskMutation.mutateAsync(
         {
           id,
@@ -106,10 +111,11 @@ export function TaskActions({
           description: description || null,
           status,
           dueDate: dueDate || null,
-          assigneeId: assignee?._id || null
+          assigneeId: assignee?._id || null,
+          lastModifier: currentUserId // Add the lastModifier field
         },
         {
-          onSuccess: () => {
+          onSuccess: async (_data) => {
             // Invalidate both the specific task and task lists
             queryClient.invalidateQueries({
               queryKey: TASK_KEYS.detail(id),
@@ -122,7 +128,52 @@ export function TaskActions({
 
             toast.success(t('updateSuccess', { title }));
             setIsEditDialogOpen(false);
-            onUpdate?.();
+
+            // Invalidate all related queries
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(id) }),
+              queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() }),
+              queryClient.invalidateQueries({
+                queryKey: ['board', boardId, 'tasks']
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['project', projectId, 'tasks']
+              })
+            ]);
+
+            // Refetch all related queries
+            const refetchPromises = [
+              queryClient.refetchQueries({ queryKey: TASK_KEYS.detail(id) }),
+              queryClient.refetchQueries({ queryKey: TASK_KEYS.lists() }),
+              queryClient.refetchQueries({
+                queryKey: ['board', boardId, 'tasks']
+              }),
+              queryClient.refetchQueries({
+                queryKey: ['project', projectId, 'tasks']
+              })
+            ];
+
+            await Promise.all(refetchPromises);
+
+            // Call parent component callback
+            if (onUpdate) {
+              onUpdate();
+            } else {
+              console.warn('No onUpdate callback provided');
+            }
+
+            // Force re-render
+            const queryCache = queryClient.getQueryCache();
+            queryCache.findAll().forEach(({ queryKey }) => {
+              if (
+                Array.isArray(queryKey) &&
+                (queryKey[0] === 'board' ||
+                  queryKey[0] === 'project' ||
+                  queryKey[0] === 'tasks')
+              ) {
+                queryClient.invalidateQueries({ queryKey });
+              }
+            });
           },
           onError: (error) => {
             console.error('Error updating task:', error);
@@ -139,23 +190,124 @@ export function TaskActions({
   // Handle task deletion
   const handleDelete = async () => {
     try {
+      // 1. Save current task data for rollback
+      const previousTask = queryClient.getQueryData(TASK_KEYS.detail(id));
+
+      // 2. Create a function to safely update queries
+      const updateQueries = (
+        queryKey: readonly (string | readonly string[])[],
+        taskId: string
+      ) => {
+        queryClient.setQueryData(queryKey, (old: any) => {
+          if (!old || !Array.isArray(old)) return old;
+          return old.filter((task: any) => task._id !== taskId);
+        });
+      };
+
+      // 3. Create a function to safely cancel and remove queries
+      const cancelAndRemoveQueries = (queryKey: any) => {
+        queryClient.cancelQueries({ queryKey });
+        queryClient.removeQueries({ queryKey });
+      };
+
+      // 4. Optimistically update all related queries
+      try {
+        // Cancel any ongoing requests for this task
+        queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(id) });
+
+        // Update all list queries
+        updateQueries(TASK_KEYS.lists(), id);
+        updateQueries(['board', boardId, 'tasks'], id);
+        updateQueries(['project', projectId, 'tasks'], id);
+
+        // Remove the task detail query
+        cancelAndRemoveQueries(TASK_KEYS.detail(id));
+
+        // Also remove any other potential queries that might contain this task
+        cancelAndRemoveQueries(['task', id, 'details']);
+      } catch (error) {
+        console.error('Error during optimistic update:', error);
+      }
+
+      // 5. Execute the delete mutation
       await deleteTaskMutation.mutateAsync(id, {
-        onSettled: () => {
-          // Invalidate both the specific task and task lists
-          queryClient.invalidateQueries({
-            queryKey: TASK_KEYS.detail(id),
-            refetchType: 'all'
-          });
-          queryClient.invalidateQueries({
-            queryKey: TASK_KEYS.lists(),
-            refetchType: 'active'
-          });
-          onUpdate?.();
+        onSuccess: async () => {
+          try {
+            // Invalidate all related queries to ensure data consistency
+            await Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: TASK_KEYS.lists(),
+                refetchType: 'active' as const
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['board', boardId, 'tasks'],
+                refetchType: 'active' as const
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['project', projectId, 'tasks'],
+                refetchType: 'active' as const
+              })
+            ]);
+
+            // Ensure task detail queries are removed
+            cancelAndRemoveQueries(TASK_KEYS.detail(id));
+            cancelAndRemoveQueries(['task', id, 'details']);
+
+            // Call parent's update callback if provided
+            if (onUpdate) {
+              try {
+                await onUpdate();
+              } catch (updateError) {
+                console.error('Error in onUpdate callback:', updateError);
+              }
+            }
+
+            toast.success(t('deleteSuccess'));
+          } catch (cleanupError) {
+            console.error(
+              'Error during cleanup after successful delete:',
+              cleanupError
+            );
+            toast.success(t('deleteSuccess'));
+          }
+        },
+        onError: (error) => {
+          console.error('Error in delete mutation:', error);
+
+          // Restore the task data
+          if (previousTask) {
+            queryClient.setQueryData(TASK_KEYS.detail(id), previousTask);
+          }
+
+          // Invalidate all relevant queries to restore correct state
+          try {
+            queryClient.invalidateQueries({
+              predicate: (query) => {
+                const queryKey = query.queryKey as readonly (
+                  | string
+                  | readonly string[]
+                )[];
+                const firstKey = Array.isArray(queryKey[0])
+                  ? queryKey[0][0]
+                  : queryKey[0];
+                return ['tasks', 'board', 'project'].includes(
+                  firstKey as string
+                );
+              },
+              refetchType: 'active' as const
+            });
+          } catch (invalidateError) {
+            console.error('Error during query invalidation:', invalidateError);
+            if (typeof window !== 'undefined') {
+              window.location.reload();
+            }
+          }
+
+          toast.error(t('deleteError'));
         }
       });
-      toast.success(t('deleteSuccess'));
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error('Error in delete handler:', error);
       toast.error(t('deleteError'));
     } finally {
       setShowDeleteDialog(false);
@@ -173,7 +325,6 @@ export function TaskActions({
 
   return (
     <>
-      {/* Edit Task Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-md" data-testid="edit-task-dialog">
           <DialogHeader>

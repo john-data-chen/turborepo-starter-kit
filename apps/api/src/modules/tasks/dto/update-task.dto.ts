@@ -57,4 +57,13 @@ export class UpdateTaskDto {
   @IsMongoId()
   @IsOptional()
   assigneeId?: string | null;
+
+  @ApiProperty({
+    description: 'The ID of the user who last modified this task',
+    example: '507f1f77bcf86cd799439014',
+    required: false
+  })
+  @IsMongoId()
+  @IsOptional()
+  lastModifier?: string;
 }

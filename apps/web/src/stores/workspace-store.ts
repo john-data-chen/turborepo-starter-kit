@@ -331,6 +331,7 @@ export const useWorkspaceStore = create<State>()(
             project: projectId, // Changed from projectId to project
             board: currentBoardId, // Changed from boardId to board
             creator: userId, // Changed from creatorId to creator
+            lastModifier: userId, // Changed from lastModifierId to lastModifier
             ...(dueDate && { dueDate }),
             ...(assigneeId && { assignee: assigneeId }) // Changed from assigneeId to assignee
           };
@@ -365,7 +366,7 @@ export const useWorkspaceStore = create<State>()(
             title,
             description,
             status,
-            lastModifierId: userId,
+            lastModifier: userId,
             dueDate,
             assigneeId,
             ...(newProjectId && { projectId: newProjectId })
@@ -388,15 +389,35 @@ export const useWorkspaceStore = create<State>()(
         try {
           const { currentBoardId } = get();
           const deleteTask = useDeleteTask();
-          await deleteTask.mutateAsync(taskId);
 
-          // Invalidate and refetch projects to reflect the deleted task
-          if (currentBoardId) {
-            const { fetchProjects } = get();
-            await fetchProjects(currentBoardId);
-          }
+          // Optimistically update the UI by removing the task from the store
+          set((state) => ({
+            projects: state.projects.map((project) => ({
+              ...project,
+              tasks: project.tasks?.filter((task) => task._id !== taskId) || []
+            }))
+          }));
+
+          // Execute the delete mutation
+          await deleteTask.mutateAsync(taskId, {
+            onError: (error) => {
+              console.error('Error in delete mutation:', error);
+              // Revert the optimistic update if the deletion fails
+              if (currentBoardId) {
+                const { fetchProjects } = get();
+                fetchProjects(currentBoardId);
+              }
+            },
+            onSettled: () => {
+              // Refresh the projects to ensure consistency
+              if (currentBoardId) {
+                const { fetchProjects } = get();
+                fetchProjects(currentBoardId);
+              }
+            }
+          });
         } catch (error) {
-          console.error('Error removing task:', error);
+          console.error('Error in removeTask:', error);
           throw error;
         }
       },

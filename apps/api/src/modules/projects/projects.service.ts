@@ -1,11 +1,14 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { TasksService } from '../tasks/tasks.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -14,8 +17,30 @@ import { Project, ProjectDocument } from './schemas/projects.schema';
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>
+    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
+    @Inject(forwardRef(() => TasksService))
+    private tasksService: TasksService
   ) {}
+
+  /**
+   * Delete all projects associated with a board
+   * @param boardId The ID of the board whose projects should be deleted
+   * @returns Promise with the deletion result
+   */
+  async deleteByBoardId(boardId: string): Promise<{ deletedCount: number }> {
+    if (!Types.ObjectId.isValid(boardId)) {
+      throw new BadRequestException('Invalid board ID');
+    }
+
+    const result = await this.projectModel
+      .deleteMany({
+        board: new Types.ObjectId(boardId)
+      })
+      .exec();
+
+    console.log(`Deleted ${result.deletedCount} projects for board ${boardId}`);
+    return { deletedCount: result.deletedCount || 0 };
+  }
 
   async findByBoardId(boardId: string): Promise<ProjectDocument[]> {
     if (!Types.ObjectId.isValid(boardId)) {
@@ -223,7 +248,21 @@ export class ProjectsService {
       throw new BadRequestException(error);
     }
 
-    console.log('Deleting project...');
+    console.log('Deleting project and associated tasks...');
+
+    // First delete all tasks associated with this project
+    try {
+      const deleteResult = await this.tasksService.deleteTasksByProjectId(id);
+      console.log(
+        `Deleted ${deleteResult.deletedCount} tasks for project ${id}`
+      );
+    } catch (error) {
+      console.error('Error deleting tasks for project:', error);
+      // We'll continue with project deletion even if task deletion fails
+      // to prevent orphaned projects, but log the error
+    }
+
+    // Then delete the project itself
     const result = await this.projectModel.deleteOne({ _id: id });
 
     if (result.deletedCount === 0) {
@@ -232,7 +271,7 @@ export class ProjectsService {
       throw new Error(error);
     }
 
-    console.log('Project deleted successfully');
+    console.log('Project and associated tasks deleted successfully');
   }
 
   async create(

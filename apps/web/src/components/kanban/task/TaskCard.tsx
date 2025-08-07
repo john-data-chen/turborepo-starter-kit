@@ -28,7 +28,7 @@ export interface TaskDragData {
 
 function getLastField(task: Task): string {
   const visibleFields = [];
-  console.log('task: ', task);
+  console.log('task: ', JSON.stringify(task));
   if (task.creator) visibleFields.push('creator');
   if (task.lastModifier) visibleFields.push('lastModifier');
   if (task.assignee) visibleFields.push('assignee');
@@ -40,6 +40,12 @@ function getLastField(task: Task): string {
 
 export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
   const t = useTranslations('kanban.task');
+
+  // Return null if task is undefined or marked as deleted
+  if (!task || task._deleted) {
+    return null;
+  }
+
   const {
     setNodeRef,
     attributes,

@@ -65,9 +65,9 @@ export class Task {
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({
-    description: 'The user who last modified the task',
+    description: 'The ID of the user who last modified this task',
     type: 'string',
-    example: '507f1f77bcf86cd799439011'
+    example: '507f1f77bcf86cd799439014'
   })
   lastModifier: Types.ObjectId;
 

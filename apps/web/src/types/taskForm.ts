@@ -5,7 +5,8 @@ import { TaskStatus } from './dbInterface';
 
 const userSchema = z.object({
   _id: z.string(),
-  name: z.string().nullable()
+  name: z.string().nullable(),
+  email: z.string().email().optional()
 });
 
 // Create a Zod enum from the TaskStatus values
