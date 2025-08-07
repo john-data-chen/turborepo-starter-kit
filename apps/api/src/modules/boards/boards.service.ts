@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { ProjectsService } from '../projects/projects.service';
+import { TasksService } from '../tasks/tasks.service';
 import { CreateBoardDto } from './dto/create-boards.dto';
 import { UpdateBoardDto } from './dto/update-boards.dto';
 import { Board, BoardDocument } from './schemas/boards.schema';
@@ -9,7 +16,11 @@ import { Board, BoardDocument } from './schemas/boards.schema';
 @Injectable()
 export class BoardService {
   constructor(
-    @InjectModel(Board.name) private boardModel: Model<BoardDocument>
+    @InjectModel(Board.name) private boardModel: Model<BoardDocument>,
+    @Inject(forwardRef(() => ProjectsService))
+    private projectsService: ProjectsService,
+    @Inject(forwardRef(() => TasksService))
+    private tasksService: TasksService
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
@@ -398,15 +409,53 @@ export class BoardService {
       throw new NotFoundException(`Board with ID "${id}" not found`);
     }
 
-    // If we get here, the board exists and the user is the owner, so delete it
-    const result = await this.boardModel.deleteOne({ _id: id }).exec();
-
-    if (result.deletedCount === 0) {
-      // This should theoretically never happen because we already checked the board exists
-      console.error(
-        `[BoardService] Failed to delete board ${id} for unknown reason`
+    try {
+      // First, find all projects associated with this board
+      const projects = await this.projectsService.findByBoardId(id);
+      console.log(
+        `Found ${projects.length} projects to delete for board ${id}`
       );
-      throw new NotFoundException(`Failed to delete board with ID "${id}"`);
+
+      // Delete all tasks for each project
+      for (const project of projects) {
+        try {
+          const deleteResult = await this.tasksService.deleteTasksByProjectId(
+            project._id.toString()
+          );
+          console.log(
+            `Deleted ${deleteResult.deletedCount} tasks for project ${project._id}`
+          );
+        } catch (error) {
+          console.error(
+            `Error deleting tasks for project ${project._id}:`,
+            error
+          );
+          // Continue with next project even if one fails
+        }
+      }
+
+      // Delete all projects for this board
+      const deleteProjectsResult =
+        await this.projectsService.deleteByBoardId(id);
+      console.log(
+        `Deleted ${deleteProjectsResult.deletedCount} projects for board ${id}`
+      );
+
+      // Finally, delete the board itself
+      const result = await this.boardModel.deleteOne({ _id: id }).exec();
+
+      if (result.deletedCount === 0) {
+        // This should theoretically never happen because we already checked the board exists
+        console.error(
+          `[BoardService] Failed to delete board ${id} for unknown reason`
+        );
+        throw new NotFoundException(`Failed to delete board with ID "${id}"`);
+      }
+
+      console.log(`Successfully deleted board ${id} and all associated data`);
+    } catch (error) {
+      console.error(`Error during board deletion for board ${id}:`, error);
+      throw error; // Re-throw to be handled by the controller
     }
   }
 

@@ -17,16 +17,22 @@ export class TasksService {
    * @param projectId The ID of the project whose tasks should be deleted
    * @returns Promise with the deletion result
    */
-  async deleteTasksByProjectId(projectId: string): Promise<{ deletedCount: number }> {
+  async deleteTasksByProjectId(
+    projectId: string
+  ): Promise<{ deletedCount: number }> {
     if (!Types.ObjectId.isValid(projectId)) {
       throw new Error('Invalid project ID');
     }
-    
-    const result = await this.taskModel.deleteMany({ 
-      project: new Types.ObjectId(projectId) 
-    }).exec();
-    
-    console.log(`Deleted ${result.deletedCount} tasks for project ${projectId}`);
+
+    const result = await this.taskModel
+      .deleteMany({
+        project: new Types.ObjectId(projectId)
+      })
+      .exec();
+
+    console.log(
+      `Deleted ${result.deletedCount} tasks for project ${projectId}`
+    );
     return { deletedCount: result.deletedCount || 0 };
   }
 
@@ -55,7 +61,10 @@ export class TasksService {
           { path: 'assignee', select: 'name email' },
           { path: 'lastModifier', select: 'name email' }
         ]);
-        console.log('After population:', JSON.stringify(populatedTask, null, 2));
+        console.log(
+          'After population:',
+          JSON.stringify(populatedTask, null, 2)
+        );
       } catch (populateError) {
         console.error('Error during population:', populateError);
         // If population fails, use the original task
@@ -76,13 +85,16 @@ export class TasksService {
       // Handle user references with fallbacks
       response.creator = this.toUserResponse(populatedTask.creator);
       response.assignee = this.toUserResponse(populatedTask.assignee);
-      
+
       // Special handling for lastModifier
       if (populatedTask.lastModifier) {
         response.lastModifier = this.toUserResponse(populatedTask.lastModifier);
       } else if (task.lastModifier) {
         // If population failed but we have the ID, create a minimal user object
-        console.log('Using fallback for lastModifier with ID:', task.lastModifier);
+        console.log(
+          'Using fallback for lastModifier with ID:',
+          task.lastModifier
+        );
         response.lastModifier = {
           _id: task.lastModifier.toString(),
           name: 'Unknown',
