@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants/routes';
-import { Task, TaskStatus } from '@/types/dbInterface';
+import { Task } from '@/types/dbInterface';
 import {
   CreateTaskInput,
   TaskPermissions,

@@ -55,10 +55,11 @@ export const useCreateTask = () => {
     }) => {
       // Get the last task's orderInProject to set the new task's order
       const tasks = await taskApi.getTasks(input.project);
-      const lastOrder = tasks.length > 0 
-        ? Math.max(...tasks.map(t => t.orderInProject || 0))
-        : 0;
-        
+      const lastOrder =
+        tasks.length > 0
+          ? Math.max(...tasks.map((t) => t.orderInProject || 0))
+          : 0;
+
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -229,42 +230,6 @@ export const useUpdateTask = () => {
           refetchType: 'active'
         })
       ]);
-    }
-  });
-};
-
-export const useUpdateTaskStatus = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: TaskStatus }) =>
-      taskApi.updateTaskStatus(id, status),
-
-    // Optimistic updates
-    onMutate: async ({ id, status }) => {
-      await queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(id) });
-
-      const previousTask = queryClient.getQueryData<Task>(TASK_KEYS.detail(id));
-
-      if (previousTask) {
-        queryClient.setQueryData<Task>(TASK_KEYS.detail(id), {
-          ...previousTask,
-          status
-        });
-      }
-
-      return { previousTask };
-    },
-
-    onError: (err, { id }, context) => {
-      if (context?.previousTask) {
-        queryClient.setQueryData(TASK_KEYS.detail(id), context.previousTask);
-      }
-    },
-
-    onSettled: (data, error, { id }) => {
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(id) });
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
     }
   });
 };

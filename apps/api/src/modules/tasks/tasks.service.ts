@@ -180,7 +180,7 @@ export class TasksService {
       query.assignee = new Types.ObjectId(assigneeId);
     }
 
-    const tasks = await this.taskModel.find(query).exec();
+    const tasks = await this.taskModel.find(query).sort({ orderInProject: 1 }).exec();
     return Promise.all(tasks.map((task) => this.toTaskResponse(task)));
   }
 
