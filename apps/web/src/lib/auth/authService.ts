@@ -35,7 +35,7 @@ export class AuthService {
     const response = await fetch(ROUTES.AUTH.LOGIN_API, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       credentials: 'include',
       body: JSON.stringify({ email })
@@ -54,8 +54,8 @@ export class AuthService {
     const response = await fetch(`${API_BASE}/auth/profile`, {
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -85,7 +85,7 @@ export class AuthService {
     try {
       // First try to get the profile using the HTTP-only cookie
       const user = await this.getProfile();
-      
+
       if (!user) {
         return null;
       }

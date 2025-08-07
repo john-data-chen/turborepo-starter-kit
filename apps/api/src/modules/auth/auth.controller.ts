@@ -63,10 +63,10 @@ export class AuthController {
       // Set secure cookie settings
       const isProduction = process.env.NODE_ENV === 'production';
       const isVercel = process.env.VERCEL === '1';
-      
+
       // Domain settings for Vercel
       const domain = isProduction && isVercel ? '.vercel.app' : undefined;
-      
+
       // Cookie settings that match frontend
       const cookieOptions = {
         httpOnly: true,
@@ -74,16 +74,16 @@ export class AuthController {
         sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-site in production
         domain, // Required for cross-subdomain cookies
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days to match frontend
-        path: '/',
+        path: '/'
       };
 
       // Set the JWT cookie
       res.cookie('jwt', result.access_token, cookieOptions);
-      
+
       // Also set a non-httpOnly cookie for client-side access if needed
       res.cookie('isAuthenticated', 'true', {
         ...cookieOptions,
-        httpOnly: false, // Allow client-side access
+        httpOnly: false // Allow client-side access
       });
 
       // Log the cookie settings for debugging

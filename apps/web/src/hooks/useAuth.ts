@@ -6,7 +6,6 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Session, UserInfo } from '@/types/dbInterface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
