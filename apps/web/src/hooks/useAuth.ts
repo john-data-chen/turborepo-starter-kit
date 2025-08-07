@@ -23,7 +23,6 @@ export const AUTH_KEYS = {
 };
 
 export function useAuth() {
-  const router = useRouter();
   const setUserInfo = useWorkspaceStore((state) => state.setUserInfo);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,8 +91,10 @@ export function useAuth() {
         return { session };
       } catch (err) {
         console.error('Login error:', err);
-        setError(err instanceof Error ? err.message : 'Login failed');
-        throw err;
+        const errorMessage =
+          err instanceof Error ? err.message : 'Login failed';
+        setError(errorMessage);
+        throw new Error(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -107,9 +108,19 @@ export function useAuth() {
         setUserInfo(user.name || user.email, user._id);
         // Update the auth store
         useAuthStore.getState().setUser(user);
-        // Redirect to the boards page
-        router.push(ROUTES.BOARDS.OVERVIEW_PAGE);
+
+        console.log('Login successful, redirecting to boards...');
+        // Ensure we're using the full URL for redirection
+        const redirectUrl = new URL(
+          ROUTES.BOARDS.OVERVIEW_PAGE,
+          window.location.origin
+        );
+        window.location.href = redirectUrl.toString();
       }
+    },
+    onError: (error) => {
+      console.error('Login mutation error:', error);
+      setError(error.message);
     }
   });
 
