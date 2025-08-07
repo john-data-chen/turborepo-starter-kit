@@ -123,8 +123,11 @@ export function TaskForm({
                       field.onChange(date);
                       setCalendarOpen(false);
                     }}
-                    fromDate={new Date()}
-                    initialFocus
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
+                    }}
                     data-testid="task-date-picker-calendar"
                   />
                 </PopoverContent>
