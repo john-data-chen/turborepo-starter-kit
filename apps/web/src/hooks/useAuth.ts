@@ -46,11 +46,9 @@ export function useAuth() {
       setError(null);
       try {
         const data = await AuthService.login(email);
-        if (typeof window !== 'undefined') {
-          Cookies.set('jwt', data.access_token, { expires: 7, path: '/' });
-        }
+        // The JWT is now set as an HTTP-only cookie by the server
         // Get user profile after successful login
-        const user = await AuthService.getProfile(data.access_token);
+        const user = await AuthService.getProfile();
         return { ...data, user };
       } catch (err) {
         console.error('Login error:', err);
@@ -60,8 +58,15 @@ export function useAuth() {
         setIsLoading(false);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: AUTH_KEYS.session() });
+    onSuccess: (data) => {
+      // Update the session data with the user info
+      queryClient.setQueryData(AUTH_KEYS.session(), {
+        user: data.user,
+        accessToken: 'http-only-cookie' // The actual token is in the HTTP-only cookie
+      });
+      // Update the workspace store
+      setUserInfo(data.user.name || data.user.email, data.user._id);
+      // Redirect to boards page
       router.push(ROUTES.BOARDS.OVERVIEW_PAGE);
     }
   });
