@@ -31,8 +31,8 @@ importers:
         specifier: ^15.5.2
         version: 15.5.2
       oxlint:
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.11.0
+        version: 1.11.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -59,7 +59,7 @@ importers:
         version: 2.1.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)
       '@nestjs/mongoose':
         specifier: ^11.0.3
-        version: 11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(mongoose@8.17.0)(rxjs@7.8.2)
+        version: 11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(mongoose@8.17.1)(rxjs@7.8.2)
       '@nestjs/passport':
         specifier: ^11.0.5
         version: 11.0.5(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
@@ -82,8 +82,8 @@ importers:
         specifier: ^16.6.1
         version: 16.6.1
       mongoose:
-        specifier: ^8.17.0
-        version: 8.17.0
+        specifier: ^8.17.1
+        version: 8.17.1
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -167,8 +167,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/linter-config
       oxlint:
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.11.0
+        version: 1.11.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -345,8 +345,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/linter-config
       oxlint:
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.11.0
+        version: 1.11.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -1118,8 +1118,8 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  '@jsonjoy.com/json-pack@1.8.0':
-    resolution: {integrity: sha512-paJGjyBTRzfgkqhIyer992g21aSKuu9h//zGS7aqm795roD6VYFf6iU9NYua1Bndmh/NRPkjtm9+hEPkK0yZSw==}
+  '@jsonjoy.com/json-pack@1.9.0':
+    resolution: {integrity: sha512-5QyhXHb/64WUvP5thqF+7oe5CErg0z9A8g2pFLONp72gK674aBk/3rXDE9ZSC8UHFfB2zoKLI3uvmqUF1CDv0A==}
     engines: {node: '>=10.0'}
     peerDependencies:
       tslib: '2'
@@ -1267,8 +1267,8 @@ packages:
     resolution: {integrity: sha512-Sqih1YARrmMoHlXGgI9JrrgkzxcaaEso0AH+Y7j8NHonUs+xe4iDsgC3IBIDNdzEewbNpccNN6hip+b5vmyRLw==}
     engines: {node: '>= 10'}
 
-  '@napi-rs/wasm-runtime@1.0.1':
-    resolution: {integrity: sha512-KVlQ/jgywZpixGCKMNwxStmmbYEMyokZpCf2YuIChhfJA2uqfAKNEM8INz7zzTo55iEXfBhIIs3VqYyqzDLj8g==}
+  '@napi-rs/wasm-runtime@1.0.2':
+    resolution: {integrity: sha512-4pSAVWEyZMgE9q+SYkHK+UhYRo4o7P+NYZSsuuhU0wKNzV09ujaxerrbzgv6zyLoWIggJb8ql/KRzv0H9WuAZQ==}
 
   '@nestjs/cli@11.0.10':
     resolution: {integrity: sha512-4waDT0yGWANg0pKz4E47+nUrqIJv/UqrZ5wLPkCqc7oMGRMWKAaw1NDZ9rKsaqhqvxb2LfI5+uXOWr4yi94DOQ==}
@@ -1461,8 +1461,32 @@ packages:
     engines: {node: ^14.18.0 || >=16.10.0, npm: '>=5.10.0'}
     hasBin: true
 
-  '@oxlint/darwin-arm64@1.10.0':
-    resolution: {integrity: sha512-4rlGtx7e3T2ELAZNinHqPHla+MhHZzsSCFKca4w9WlMlx8NsCSlkxftd4cHztd4iApoACU3nA3OZ9L/nCsn2Gw==}
+  '@oxlint-tsgolint/darwin-arm64@0.0.0-10':
+    resolution: {integrity: sha512-SVLPAn3WumEm2iep3ZblSsOOWRVb1o8ro1GLKKvFE3ruI7RcF7wup0EDEBRTSBg2PA5HEZJt+bi27MgfdT7vRQ==}
+    os: [darwin]
+
+  '@oxlint-tsgolint/darwin-x64@0.0.0-10':
+    resolution: {integrity: sha512-hoVePQzo1xgtLx3DcT/SY+xq0etypzMaHJl57PVrxITRf1g+PRpc0ulIIDl2dtaksz+/k00vfj/iT3YslLzpNw==}
+    os: [darwin]
+
+  '@oxlint-tsgolint/linux-arm64@0.0.0-10':
+    resolution: {integrity: sha512-ynvuWqeeZrFPbugSYpzGUfXD0Yhm+ah3EUqM9IFDLvKzZCalNDQHfjWntI3ChJepl9KbLftfx2mfIDXoKjJYog==}
+    os: [linux]
+
+  '@oxlint-tsgolint/linux-x64@0.0.0-10':
+    resolution: {integrity: sha512-/T2ptT2eaTF2XnetDcEGOfDOxci2rhEJQ0Qz0bcWcfSMpXfseu1sWYdKEUnN5itaNodw9RXlZXOeZkEOss/EgA==}
+    os: [linux]
+
+  '@oxlint-tsgolint/win32-arm64@0.0.0-10':
+    resolution: {integrity: sha512-q/IN3GMAI+w8DFouqTtuHXEW8QBLbVYj+PnBM/2TkNCZWiInCLvYAk+r6X+28Rb429frR2LEQ4w89PmAJ/LiOA==}
+    os: [win32]
+
+  '@oxlint-tsgolint/win32-x64@0.0.0-10':
+    resolution: {integrity: sha512-MZ2rf+kvQ0WM3FS6bL0XnVUnFEfEwWaWatzZ79xt9HRvVhEgC8Z1tET7GMYXj2anAGbLSfqeWFe5VQyeZEZquQ==}
+    os: [win32]
+
+  '@oxlint/darwin-arm64@1.11.0':
+    resolution: {integrity: sha512-cCLiqE6dLBY/YgbDsNlVRVqWV687bz5Kcyuizc277Zav/AKvJFeN92OIrlfLpVZzqmK8Wc6hrq9kilQEOO8b6A==}
     cpu: [arm64]
     os: [darwin]
 
@@ -1471,8 +1495,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@oxlint/darwin-x64@1.10.0':
-    resolution: {integrity: sha512-NUcnMPGXSmYEjn88PKIj9JzXuf0R7UgUEUtgD73xbmCIemn7J9hcpB0C3Y/rciCJaS9IYhnlNef8j9BgJP5faA==}
+  '@oxlint/darwin-x64@1.11.0':
+    resolution: {integrity: sha512-wrBH/rxXLtdzGYTrWCMS99ttM7hCXmIpa1dy42Wv+s9FZkpj6n8ZtqUUbVIybidO30YcttFmkTVLQZ0pwJCasg==}
     cpu: [x64]
     os: [darwin]
 
@@ -1481,8 +1505,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@oxlint/linux-arm64-gnu@1.10.0':
-    resolution: {integrity: sha512-lk3sn52txGRuZUvrJ5DuH1vzgFeesjDjDPXUXjzANx4OCFiWjf3WChdouhiP8RbaTi2UF53X5y5oceonP9smcQ==}
+  '@oxlint/linux-arm64-gnu@1.11.0':
+    resolution: {integrity: sha512-gUVBkfoVGtc9jMXa1GPbjxKp/JU13jz3GmCSO4na1PzagcXPoGFqrbAAfbiWy6372pD4dUEMir4N3JVDwlo1JA==}
     cpu: [arm64]
     os: [linux]
 
@@ -1491,8 +1515,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-arm64-musl@1.10.0':
-    resolution: {integrity: sha512-5bwCfCYS3dbsxa3MQLzq2sFZ0vGXpQNiu7LAU7CkgbsVmUl2vXOgAB2Qm0/Dw2JIWz9ZF47oF06nod48PEUVFw==}
+  '@oxlint/linux-arm64-musl@1.11.0':
+    resolution: {integrity: sha512-O6VyBTcenpNuEXqU3v3eyaGPHutMrtX++R9jyQI8TyRiL6Cj3w70zaSXMCuAKC+oUEqoxB2P3/p0cndmDokRfw==}
     cpu: [arm64]
     os: [linux]
 
@@ -1501,8 +1525,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-x64-gnu@1.10.0':
-    resolution: {integrity: sha512-x8lWCTGqAsNWLO6OLJrpaeDZ27YV7fj7BPQm4967lh0BOVAeQFMHqGXP+lBTrWs9i1vzRfUmM7JaWOWd+TsiKw==}
+  '@oxlint/linux-x64-gnu@1.11.0':
+    resolution: {integrity: sha512-nk9+7QaYhmt0bJRjRbJIVR4uELlbWagf8JAvN6CBUs0plzMqTqYkZvo0w9n1pEoeNMuMsfkvv3g6AEjl0x1a4Q==}
     cpu: [x64]
     os: [linux]
 
@@ -1511,8 +1535,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/linux-x64-musl@1.10.0':
-    resolution: {integrity: sha512-6u5uZMFL/yrA2rQsOxiWYoXiTYKLAVqaWYiXftPstUEfOGRJ1o1yDrN3AZ+40ucX9sntLGkc0Z9OrLHU/z1myA==}
+  '@oxlint/linux-x64-musl@1.11.0':
+    resolution: {integrity: sha512-JTyQSXmin5UNkRs+ltCNQGfq0DG0Ru+NLVabF1VDA216UDWC4toGCJY3iQgHNzwjLJol4psrIcGACgKXoRKN3w==}
     cpu: [x64]
     os: [linux]
 
@@ -1521,8 +1545,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/win32-arm64@1.10.0':
-    resolution: {integrity: sha512-mQ+zWZflyF67NjYcxQ24ID0JFb9LoHoYAcfgIXyI7N8TwWdTllDVv/+0fYTah3rxuHsLY/iCbjKvvqf5FNMeoQ==}
+  '@oxlint/win32-arm64@1.11.0':
+    resolution: {integrity: sha512-ijBO1HWG+9F1qPQ55UiLmT4WUPTEEt06gKTdfQXU/ig2evNKgHiRNCJTJ/UzKS2XbYuZv1jM5HfUqr2O8BfoKw==}
     cpu: [arm64]
     os: [win32]
 
@@ -1531,8 +1555,8 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@oxlint/win32-x64@1.10.0':
-    resolution: {integrity: sha512-LsUyvSNcz6rQG9a5DfIKFRhu7qvlUWkDCmFUe8HB9XksI7sDtiGdCWBEGSCAKkji1cYlGbqLFngccdv3bGPhxw==}
+  '@oxlint/win32-x64@1.11.0':
+    resolution: {integrity: sha512-2kK3frtUStqHUqX2CEMEVvsx9FnkF6UnY1vRFoLDszCVUdNGQebht/5TUj/Gyv9ksKXpQfXv4rh9jLJB8dapIA==}
     cpu: [x64]
     os: [win32]
 
@@ -3885,8 +3909,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.198:
-    resolution: {integrity: sha512-G5COfnp3w+ydVu80yprgWSfmfQaYRh9DOxfhAxstLyetKaLyl55QrNjx8C38Pc/C+RaDmb1M0Lk8wPEMQ+bGgQ==}
+  electron-to-chromium@1.5.199:
+    resolution: {integrity: sha512-3gl0S7zQd88kCAZRO/DnxtBKuhMO4h0EaQIN3YgZfV6+pW+5+bf2AdQeHNESCoaQqo/gjGVYEf2YM4O5HJQqpQ==}
 
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
@@ -4655,8 +4679,8 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
 
-  launch-editor@2.11.0:
-    resolution: {integrity: sha512-R/PIF14L6e2eHkhvQPu7jDRCr0msfCYCxbYiLgkkAGi0dVPWuM+RrsPu0a5dpuNe0KWGL3jpAkOlv53xGfPheQ==}
+  launch-editor@2.11.1:
+    resolution: {integrity: sha512-SEET7oNfgSaB6Ym0jufAdCeo3meJVeCaaDyzRygy0xsp2BFKCprcfHljTq4QkzTLUxEKkFK6OK4811YM2oSrRg==}
 
   libphonenumber-js@1.12.10:
     resolution: {integrity: sha512-E91vHJD61jekHHR/RF/E83T/CMoaLXT7cwYA75T4gim4FZjnM6hbJjVIGg7chqlSqRsSvQ3izGmOjHy1SQzcGQ==}
@@ -5024,8 +5048,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@8.17.0:
-    resolution: {integrity: sha512-mxW6TBPHViORfNYOFXCVOnT4d5aRr+CgDxTs1ViYXfuHzNpkelgJQrQa+Lz6hofoEQISnKlXv1L3ZnHyJRkhfA==}
+  mongoose@8.17.1:
+    resolution: {integrity: sha512-aodS4cacux5caoxB5ErEwRmrafIUsVRJxHnvP7URnSUnTenr32j1qBVV+KjYxryyLSisQkxglAFF69TNLeZTLg==}
     engines: {node: '>=16.20.1'}
 
   mpath@0.9.0:
@@ -5210,8 +5234,12 @@ packages:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
 
-  oxlint@1.10.0:
-    resolution: {integrity: sha512-9XVStkXyoOqtYp1dmHWWXzEsqZ1r6puPSQ8x0jE6wX0MWPw5WV5/ecImMAbC7Q35L/5ElHl54s4zvEDgvfuspw==}
+  oxlint-tsgolint@0.0.0-10:
+    resolution: {integrity: sha512-+CwFlkUhVgAAyf9YhLfYrcwIuP2kRUZ1b3fdH+DYUbO9y1KD9hxpUSmCwuxdR1dyGOadbFCyPB7N4bU+ER3Xwg==}
+    hasBin: true
+
+  oxlint@1.11.0:
+    resolution: {integrity: sha512-jcFVy4sVJGvzfKaQKMtSiTJWWXfKHS4+bGSnUrNA55JaXPbkVRUDAyQx29KzfodUEU3r2lTObPfVCOtcGI45SQ==}
     engines: {node: '>=8.*'}
     hasBin: true
 
@@ -6055,8 +6083,8 @@ packages:
     resolution: {integrity: sha512-te/NtwBwfiNRLf9Ijqx3T0nlqZiQ2XrrtBvu+cLL8ZRrGkO0NHTug8MYFKyoSrv/sHTaSKfilUkizV6XhxMJ3g==}
     engines: {node: '>=8'}
 
-  thingies@1.21.0:
-    resolution: {integrity: sha512-hsqsJsFMsV+aD4s3CWKk85ep/3I9XzYV/IXaSouJMYIoDlgyi11cBhsqYe9/geRfB0YIikBQg6raRaM+nIMP9g==}
+  thingies@2.5.0:
+    resolution: {integrity: sha512-s+2Bwztg6PhWUD7XMfeYm5qliDdSiZm7M7n8KjTkIsm3l/2lgVRc2/Gx/v+ZX8lT4FMA+i8aQvhcWylldc+ZNw==}
     engines: {node: '>=10.18'}
     peerDependencies:
       tslib: ^2
@@ -7341,13 +7369,15 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@jsonjoy.com/json-pack@1.8.0(tslib@2.8.1)':
+  '@jsonjoy.com/json-pack@1.9.0(tslib@2.8.1)':
     dependencies:
       '@jsonjoy.com/base64': 1.1.2(tslib@2.8.1)
+      '@jsonjoy.com/buffers': 1.0.0(tslib@2.8.1)
+      '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
       '@jsonjoy.com/json-pointer': 1.0.1(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
       hyperdyperid: 1.2.0
-      thingies: 1.21.0(tslib@2.8.1)
+      thingies: 2.5.0(tslib@2.8.1)
       tslib: 2.8.1
 
   '@jsonjoy.com/json-pointer@1.0.1(tslib@2.8.1)':
@@ -7464,7 +7494,7 @@ snapshots:
       '@napi-rs/nice-win32-x64-msvc': 1.0.4
     optional: true
 
-  '@napi-rs/wasm-runtime@1.0.1':
+  '@napi-rs/wasm-runtime@1.0.2':
     dependencies:
       '@emnapi/core': 1.4.5
       '@emnapi/runtime': 1.4.5
@@ -7552,11 +7582,11 @@ snapshots:
       class-transformer: 0.5.1
       class-validator: 0.14.2
 
-  '@nestjs/mongoose@11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(mongoose@8.17.0)(rxjs@7.8.2)':
+  '@nestjs/mongoose@11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(mongoose@8.17.1)(rxjs@7.8.2)':
     dependencies:
       '@nestjs/common': 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      mongoose: 8.17.0
+      mongoose: 8.17.1
       rxjs: 7.8.2
 
   '@nestjs/passport@11.0.5(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)':
@@ -7663,49 +7693,67 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
-  '@oxlint/darwin-arm64@1.10.0':
+  '@oxlint-tsgolint/darwin-arm64@0.0.0-10':
+    optional: true
+
+  '@oxlint-tsgolint/darwin-x64@0.0.0-10':
+    optional: true
+
+  '@oxlint-tsgolint/linux-arm64@0.0.0-10':
+    optional: true
+
+  '@oxlint-tsgolint/linux-x64@0.0.0-10':
+    optional: true
+
+  '@oxlint-tsgolint/win32-arm64@0.0.0-10':
+    optional: true
+
+  '@oxlint-tsgolint/win32-x64@0.0.0-10':
+    optional: true
+
+  '@oxlint/darwin-arm64@1.11.0':
     optional: true
 
   '@oxlint/darwin-arm64@1.9.0':
     optional: true
 
-  '@oxlint/darwin-x64@1.10.0':
+  '@oxlint/darwin-x64@1.11.0':
     optional: true
 
   '@oxlint/darwin-x64@1.9.0':
     optional: true
 
-  '@oxlint/linux-arm64-gnu@1.10.0':
+  '@oxlint/linux-arm64-gnu@1.11.0':
     optional: true
 
   '@oxlint/linux-arm64-gnu@1.9.0':
     optional: true
 
-  '@oxlint/linux-arm64-musl@1.10.0':
+  '@oxlint/linux-arm64-musl@1.11.0':
     optional: true
 
   '@oxlint/linux-arm64-musl@1.9.0':
     optional: true
 
-  '@oxlint/linux-x64-gnu@1.10.0':
+  '@oxlint/linux-x64-gnu@1.11.0':
     optional: true
 
   '@oxlint/linux-x64-gnu@1.9.0':
     optional: true
 
-  '@oxlint/linux-x64-musl@1.10.0':
+  '@oxlint/linux-x64-musl@1.11.0':
     optional: true
 
   '@oxlint/linux-x64-musl@1.9.0':
     optional: true
 
-  '@oxlint/win32-arm64@1.10.0':
+  '@oxlint/win32-arm64@1.11.0':
     optional: true
 
   '@oxlint/win32-arm64@1.9.0':
     optional: true
 
-  '@oxlint/win32-x64@1.10.0':
+  '@oxlint/win32-x64@1.11.0':
     optional: true
 
   '@oxlint/win32-x64@1.9.0':
@@ -8712,7 +8760,7 @@ snapshots:
 
   '@rspack/binding-wasm32-wasi@1.4.11':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.0.1
+      '@napi-rs/wasm-runtime': 1.0.2
     optional: true
 
   '@rspack/binding-win32-arm64-msvc@1.4.11':
@@ -9645,7 +9693,7 @@ snapshots:
   browserslist@4.25.1:
     dependencies:
       caniuse-lite: 1.0.30001731
-      electron-to-chromium: 1.5.198
+      electron-to-chromium: 1.5.199
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
@@ -10119,7 +10167,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.198: {}
+  electron-to-chromium@1.5.199: {}
 
   emoji-regex@10.4.0: {}
 
@@ -11001,7 +11049,7 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  launch-editor@2.11.0:
+  launch-editor@2.11.1:
     dependencies:
       picocolors: 1.1.1
       shell-quote: 1.8.3
@@ -11186,7 +11234,7 @@ snapshots:
 
   memfs@4.36.0:
     dependencies:
-      '@jsonjoy.com/json-pack': 1.8.0(tslib@2.8.1)
+      '@jsonjoy.com/json-pack': 1.9.0(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
       tree-dump: 1.0.3(tslib@2.8.1)
       tslib: 2.8.1
@@ -11279,7 +11327,7 @@ snapshots:
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.17.0:
+  mongoose@8.17.1:
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
@@ -11465,16 +11513,27 @@ snapshots:
 
   os-tmpdir@1.0.2: {}
 
-  oxlint@1.10.0:
+  oxlint-tsgolint@0.0.0-10:
     optionalDependencies:
-      '@oxlint/darwin-arm64': 1.10.0
-      '@oxlint/darwin-x64': 1.10.0
-      '@oxlint/linux-arm64-gnu': 1.10.0
-      '@oxlint/linux-arm64-musl': 1.10.0
-      '@oxlint/linux-x64-gnu': 1.10.0
-      '@oxlint/linux-x64-musl': 1.10.0
-      '@oxlint/win32-arm64': 1.10.0
-      '@oxlint/win32-x64': 1.10.0
+      '@oxlint-tsgolint/darwin-arm64': 0.0.0-10
+      '@oxlint-tsgolint/darwin-x64': 0.0.0-10
+      '@oxlint-tsgolint/linux-arm64': 0.0.0-10
+      '@oxlint-tsgolint/linux-x64': 0.0.0-10
+      '@oxlint-tsgolint/win32-arm64': 0.0.0-10
+      '@oxlint-tsgolint/win32-x64': 0.0.0-10
+    optional: true
+
+  oxlint@1.11.0:
+    optionalDependencies:
+      '@oxlint/darwin-arm64': 1.11.0
+      '@oxlint/darwin-x64': 1.11.0
+      '@oxlint/linux-arm64-gnu': 1.11.0
+      '@oxlint/linux-arm64-musl': 1.11.0
+      '@oxlint/linux-x64-gnu': 1.11.0
+      '@oxlint/linux-x64-musl': 1.11.0
+      '@oxlint/win32-arm64': 1.11.0
+      '@oxlint/win32-x64': 1.11.0
+      oxlint-tsgolint: 0.0.0-10
 
   oxlint@1.9.0:
     optionalDependencies:
@@ -12367,7 +12426,7 @@ snapshots:
 
   text-extensions@2.4.0: {}
 
-  thingies@1.21.0(tslib@2.8.1):
+  thingies@2.5.0(tslib@2.8.1):
     dependencies:
       tslib: 2.8.1
 
@@ -12763,7 +12822,7 @@ snapshots:
       graceful-fs: 4.2.11
       http-proxy-middleware: 2.0.9(@types/express@4.17.23)
       ipaddr.js: 2.2.0
-      launch-editor: 2.11.0
+      launch-editor: 2.11.1
       open: 10.2.0
       p-retry: 6.2.1
       schema-utils: 4.3.2
