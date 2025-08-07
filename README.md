@@ -165,6 +165,12 @@ pnpm build
 - [x] Add Vercel deployment
 - [x] Add a refresh after edit a task
 - [x] Add a refresh after delete a task
+- [x] Add a method to load name if assignee is not null
+- [x] Fix CORS blocking login issue (only in production)
+- [x] Fix issue of not auto redirecting after login
+- [x] Fix the issue of edit a task
+- [x] Remove the fetching the task after it is deleted
+- [ ] Add order sorting to database
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`
@@ -172,7 +178,6 @@ pnpm build
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
 - [ ] Add github actions for CI
-- [ ] Fix CORS blocking login issue (only in production)
 
 ---
 

@@ -52,11 +52,11 @@ export class CreateTaskDto {
   @ApiProperty({
     description: 'The order of the task within its project',
     example: 0,
-    default: 0,
-    required: true
+    required: false
   })
   @IsNumber()
-  orderInProject: number;
+  @IsOptional()
+  orderInProject?: number;
 
   @ApiProperty({
     description: 'The ID of the board this task belongs to',

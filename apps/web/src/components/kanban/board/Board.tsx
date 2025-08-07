@@ -1,10 +1,12 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { taskApi } from '@/lib/api/taskApi';
 import { useTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import DraggableData from '@/types/drag&drop';
+import { UpdateTaskInput } from '@/types/taskApi';
 import {
   Active,
   Announcements,
@@ -116,92 +118,222 @@ export function Board() {
     }
   }
 
-  function onDragOver(event: DragOverEvent) {
+  async function onDragOver(event: DragOverEvent) {
     const updatedProjects = [...projects];
     const { active, over } = event;
-    // stop if no over data
+
+    // Early returns for invalid states
     if (!over) return;
-    // stop if active and over are the same
-    const activeId = active.id;
-    const overId = over.id;
-    if (activeId === overId) return;
-    // stop if no draggable data
+    if (active.id === over.id) return;
     if (!hasDraggableData(active) || !hasDraggableData(over)) return;
-    // stop if active is a project
     if (active.data.current!.type === 'Project') return;
-    // get active task
+
     const activeTask = active.data.current!.task;
     const activeProject = updatedProjects.find(
-      (project: Project) => project._id === active.data.current!.task.project
+      (project: Project) => project._id === activeTask.project
     );
-    const activeTaskIdx = activeProject!.tasks.findIndex(
+
+    if (!activeProject) {
+      console.error('Active project not found');
+      return;
+    }
+
+    const activeTaskIdx = activeProject.tasks.findIndex(
       (task: Task) => task._id === activeTask._id
     );
-    // drag a task over a project
+
+    // Handle task dragged over a project
     if (over.data.current!.type === 'Project') {
       const overProject = updatedProjects.find(
-        (project: Project) => project === over.data.current!.project
+        (project: Project) => project._id === over.data.current!.project._id
       );
+
       if (!overProject) {
         console.error('Target project not found');
         return;
       }
-      dragTaskOnProject(activeTask._id, overProject._id, getTask)
-        .then(() => {
-          activeTask.project = overProject._id;
-          overProject.tasks.push(activeTask);
-          activeProject!.tasks.splice(activeTaskIdx, 1);
-          setProjects(updatedProjects);
 
-          if (activeTask.project !== overProject._id.toString()) {
-            toast.success(
-              `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
-            );
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to move task:', error);
-          toast.error(
-            `Failed to move task: ${error.message || 'unknown error'}`
-          );
+      try {
+        // Move task to the new project
+        await dragTaskOnProject(activeTask._id, overProject._id, getTask);
+
+        // Update local state
+        activeTask.project = overProject._id;
+        overProject.tasks.push(activeTask);
+        activeProject.tasks.splice(activeTaskIdx, 1);
+
+        // Update orderInProject for tasks in the target project
+        overProject.tasks.forEach((task, index) => {
+          task.orderInProject = index;
         });
+
+        // Update the projects in the store
+        setProjects(updatedProjects);
+
+        // Update the backend with new order
+        const updates = overProject.tasks.map((task, index) =>
+          taskApi.updateTask(task._id, {
+            orderInProject: index,
+            lastModifier: useWorkspaceStore.getState().userId || ''
+          })
+        );
+
+        await Promise.all(updates);
+
+        toast.success(
+          `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+        );
+      } catch (error) {
+        console.error('Failed to move task:', error);
+        toast.error(
+          `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+        );
+        // Revert local state on error
+        setProjects([...projects]);
+      }
+      return;
     }
-    // drag a task over a task
+
+    // Handle task dragged over another task
     if (over.data.current!.type === 'Task') {
       const overTask = over.data.current!.task;
       const overProject = updatedProjects.find(
-        (project: Project) =>
-          project._id.toString() === overTask.project.toString()
+        (project: Project) => project._id === overTask.project
       );
-      const overTaskIdx = overProject!.tasks.findIndex(
+
+      if (!overProject) {
+        console.error('Target project not found');
+        return;
+      }
+
+      const overTaskIdx = overProject.tasks.findIndex(
         (task: Task) => task._id === overTask._id
       );
-      // move task to a different project
-      if (overTask.project !== activeTask.project) {
-        dragTaskOnProject(activeTask._id, overTask.project, getTask)
-          .then(() => {
-            activeTask.project = overTask.project;
-            overProject!.tasks.splice(overTaskIdx, 0, activeTask);
-            activeProject!.tasks.splice(activeTaskIdx, 1);
-            setProjects(updatedProjects);
-            toast.success(
-              `Task: "${activeTask.title}" is moved into Project: "${overProject!.title}"`
-            );
-          })
-          .catch((error) => {
-            console.error('Failed to move task:', error);
-            toast.error(
-              `Failed to move task: ${error.message || 'unknown error'}`
-            );
-          });
-      }
-      // move task to the same project
-      else {
-        const tempTask = activeTask;
-        activeProject!.tasks.splice(activeTaskIdx, 1);
-        overProject!.tasks.splice(overTaskIdx, 0, tempTask);
 
+      // If moving to a different project
+      if (overTask.project !== activeTask.project) {
+        try {
+          // Move task to the new project
+          await dragTaskOnProject(activeTask._id, overTask.project, getTask);
+
+          // Update local state
+          activeTask.project = overTask.project;
+          overProject.tasks.splice(overTaskIdx, 0, activeTask);
+          activeProject.tasks.splice(activeTaskIdx, 1);
+
+          // Update orderInProject for tasks in the target project
+          overProject.tasks.forEach((task, index) => {
+            task.orderInProject = index;
+          });
+
+          setProjects(updatedProjects);
+
+          // Update the backend with new order
+          const updates = overProject.tasks.map((task, index) =>
+            taskApi.updateTask(task._id, {
+              orderInProject: index,
+              lastModifier: useWorkspaceStore.getState().userId || ''
+            })
+          );
+
+          await Promise.all(updates);
+
+          toast.success(
+            `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+          );
+        } catch (error) {
+          console.error('Failed to move task:', error);
+          toast.error(
+            `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+          );
+          setProjects([...projects]);
+        }
+      }
+      // Moving within the same project
+      else {
+        // Only proceed if the position actually changed
+        if (activeTaskIdx === overTaskIdx) return;
+
+        // Create a new array to avoid mutating the original
+        const newTasks = [...overProject.tasks];
+
+        // Remove the task from its original position
+        const [movedTask] = newTasks.splice(activeTaskIdx, 1);
+
+        // Calculate the new index after removal
+        const newIndex =
+          activeTaskIdx < overTaskIdx ? overTaskIdx : overTaskIdx;
+
+        // Insert at the new position
+        newTasks.splice(newIndex, 0, movedTask);
+
+        // Create a backup of current projects for rollback
+        const previousProjects = JSON.parse(JSON.stringify(projects));
+
+        // Update orderInProject for all tasks in the new order
+        const updatedTasks = newTasks.map((task, index) => ({
+          ...task,
+          orderInProject: index
+        }));
+
+        // Update local state optimistically
+        overProject.tasks = updatedTasks;
         setProjects(updatedProjects);
+
+        try {
+          // Find tasks that actually changed position
+          const tasksToUpdate = updatedTasks.filter((task, newIndex) => {
+            const oldTask = previousProjects
+              .flatMap((p: Project) => p.tasks)
+              .find((t: Task) => t._id === task._id);
+            return !oldTask || oldTask.orderInProject !== newIndex;
+          });
+
+          if (tasksToUpdate.length > 0) {
+            // Update the backend with the new order for changed tasks
+            const userId = useWorkspaceStore.getState().userId;
+            if (!userId) {
+              throw new Error('User ID not found');
+            }
+
+            // Process updates one by one to handle potential errors properly
+            for (const task of tasksToUpdate) {
+              try {
+                // Create update data with required fields
+                const updateData: UpdateTaskInput = {
+                  orderInProject: task.orderInProject,
+                  lastModifier: userId // This is required by the UpdateTaskInput type
+                };
+
+                console.log(
+                  'Updating task:',
+                  task._id,
+                  'with data:',
+                  updateData
+                );
+                await taskApi.updateTask(task._id, updateData);
+              } catch (error) {
+                console.error(`Failed to update task ${task._id}:`, error);
+                throw error; // Re-throw to be caught by the outer try-catch
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Failed to update task order:', error);
+          toast.error('Failed to update task order. Please try again.');
+          // Revert on error
+          setProjects(previousProjects);
+
+          // Refresh the data to ensure consistency
+          try {
+            const { fetchProjects } = useWorkspaceStore.getState();
+            if (overProject.board) {
+              await fetchProjects(overProject.board.toString());
+            }
+          } catch (refreshError) {
+            console.error('Failed to refresh projects:', refreshError);
+          }
+        }
       }
     }
   }

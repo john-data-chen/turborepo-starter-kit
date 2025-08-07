@@ -2,9 +2,8 @@ import { boardApi } from '@/lib/api/boardApi';
 import { projectApi } from '@/lib/api/projectApi';
 import { taskApi } from '@/lib/api/taskApi';
 import { useDeleteTask } from '@/lib/api/tasks';
-import { Board, Project, Task } from '@/types/dbInterface';
-import { TaskStatus } from '@/types/dbInterface';
-import { CreateTaskInput } from '@/types/taskApi';
+import { Board, Project, Task, TaskStatus } from '@/types/dbInterface';
+import { CreateTaskInput, UpdateTaskInput } from '@/types/taskApi';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -64,7 +63,8 @@ interface State {
     createTask: (task: CreateTaskInput) => Promise<Task>,
     description?: string,
     dueDate?: Date,
-    assigneeId?: string
+    assigneeId?: string,
+    orderInProject?: number
   ) => Promise<void>;
 
   updateTask: (
@@ -74,7 +74,8 @@ interface State {
     description?: string,
     dueDate?: Date,
     assigneeId?: string,
-    newProjectId?: string
+    newProjectId?: string,
+    orderInProject?: number
   ) => Promise<void>;
 
   removeTask: (taskId: string) => Promise<void>;
@@ -316,7 +317,8 @@ export const useWorkspaceStore = create<State>()(
         createTask: (task: CreateTaskInput) => Promise<Task>,
         description?: string,
         dueDate?: Date,
-        assigneeId?: string
+        assigneeId?: string,
+        orderInProject?: number
       ) => {
         try {
           const { userId, currentBoardId } = get();
@@ -324,12 +326,20 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated or no board selected');
           }
 
-          // Get the current project to find the next orderInProject
-          const currentProject = get().projects.find(p => p._id === projectId);
+          // Get the current project and its tasks
+          const currentProject = get().projects.find(
+            (p) => p._id === projectId
+          );
           const currentTasks = currentProject?.tasks || [];
-          const lastOrder = currentTasks.length > 0 
-            ? Math.max(...currentTasks.map(t => t.orderInProject || 0))
-            : 0;
+
+          // Calculate orderInProject if not provided
+          let calculatedOrderInProject = orderInProject;
+          if (calculatedOrderInProject === undefined) {
+            calculatedOrderInProject = 0; // Default value if no order is provided
+          }
+          calculatedOrderInProject = currentTasks.length;
+
+          console.log('Using orderInProject:', calculatedOrderInProject);
 
           const taskInput: CreateTaskInput = {
             title,
@@ -339,7 +349,7 @@ export const useWorkspaceStore = create<State>()(
             board: currentBoardId,
             creator: userId,
             lastModifier: userId,
-            orderInProject: lastOrder + 1,
+            orderInProject: calculatedOrderInProject,
             ...(dueDate && { dueDate }),
             ...(assigneeId && { assignee: assigneeId })
           };
@@ -362,7 +372,8 @@ export const useWorkspaceStore = create<State>()(
         description?: string,
         dueDate?: Date,
         assigneeId?: string,
-        newProjectId?: string
+        newProjectId?: string,
+        orderInProject?: number
       ) => {
         try {
           const { userId, currentBoardId } = get();
@@ -370,13 +381,15 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated');
           }
 
-          const updateData = {
+          // Build update data with only defined values
+          const updateData: UpdateTaskInput = {
             title,
-            description,
             status,
             lastModifier: userId,
-            dueDate,
-            assigneeId,
+            ...(description !== undefined && { description }),
+            ...(dueDate !== undefined && { dueDate }),
+            ...(assigneeId !== undefined && { assigneeId }),
+            ...(orderInProject !== undefined && { orderInProject }),
             ...(newProjectId && { projectId: newProjectId })
           };
 

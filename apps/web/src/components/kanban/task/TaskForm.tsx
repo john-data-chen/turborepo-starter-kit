@@ -140,14 +140,10 @@ export function TaskForm({
           control={form.control}
           name="assignee"
           render={({ field }) => {
-            console.log('Assignee field value:', field.value);
-            console.log('Available users:', users);
-
             // Find the full user object from the users list
             const selectedUser = field.value?._id
               ? users.find((u) => u._id === field.value?._id)
               : null;
-            console.log('Selected user from users list:', selectedUser);
 
             return (
               <FormItem className="flex flex-col">

@@ -71,9 +71,10 @@ export class UpdateTaskDto {
   @ApiProperty({
     description: 'The order of the task within its project',
     example: 0,
-    required: true,
+    required: false,
     type: Number
   })
   @IsNumber()
+  @IsOptional()
   orderInProject: number;
 }

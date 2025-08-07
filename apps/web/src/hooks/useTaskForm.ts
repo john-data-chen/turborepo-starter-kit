@@ -60,14 +60,6 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     }
   });
 
-  // Debug: log form values when they change
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      console.log('Form value changed:', { name, value });
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
   const searchUsersLocal = async (search: string = ''): Promise<User[]> => {
     try {
       return await userApi.searchUsers(search);
@@ -125,17 +117,13 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
         : null;
 
       if (!assigneeId) {
-        console.log('No assignee ID to load');
         form.setValue('assignee', undefined);
         return;
       }
 
-      console.log('Loading assignee data for ID:', assigneeId);
-
       // Try to find the user in the existing users list
       const existingUser = users.find((u) => u._id === assigneeId);
       if (existingUser) {
-        console.log('Found existing user:', existingUser);
         form.setValue('assignee', {
           _id: existingUser._id,
           name: existingUser.name,

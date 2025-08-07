@@ -52,14 +52,8 @@ export const useCreateTask = () => {
       project: string;
       creator: string;
       assignee?: string;
+      orderInProject?: number;
     }) => {
-      // Get the last task's orderInProject to set the new task's order
-      const tasks = await taskApi.getTasks(input.project);
-      const lastOrder =
-        tasks.length > 0
-          ? Math.max(...tasks.map((t) => t.orderInProject || 0))
-          : 0;
-
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -70,7 +64,7 @@ export const useCreateTask = () => {
         creator: input.creator,
         assignee: input.assignee,
         lastModifier: input.creator,
-        orderInProject: lastOrder + 1
+        orderInProject: input.orderInProject
       });
     },
     onSuccess: (newTask, variables) => {
