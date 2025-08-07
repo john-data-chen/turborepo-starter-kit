@@ -12,6 +12,24 @@ import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
+  /**
+   * Delete all tasks associated with a project
+   * @param projectId The ID of the project whose tasks should be deleted
+   * @returns Promise with the deletion result
+   */
+  async deleteTasksByProjectId(projectId: string): Promise<{ deletedCount: number }> {
+    if (!Types.ObjectId.isValid(projectId)) {
+      throw new Error('Invalid project ID');
+    }
+    
+    const result = await this.taskModel.deleteMany({ 
+      project: new Types.ObjectId(projectId) 
+    }).exec();
+    
+    console.log(`Deleted ${result.deletedCount} tasks for project ${projectId}`);
+    return { deletedCount: result.deletedCount || 0 };
+  }
+
   private toUserResponse(user: any) {
     if (!user) {
       console.log('User is null or undefined');

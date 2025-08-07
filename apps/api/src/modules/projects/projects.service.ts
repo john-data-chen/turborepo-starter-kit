@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
@@ -10,11 +12,14 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
+import { TasksService } from '../tasks/tasks.service';
 
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>
+    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
+    @Inject(forwardRef(() => TasksService))
+    private tasksService: TasksService
   ) {}
 
   async findByBoardId(boardId: string): Promise<ProjectDocument[]> {
@@ -223,7 +228,19 @@ export class ProjectsService {
       throw new BadRequestException(error);
     }
 
-    console.log('Deleting project...');
+    console.log('Deleting project and associated tasks...');
+    
+    // First delete all tasks associated with this project
+    try {
+      const deleteResult = await this.tasksService.deleteTasksByProjectId(id);
+      console.log(`Deleted ${deleteResult.deletedCount} tasks for project ${id}`);
+    } catch (error) {
+      console.error('Error deleting tasks for project:', error);
+      // We'll continue with project deletion even if task deletion fails
+      // to prevent orphaned projects, but log the error
+    }
+
+    // Then delete the project itself
     const result = await this.projectModel.deleteOne({ _id: id });
 
     if (result.deletedCount === 0) {
@@ -232,7 +249,7 @@ export class ProjectsService {
       throw new Error(error);
     }
 
-    console.log('Project deleted successfully');
+    console.log('Project and associated tasks deleted successfully');
   }
 
   async create(
