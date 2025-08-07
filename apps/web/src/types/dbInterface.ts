@@ -60,6 +60,7 @@ export interface Task {
   lastModifier: UserInfo;
   createdAt: Date;
   updatedAt: Date;
+  _deleted?: boolean; // For soft deletion
 }
 
 export interface Board {

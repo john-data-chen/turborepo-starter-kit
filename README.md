@@ -164,8 +164,7 @@ pnpm build
 
 - [x] Add Vercel deployment
 - [x] Add a refresh after edit a task
-- [ ] Add a refresh after delete a task
-- [ ] Fix CORS blocking login issue (only in production)
+- [x] Add a refresh after delete a task
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`
@@ -173,6 +172,7 @@ pnpm build
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
 - [ ] Add github actions for CI
+- [ ] Fix CORS blocking login issue (only in production)
 
 ---
 

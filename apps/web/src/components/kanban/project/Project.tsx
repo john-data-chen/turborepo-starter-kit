@@ -102,11 +102,24 @@ function BoardProjectComponent({
 
   // Memoize the task list to prevent unnecessary re-renders
   const _taskItems = useMemo(() => {
-    return tasks.map((task) => ({
+    // Filter out any tasks that are marked as deleted
+    const validTasks = tasks.filter((task) => !task._deleted);
+
+    return validTasks.map((task) => ({
       id: task._id,
       element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
     }));
   }, [tasks, loadTasks]);
+
+  // Handle task updates from child components
+  const handleTaskUpdate = useCallback(async () => {
+    try {
+      const fetchedTasks = await fetchTasksByProject(project._id);
+      setTasks(fetchedTasks);
+    } catch (error) {
+      console.error('Error updating tasks:', error);
+    }
+  }, [project._id, fetchTasksByProject]);
 
   // Fetch tasks when the project changes
   useEffect(() => {
@@ -213,9 +226,15 @@ function BoardProjectComponent({
           <div className="flex-1 overflow-y-auto px-2 pb-2">
             <SortableContext items={tasksIds}>
               <div className="space-y-2">
-                {filteredTasks.map((task) => (
-                  <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
-                ))}
+                {filteredTasks
+                  .filter((task) => !task._deleted) // Ensure we don't render deleted tasks
+                  .map((task) => (
+                    <TaskCard
+                      key={task._id}
+                      task={task}
+                      onUpdate={handleTaskUpdate}
+                    />
+                  ))}
               </div>
             </SortableContext>
           </div>
