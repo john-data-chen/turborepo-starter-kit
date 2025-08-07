@@ -129,14 +129,29 @@ export class TasksService {
     try {
       // Convert string IDs to ObjectIds
       const creatorId = new Types.ObjectId(createTaskDto.creator);
+      const projectId = new Types.ObjectId(createTaskDto.project);
+      
+      // If orderInProject is not provided, set it to the next available position in the project
+      let orderInProject = createTaskDto.orderInProject;
+      if (orderInProject === undefined) {
+        const lastTask = await this.taskModel
+          .findOne({ project: projectId })
+          .sort({ orderInProject: -1 })
+          .select('orderInProject')
+          .lean();
+        
+        orderInProject = lastTask ? lastTask.orderInProject + 1 : 0;
+      }
+
       const taskData = {
         ...createTaskDto,
-        project: new Types.ObjectId(createTaskDto.project),
+        project: projectId,
         board: new Types.ObjectId(createTaskDto.board),
         creator: creatorId,
         // For new tasks, lastModifier should be the same as creator
         lastModifier: creatorId,
         status: createTaskDto.status || TaskStatus.TODO,
+        orderInProject,
         ...(createTaskDto.assignee && {
           assignee: new Types.ObjectId(createTaskDto.assignee)
         })

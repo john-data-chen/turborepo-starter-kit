@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsMongoId,
+  IsNumber,
   IsOptional,
   IsString
 } from 'class-validator';
@@ -47,6 +48,15 @@ export class CreateTaskDto {
   @IsDateString()
   @IsOptional()
   dueDate?: Date;
+
+  @ApiProperty({
+    description: 'The order of the task within its project',
+    example: 0,
+    default: 0,
+    required: true
+  })
+  @IsNumber()
+  orderInProject: number;
 
   @ApiProperty({
     description: 'The ID of the board this task belongs to',
