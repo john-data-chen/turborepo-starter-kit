@@ -64,17 +64,117 @@ async function bootstrap() {
     exposedHeaders: 'Authorization, XSRF-TOKEN, set-cookie'
   });
 
-  // Log CORS configuration for debugging
-  console.log('CORS Configuration:', {
-    allowedOrigins,
-    nodeEnv: process.env.NODE_ENV,
-    frontendUrl: process.env.NEXT_PUBLIC_WEB_URL
-  });
+  // Enhanced CORS middleware with detailed logging
+  const corsMiddleware = (req: any, res: any, next: any) => {
+    const origin = req.headers.origin;
+    const requestMethod = req.method;
+    const requestHeaders = req.headers['access-control-request-headers'];
+
+    console.log('CORS - Incoming request:', {
+      origin,
+      method: requestMethod,
+      path: req.path,
+      headers: req.headers,
+      'access-control-request-method': requestMethod,
+      'access-control-request-headers': requestHeaders
+    });
+
+    // Handle preflight requests
+    if (requestMethod === 'OPTIONS') {
+      console.log('CORS - Handling preflight request');
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
+      );
+      res.header(
+        'Access-Control-Allow-Headers',
+        [
+          'Content-Type',
+          'Accept',
+          'Authorization',
+          'X-Requested-With',
+          'X-XSRF-TOKEN'
+        ].join(',')
+      );
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Max-Age', '86400'); // 24 hours
+      return res.status(204).end();
+    }
+
+    // Handle regular requests
+    if (origin) {
+      const isAllowed = allowedOrigins.some((o) =>
+        typeof o === 'string' ? o === origin : o.test(origin)
+      );
+
+      if (isAllowed) {
+        console.log('CORS - Allowing origin:', origin);
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Credentials', 'true');
+      } else {
+        console.log('CORS - Origin not allowed:', origin);
+      }
+    } else {
+      console.log('CORS - No origin header present');
+    }
+
+    next();
+  };
+
+  // Apply CORS middleware
+  app.use(corsMiddleware);
 
   // Log CORS configuration for debugging
-  console.log('CORS enabled with the following configuration:', {
-    allowedOrigins,
-    credentials: true
+  console.log('CORS Configuration:', {
+    allowedOrigins: allowedOrigins.map((origin) =>
+      origin instanceof RegExp ? origin.toString() : origin
+    ),
+    nodeEnv: process.env.NODE_ENV,
+    frontendUrl: process.env.NEXT_PUBLIC_WEB_URL,
+    isVercel: process.env.VERCEL === '1',
+    vercelUrl: process.env.VERCEL_URL,
+    vercelEnv: process.env.VERCEL_ENV,
+    corsEnabled: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-Requested-With',
+      'X-XSRF-TOKEN'
+    ],
+    exposedHeaders: ['Authorization', 'XSRF-TOKEN', 'set-cookie']
+  });
+
+  // Apply CORS middleware before other middleware
+  app.use((req, res, next) => {
+    // Log all incoming requests for debugging
+    console.log('Incoming Request:', {
+      method: req.method,
+      path: req.path,
+      headers: req.headers,
+      originalUrl: req.originalUrl,
+      query: req.query,
+      body: req.body
+    });
+    next();
+  });
+
+  // Apply CORS middleware
+  app.use(corsMiddleware);
+
+  // Log application startup
+  console.log('Application starting with configuration:', {
+    nodeEnv: process.env.NODE_ENV,
+    port: process.env.PORT || 3001,
+    apiUrl: process.env.API_URL,
+    mongoUri: process.env.MONGO_URI ? '***' : 'Not set',
+    jwtSecret: process.env.JWT_SECRET ? '***' : 'Not set',
+    isVercel: process.env.VERCEL === '1',
+    vercelEnv: process.env.VERCEL_ENV,
+    vercelUrl: process.env.VERCEL_URL
   });
 
   // Enable global validation pipe

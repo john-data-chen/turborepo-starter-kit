@@ -31,41 +31,61 @@ export class AuthService {
   }
 
   static async login(email: string): Promise<{ access_token: string }> {
-    return this.fetchWithAuth<{ access_token: string }>(ROUTES.AUTH.LOGIN_API, {
+    // The backend will set the JWT in an HTTP-only cookie
+    const response = await fetch(ROUTES.AUTH.LOGIN_API, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
       body: JSON.stringify({ email })
     });
+
+    if (!response.ok) {
+      const error = await response.text().catch(() => 'Login failed');
+      throw new Error(error);
+    }
+
+    const data = await response.json();
+    return data;
   }
 
-  static async getProfile(token: string): Promise<UserInfo> {
-    const user = await this.fetchWithAuth<any>(`${API_BASE}/auth/profile`, {
-      headers: { Authorization: `Bearer ${token}` }
+  static async getProfile(): Promise<UserInfo> {
+    const response = await fetch(`${API_BASE}/auth/profile`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Clear any invalid session
+        this.logout();
+      }
+      throw new Error('Failed to fetch user profile');
+    }
+
+    const user = await response.json();
 
     // Ensure we have required fields
     if (!user || !user.email) {
       throw new Error('Invalid user data received from server');
     }
+
     // Map the backend user to our frontend User type
-    const userInfo: UserInfo = {
+    return {
       _id: user._id,
       email: user.email,
       name: user.name || user.email.split('@')[0] || 'User'
     };
-
-    return userInfo;
   }
 
   static async getSession(): Promise<Session | null> {
     try {
-      const token = Cookies.get('jwt');
-      if (!token) {
-        return null;
-      }
+      // First try to get the profile using the HTTP-only cookie
+      const user = await this.getProfile();
 
-      const user = await this.getProfile(token);
-
-      // getProfile now handles the case where _id is undefined
       if (!user) {
         return null;
       }
@@ -76,14 +96,10 @@ export class AuthService {
           email: user.email,
           name: user.name || user.email.split('@')[0]
         },
-        accessToken: token
+        accessToken: 'http-only-cookie' // The actual token is in the HTTP-only cookie
       };
     } catch (error) {
       console.error('Session validation error:', error);
-      // Clear invalid token
-      if (typeof window !== 'undefined') {
-        Cookies.remove('jwt', { path: '/' });
-      }
       return null;
     }
   }
