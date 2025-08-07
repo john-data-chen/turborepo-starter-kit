@@ -1,6 +1,7 @@
 import type { Task, TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS, UpdateTaskInput } from '@/types/taskApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { taskApi } from '../taskApi';
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
@@ -69,17 +70,23 @@ export const useCreateTask = () => {
 
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
+  // Get the current user's ID from the workspace store
+  const userId = useWorkspaceStore((state: { userId: string | null }) => state.userId);
+
+  if (!userId) {
+    throw new Error('User must be authenticated to update a task');
+  }
 
   return useMutation({
     mutationFn: ({
       id,
       ...updates
-    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId'> & {
+    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId' | 'lastModifier'> & {
         assigneeId?: string | null;
       }) => {
       // Create a clean update object with only the fields we want to send
       const apiUpdates: UpdateTaskInput = {
-        lastModifier: updates.lastModifier
+        lastModifier: userId // Use the current user's ID as the lastModifier
       };
 
       // Only include fields that are defined in the updates
