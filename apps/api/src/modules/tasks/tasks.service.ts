@@ -12,75 +12,101 @@ import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
+  private toUserResponse(user: any) {
+    if (!user) {
+      console.log('User is null or undefined');
+      return null;
+    }
+    return {
+      _id: user._id?.toString() || '',
+      name: user.name,
+      email: user.email
+    };
+  }
+
   private async toTaskResponse(task: TaskDocument): Promise<TaskResponseDto> {
-    // First populate the user fields
-    const populatedTask = await this.taskModel.populate(task, [
-      {
-        path: 'creator',
-        select: 'name email'
-      },
-      {
-        path: 'assignee',
-        select: 'name email'
-      },
-      {
-        path: 'lastModifier',
-        select: 'name email'
+    console.log('=== toTaskResponse called ===');
+    console.log('Raw task input:', JSON.stringify(task, null, 2));
+
+    try {
+      // First populate the user fields with detailed error handling
+      let populatedTask;
+      try {
+        populatedTask = await task.populate([
+          { path: 'creator', select: 'name email' },
+          { path: 'assignee', select: 'name email' },
+          { path: 'lastModifier', select: 'name email' }
+        ]);
+        console.log('After population:', JSON.stringify(populatedTask, null, 2));
+      } catch (populateError) {
+        console.error('Error during population:', populateError);
+        // If population fails, use the original task
+        populatedTask = task;
       }
-    ]);
 
-    // Helper function to create user response object
-    const toUserResponse = (user: any) => {
-      if (!user) return null;
-      return {
-        _id: user._id?.toString() || '',
-        name: user.name,
-        email: user.email
+      // Build the response object
+      const response: any = {
+        _id: populatedTask._id.toString(),
+        title: populatedTask.title,
+        status: populatedTask.status,
+        board: populatedTask.board?.toString(),
+        project: populatedTask.project?.toString(),
+        createdAt: populatedTask.createdAt,
+        updatedAt: populatedTask.updatedAt
       };
-    };
 
-    // Build the response object
-    const response: any = {
-      _id: populatedTask._id.toString(),
-      title: populatedTask.title,
-      status: populatedTask.status,
-      board: populatedTask.board?.toString(),
-      project: populatedTask.project?.toString(),
-      creator: toUserResponse(populatedTask.creator),
-      lastModifier: toUserResponse(populatedTask.lastModifier),
-      createdAt: populatedTask.createdAt,
-      updatedAt: populatedTask.updatedAt
-    };
+      // Handle user references with fallbacks
+      response.creator = this.toUserResponse(populatedTask.creator);
+      response.assignee = this.toUserResponse(populatedTask.assignee);
+      
+      // Special handling for lastModifier
+      if (populatedTask.lastModifier) {
+        response.lastModifier = this.toUserResponse(populatedTask.lastModifier);
+      } else if (task.lastModifier) {
+        // If population failed but we have the ID, create a minimal user object
+        console.log('Using fallback for lastModifier with ID:', task.lastModifier);
+        response.lastModifier = {
+          _id: task.lastModifier.toString(),
+          name: 'Unknown',
+          email: 'unknown@example.com'
+        };
+      } else {
+        // If no lastModifier at all, use creator as fallback
+        console.log('No lastModifier found, falling back to creator');
+        response.lastModifier = response.creator;
+      }
 
-    // Handle optional fields
-    if (populatedTask.description) {
-      response.description = populatedTask.description;
+      // Handle optional fields
+      if (populatedTask.description) {
+        response.description = populatedTask.description;
+      }
+
+      if (populatedTask.dueDate) {
+        response.dueDate = populatedTask.dueDate;
+      }
+
+      return response as TaskResponseDto;
+    } catch (error) {
+      console.error('Error in toTaskResponse:', error);
+      throw error;
     }
-
-    if (populatedTask.dueDate) {
-      response.dueDate = populatedTask.dueDate;
-    }
-
-    if (populatedTask.assignee) {
-      response.assignee = toUserResponse(populatedTask.assignee);
-    }
-
-    return response as TaskResponseDto;
   }
 
   async create(
     createTaskDto: CreateTaskDto,
-    userId: string
+    _userId: string // Keep for backward compatibility but mark as unused
   ): Promise<TaskResponseDto> {
     try {
       // Convert string IDs to ObjectIds
+      const creatorId = new Types.ObjectId(createTaskDto.creator);
       const taskData = {
         ...createTaskDto,
         project: new Types.ObjectId(createTaskDto.project),
         board: new Types.ObjectId(createTaskDto.board),
-        creator: new Types.ObjectId(createTaskDto.creator),
+        creator: creatorId,
+        // For new tasks, lastModifier should be the same as creator
+        lastModifier: creatorId,
         status: createTaskDto.status || TaskStatus.TODO,
-        lastModifier: new Types.ObjectId(userId),
         ...(createTaskDto.assignee && {
           assignee: new Types.ObjectId(createTaskDto.assignee)
         })
@@ -156,34 +182,36 @@ export class TasksService {
     updateTaskDto: UpdateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
-    // Prepare update data
+    // Create update data with lastModifier set to current user
     const updateData: any = {
       ...updateTaskDto,
       lastModifier: new Types.ObjectId(userId),
       updatedAt: new Date()
     };
 
-    // Handle assigneeId if provided
-    if ('assigneeId' in updateTaskDto) {
-      updateData.assignee = updateTaskDto.assigneeId
-        ? new Types.ObjectId(updateTaskDto.assigneeId)
+    // Remove any undefined values to prevent overwriting with undefined
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
+    );
+
+    // Handle assigneeId if present - convert to ObjectId or set to null
+    if ('assigneeId' in updateData) {
+      updateData.assignee = updateData.assigneeId
+        ? new Types.ObjectId(updateData.assigneeId)
         : null;
-      // Remove assigneeId to prevent it from being saved directly
       delete updateData.assigneeId;
     }
 
+    // Use findByIdAndUpdate for an atomic operation and to get the updated doc
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('project', 'title')
+      .findByIdAndUpdate(id, { $set: updateData }, { new: true })
       .exec();
 
     if (!updatedTask) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      throw new NotFoundException(`Task with ID ${id} not found`);
     }
 
-    return this.toTaskResponse(updatedTask as unknown as TaskDocument);
+    return this.toTaskResponse(updatedTask);
   }
 
   async remove(id: string): Promise<void> {
@@ -200,25 +228,66 @@ export class TasksService {
     status: TaskStatus,
     userId: string
   ): Promise<TaskResponseDto> {
-    const updatedTask = await this.taskModel
-      .findByIdAndUpdate(
-        id,
-        {
-          status,
-          lastModifier: userId,
-          updatedAt: new Date()
-        },
-        { new: true }
-      )
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('project', 'title')
-      .exec();
+    console.log('=== updateStatus called ===');
+    console.log('Task ID:', id);
+    console.log('New status:', status);
+    console.log('User ID:', userId);
 
-    if (!updatedTask) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+    const session = await this.taskModel.startSession();
+    session.startTransaction();
+
+    try {
+      // First, find the task to ensure it exists
+      const task = await this.taskModel.findById(id).session(session);
+      if (!task) {
+        throw new NotFoundException(`Task with ID "${id}" not found`);
+      }
+
+      // Update the task with the new status and lastModifier
+      task.status = status;
+      task.lastModifier = new Types.ObjectId(userId);
+      task.updatedAt = new Date();
+
+      // Save the updated task in the same session
+      await task.save({ session });
+
+      // Now populate the references
+      const populatedTask = await this.taskModel
+        .findById(id)
+        .populate('creator', 'name email')
+        .populate('assignee', 'name email')
+        .populate('lastModifier', 'name email')
+        .populate('project', 'title')
+        .session(session)
+        .orFail()
+        .exec();
+
+      await session.commitTransaction();
+      session.endSession();
+
+      console.log(
+        'Updated task from DB (before toTaskResponse):',
+        JSON.stringify(populatedTask, null, 2)
+      );
+
+      // Ensure lastModifier is properly set
+      if (!populatedTask.lastModifier) {
+        console.warn('lastModifier was not populated, setting it manually');
+        populatedTask.lastModifier = {
+          _id: new Types.ObjectId(userId),
+          name: 'Unknown',
+          email: 'unknown@example.com'
+        } as any;
+      }
+
+      const response = await this.toTaskResponse(populatedTask);
+      console.log('Final response:', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error('Error in updateStatus:', error);
+      throw error;
     }
-
-    return this.toTaskResponse(updatedTask as unknown as TaskDocument);
   }
 }

@@ -15,6 +15,7 @@ export interface CreateTaskInput {
   board: string; // Changed from boardId to match backend
   project: string; // Changed from projectId to match backend
   creator: string; // Added to match backend
+  lastModifier: string; // Added to match backend
   assignee?: string; // Changed from assigneeId to match backend
 }
 
@@ -24,6 +25,7 @@ export interface UpdateTaskInput {
   status?: TaskStatus;
   dueDate?: Date | null;
   assigneeId?: string | null;
+  lastModifier: string;
 }
 
 // Query and Mutation Keys

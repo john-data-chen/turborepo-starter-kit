@@ -47,7 +47,8 @@ export const useCreateTask = () => {
         board: input.board,
         project: input.project,
         creator: input.creator,
-        assignee: input.assignee
+        assignee: input.assignee,
+        lastModifier: input.creator
       });
     },
     onSuccess: (newTask, variables) => {
@@ -77,7 +78,9 @@ export const useUpdateTask = () => {
         assigneeId?: string | null;
       }) => {
       // Create a clean update object with only the fields we want to send
-      const apiUpdates: UpdateTaskInput = {};
+      const apiUpdates: UpdateTaskInput = {
+        lastModifier: updates.lastModifier
+      };
 
       // Only include fields that are defined in the updates
       if (updates.title !== undefined) apiUpdates.title = updates.title;
