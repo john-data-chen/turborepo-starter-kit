@@ -170,7 +170,9 @@ pnpm build
 - [x] Fix issue of not auto redirecting after login
 - [x] Fix the issue of edit a task
 - [x] Remove the fetching the task after it is deleted
-- [ ] Add order sorting to database
+- [x] Add task order sorting to database
+- [ ] Add reordering tasks after deleting a task
+- [ ] Add project order sorting to database
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`
