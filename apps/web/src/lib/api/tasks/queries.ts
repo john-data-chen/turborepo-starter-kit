@@ -1,7 +1,7 @@
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import type { Task, TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS, UpdateTaskInput } from '@/types/taskApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useWorkspaceStore } from '@/stores/workspace-store';
 import { taskApi } from '../taskApi';
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
@@ -18,11 +18,24 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
   });
 };
 
-export const useTask = (taskId?: string) => {
+interface UseTaskOptions {
+  enabled?: boolean;
+  retry?: boolean | ((failureCount: number, error: any) => boolean);
+}
+
+export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
+  const { enabled = true, retry } = options;
+
   return useQuery({
     queryKey: TASK_KEYS.detail(taskId || ''),
     queryFn: () => taskApi.getTaskById(taskId || ''),
-    enabled: !!taskId
+    enabled: !!taskId && enabled,
+    retry:
+      retry ??
+      ((failureCount: number, error: any) => {
+        if (error?.response?.status === 404) return false;
+        return failureCount < 3;
+      })
   });
 };
 
@@ -71,7 +84,9 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
   // Get the current user's ID from the workspace store
-  const userId = useWorkspaceStore((state: { userId: string | null }) => state.userId);
+  const userId = useWorkspaceStore(
+    (state: { userId: string | null }) => state.userId
+  );
 
   if (!userId) {
     throw new Error('User must be authenticated to update a task');
