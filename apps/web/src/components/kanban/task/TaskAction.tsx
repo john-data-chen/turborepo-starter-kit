@@ -59,15 +59,21 @@ export function TaskActions({
   boardId,
   onUpdate
 }: TaskActionsProps) {
-  // State for dialogs
+  // State for dialogs and component state
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   // Translations
   const t = useTranslations('kanban.task');
 
   // Fetch task data to ensure we have the latest
-  const { data: task, isLoading: isLoadingTask } = useTask(id);
+  const { data: task, isLoading: isLoadingTask } = useTask(id, {
+    // Disable the query if the task is marked as deleted
+    enabled: !isDeleted,
+    // Don't retry if the task is not found (404)
+    retry: true // Let the hook handle the retry logic
+  });
 
   // Query and mutation hooks
   const queryClient = useQueryClient();
@@ -101,8 +107,7 @@ export function TaskActions({
     try {
       const { title, description, status, dueDate, assignee } = values;
 
-      // Get the current user ID (you might need to get this from your auth context)
-      const currentUserId = 'current-user-id'; // Replace this with actual user ID from your auth context
+      // The current user ID is now handled by the useUpdateTask hook
 
       await updateTaskMutation.mutateAsync(
         {
@@ -111,8 +116,8 @@ export function TaskActions({
           description: description || null,
           status,
           dueDate: dueDate || null,
-          assigneeId: assignee?._id || null,
-          lastModifier: currentUserId // Add the lastModifier field
+          assigneeId: assignee?._id || null
+          // lastModifier is now handled by the useUpdateTask hook
         },
         {
           onSuccess: async (_data) => {
@@ -229,6 +234,9 @@ export function TaskActions({
         console.error('Error during optimistic update:', error);
       }
 
+      // Mark as deleted immediately to prevent any further fetches
+      setIsDeleted(true);
+
       // 5. Execute the delete mutation
       await deleteTaskMutation.mutateAsync(id, {
         onSuccess: async () => {
@@ -315,17 +323,29 @@ export function TaskActions({
   };
 
   // Loading and error states
-  if (isLoadingTask) {
+  if (isLoadingTask && !isDeleted) {
     return <div className="px-2 py-1.5">Loading...</div>;
   }
 
-  if (!task) {
-    return <div className="px-2 py-1.5 text-red-500">Task not found</div>;
+  if ((!task && !isDeleted) || isDeleted) {
+    // If task is deleted or not found, and we're not in a loading state,
+    // return null to unmount the component
+    return null;
   }
+
+  // If we don't have task data, don't render anything
+  if (!task) return null;
 
   return (
     <>
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog
+        open={isEditDialogOpen}
+        onOpenChange={(open) => {
+          if (!isDeleted) {
+            setIsEditDialogOpen(open);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md" data-testid="edit-task-dialog">
           <DialogHeader>
             <DialogTitle>{t('editTaskTitle')}</DialogTitle>

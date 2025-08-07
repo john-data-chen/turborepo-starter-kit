@@ -8,6 +8,7 @@ export interface Project {
   updatedAt: string;
   tasks: Task[];
   board: string | { _id: string; title: string };
+  orderInBoard?: number;
 }
 
 export interface User {
@@ -58,6 +59,7 @@ export interface Task {
   assignee?: UserInfo;
   creator: UserInfo;
   lastModifier: UserInfo;
+  orderInProject?: number;
   createdAt: Date;
   updatedAt: Date;
   _deleted?: boolean; // For soft deletion

@@ -11,6 +11,5 @@ export {
   useTask,
   useCreateTask,
   useUpdateTask,
-  useUpdateTaskStatus,
   useDeleteTask
 } from './queries';

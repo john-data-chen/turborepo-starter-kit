@@ -24,4 +24,12 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   owner: string;
+
+  @ApiProperty({
+    description: 'The order of the project in the board',
+    required: false,
+    default: 0
+  })
+  @IsOptional()
+  orderInBoard?: number;
 }

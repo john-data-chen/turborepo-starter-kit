@@ -98,4 +98,11 @@ export class TaskResponseDto {
     example: '2025-07-29T08:30:00.000Z'
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: 'The order of the task within its project',
+    example: 0,
+    default: 0
+  })
+  orderInProject: number;
 }

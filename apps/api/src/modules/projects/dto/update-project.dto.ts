@@ -33,4 +33,7 @@ export class UpdateProjectDto {
   @IsMongoId()
   @IsOptional()
   assigneeId?: string | null;
+
+  @IsOptional()
+  orderInBoard?: number;
 }

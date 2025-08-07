@@ -66,20 +66,6 @@ updateTask.mutate({
 });
 ```
 
-#### `useUpdateTaskStatus()`
-
-Update a task's status.
-
-```typescript
-const updateStatus = useUpdateTaskStatus();
-
-// Usage:
-updateStatus.mutate({
-  id: 'task-123',
-  status: 'IN_PROGRESS' // or 'TODO' or 'DONE'
-});
-```
-
 #### `useDeleteTask()`
 
 Delete a task.

@@ -129,14 +129,21 @@ export class TasksService {
     try {
       // Convert string IDs to ObjectIds
       const creatorId = new Types.ObjectId(createTaskDto.creator);
+      const projectId = new Types.ObjectId(createTaskDto.project);
+
+      // Always respect the orderInProject from the frontend
+      // If not provided, default to 0 (will be handled by the frontend)
+      const orderInProject = createTaskDto.orderInProject ?? 0;
+
       const taskData = {
         ...createTaskDto,
-        project: new Types.ObjectId(createTaskDto.project),
+        project: projectId,
         board: new Types.ObjectId(createTaskDto.board),
         creator: creatorId,
         // For new tasks, lastModifier should be the same as creator
         lastModifier: creatorId,
         status: createTaskDto.status || TaskStatus.TODO,
+        orderInProject,
         ...(createTaskDto.assignee && {
           assignee: new Types.ObjectId(createTaskDto.assignee)
         })
@@ -165,16 +172,23 @@ export class TasksService {
       query.assignee = new Types.ObjectId(assigneeId);
     }
 
-    const tasks = await this.taskModel.find(query).exec();
+    const tasks = await this.taskModel
+      .find(query)
+      .sort({ orderInProject: 1 })
+      .populate('lastModifier', 'name email')
+      .exec();
     return Promise.all(tasks.map((task) => this.toTaskResponse(task)));
   }
 
   async findOne(id: string): Promise<TaskResponseDto> {
-    const task = await this.taskModel.findById(id).exec();
+    const task = await this.taskModel
+      .findById(id)
+      .populate('lastModifier', 'name email')
+      .exec();
     if (!task) {
-      throw new NotFoundException('Task not found');
+      throw new NotFoundException(`Task with ID ${id} not found`);
     }
-    return await this.toTaskResponse(task);
+    return this.toTaskResponse(task);
   }
 
   async checkTaskPermissions(
@@ -235,6 +249,7 @@ export class TasksService {
     // Use findByIdAndUpdate for an atomic operation and to get the updated doc
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(id, { $set: updateData }, { new: true })
+      .populate('lastModifier', 'name email') // Explicitly populate lastModifier
       .exec();
 
     if (!updatedTask) {

@@ -1,3 +1,4 @@
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import type { Task, TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS, UpdateTaskInput } from '@/types/taskApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -17,11 +18,24 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
   });
 };
 
-export const useTask = (taskId?: string) => {
+interface UseTaskOptions {
+  enabled?: boolean;
+  retry?: boolean | ((failureCount: number, error: any) => boolean);
+}
+
+export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
+  const { enabled = true, retry } = options;
+
   return useQuery({
     queryKey: TASK_KEYS.detail(taskId || ''),
     queryFn: () => taskApi.getTaskById(taskId || ''),
-    enabled: !!taskId
+    enabled: !!taskId && enabled,
+    retry:
+      retry ??
+      ((failureCount: number, error: any) => {
+        if (error?.response?.status === 404) return false;
+        return failureCount < 3;
+      })
   });
 };
 
@@ -29,7 +43,7 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: {
+    mutationFn: async (input: {
       title: string;
       description?: string;
       status?: TaskStatus;
@@ -38,6 +52,7 @@ export const useCreateTask = () => {
       project: string;
       creator: string;
       assignee?: string;
+      orderInProject?: number;
     }) => {
       return taskApi.createTask({
         title: input.title,
@@ -48,7 +63,8 @@ export const useCreateTask = () => {
         project: input.project,
         creator: input.creator,
         assignee: input.assignee,
-        lastModifier: input.creator
+        lastModifier: input.creator,
+        orderInProject: input.orderInProject
       });
     },
     onSuccess: (newTask, variables) => {
@@ -69,17 +85,25 @@ export const useCreateTask = () => {
 
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
+  // Get the current user's ID from the workspace store
+  const userId = useWorkspaceStore(
+    (state: { userId: string | null }) => state.userId
+  );
+
+  if (!userId) {
+    throw new Error('User must be authenticated to update a task');
+  }
 
   return useMutation({
     mutationFn: ({
       id,
       ...updates
-    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId'> & {
+    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId' | 'lastModifier'> & {
         assigneeId?: string | null;
       }) => {
       // Create a clean update object with only the fields we want to send
       const apiUpdates: UpdateTaskInput = {
-        lastModifier: updates.lastModifier
+        lastModifier: userId // Use the current user's ID as the lastModifier
       };
 
       // Only include fields that are defined in the updates
@@ -200,42 +224,6 @@ export const useUpdateTask = () => {
           refetchType: 'active'
         })
       ]);
-    }
-  });
-};
-
-export const useUpdateTaskStatus = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: TaskStatus }) =>
-      taskApi.updateTaskStatus(id, status),
-
-    // Optimistic updates
-    onMutate: async ({ id, status }) => {
-      await queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(id) });
-
-      const previousTask = queryClient.getQueryData<Task>(TASK_KEYS.detail(id));
-
-      if (previousTask) {
-        queryClient.setQueryData<Task>(TASK_KEYS.detail(id), {
-          ...previousTask,
-          status
-        });
-      }
-
-      return { previousTask };
-    },
-
-    onError: (err, { id }, context) => {
-      if (context?.previousTask) {
-        queryClient.setQueryData(TASK_KEYS.detail(id), context.previousTask);
-      }
-    },
-
-    onSettled: (data, error, { id }) => {
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(id) });
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
     }
   });
 };

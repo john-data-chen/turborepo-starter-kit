@@ -29,6 +29,18 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
   const { mutateAsync: createTask } = useCreateTask();
 
   const handleSubmit = async (values: z.infer<typeof TaskFormSchema>) => {
+    // Get the current project to calculate the next orderInProject
+    const { projects } = useWorkspaceStore.getState();
+    const currentProject = projects.find((p) => p._id === projectId);
+    const currentTasks = currentProject?.tasks || [];
+
+    // Calculate the next orderInProject
+    const lastOrder = currentTasks.reduce(
+      (max, task) => Math.max(max, task.orderInProject ?? -1),
+      -1
+    );
+    const nextOrder = lastOrder + 1;
+
     await addTask(
       projectId!,
       values.title!,
@@ -36,7 +48,8 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
       createTask,
       values.description ?? '',
       values.dueDate ?? undefined,
-      values.assignee?._id ?? undefined
+      values.assignee?._id ?? undefined,
+      nextOrder
     );
     toast.success(t('createSuccess', { title: values.title }));
     setAddTaskOpen(false);

@@ -305,26 +305,42 @@ export class ProjectsService {
         throw new BadRequestException(`Invalid owner ID: ${owner}`);
       }
 
-      const ownerId = new Types.ObjectId(owner);
+      // Get the next orderInBoard value if not provided
+      let order = createProjectDto.orderInBoard;
+      if (order === undefined) {
+        const lastProject = await this.projectModel
+          .findOne({ board: boardId })
+          .sort({ orderInBoard: -1 })
+          .select('orderInBoard')
+          .lean();
+        order = lastProject ? lastProject.orderInBoard + 1 : 0;
+      }
 
       // Create the project with only the fields defined in the schema
-      const project = new this.projectModel({
+      const projectData: Partial<Project> = {
         title,
-        description: description || '',
+        description: description || null,
+        owner: new Types.ObjectId(owner),
         board: new Types.ObjectId(boardId),
-        owner: ownerId,
-        members: [ownerId] // Add the creator as a member
-      });
+        members: [new Types.ObjectId(owner)],
+        status: 'TODO' as const,
+        orderInBoard: order,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      const project = new this.projectModel(projectData);
 
       console.log(
         'Saving project with data:',
         JSON.stringify(
           {
-            title,
-            description: description || '',
-            board: boardId,
-            owner: owner,
-            members: [owner]
+            title: projectData.title,
+            description: projectData.description,
+            board: projectData.board,
+            owner: projectData.owner,
+            members: projectData.members,
+            orderInBoard: projectData.orderInBoard
           },
           null,
           2

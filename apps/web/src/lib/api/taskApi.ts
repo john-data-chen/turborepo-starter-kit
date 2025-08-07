@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants/routes';
-import { Task, TaskStatus } from '@/types/dbInterface';
+import { Task } from '@/types/dbInterface';
 import {
   CreateTaskInput,
   TaskPermissions,
@@ -86,11 +86,6 @@ export const taskApi = {
       method: 'PATCH',
       body: JSON.stringify(input)
     });
-  },
-
-  // Update task status
-  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
-    return this.updateTask(id, { status });
   },
 
   // Delete a task
