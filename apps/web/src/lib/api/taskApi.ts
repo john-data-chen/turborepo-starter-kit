@@ -88,11 +88,6 @@ export const taskApi = {
     });
   },
 
-  // Update task status
-  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
-    return this.updateTask(id, { status });
-  },
-
   // Delete a task
   async deleteTask(id: string): Promise<void> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
