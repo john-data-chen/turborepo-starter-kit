@@ -214,7 +214,7 @@ function BoardProjectComponent({
             <SortableContext items={tasksIds}>
               <div className="space-y-2">
                 {filteredTasks.map((task) => (
-                  <TaskCard key={task._id} task={task} />
+                  <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
                 ))}
               </div>
             </SortableContext>

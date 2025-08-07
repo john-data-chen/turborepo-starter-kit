@@ -162,9 +162,10 @@ pnpm build
 
 ## To-Do
 
-- [ ] Add Vercel deployment
-- [ ] Add a refresh after edit a task
+- [x] Add Vercel deployment
+- [x] Add a refresh after edit a task
 - [ ] Add a refresh after delete a task
+- [ ] Fix CORS blocking login issue (only in production)
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`

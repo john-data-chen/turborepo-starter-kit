@@ -109,7 +109,7 @@ export function TaskActions({
           assigneeId: assignee?._id || null
         },
         {
-          onSuccess: () => {
+          onSuccess: async (_data) => {
             // Invalidate both the specific task and task lists
             queryClient.invalidateQueries({
               queryKey: TASK_KEYS.detail(id),
@@ -122,7 +122,52 @@ export function TaskActions({
 
             toast.success(t('updateSuccess', { title }));
             setIsEditDialogOpen(false);
-            onUpdate?.();
+
+            // Invalidate all related queries
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(id) }),
+              queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() }),
+              queryClient.invalidateQueries({
+                queryKey: ['board', boardId, 'tasks']
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['project', projectId, 'tasks']
+              })
+            ]);
+
+            // Refetch all related queries
+            const refetchPromises = [
+              queryClient.refetchQueries({ queryKey: TASK_KEYS.detail(id) }),
+              queryClient.refetchQueries({ queryKey: TASK_KEYS.lists() }),
+              queryClient.refetchQueries({
+                queryKey: ['board', boardId, 'tasks']
+              }),
+              queryClient.refetchQueries({
+                queryKey: ['project', projectId, 'tasks']
+              })
+            ];
+
+            await Promise.all(refetchPromises);
+
+            // Call parent component callback
+            if (onUpdate) {
+              onUpdate();
+            } else {
+              console.warn('No onUpdate callback provided');
+            }
+
+            // Force re-render
+            const queryCache = queryClient.getQueryCache();
+            queryCache.findAll().forEach(({ queryKey }) => {
+              if (
+                Array.isArray(queryKey) &&
+                (queryKey[0] === 'board' ||
+                  queryKey[0] === 'project' ||
+                  queryKey[0] === 'tasks')
+              ) {
+                queryClient.invalidateQueries({ queryKey });
+              }
+            });
           },
           onError: (error) => {
             console.error('Error updating task:', error);
