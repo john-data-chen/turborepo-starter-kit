@@ -85,6 +85,14 @@ export class Task {
   })
   project: Types.ObjectId;
 
+  @Prop({ type: Number, default: 0 })
+  @ApiProperty({
+    description: 'The order of the task within its project',
+    example: 0,
+    default: 0
+  })
+  orderInProject: number;
+
   // User reference fields are defined above with proper documentation
 
   @Prop({ type: Date, default: Date.now })

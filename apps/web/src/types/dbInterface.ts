@@ -58,6 +58,7 @@ export interface Task {
   assignee?: UserInfo;
   creator: UserInfo;
   lastModifier: UserInfo;
+  orderInProject: number;
   createdAt: Date;
   updatedAt: Date;
   _deleted?: boolean; // For soft deletion
