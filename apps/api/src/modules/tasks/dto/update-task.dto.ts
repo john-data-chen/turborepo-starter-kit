@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsMongoId,
+  IsNumber,
   IsOptional,
   IsString
 } from 'class-validator';
@@ -66,4 +67,13 @@ export class UpdateTaskDto {
   @IsMongoId()
   @IsOptional()
   lastModifier?: string;
+
+  @ApiProperty({
+    description: 'The order of the task within its project',
+    example: 0,
+    required: true,
+    type: Number
+  })
+  @IsNumber()
+  orderInProject: number;
 }
