@@ -402,9 +402,9 @@ export class BoardService {
     }
 
     // Check if the user is the owner
-    if (board.owner.toString() !== userId) {
+    if (!board.owner.equals(userId)) {
       console.error(
-        `[BoardService] User ${userId} is not the owner of board ${id}`
+        `[BoardService] User ${userId.toString()} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
       );
       throw new NotFoundException(`Board with ID "${id}" not found`);
     }
