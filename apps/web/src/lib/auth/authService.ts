@@ -9,25 +9,74 @@ export class AuthService {
     url: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(url, {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
+
+    const requestOptions: RequestInit = {
       ...options,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         ...options.headers
       },
-      credentials: 'include'
-    });
+      // Always include credentials for cross-origin requests
+      credentials: 'include',
+      // Add cache control headers to prevent caching of auth requests
+      cache: 'no-store',
+      // Add CORS mode for cross-origin requests
+      mode: 'cors'
+    };
 
-    if (!response.ok) {
-      const error = await response.text().catch(() => 'Request failed');
-      if (typeof window !== 'undefined' && response.status === 401) {
-        Cookies.remove('jwt');
+    if (isProduction && isVercel) {
+      // For Vercel production, ensure we're using the correct domain
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      if (url.startsWith('/')) {
+        url = `${baseUrl}${url}`;
       }
-      throw new Error(error || 'Request failed');
     }
 
-    return response.json();
+    console.log('Making authenticated request:', {
+      url,
+      method: options.method || 'GET',
+      credentials: requestOptions.credentials,
+      isProduction,
+      isVercel,
+      hasCookies:
+        typeof document !== 'undefined' ? document.cookie.length > 0 : 'n/a'
+    });
+
+    const response = await fetch(url, requestOptions);
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Request failed');
+      const error = new Error(errorText || 'Request failed');
+
+      // Add status code to error for better error handling
+      (error as any).status = response.status;
+
+      if (typeof window !== 'undefined' && response.status === 401) {
+        console.log('Unauthorized - removing JWT cookie');
+        Cookies.remove('jwt');
+        Cookies.remove('isAuthenticated');
+      }
+
+      console.error('Request failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        url,
+        error: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      throw error;
+    }
+
+    try {
+      return await response.json();
+    } catch (error) {
+      console.error('Error parsing JSON response:', error);
+      throw new Error('Failed to parse response');
+    }
   }
 
   static async login(email: string): Promise<{ access_token: string }> {
