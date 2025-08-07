@@ -8,6 +8,7 @@ export interface Project {
   updatedAt: string;
   tasks: Task[];
   board: string | { _id: string; title: string };
+  orderInBoard?: number;
 }
 
 export interface User {

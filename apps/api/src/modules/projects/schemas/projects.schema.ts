@@ -22,6 +22,9 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
   board: Types.ObjectId;
 
+  @Prop({ type: Number, default: 0 })
+  orderInBoard: number;
+
   @Prop({
     type: String,
     enum: Object.values(ProjectStatus),
