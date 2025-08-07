@@ -31,39 +31,77 @@ export class AuthService {
   }
 
   static async login(email: string): Promise<{ access_token: string }> {
-    // The backend will set the JWT in an HTTP-only cookie
-    const response = await fetch(ROUTES.AUTH.LOGIN_API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({ email })
-    });
+    console.log('Attempting login for email:', email);
 
-    if (!response.ok) {
-      const error = await response.text().catch(() => 'Login failed');
-      throw new Error(error);
+    try {
+      const response = await fetch(ROUTES.AUTH.LOGIN_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        credentials: 'include', // This is crucial for receiving cookies
+        body: JSON.stringify({ email })
+      });
+
+      console.log('Login response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Login failed');
+        console.error('Login error:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        throw new Error(errorText || 'Login failed');
+      }
+
+      // Get the response data
+      const data = await response.json();
+      console.log('Login successful, response data:', data);
+
+      // The server should set the HTTP-only cookie
+      // We don't need to handle the token client-side anymore
+
+      return { access_token: 'http-only-cookie' };
+    } catch (error) {
+      console.error('Login request failed:', error);
+      throw error;
     }
-
-    const data = await response.json();
-    return data;
   }
 
   static async getProfile(): Promise<UserInfo> {
+    console.log('Fetching profile from:', `${API_BASE}/auth/profile`);
+
     const response = await fetch(`${API_BASE}/auth/profile`, {
-      credentials: 'include',
+      method: 'GET',
+      credentials: 'include', // This is crucial for sending cookies
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       }
     });
 
+    console.log('Profile response status:', response.status);
+
     if (!response.ok) {
+      const errorText = await response
+        .text()
+        .catch(() => 'Failed to fetch profile');
+      console.error('Profile fetch error:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText
+      });
+
       if (response.status === 401) {
-        // Clear any invalid session
+        console.log('Authentication failed, clearing session');
         this.logout();
       }
-      throw new Error('Failed to fetch user profile');
+
+      throw new Error(
+        `Failed to fetch user profile: ${response.status} ${response.statusText}`
+      );
     }
 
     const user = await response.json();
@@ -83,12 +121,21 @@ export class AuthService {
 
   static async getSession(): Promise<Session | null> {
     try {
+      console.log('Getting session...');
+
       // First try to get the profile using the HTTP-only cookie
       const user = await this.getProfile();
 
       if (!user) {
+        console.log('No user found in session');
         return null;
       }
+
+      console.log('Session user found:', {
+        id: user._id,
+        email: user.email,
+        name: user.name
+      });
 
       return {
         user: {
@@ -100,6 +147,7 @@ export class AuthService {
       };
     } catch (error) {
       console.error('Session validation error:', error);
+      // Don't throw here, just return null to indicate no valid session
       return null;
     }
   }
