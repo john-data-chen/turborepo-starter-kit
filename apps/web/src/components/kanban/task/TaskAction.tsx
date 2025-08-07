@@ -26,7 +26,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries';
-import { useUser } from '@/lib/api/users/queries';
 import { TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS } from '@/types/taskApi';
 import { TaskFormSchema } from '@/types/taskForm';
@@ -75,20 +74,23 @@ export function TaskActions({
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
 
-  // Fetch assignee info if assignee exists
-  const { data: assigneeInfo } = useUser(assigneeId || '');
-
   // Permissions (in a real app, this would come from auth context)
   const canEdit = true;
   const canDelete = true;
 
+  // Prepare default values for the form
   const defaultValues = {
     title,
     description: description || '',
-    status: status as TaskStatus, // Now properly typed with the enum
+    status: status as TaskStatus,
     dueDate: dueDate ? new Date(dueDate) : undefined,
-    assignee: assigneeInfo
-      ? { _id: assigneeInfo._id, name: assigneeInfo.name || '' }
+    // Pass the assignee with required fields - the form will handle loading the full user data
+    assignee: assigneeId
+      ? {
+          _id: assigneeId,
+          name: null, // Will be populated by the form
+          email: undefined // Optional field
+        }
       : undefined,
     projectId,
     boardId
@@ -99,6 +101,9 @@ export function TaskActions({
     try {
       const { title, description, status, dueDate, assignee } = values;
 
+      // Get the current user ID (you might need to get this from your auth context)
+      const currentUserId = 'current-user-id'; // Replace this with actual user ID from your auth context
+
       await updateTaskMutation.mutateAsync(
         {
           id,
@@ -106,7 +111,8 @@ export function TaskActions({
           description: description || null,
           status,
           dueDate: dueDate || null,
-          assigneeId: assignee?._id || null
+          assigneeId: assignee?._id || null,
+          lastModifier: currentUserId // Add the lastModifier field
         },
         {
           onSuccess: async (_data) => {

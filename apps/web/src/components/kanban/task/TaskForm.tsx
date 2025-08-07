@@ -139,68 +139,81 @@ export function TaskForm({
         <FormField
           control={form.control}
           name="assignee"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>{t('assignToLabel')}</FormLabel>
-              <FormControl>
-                <Popover open={assignOpen} onOpenChange={setAssignOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={assignOpen}
-                      aria-controls="assignee-options"
-                      className="w-full justify-between"
+          render={({ field }) => {
+            console.log('Assignee field value:', field.value);
+            console.log('Available users:', users);
+
+            // Find the full user object from the users list
+            const selectedUser = field.value?._id
+              ? users.find((u) => u._id === field.value?._id)
+              : null;
+            console.log('Selected user from users list:', selectedUser);
+
+            return (
+              <FormItem className="flex flex-col">
+                <FormLabel>{t('assignToLabel')}</FormLabel>
+                <FormControl>
+                  <Popover open={assignOpen} onOpenChange={setAssignOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={assignOpen}
+                        aria-controls="assignee-options"
+                        className="w-full justify-between"
+                        data-testid="assignee-trigger"
+                      >
+                        {selectedUser?.name ||
+                          selectedUser?.email ||
+                          field.value?._id ||
+                          t('selectUser')}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      id="assignee-options"
+                      role="listbox"
+                      className="p-0 z-[60]"
+                      side="bottom"
+                      align="start"
                     >
-                      {field.value
-                        ? field.value.name || field.value._id
-                        : t('selectUser')}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    id="assignee-options"
-                    role="listbox"
-                    className="p-0 z-[60]"
-                    side="bottom"
-                    align="start"
-                  >
-                    <Command shouldFilter={false}>
-                      <CommandInput
-                        placeholder={t('searchUsers')}
-                        value={searchQuery}
-                        onValueChange={setSearchQuery}
-                      />
-                      <CommandList>
-                        <CommandEmpty>
-                          {isSearching ? t('searching') : t('noUsersFound')}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {users.map((user) => (
-                            <CommandItem
-                              key={user._id}
-                              value={user.name!}
-                              onSelect={() => {
-                                field.onChange(user);
-                                setAssignOpen(false);
-                              }}
-                              className="flex flex-col items-start"
-                            >
-                              <span>{user.name || user.email}</span>
-                              {user.name && (
-                                <span className="text-xs text-muted-foreground">
-                                  {user.email}
-                                </span>
-                              )}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </FormControl>
-            </FormItem>
-          )}
+                      <Command shouldFilter={false}>
+                        <CommandInput
+                          placeholder={t('searchUsers')}
+                          value={searchQuery}
+                          onValueChange={setSearchQuery}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            {isSearching ? t('searching') : t('noUsersFound')}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {users.map((user) => (
+                              <CommandItem
+                                key={user._id}
+                                value={user.name!}
+                                onSelect={() => {
+                                  field.onChange(user);
+                                  setAssignOpen(false);
+                                }}
+                                className="flex flex-col items-start"
+                              >
+                                <span>{user.name || user.email}</span>
+                                {user.name && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {user.email}
+                                  </span>
+                                )}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </FormControl>
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
