@@ -4,6 +4,9 @@ import { Model } from 'mongoose';
 
 import { User, UserDocument } from './schemas/users.schema';
 
+// Enable debug logging for this file
+const DEBUG = true;
+
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -14,45 +17,117 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User | null> {
     const requestId = Math.random().toString(36).substring(2, 8);
+    const startTime = Date.now();
+
     this.logger.log(
-      `[${requestId}] [UserService] Looking up user by email: ${email}`
+      `[${requestId}] [UserService] Starting user lookup by email`,
+      DEBUG
+        ? {
+            requestId,
+            email: email || 'undefined',
+            timestamp: new Date().toISOString()
+          }
+        : undefined
     );
 
     if (!email) {
       this.logger.warn(
-        `[${requestId}] [UserService] No email provided for user lookup`
+        `[${requestId}] [UserService] No email provided for user lookup`,
+        { requestId, timestamp: new Date().toISOString() }
       );
       return null;
     }
 
     try {
+      // Log MongoDB connection details
+      const db = this.userModel.db;
+      const dbName = db.name;
+      const dbHost = db.host;
+      const dbPort = db.port;
+
       this.logger.debug(
-        `[${requestId}] [UserService] Executing database query for email: ${email}`
+        `[${requestId}] [UserService] Database connection details`,
+        DEBUG
+          ? {
+              dbName,
+              dbHost,
+              dbPort,
+              collection: this.userModel.collection.name,
+              modelMethods: Object.keys(this.userModel)
+            }
+          : undefined
       );
 
-      // Log the userModel instance to ensure it's properly injected
+      // Log the query being executed
+      const query = { email };
       this.logger.debug(
-        `[${requestId}] [UserService] UserModel instance: ${this.userModel ? 'exists' : 'missing'}`
+        `[${requestId}] [UserService] Executing findOne query`,
+        DEBUG ? { query } : undefined
       );
 
-      const user = await this.userModel.findOne({ email }).exec();
+      const user = await this.userModel.findOne(query).lean().exec();
+      const queryDuration = Date.now() - startTime;
 
       if (user) {
+        this.logger.log(
+          `[${requestId}] [UserService] User found in ${queryDuration}ms`,
+          DEBUG
+            ? {
+                userId: user._id?.toString(),
+                email: user.email,
+                queryDuration: `${queryDuration}ms`
+              }
+            : undefined
+        );
+
         this.logger.debug(
-          `[${requestId}] [UserService] Found user: ${JSON.stringify(
-            {
-              _id: user._id?.toString(),
-              email: user.email,
-              name: user.name
-            },
-            null,
-            2
-          )}`
+          `[${requestId}] [UserService] User details`,
+          DEBUG
+            ? {
+                ...user,
+                _id: user._id?.toString()
+                // Add any other relevant user fields
+              }
+            : undefined
         );
       } else {
         this.logger.warn(
-          `[${requestId}] [UserService] No user found with email: ${email}`
+          `[${requestId}] [UserService] No user found with email: ${email}`,
+          DEBUG
+            ? {
+                email,
+                queryDuration: `${queryDuration}ms`,
+                collection: this.userModel.collection.name,
+                query: { email }
+              }
+            : undefined
         );
+
+        // Log additional debug info for missing user
+        if (DEBUG) {
+          try {
+            const count = await this.userModel.countDocuments({}).exec();
+            this.logger.debug(
+              `[${requestId}] [UserService] Database statistics`,
+              {
+                totalUsers: count,
+                sampleUser:
+                  count > 0
+                    ? await this.userModel
+                        .findOne()
+                        .select('email')
+                        .lean()
+                        .exec()
+                    : 'No users in collection'
+              }
+            );
+          } catch (error) {
+            this.logger.error(
+              `[${requestId}] [UserService] Error getting collection stats`,
+              error instanceof Error ? error.stack : String(error)
+            );
+          }
+        }
       }
 
       return user;
