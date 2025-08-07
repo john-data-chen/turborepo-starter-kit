@@ -26,14 +26,31 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   private static fromCookie(req: Request): string | null {
+    // First try to get JWT from cookies
     if (req.cookies && req.cookies.jwt) {
+      console.log('Found JWT in cookies');
       return req.cookies.jwt;
     }
-    // Also check Authorization header as fallback
+
+    // Check for JWT in Authorization header as fallback
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
+      console.log('Found JWT in Authorization header');
       return authHeader.substring(7); // Remove 'Bearer ' prefix
     }
+
+    // Debug: Log all cookies and headers for troubleshooting
+    console.log('JWT not found in cookies or Authorization header', {
+      cookies: req.cookies,
+      headers: {
+        cookie: req.headers.cookie,
+        authorization: req.headers.authorization ? 'present' : 'missing',
+        host: req.headers.host,
+        origin: req.headers.origin,
+        referer: req.headers.referer
+      }
+    });
+
     return null;
   }
 
