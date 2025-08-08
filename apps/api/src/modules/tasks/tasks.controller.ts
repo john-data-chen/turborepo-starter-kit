@@ -8,8 +8,8 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
-  UnauthorizedException
+  UnauthorizedException,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,10 +21,8 @@ import {
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskPermissionsDto } from './dto/task-permissions.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskStatus } from './schemas/tasks.schema';
 import { TasksService } from './tasks.service';
 
 @ApiTags('tasks')
@@ -107,40 +105,6 @@ export class TasksController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   remove(@Param('id', ParseObjectIdPipe) id: string): Promise<void> {
     return this.tasksService.remove(id);
-  }
-
-  @Get(':id/permissions')
-  @ApiOperation({ summary: 'Check user permissions for a task' })
-  @ApiResponse({
-    status: 200,
-    description: 'Task permissions retrieved successfully',
-    type: TaskPermissionsDto
-  })
-  @ApiResponse({ status: 404, description: 'Task not found' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  getTaskPermissions(
-    @Param('id', ParseObjectIdPipe) id: string,
-    @Req() req
-  ): Promise<TaskPermissionsDto> {
-    return this.tasksService.checkTaskPermissions(id, req.user.userId);
-  }
-
-  @Patch(':id/status')
-  @ApiOperation({ summary: 'Update task status' })
-  @ApiResponse({
-    status: 200,
-    description: 'Task status updated',
-    type: TaskResponseDto
-  })
-  @ApiResponse({ status: 404, description: 'Task not found' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  updateStatus(
-    @Param('id', ParseObjectIdPipe) id: string,
-    @Body('status') status: TaskStatus,
-    @Req() req
-  ): Promise<TaskResponseDto> {
-    return this.tasksService.updateStatus(id, status, req.user.userId);
   }
 
   @Patch(':id/move')

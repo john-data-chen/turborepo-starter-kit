@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
 import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskPermissionsDto } from './dto/task-permissions.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
@@ -191,36 +190,6 @@ export class TasksService {
     return this.toTaskResponse(task);
   }
 
-  async checkTaskPermissions(
-    taskId: string,
-    userId: string
-  ): Promise<TaskPermissionsDto> {
-    const task = await this.taskModel
-      .findById(taskId)
-      .populate('creator', '_id')
-      .populate('board', 'owner')
-      .populate('project', 'owner')
-      .lean();
-
-    if (!task) {
-      throw new NotFoundException('Task not found');
-    }
-
-    const board = task.board as unknown as { owner: Types.ObjectId };
-    const project = task.project as unknown as { owner: Types.ObjectId };
-    const creator = task.creator as unknown as { _id: Types.ObjectId };
-
-    const isBoardOwner = board.owner.toString() === userId;
-    const isProjectOwner = project.owner.toString() === userId;
-    const isCreator = creator._id.toString() === userId;
-    const isAssignee = task.assignee?.toString() === userId;
-
-    const canDelete = isBoardOwner || isProjectOwner || isCreator;
-    const canEdit = canDelete || isAssignee;
-
-    return { canEdit, canDelete };
-  }
-
   async update(
     id: string,
     updateTaskDto: UpdateTaskDto,
@@ -292,74 +261,6 @@ export class TasksService {
         }
       )
       .exec();
-  }
-
-  async updateStatus(
-    id: string,
-    status: TaskStatus,
-    userId: string
-  ): Promise<TaskResponseDto> {
-    console.log('=== updateStatus called ===');
-    console.log('Task ID:', id);
-    console.log('New status:', status);
-    console.log('User ID:', userId);
-
-    const session = await this.taskModel.startSession();
-    session.startTransaction();
-
-    try {
-      // First, find the task to ensure it exists
-      const task = await this.taskModel.findById(id).session(session);
-      if (!task) {
-        throw new NotFoundException(`Task with ID "${id}" not found`);
-      }
-
-      // Update the task with the new status and lastModifier
-      task.status = status;
-      task.lastModifier = new Types.ObjectId(userId);
-      task.updatedAt = new Date();
-
-      // Save the updated task in the same session
-      await task.save({ session });
-
-      // Now populate the references
-      const populatedTask = await this.taskModel
-        .findById(id)
-        .populate('creator', 'name email')
-        .populate('assignee', 'name email')
-        .populate('lastModifier', 'name email')
-        .populate('project', 'title')
-        .session(session)
-        .orFail()
-        .exec();
-
-      await session.commitTransaction();
-      session.endSession();
-
-      console.log(
-        'Updated task from DB (before toTaskResponse):',
-        JSON.stringify(populatedTask, null, 2)
-      );
-
-      // Ensure lastModifier is properly set
-      if (!populatedTask.lastModifier) {
-        console.warn('lastModifier was not populated, setting it manually');
-        populatedTask.lastModifier = {
-          _id: new Types.ObjectId(userId),
-          name: 'Unknown',
-          email: 'unknown@example.com'
-        } as any;
-      }
-
-      const response = await this.toTaskResponse(populatedTask);
-      console.log('Final response:', JSON.stringify(response, null, 2));
-      return response;
-    } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-      console.error('Error in updateStatus:', error);
-      throw error;
-    }
   }
 
   async moveTask(
