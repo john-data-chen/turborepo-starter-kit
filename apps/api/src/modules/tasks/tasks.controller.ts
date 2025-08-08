@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Req,
+  UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
 import {
@@ -20,10 +21,8 @@ import {
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskPermissionsDto } from './dto/task-permissions.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskStatus } from './schemas/tasks.schema';
 import { TasksService } from './tasks.service';
 
 @ApiTags('tasks')
@@ -44,9 +43,12 @@ export class TasksController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req
+    @Req() req: { user: { _id: string } }
   ): Promise<TaskResponseDto> {
-    return this.tasksService.create(createTaskDto, req.user.userId);
+    if (!req.user?._id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    return this.tasksService.create(createTaskDto, req.user._id);
   }
 
   @Get()
@@ -104,41 +106,41 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Task deleted successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  remove(@Param('id', ParseObjectIdPipe) id: string): Promise<void> {
-    return this.tasksService.remove(id);
-  }
-
-  @Get(':id/permissions')
-  @ApiOperation({ summary: 'Check user permissions for a task' })
   @ApiResponse({
-    status: 200,
-    description: 'Task permissions retrieved successfully',
-    type: TaskPermissionsDto
+    status: 403,
+    description: 'Forbidden - Only the task creator can delete the task'
   })
-  @ApiResponse({ status: 404, description: 'Task not found' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  getTaskPermissions(
+  remove(
     @Param('id', ParseObjectIdPipe) id: string,
     @Req() req
-  ): Promise<TaskPermissionsDto> {
-    return this.tasksService.checkTaskPermissions(id, req.user.userId);
+  ): Promise<void> {
+    return this.tasksService.remove(id, req.user.userId);
   }
 
-  @Patch(':id/status')
-  @ApiOperation({ summary: 'Update task status' })
+  @Patch(':id/move')
+  @ApiOperation({ summary: 'Move task to a different project' })
   @ApiResponse({
     status: 200,
-    description: 'Task status updated',
+    description: 'Task moved successfully',
     type: TaskResponseDto
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  updateStatus(
+  moveTask(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body('status') status: TaskStatus,
+    @Body() moveData: { projectId: string; orderInProject: number },
     @Req() req
   ): Promise<TaskResponseDto> {
-    return this.tasksService.updateStatus(id, status, req.user.userId);
+    console.log('Move task - User from request:', req.user); // Debug log
+    if (!req.user || !req.user._id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    return this.tasksService.moveTask(
+      id,
+      moveData.projectId,
+      moveData.orderInProject,
+      req.user._id
+    );
   }
 }

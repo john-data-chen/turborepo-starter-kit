@@ -23,7 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { projectApi } from '@/lib/api/projectApi';
 import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { projectSchema } from '@/types/projectForm';
@@ -38,69 +37,28 @@ interface ProjectActionsProps {
   id: string;
   title: string;
   description?: string;
+  ownerId: string; // Add ownerId to check permissions
 }
 
 export function ProjectActions({
   id,
   title,
-  description
+  description,
+  ownerId
 }: ProjectActionsProps) {
+  // Check if current user is the project owner
+  const { userId } = useWorkspaceStore();
+  const isOwner = userId === ownerId;
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const updateProject = useWorkspaceStore((state) => state.updateProject);
-  const removeProject = useWorkspaceStore((state) => state.removeProject);
-  const currentBoardId = useWorkspaceStore((state) => state.currentBoardId);
-  const fetchProjects = useWorkspaceStore((state) => state.fetchProjects);
-  const t = useTranslations('kanban.project');
-
-  // State for permissions
-  const [permissions, setPermissions] = React.useState<{
-    canEditProject: boolean;
-    canDeleteProject: boolean;
-  } | null>(null);
-  const [isLoadingPermissions, setIsLoadingPermissions] = React.useState(false);
   const deleteProjectMutation = useDeleteProject();
   const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
 
   type ProjectFormData = z.infer<typeof projectSchema>;
 
-  async function fetchProjectPermissions() {
-    if (!id) {
-      console.error('No project ID provided');
-      setIsLoadingPermissions(false);
-      setPermissions({ canEditProject: false, canDeleteProject: false });
-      return;
-    }
-
-    // Ensure the ID is a string and trim any whitespace
-    const projectId = String(id).trim();
-
-    // Basic validation for MongoDB ObjectId format
-    const isValidId = /^[0-9a-fA-F]{24}$/.test(projectId);
-
-    if (!isValidId) {
-      console.error('Invalid project ID format:', projectId);
-      setPermissions({ canEditProject: false, canDeleteProject: false });
-      setIsLoadingPermissions(false);
-      return;
-    }
-
-    setIsLoadingPermissions(true);
-
-    try {
-      const permissions = await projectApi.getProjectPermissions(projectId);
-      setPermissions(permissions);
-    } catch (error) {
-      console.error('Error fetching project permissions:', error);
-      // Set default permissions to most restrictive without showing error message
-      setPermissions({ canEditProject: false, canDeleteProject: false });
-    } finally {
-      setIsLoadingPermissions(false);
-    }
-  }
-
-  const { userId } = useWorkspaceStore();
+  const t = useTranslations('kanban.project');
 
   async function onSubmit(values: ProjectFormData) {
     if (!userId) {
@@ -124,12 +82,15 @@ export function ProjectActions({
           return updateProjectMutation.mutateAsync(updateData);
         }
       );
-      await fetchProjects(currentBoardId!);
       toast.success(t('updateSuccess'));
       setEditEnable(false);
     } catch (error) {
       toast.error(t('updateFailed', { error: (error as Error).message }));
     }
+  }
+
+  function removeProject(id: string, _p0: (id: any) => Promise<void>) {
+    deleteProjectMutation.mutate(id);
   }
 
   return (
@@ -160,13 +121,7 @@ export function ProjectActions({
       <DropdownMenu
         modal={false}
         open={isMenuOpen}
-        onOpenChange={(open) => {
-          setIsMenuOpen(open);
-          if (open && !permissions) {
-            // Fetch permissions only when menu is opened and permissions are not yet fetched
-            fetchProjectPermissions();
-          }
-        }}
+        onOpenChange={setIsMenuOpen}
       >
         <DropdownMenuTrigger asChild>
           <Button
@@ -175,48 +130,34 @@ export function ProjectActions({
             className="h-8 w-12 p-0 bg-background hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
             data-testid="project-option-button"
           >
-            {isLoadingPermissions ? (
-              <DotsHorizontalIcon className="h-4 w-4 animate-pulse" />
-            ) : (
-              <DotsHorizontalIcon className="h-4 w-4" />
-            )}
+            <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-            onSelect={() => {
-              if (permissions?.canEditProject && !isLoadingPermissions) {
-                setEditEnable(true);
-              }
-            }}
-            disabled={isLoadingPermissions || !permissions?.canEditProject}
+            onSelect={() => setEditEnable(true)}
+            data-testid="edit-project-button"
             className={
-              !permissions?.canEditProject || isLoadingPermissions
+              !isOwner
                 ? 'text-muted-foreground line-through cursor-not-allowed'
                 : ''
             }
-            data-testid="edit-project-button"
+            disabled={!isOwner}
           >
             {t('edit')}
-            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={() => {
-              if (permissions?.canDeleteProject && !isLoadingPermissions) {
-                setShowDeleteDialog(true);
-              }
-            }}
-            disabled={isLoadingPermissions || !permissions?.canDeleteProject}
+            onSelect={() => setShowDeleteDialog(true)}
             className={
-              !permissions?.canDeleteProject || isLoadingPermissions
+              !isOwner
                 ? 'text-muted-foreground line-through cursor-not-allowed'
                 : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
             }
             data-testid="delete-project-button"
+            disabled={!isOwner}
           >
             {t('delete')}
-            {isLoadingPermissions && ' (loading...)'}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

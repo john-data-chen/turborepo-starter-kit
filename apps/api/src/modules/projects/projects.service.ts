@@ -10,7 +10,6 @@ import { Model, Types } from 'mongoose';
 
 import { TasksService } from '../tasks/tasks.service';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
 
@@ -61,63 +60,6 @@ export class ProjectsService {
     return projects as ProjectDocument[];
   }
 
-  async checkProjectPermissions(
-    projectId: string,
-    userId: string
-  ): Promise<ProjectPermissionsDto> {
-    // Input validation
-    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
-      throw new BadRequestException('Invalid project or user ID');
-    }
-
-    try {
-      // Find the project with board and owner information
-      const project = await this.projectModel
-        .findById(projectId)
-        .populate({
-          path: 'board',
-          select: 'owner',
-          populate: {
-            path: 'owner',
-            select: '_id'
-          }
-        })
-        .lean();
-
-      if (!project) {
-        throw new NotFoundException('Project not found');
-      }
-
-      // Type assertion for the populated board
-      const board = project.board as unknown as { owner: Types.ObjectId };
-      if (!board?.owner) {
-        throw new NotFoundException('Board owner information not found');
-      }
-
-      // Get owner IDs as strings for comparison
-      const projectOwnerId = project.owner?.toString();
-      const boardOwnerId = board.owner.toString();
-      const currentUserId = new Types.ObjectId(userId).toString();
-
-      // Check permissions
-      const isProjectOwner = projectOwnerId === currentUserId;
-      const isBoardOwner = boardOwnerId === currentUserId;
-      const canModify = isProjectOwner || isBoardOwner;
-
-      return {
-        canEditProject: canModify,
-        canDeleteProject: canModify
-      };
-    } catch (error) {
-      console.error('Error checking project permissions:', error);
-      // Default to most restrictive permissions on error
-      return {
-        canEditProject: false,
-        canDeleteProject: false
-      };
-    }
-  }
-
   async update(
     id: string,
     updateProjectDto: UpdateProjectDto,
@@ -148,11 +90,8 @@ export class ProjectsService {
     console.log('Found project:', project);
     console.log('Checking permissions...');
 
-    // Check if the user has permission to update the project
-    const permissions = await this.checkProjectPermissions(id, userId);
-    console.log('Permissions:', permissions);
-
-    if (!permissions.canEditProject) {
+    // Check if the user is the owner of the project
+    if (project.owner.toString() !== userId) {
       const error = 'You do not have permission to update this project';
       console.error(error, { userId, projectId: id });
       throw new BadRequestException(error);
@@ -184,6 +123,10 @@ export class ProjectsService {
       updateData.assignee = updateProjectDto.assigneeId
         ? new Types.ObjectId(updateProjectDto.assigneeId)
         : null;
+    }
+
+    if (updateProjectDto.orderInBoard !== undefined) {
+      updateData.orderInBoard = updateProjectDto.orderInBoard;
     }
 
     console.log('Updating project with data:', updateData);
@@ -238,15 +181,15 @@ export class ProjectsService {
       throw new NotFoundException(error);
     }
 
-    console.log('Checking permissions...');
-    const permissions = await this.checkProjectPermissions(id, userId);
-    console.log('Permissions:', permissions);
-
-    if (!permissions.canDeleteProject) {
+    // Check if the user is the owner of the project
+    if (project.owner.toString() !== userId) {
       const error = 'You do not have permission to delete this project';
       console.error(error, { userId, projectId: id });
       throw new BadRequestException(error);
     }
+
+    // Store project info before deletion for reordering
+    const { board: boardId, orderInBoard: deletedOrder } = project;
 
     console.log('Deleting project and associated tasks...');
 
@@ -271,7 +214,63 @@ export class ProjectsService {
       throw new Error(error);
     }
 
-    console.log('Project and associated tasks deleted successfully');
+    // Reorder remaining projects in the same board
+    // Decrease orderInBoard by 1 for all projects with order greater than deleted project
+    if (deletedOrder !== undefined) {
+      console.log(
+        `Reordering projects in board ${boardId} after deleting project with order ${deletedOrder}`
+      );
+
+      const reorderResult = await this.projectModel
+        .updateMany(
+          {
+            board: boardId,
+            orderInBoard: { $gt: deletedOrder }
+          },
+          {
+            $inc: { orderInBoard: -1 }
+          }
+        )
+        .exec();
+
+      console.log(
+        `Reordered ${reorderResult.modifiedCount} projects in board ${boardId}`
+      );
+    }
+
+    console.log(
+      'Project, associated tasks, and project order updated successfully'
+    );
+  }
+
+  /**
+   * Add a user to project members if they're not already a member
+   * @param projectId Project ID
+   * @param userId User ID to add as member
+   */
+  async addMemberIfNotExists(projectId: string, userId: string): Promise<void> {
+    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
+      console.error('Invalid project ID or user ID', { projectId, userId });
+      return;
+    }
+
+    const userIdObj = new Types.ObjectId(userId);
+
+    // Check if user is already a member
+    const isMember = await this.projectModel.exists({
+      _id: projectId,
+      members: userIdObj
+    });
+
+    if (isMember) {
+      return; // Already a member, nothing to do
+    }
+
+    // Add user to members array if not already a member
+    await this.projectModel.updateOne(
+      { _id: projectId },
+      { $addToSet: { members: userIdObj } }
+    );
   }
 
   async create(
@@ -323,7 +322,6 @@ export class ProjectsService {
         owner: new Types.ObjectId(owner),
         board: new Types.ObjectId(boardId),
         members: [new Types.ObjectId(owner)],
-        status: 'TODO' as const,
         orderInBoard: order,
         createdAt: new Date(),
         updatedAt: new Date()

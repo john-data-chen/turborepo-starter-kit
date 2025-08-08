@@ -1,11 +1,5 @@
 import { TaskStatus } from '@/types/dbInterface';
 
-// Permission types
-export interface TaskPermissions {
-  canEdit: boolean;
-  canDelete: boolean;
-}
-
 // Input types
 export interface CreateTaskInput {
   title: string;

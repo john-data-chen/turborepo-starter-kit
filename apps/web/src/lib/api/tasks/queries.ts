@@ -51,9 +51,14 @@ export const useCreateTask = () => {
       board: string;
       project: string;
       creator: string;
-      assignee?: string;
+      assignee?: string | { _id: string };
       orderInProject?: number;
     }) => {
+      // Ensure assignee is a string (user ID)
+      const assigneeId =
+        typeof input.assignee === 'string'
+          ? input.assignee
+          : input.assignee?._id;
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -62,21 +67,27 @@ export const useCreateTask = () => {
         board: input.board,
         project: input.project,
         creator: input.creator,
-        assignee: input.assignee,
+        assignee: assigneeId,
         lastModifier: input.creator,
         orderInProject: input.orderInProject
       });
     },
-    onSuccess: (newTask, variables) => {
+    onSuccess: (variables) => {
       // Invalidate the tasks list query to refetch
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.list({ project: variables.project })
       });
 
       // Also invalidate the assignee's tasks if applicable
-      if (variables.assignee) {
+      const assigneeId = variables.assignee
+        ? typeof variables.assignee === 'string'
+          ? variables.assignee
+          : variables.assignee._id
+        : undefined;
+
+      if (assigneeId) {
         queryClient.invalidateQueries({
-          queryKey: TASK_KEYS.list({ assignee: variables.assignee })
+          queryKey: TASK_KEYS.list({ assignee: assigneeId })
         });
       }
     }
@@ -240,19 +251,57 @@ export const useDeleteTask = () => {
       await queryClient.cancelQueries({ queryKey: TASK_KEYS.lists() });
       await queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(taskId) });
 
+      // Get the task that's being deleted to know its project and order
+      const taskToDelete = queryClient.getQueryData<Task>(
+        TASK_KEYS.detail(taskId)
+      );
+
       // Snapshot the previous values
       const previousTasks = queryClient.getQueryData(TASK_KEYS.lists());
       const previousTask = queryClient.getQueryData(TASK_KEYS.detail(taskId));
 
-      // Optimistically remove the task from the list
-      queryClient.setQueryData(TASK_KEYS.lists(), (old: Task[] = []) =>
-        old.filter((task) => task._id !== taskId)
-      );
+      // Optimistically update the task list
+      if (taskToDelete) {
+        queryClient.setQueriesData(
+          { queryKey: TASK_KEYS.lists() },
+          (old: Task[] | undefined) => {
+            if (!old) return old;
+
+            // Filter out the deleted task and update orders for remaining tasks
+            return old
+              .filter((task) => task._id !== taskId)
+              .map((task) => {
+                // If task is in the same project and has higher order, decrease it by 1
+                if (
+                  task.project === taskToDelete.project &&
+                  task.orderInProject !== undefined &&
+                  taskToDelete.orderInProject !== undefined &&
+                  task.orderInProject > taskToDelete.orderInProject
+                ) {
+                  return {
+                    ...task,
+                    orderInProject: task.orderInProject - 1
+                  };
+                }
+                return task;
+              });
+          }
+        );
+      } else {
+        // Fallback: just remove the task if we don't have its details
+        queryClient.setQueriesData(
+          { queryKey: TASK_KEYS.lists() },
+          (old: Task[] | undefined) => {
+            if (!old) return old;
+            return old.filter((task) => task._id !== taskId);
+          }
+        );
+      }
 
       // Remove the task from the cache
       queryClient.removeQueries({ queryKey: TASK_KEYS.detail(taskId) });
 
-      return { previousTasks, previousTask };
+      return { previousTasks, previousTask, taskToDelete };
     },
 
     // If the mutation fails, use the context returned from onMutate to roll back
@@ -268,9 +317,17 @@ export const useDeleteTask = () => {
       }
     },
 
-    // Always refetch after error or success
-    onSettled: (data, error, taskId) => {
-      // Invalidate both the specific task and task lists
+    // Always refetch after error or success to ensure data consistency
+    onSettled: (data, error, taskId, context) => {
+      // If we have the deleted task info, invalidate queries for that specific project
+      if (context?.taskToDelete?.project) {
+        queryClient.invalidateQueries({
+          queryKey: TASK_KEYS.list({ project: context.taskToDelete.project }),
+          refetchType: 'active'
+        });
+      }
+
+      // Also invalidate general task lists and the specific task
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.lists(),
         refetchType: 'active'

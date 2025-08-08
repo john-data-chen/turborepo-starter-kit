@@ -98,5 +98,20 @@ export const taskApi = {
   // Check user permissions for a task
   async getTaskPermissions(taskId: string): Promise<TaskPermissions> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`);
+  },
+
+  // Move task to a different project
+  async moveTask(
+    taskId: string,
+    projectId: string,
+    orderInProject: number
+  ): Promise<Task> {
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/move`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        projectId,
+        orderInProject
+      })
+    });
   }
 };

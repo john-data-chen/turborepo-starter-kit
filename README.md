@@ -171,8 +171,12 @@ pnpm build
 - [x] Fix the issue of edit a task
 - [x] Remove the fetching the task after it is deleted
 - [x] Add task order sorting to database
-- [ ] Add reordering tasks after deleting a task
-- [ ] Add project order sorting to database
+- [x] Add project order sorting to database
+- [x] Add user permissions management to limit the different actions
+- [ ] Hide drag icon when user is not owner of board or project
+- [ ] Fix the issue of drag icon display incorrect
+- [ ] Fix the issues of CRUD of project and task
+- [ ] Fix the issue of not auto redirecting after login (only in production)
 - [ ] Update README.md in root
 - [ ] Update README.md in `apps/web`
 - [ ] Update README.md in `apps/api`

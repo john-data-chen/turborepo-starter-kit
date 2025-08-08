@@ -1,6 +1,7 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/hooks/useAuth';
 import { taskApi } from '@/lib/api/taskApi';
 import { useTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
@@ -31,15 +32,44 @@ import { TaskCard } from '../task/TaskCard';
 import { TaskFilter } from '../task/TaskFilter';
 
 export function Board() {
-  const projects = useWorkspaceStore((state) => state.projects);
+  const rawProjects = useWorkspaceStore((state) => state.projects);
   const isLoadingProjects = useWorkspaceStore(
     (state) => state.isLoadingProjects
-  ); // Get loading state
+  );
   const filter = useWorkspaceStore((state) => state.filter);
   const setProjects = useWorkspaceStore((state) => state.setProjects);
-  const dragTaskOnProject = useWorkspaceStore(
-    (state) => state.dragTaskOnProject
-  );
+  const currentBoardId = useWorkspaceStore((state) => state.currentBoardId);
+  const myBoards = useWorkspaceStore((state) => state.myBoards);
+  const { user: currentUser, isAuthenticated } = useAuth();
+  const currentUserId = currentUser?._id || '';
+
+  // Check if current user is the board owner
+  const isBoardOwner = useMemo(() => {
+    if (!currentBoardId || !currentUserId) return false;
+    if (!isAuthenticated) return false;
+
+    // Find the current board
+    const currentBoard = myBoards.find((board) => board._id === currentBoardId);
+    if (!currentBoard) return false;
+
+    // Check if current user is the owner of the board
+    const ownerId =
+      typeof currentBoard.owner === 'string'
+        ? currentBoard.owner
+        : currentBoard.owner?._id;
+
+    return ownerId === currentUserId;
+  }, [currentBoardId, currentUserId, myBoards, isAuthenticated]);
+
+  // Sort projects by orderInBoard
+  const projects = useMemo(() => {
+    return [...rawProjects].sort((a, b) => {
+      const orderA = a.orderInBoard ?? 0;
+      const orderB = b.orderInBoard ?? 0;
+      return orderA - orderB;
+    });
+  }, [rawProjects]);
+
   const projectsId = useMemo(
     () => projects.map((project: Project) => project._id),
     [projects]
@@ -51,7 +81,7 @@ export function Board() {
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
-  const getTask = async (taskId: string) => {
+  const _getTask = async (taskId: string) => {
     if (taskId === activeTask?._id && taskData) {
       return taskData;
     }
@@ -153,35 +183,33 @@ export function Board() {
         return;
       }
 
-      try {
-        // Move task to the new project
-        await dragTaskOnProject(activeTask._id, overProject._id, getTask);
+      // Skip if it's the same project
+      if (overProject._id === activeTask.project) {
+        return;
+      }
 
-        // Update local state
-        activeTask.project = overProject._id;
-        overProject.tasks.push(activeTask);
+      try {
+        // Remove task from source project
         activeProject.tasks.splice(activeTaskIdx, 1);
 
-        // Update orderInProject for tasks in the target project
-        overProject.tasks.forEach((task, index) => {
-          task.orderInProject = index;
-        });
+        // Add task to target project at the end (bottom)
+        const newOrderInProject = overProject.tasks.length;
+        activeTask.project = overProject._id;
+        activeTask.orderInProject = newOrderInProject;
+        overProject.tasks.push(activeTask);
 
-        // Update the projects in the store
+        // Update local state optimistically
         setProjects(updatedProjects);
 
-        // Update the backend with new order
-        const updates = overProject.tasks.map((task, index) =>
-          taskApi.updateTask(task._id, {
-            orderInProject: index,
-            lastModifier: useWorkspaceStore.getState().userId || ''
-          })
+        // Update the backend - move task to new project
+        await taskApi.moveTask(
+          activeTask._id,
+          overProject._id,
+          newOrderInProject
         );
 
-        await Promise.all(updates);
-
         toast.success(
-          `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+          `Task: "${activeTask.title}" moved to Project: "${overProject.title}"`
         );
       } catch (error) {
         console.error('Failed to move task:', error);
@@ -213,33 +241,32 @@ export function Board() {
       // If moving to a different project
       if (overTask.project !== activeTask.project) {
         try {
-          // Move task to the new project
-          await dragTaskOnProject(activeTask._id, overTask.project, getTask);
+          const userId = useWorkspaceStore.getState().userId;
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
 
-          // Update local state
-          activeTask.project = overTask.project;
-          overProject.tasks.splice(overTaskIdx, 0, activeTask);
+          // Remove task from source project
           activeProject.tasks.splice(activeTaskIdx, 1);
 
-          // Update orderInProject for tasks in the target project
+          // Insert task at the position of the over task
+          activeTask.project = overTask.project;
+          activeTask.orderInProject = overTaskIdx;
+          overProject.tasks.splice(overTaskIdx, 0, activeTask);
+
+          // Update orderInProject for all tasks in the target project
           overProject.tasks.forEach((task, index) => {
             task.orderInProject = index;
           });
 
+          // Update local state optimistically
           setProjects(updatedProjects);
 
-          // Update the backend with new order
-          const updates = overProject.tasks.map((task, index) =>
-            taskApi.updateTask(task._id, {
-              orderInProject: index,
-              lastModifier: useWorkspaceStore.getState().userId || ''
-            })
-          );
-
-          await Promise.all(updates);
+          // Update the backend - move task to new project at specific position
+          await taskApi.moveTask(activeTask._id, overTask.project, overTaskIdx);
 
           toast.success(
-            `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+            `Task: "${activeTask.title}" moved to Project: "${overProject.title}"`
           );
         } catch (error) {
           console.error('Failed to move task:', error);
@@ -338,7 +365,7 @@ export function Board() {
     }
   }
 
-  function onDragEnd(event: DragEndEvent) {
+  async function onDragEnd(event: DragEndEvent) {
     setActiveProject(null);
     setActiveTask(null);
 
@@ -356,6 +383,7 @@ export function Board() {
 
     const isActiveAProject = activeData?.type === 'Project';
     if (!isActiveAProject) return;
+
     const activeProjectIndex = projects.findIndex(
       (project: Project) => project._id === activeId
     );
@@ -364,7 +392,76 @@ export function Board() {
       (project: Project) => project._id === overId
     );
 
-    setProjects(arrayMove(projects, activeProjectIndex, overProjectIndex));
+    // Create backup for rollback
+    const previousProjects = [...rawProjects];
+
+    // Optimistically update the UI
+    const reorderedProjects = arrayMove(
+      projects,
+      activeProjectIndex,
+      overProjectIndex
+    );
+
+    // Update orderInBoard for all affected projects
+    const updatedProjects = reorderedProjects.map((project, index) => ({
+      ...project,
+      orderInBoard: index
+    }));
+
+    // Update the store with new order
+    setProjects(updatedProjects);
+
+    try {
+      const userId = useWorkspaceStore.getState().userId;
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+
+      // Update backend for all projects that changed position
+      const updatePromises = updatedProjects.map(async (project, newIndex) => {
+        const oldProject = previousProjects.find((p) => p._id === project._id);
+        const oldIndex = oldProject?.orderInBoard ?? 0;
+
+        // Only update if the order actually changed
+        if (oldIndex !== newIndex) {
+          console.log(
+            `Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`
+          );
+
+          // Import projectApi dynamically to avoid circular dependency
+          const { projectApi } = await import('@/lib/api/projectApi');
+
+          console.log(
+            `Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`
+          );
+
+          return projectApi.updateProject(project._id, {
+            orderInBoard: newIndex
+          });
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all(updatePromises);
+
+      toast.success('Project order updated successfully');
+    } catch (error) {
+      console.error('Failed to update project order:', error);
+      toast.error('Failed to update project order. Please try again.');
+
+      // Revert to previous state on error
+      setProjects(previousProjects);
+
+      // Refresh data to ensure consistency
+      try {
+        const { fetchProjects, currentBoardId } = useWorkspaceStore.getState();
+        if (currentBoardId) {
+          await fetchProjects(currentBoardId);
+        }
+      } catch (refreshError) {
+        console.error('Failed to refresh projects:', refreshError);
+      }
+    }
   }
 
   const pickedUpTaskProject = useRef<string | null>(null);
@@ -525,6 +622,8 @@ export function Board() {
                   <BoardProject
                     project={project}
                     tasks={filterTasks(project.tasks)}
+                    isBoardOwner={isBoardOwner}
+                    currentUserId={currentUser?._id || ''}
                   />
                 </Fragment>
               ))}
@@ -537,6 +636,8 @@ export function Board() {
               isOverlay
               project={activeProject}
               tasks={filterTasks(activeProject.tasks)}
+              isBoardOwner={isBoardOwner}
+              currentUserId={currentUser?._id || ''}
             />
           )}
           {activeTask && <TaskCard task={activeTask} isOverlay />}

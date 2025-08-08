@@ -39,6 +39,8 @@ interface State {
       title: string;
       description: string;
       boardId: string;
+      owner: string;
+      orderInBoard?: number;
     }) => Promise<Project>
   ) => Promise<string>;
   updateProject: (
@@ -205,10 +207,11 @@ export const useWorkspaceStore = create<State>()(
           description: string;
           boardId: string;
           owner: string;
+          orderInBoard?: number;
         }) => Promise<Project>
       ) => {
         try {
-          const { currentBoardId, userId } = get();
+          const { currentBoardId, userId, projects } = get();
           if (!currentBoardId) {
             throw new Error('No board selected');
           }
@@ -216,11 +219,30 @@ export const useWorkspaceStore = create<State>()(
             throw new Error('User not authenticated');
           }
 
+          const currentBoardProjects = projects.filter((p) => {
+            const projectBoardId =
+              typeof p.board === 'string' ? p.board : p.board?._id;
+            return projectBoardId === currentBoardId;
+          });
+
+          const maxOrder =
+            currentBoardProjects.length > 0
+              ? Math.max(
+                  ...currentBoardProjects.map((p) => p.orderInBoard ?? 0),
+                  -1
+                )
+              : -1;
+
+          const orderInBoard = maxOrder + 1;
+
+          console.log('Creating project with orderInBoard:', orderInBoard);
+
           const newProject = await createProject({
             title,
             description,
             boardId: currentBoardId,
-            owner: userId
+            owner: userId,
+            orderInBoard
           });
 
           if (newProject) {
@@ -267,14 +289,9 @@ export const useWorkspaceStore = create<State>()(
           }
 
           // Call the update function provided by the component
-          const updateData: {
-            title: string;
-            description: string;
-            modifier: string;
-          } = {
+          const updateData = {
             title: newTitle,
-            description: newDescription ?? '',
-            modifier
+            description: newDescription ?? ''
           };
 
           await updateFn(id, updateData);

@@ -9,9 +9,10 @@ export interface CreateProjectInput {
 }
 
 export interface UpdateProjectInput {
-  title: string;
-  description: string | null;
-  modifier: string;
+  title?: string;
+  description?: string | null;
+  dueDate?: string;
+  assigneeId?: string | null;
   orderInBoard?: number;
 }
 

@@ -12,6 +12,5 @@ export {
   useCreateBoard,
   useUpdateBoard,
   useDeleteBoard,
-  useAddBoardMember,
-  useRemoveBoardMember
+  useAddBoardMember
 } from './queries';

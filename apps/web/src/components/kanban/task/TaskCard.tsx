@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/dbInterface';
@@ -11,12 +10,14 @@ import { format } from 'date-fns';
 import { PointerIcon } from 'lucide-react';
 import { Calendar1Icon, FileTextIcon, UserIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { TaskActions } from './TaskAction';
 
 interface TaskCardProps {
   task: Task;
   isOverlay?: boolean;
   onUpdate?: () => void;
+  isDragEnabled?: boolean;
 }
 
 export type TaskType = 'Task';
@@ -37,13 +38,39 @@ function getLastField(task: Task): string {
   return visibleFields[visibleFields.length - 1] || '';
 }
 
-export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
+export function TaskCard({
+  task,
+  isOverlay = false,
+  onUpdate,
+  isDragEnabled = false
+}: TaskCardProps) {
   const t = useTranslations('kanban.task');
+
+  // Debug log for component props
+  console.log(`[TaskCard] Rendering task: ${task._id}`, {
+    taskId: task._id,
+    title: task.title,
+    isOverlay,
+    isDragEnabled,
+    timestamp: new Date().toISOString()
+  });
 
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
+    console.log(
+      `[TaskCard] Skipping deleted task: ${task?._id || 'undefined'}`
+    );
     return null;
   }
+
+  // Log before useSortable
+  console.log(`[TaskCard] useSortable config for task: ${task._id}`, {
+    taskId: task._id,
+    isOverlay,
+    isDragEnabled,
+    dragDisabled: isOverlay || !isDragEnabled,
+    timestamp: new Date().toISOString()
+  });
 
   const {
     setNodeRef,
@@ -51,19 +78,40 @@ export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
     listeners,
     transform,
     transition,
-    isDragging
+    isDragging,
+    active,
+    over
   } = useSortable({
     id: task._id,
     data: {
       type: 'Task',
       task
     } satisfies TaskDragData,
+    disabled: isOverlay || !isDragEnabled, // Disable drag if not enabled or in overlay
     attributes: {
-      roleDescription: 'Task'
+      roleDescription: 'Task',
+      // @ts-ignore - Adding custom data attributes for debugging
+      'data-task-id': task._id,
+      // @ts-ignore - Adding custom data attributes for debugging
+      'data-draggable': String(isDragEnabled && !isOverlay)
     }
   });
 
-  const cardStyle = {
+  // Log after useSortable
+  useEffect(() => {
+    console.log(`[TaskCard] useSortable state for task: ${task._id}`, {
+      taskId: task._id,
+      isDragging,
+      active: active?.id,
+      over: over?.id,
+      transform: transform ? 'has-transform' : 'no-transform',
+      isDragEnabled,
+      isOverlay,
+      timestamp: new Date().toISOString()
+    });
+  }, [isDragging, active, over, transform, task._id, isDragEnabled, isOverlay]);
+
+  const cardStyle: React.CSSProperties = {
     transition,
     transform: CSS.Translate.toString(transform)
   };
@@ -77,7 +125,33 @@ export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
     }
   });
 
-  const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined;
+  type DragState = 'over' | 'overlay' | undefined;
+  const dragState: DragState = isOverlay
+    ? 'overlay'
+    : isDragging
+      ? 'over'
+      : undefined;
+
+  // Log drag state changes
+  useEffect(() => {
+    if (isDragging) {
+      console.log(`[TaskCard] Drag started for task: ${task._id}`, {
+        taskId: task._id,
+        isOverlay,
+        isDragEnabled,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    return () => {
+      if (isDragging) {
+        console.log(`[TaskCard] Drag ended for task: ${task._id}`, {
+          taskId: task._id,
+          timestamp: new Date().toISOString()
+        });
+      }
+    };
+  }, [isDragging, task._id, isOverlay, isDragEnabled]);
 
   const statusConfig: Record<
     TaskStatus,
@@ -104,20 +178,22 @@ export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
     <Card
       ref={setNodeRef}
       style={cardStyle}
-      className={cn('mb-3', cardVariants({ dragging: dragState }))}
+      className={cn(
+        'mb-3 transition-shadow hover:shadow-md',
+        isDragEnabled ? 'cursor-grab active:cursor-grabbing' : 'cursor-default',
+        cardVariants({ dragging: dragState })
+      )}
       data-testid="task-card"
+      {...(isDragEnabled ? { ...attributes, ...listeners } : {})}
     >
       <CardHeader className="flex flex-row border-b-2 px-3 pb-2">
-        <Button
-          variant="ghost"
-          {...attributes}
-          {...listeners}
-          className="text-secondary-foreground/50 -ml-2 h-8 w-16 cursor-grab p-1"
-          data-testid="task-card-drag-button"
-          aria-label={t('moveTask')}
-        >
-          <PointerIcon />
-        </Button>
+        <div className="h-8 w-8 flex-shrink-0 flex items-center justify-center text-muted-foreground/30">
+          {isDragEnabled && (
+            <div title={t('moveTask')}>
+              <PointerIcon className="h-4 w-4" aria-label={t('moveTask')} />
+            </div>
+          )}
+        </div>
         <div className="flex flex-col gap-2 items-start flex-1 mx-2">
           {task.title && (
             <h3 className="text-lg leading-none font-medium tracking-tight">
@@ -187,7 +263,10 @@ export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar1Icon className="h-4 w-4 flex-shrink-0 mt-0.5" />
                 <span>
-                  {t('dueDate')}: {format(new Date(task.dueDate), 'yyyy/MM/dd')}
+                  {t('dueDate')}:{' '}
+                  {task.dueDate
+                    ? format(new Date(task.dueDate), 'yyyy/MM/dd')
+                    : ''}
                 </span>
               </div>
             </CardContent>
@@ -212,3 +291,5 @@ export function TaskCard({ task, isOverlay = false, onUpdate }: TaskCardProps) {
     </Card>
   );
 }
+
+export default TaskCard;

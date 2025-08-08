@@ -71,8 +71,7 @@ export const useUpdateProject = () => {
       // Create a new object with only the allowed fields
       const updateData: UpdateProjectInput = {
         title: updates.title,
-        description: updates.description ?? null,
-        modifier: updates.modifier
+        description: updates.description ?? null
       };
 
       // Only include description if it's provided

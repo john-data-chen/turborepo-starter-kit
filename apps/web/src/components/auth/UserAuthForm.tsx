@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { defaultEmail } from '@/constants/demoData';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthForm } from '@/hooks/useAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
@@ -22,7 +22,7 @@ const formSchema = z.object({
 });
 
 export default function UserAuthForm() {
-  const { login, isLoading: _isLoading, error: _error } = useAuth();
+  const { handleSubmit, isLoading, error, isNavigating } = useAuthForm();
   const t = useTranslations('login');
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -33,12 +33,7 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await login(values.email);
-    } catch (err) {
-      // Error is already handled by the useAuth hook
-      console.error('Login error:', err);
-    }
+    await handleSubmit(values.email);
   };
 
   return (
@@ -59,7 +54,7 @@ export default function UserAuthForm() {
                 <Input
                   type="email"
                   placeholder={t('emailPlaceholder')}
-                  disabled={_isLoading}
+                  disabled={isLoading || isNavigating}
                   data-testid="email-input"
                   {...field}
                 />
@@ -69,13 +64,22 @@ export default function UserAuthForm() {
           )}
         />
 
+        {error && (
+          <div
+            className="text-sm text-red-600 mt-2"
+            data-testid="error-message"
+          >
+            {error}
+          </div>
+        )}
+
         <Button
           type="submit"
           className="w-full"
-          disabled={_isLoading}
+          disabled={isLoading || isNavigating}
           data-testid="submit-button"
         >
-          {_isLoading ? (
+          {isLoading || isNavigating ? (
             <div className="h-4 w-4 animate-spin" />
           ) : (
             t('continueButton')

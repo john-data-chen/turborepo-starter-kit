@@ -1,16 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { ProjectsService } from '../projects/projects.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskPermissionsDto } from './dto/task-permissions.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
+  constructor(
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+    @Inject(forwardRef(() => ProjectsService))
+    private projectsService: ProjectsService
+  ) {}
 
   /**
    * Delete all tasks associated with a project
@@ -124,12 +134,29 @@ export class TasksService {
 
   async create(
     createTaskDto: CreateTaskDto,
-    _userId: string // Keep for backward compatibility but mark as unused
+    userId: string
   ): Promise<TaskResponseDto> {
+    if (!userId) {
+      throw new Error('User ID is required to create a task');
+    }
+
     try {
       // Convert string IDs to ObjectIds
-      const creatorId = new Types.ObjectId(createTaskDto.creator);
+      const creatorId = new Types.ObjectId(userId);
       const projectId = new Types.ObjectId(createTaskDto.project);
+
+      // Add creator to project members if not already a member
+      if (createTaskDto.project) {
+        try {
+          await this.projectsService.addMemberIfNotExists(
+            createTaskDto.project,
+            userId
+          );
+        } catch (error) {
+          console.error('Error adding creator to project members:', error);
+          // Continue with task creation even if adding to members fails
+        }
+      }
 
       // Always respect the orderInProject from the frontend
       // If not provided, default to 0 (will be handled by the frontend)
@@ -151,6 +178,7 @@ export class TasksService {
 
       const createdTask = new this.taskModel(taskData);
       const savedTask = await createdTask.save();
+
       return await this.toTaskResponse(savedTask);
     } catch (error) {
       console.error('Error creating task:', error);
@@ -191,34 +219,33 @@ export class TasksService {
     return this.toTaskResponse(task);
   }
 
-  async checkTaskPermissions(
+  private async checkTaskPermission(
     taskId: string,
-    userId: string
-  ): Promise<TaskPermissionsDto> {
-    const task = await this.taskModel
-      .findById(taskId)
-      .populate('creator', '_id')
-      .populate('board', 'owner')
-      .populate('project', 'owner')
-      .lean();
-
+    userId: string,
+    requireCreator = false
+  ): Promise<TaskDocument> {
+    const task = await this.taskModel.findById(taskId);
     if (!task) {
-      throw new NotFoundException('Task not found');
+      throw new NotFoundException(`Task with ID ${taskId} not found`);
     }
 
-    const board = task.board as unknown as { owner: Types.ObjectId };
-    const project = task.project as unknown as { owner: Types.ObjectId };
-    const creator = task.creator as unknown as { _id: Types.ObjectId };
+    const userIdObj = new Types.ObjectId(userId);
+    const isCreator = task.creator && task.creator.equals(userIdObj);
+    const isAssignee = task.assignee && task.assignee.equals(userIdObj);
 
-    const isBoardOwner = board.owner.toString() === userId;
-    const isProjectOwner = project.owner.toString() === userId;
-    const isCreator = creator._id.toString() === userId;
-    const isAssignee = task.assignee?.toString() === userId;
+    if (requireCreator && !isCreator) {
+      throw new ForbiddenException(
+        'Only the task creator can perform this action'
+      );
+    }
 
-    const canDelete = isBoardOwner || isProjectOwner || isCreator;
-    const canEdit = canDelete || isAssignee;
+    if (!isCreator && !isAssignee) {
+      throw new ForbiddenException(
+        'You do not have permission to modify this task'
+      );
+    }
 
-    return { canEdit, canDelete };
+    return task;
   }
 
   async update(
@@ -226,6 +253,8 @@ export class TasksService {
     updateTaskDto: UpdateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
+    // Check if user has permission to edit this task
+    await this.checkTaskPermission(id, userId);
     // Create update data with lastModifier set to current user
     const updateData: any = {
       ...updateTaskDto,
@@ -259,80 +288,159 @@ export class TasksService {
     return this.toTaskResponse(updatedTask);
   }
 
-  async remove(id: string): Promise<void> {
-    // Convert string ID to ObjectId
+  async remove(id: string, userId: string): Promise<void> {
+    // Check if user is the creator of the task
+    const taskToDelete = await this.checkTaskPermission(id, userId, true);
+
     const objectId = new Types.ObjectId(id);
+
+    const { project: projectId, orderInProject: deletedOrder } = taskToDelete;
+
+    // Delete the task
     const result = await this.taskModel.deleteOne({ _id: objectId }).exec();
+
     if (result.deletedCount === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
+
+    // Reorder remaining tasks in the same project
+    // Decrease order by 1 for all tasks with order greater than deleted task
+    await this.taskModel
+      .updateMany(
+        {
+          project: projectId,
+          orderInProject: { $gt: deletedOrder }
+        },
+        {
+          $inc: { orderInProject: -1 }
+        }
+      )
+      .exec();
   }
 
-  async updateStatus(
-    id: string,
-    status: TaskStatus,
+  async moveTask(
+    taskId: string,
+    newProjectId: string,
+    newOrderInProject: number,
     userId: string
   ): Promise<TaskResponseDto> {
-    console.log('=== updateStatus called ===');
-    console.log('Task ID:', id);
-    console.log('New status:', status);
+    // Check if user has permission to edit this task
+    await this.checkTaskPermission(taskId, userId);
+    console.log('=== moveTask called ===');
+    console.log('Task ID:', taskId);
+    console.log('New Project ID:', newProjectId);
+    console.log('New Order:', newOrderInProject);
     console.log('User ID:', userId);
 
-    const session = await this.taskModel.startSession();
-    session.startTransaction();
+    // Validate inputs
+    if (!Types.ObjectId.isValid(taskId)) {
+      throw new Error('Invalid task ID');
+    }
+    if (!Types.ObjectId.isValid(newProjectId)) {
+      throw new Error('Invalid project ID');
+    }
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid user ID');
+    }
 
-    try {
-      // First, find the task to ensure it exists
-      const task = await this.taskModel.findById(id).session(session);
-      if (!task) {
-        throw new NotFoundException(`Task with ID "${id}" not found`);
-      }
+    // Find the task
+    const task = await this.taskModel.findById(taskId);
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${taskId}" not found`);
+    }
 
-      // Update the task with the new status and lastModifier
-      task.status = status;
+    const oldProjectId = task.project.toString();
+    const oldOrderInProject = task.orderInProject ?? 0;
+
+    console.log('Old Project ID:', oldProjectId);
+    console.log('Old Order:', oldOrderInProject);
+
+    // If moving to the same project, just update the order
+    if (oldProjectId === newProjectId) {
+      console.log('Moving within the same project');
+
+      // Update the task's order
+      task.project = new Types.ObjectId(newProjectId);
+      task.orderInProject = newOrderInProject;
       task.lastModifier = new Types.ObjectId(userId);
       task.updatedAt = new Date();
 
-      // Save the updated task in the same session
-      await task.save({ session });
+      await task.save();
 
-      // Now populate the references
-      const populatedTask = await this.taskModel
-        .findById(id)
-        .populate('creator', 'name email')
-        .populate('assignee', 'name email')
-        .populate('lastModifier', 'name email')
-        .populate('project', 'title')
-        .session(session)
-        .orFail()
-        .exec();
+      // Reorder other tasks in the same project
+      if (oldOrderInProject !== newOrderInProject) {
+        if (newOrderInProject > oldOrderInProject) {
+          // Moving down: decrease order for tasks between old and new position
+          await this.taskModel.updateMany(
+            {
+              project: new Types.ObjectId(newProjectId),
+              orderInProject: {
+                $gt: oldOrderInProject,
+                $lte: newOrderInProject
+              },
+              _id: { $ne: taskId }
+            },
+            { $inc: { orderInProject: -1 } }
+          );
+        } else {
+          // Moving up: increase order for tasks between new and old position
+          await this.taskModel.updateMany(
+            {
+              project: new Types.ObjectId(newProjectId),
+              orderInProject: {
+                $gte: newOrderInProject,
+                $lt: oldOrderInProject
+              },
+              _id: { $ne: taskId }
+            },
+            { $inc: { orderInProject: 1 } }
+          );
+        }
+      }
+    } else {
+      console.log('Moving to a different project');
 
-      await session.commitTransaction();
-      session.endSession();
+      // Update the task's project and order
+      task.project = new Types.ObjectId(newProjectId);
+      task.orderInProject = newOrderInProject;
+      task.lastModifier = new Types.ObjectId(userId);
+      task.updatedAt = new Date();
 
-      console.log(
-        'Updated task from DB (before toTaskResponse):',
-        JSON.stringify(populatedTask, null, 2)
+      await task.save();
+
+      // Reorder tasks in the old project (decrease order for tasks after the moved task)
+      await this.taskModel.updateMany(
+        {
+          project: new Types.ObjectId(oldProjectId),
+          orderInProject: { $gt: oldOrderInProject }
+        },
+        { $inc: { orderInProject: -1 } }
       );
 
-      // Ensure lastModifier is properly set
-      if (!populatedTask.lastModifier) {
-        console.warn('lastModifier was not populated, setting it manually');
-        populatedTask.lastModifier = {
-          _id: new Types.ObjectId(userId),
-          name: 'Unknown',
-          email: 'unknown@example.com'
-        } as any;
-      }
-
-      const response = await this.toTaskResponse(populatedTask);
-      console.log('Final response:', JSON.stringify(response, null, 2));
-      return response;
-    } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-      console.error('Error in updateStatus:', error);
-      throw error;
+      // Reorder tasks in the new project (increase order for tasks at or after the new position)
+      await this.taskModel.updateMany(
+        {
+          project: new Types.ObjectId(newProjectId),
+          orderInProject: { $gte: newOrderInProject },
+          _id: { $ne: taskId }
+        },
+        { $inc: { orderInProject: 1 } }
+      );
     }
+
+    // Return the updated task
+    const updatedTask = await this.taskModel
+      .findById(taskId)
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('lastModifier', 'name email')
+      .exec();
+
+    if (!updatedTask) {
+      throw new NotFoundException('Task not found after update');
+    }
+
+    console.log('Task moved successfully');
+    return await this.toTaskResponse(updatedTask);
   }
 }
