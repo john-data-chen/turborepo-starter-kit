@@ -31,7 +31,7 @@ import { TaskCard } from '../task/TaskCard';
 import { TaskFilter } from '../task/TaskFilter';
 
 export function Board() {
-  const projects = useWorkspaceStore((state) => state.projects);
+  const rawProjects = useWorkspaceStore((state) => state.projects);
   const isLoadingProjects = useWorkspaceStore(
     (state) => state.isLoadingProjects
   ); // Get loading state
@@ -40,6 +40,16 @@ export function Board() {
   const dragTaskOnProject = useWorkspaceStore(
     (state) => state.dragTaskOnProject
   );
+
+  // Sort projects by orderInBoard
+  const projects = useMemo(() => {
+    return [...rawProjects].sort((a, b) => {
+      const orderA = a.orderInBoard ?? 0;
+      const orderB = b.orderInBoard ?? 0;
+      return orderA - orderB;
+    });
+  }, [rawProjects]);
+
   const projectsId = useMemo(
     () => projects.map((project: Project) => project._id),
     [projects]
