@@ -37,18 +37,21 @@ interface ProjectActionsProps {
   id: string;
   title: string;
   description?: string;
+  ownerId: string; // Add ownerId to check permissions
 }
 
 export function ProjectActions({
   id,
   title,
-  description
+  description,
+  ownerId
 }: ProjectActionsProps) {
+  // Check if current user is the project owner
+  const { userId } = useWorkspaceStore();
+  const isOwner = userId === ownerId;
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const updateProject = useWorkspaceStore((state) => state.updateProject);
-  const { userId } = useWorkspaceStore();
-
   const deleteProjectMutation = useDeleteProject();
   const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
@@ -134,14 +137,25 @@ export function ProjectActions({
           <DropdownMenuItem
             onSelect={() => setEditEnable(true)}
             data-testid="edit-project-button"
+            className={
+              !isOwner
+                ? 'text-muted-foreground line-through cursor-not-allowed'
+                : ''
+            }
+            disabled={!isOwner}
           >
             {t('edit')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600 hover:!text-red-600 hover:!bg-destructive/10"
+            className={
+              !isOwner
+                ? 'text-muted-foreground line-through cursor-not-allowed'
+                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+            }
             data-testid="delete-project-button"
+            disabled={!isOwner}
           >
             {t('delete')}
           </DropdownMenuItem>

@@ -77,9 +77,12 @@ function BoardProjectComponent({
         id={project._id}
         title={project.title}
         description={project.description ?? undefined}
+        ownerId={
+          typeof project.owner === 'string' ? project.owner : project.owner._id
+        }
       />
     ),
-    [project._id, project.title, project.description]
+    [project._id, project.title, project.description, project.owner]
   );
 
   // Memoize the loadTasks function
