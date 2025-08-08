@@ -24,6 +24,8 @@ interface BoardProjectProps {
   project: Project;
   tasks: Task[];
   isOverlay?: boolean;
+  isBoardOwner: boolean;
+  currentUserId: string;
 }
 
 // Memoize the component to prevent unnecessary re-renders
@@ -47,7 +49,9 @@ BoardProject.displayName = 'BoardProject';
 function BoardProjectComponent({
   project,
   tasks: initialTasks,
-  isOverlay = false
+  isOverlay = false,
+  isBoardOwner,
+  currentUserId: _currentUserId
 }: BoardProjectProps) {
   const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations('kanban.project');
@@ -103,17 +107,6 @@ function BoardProjectComponent({
     }
   }, [project?._id, fetchTasksByProject]);
 
-  // Memoize the task list to prevent unnecessary re-renders
-  const _taskItems = useMemo(() => {
-    // Filter out any tasks that are marked as deleted
-    const validTasks = tasks.filter((task) => !task._deleted);
-
-    return validTasks.map((task) => ({
-      id: task._id,
-      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} />
-    }));
-  }, [tasks, loadTasks]);
-
   // Handle task updates from child components
   const handleTaskUpdate = useCallback(async () => {
     try {
@@ -134,9 +127,6 @@ function BoardProjectComponent({
     return tasks.filter((task) => task.status === filter.status);
   }, [tasks, filter.status]);
 
-  // Memoize task IDs for better performance
-  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
-
   // Setup drag & drop functionality
   const {
     setNodeRef,
@@ -151,10 +141,19 @@ function BoardProjectComponent({
       type: 'Project',
       project
     } satisfies ProjectDragData,
+    disabled: !isBoardOwner, // Disable drag if not board owner
     attributes: {
       roleDescription: `Project: ${project.title}`
     }
   });
+
+  // Add data attributes for debugging
+  const containerProps = {
+    ...attributes,
+    'data-board-owner': isBoardOwner,
+    'data-project-id': project._id,
+    'data-draggable': isBoardOwner ? 'true' : 'false'
+  };
 
   // Define drag & drop styles
   const style = {
@@ -178,27 +177,57 @@ function BoardProjectComponent({
 
   const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined;
 
+  // Memoize task items with drag enabled for board owners
+  const _taskItems = useMemo(() => {
+    // Filter out any tasks that are marked as deleted
+    const validTasks = tasks.filter((task) => !task._deleted);
+
+    return validTasks.map((task) => ({
+      id: task._id,
+      element: (
+        <TaskCard
+          key={task._id}
+          task={task}
+          onUpdate={loadTasks}
+          isDragEnabled={isBoardOwner}
+        />
+      )
+    }));
+  }, [tasks, loadTasks, isBoardOwner]);
+
+  // Memoize task IDs for better performance
+  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
+
   return (
     <Card
       ref={setNodeRef}
       style={style}
       className={cn(
         variants({ dragging: dragState }),
-        'overflow-hidden' // Prevent content from overflowing
+        'overflow-hidden', // Prevent content from overflowing
+        isBoardOwner ? 'cursor-grab active:cursor-grabbing' : 'cursor-default', // Add cursor style based on drag ability
+        'project-container' // Added for easier debugging
       )}
       data-testid={`project-container`}
+      {...containerProps}
     >
       <CardHeader className="flex flex-row items-center justify-between border-b-2 p-4 space-y-0">
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            {...attributes}
-            {...listeners}
-            className="text-primary/50 h-8 w-16 cursor-grab p-0"
-          >
-            <span className="sr-only">drag project: {project.title}</span>
-            <PointerIcon className="h-4 w-4" />
-          </Button>
+          {isBoardOwner ? (
+            <Button
+              variant="ghost"
+              {...attributes}
+              {...listeners}
+              className="text-primary/50 h-8 w-16 cursor-grab p-0"
+            >
+              <span className="sr-only">drag project: {project.title}</span>
+              <PointerIcon className="h-4 w-4" />
+            </Button>
+          ) : (
+            <div className="h-8 w-16 flex items-center justify-center text-muted-foreground/30 p-0">
+              <PointerIcon className="h-4 w-4" />
+            </div>
+          )}
           <h3 className="text-lg font-semibold">{project.title}</h3>
         </div>
         {_projectActions}

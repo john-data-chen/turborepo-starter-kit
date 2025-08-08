@@ -1,6 +1,7 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/hooks/useAuth';
 import { taskApi } from '@/lib/api/taskApi';
 import { useTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
@@ -34,13 +35,31 @@ export function Board() {
   const rawProjects = useWorkspaceStore((state) => state.projects);
   const isLoadingProjects = useWorkspaceStore(
     (state) => state.isLoadingProjects
-  ); // Get loading state
+  );
   const filter = useWorkspaceStore((state) => state.filter);
   const setProjects = useWorkspaceStore((state) => state.setProjects);
-  // Unused but keeping for future reference
-  const _dragTaskOnProject = useWorkspaceStore(
-    (state) => state.dragTaskOnProject
-  );
+  const currentBoardId = useWorkspaceStore((state) => state.currentBoardId);
+  const myBoards = useWorkspaceStore((state) => state.myBoards);
+  const { user: currentUser, isAuthenticated } = useAuth();
+  const currentUserId = currentUser?._id || '';
+
+  // Check if current user is the board owner
+  const isBoardOwner = useMemo(() => {
+    if (!currentBoardId || !currentUserId) return false;
+    if (!isAuthenticated) return false;
+
+    // Find the current board
+    const currentBoard = myBoards.find((board) => board._id === currentBoardId);
+    if (!currentBoard) return false;
+
+    // Check if current user is the owner of the board
+    const ownerId =
+      typeof currentBoard.owner === 'string'
+        ? currentBoard.owner
+        : currentBoard.owner?._id;
+
+    return ownerId === currentUserId;
+  }, [currentBoardId, currentUserId, myBoards, isAuthenticated]);
 
   // Sort projects by orderInBoard
   const projects = useMemo(() => {
@@ -603,6 +622,8 @@ export function Board() {
                   <BoardProject
                     project={project}
                     tasks={filterTasks(project.tasks)}
+                    isBoardOwner={isBoardOwner}
+                    currentUserId={currentUser?._id || ''}
                   />
                 </Fragment>
               ))}
@@ -615,6 +636,8 @@ export function Board() {
               isOverlay
               project={activeProject}
               tasks={filterTasks(activeProject.tasks)}
+              isBoardOwner={isBoardOwner}
+              currentUserId={currentUser?._id || ''}
             />
           )}
           {activeTask && <TaskCard task={activeTask} isOverlay />}
