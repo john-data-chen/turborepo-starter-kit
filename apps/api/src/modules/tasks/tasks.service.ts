@@ -361,4 +361,128 @@ export class TasksService {
       throw error;
     }
   }
+
+  async moveTask(
+    taskId: string,
+    newProjectId: string,
+    newOrderInProject: number,
+    userId: string
+  ): Promise<TaskResponseDto> {
+    console.log('=== moveTask called ===');
+    console.log('Task ID:', taskId);
+    console.log('New Project ID:', newProjectId);
+    console.log('New Order:', newOrderInProject);
+    console.log('User ID:', userId);
+
+    // Validate inputs
+    if (!Types.ObjectId.isValid(taskId)) {
+      throw new Error('Invalid task ID');
+    }
+    if (!Types.ObjectId.isValid(newProjectId)) {
+      throw new Error('Invalid project ID');
+    }
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid user ID');
+    }
+
+    // Find the task
+    const task = await this.taskModel.findById(taskId);
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${taskId}" not found`);
+    }
+
+    const oldProjectId = task.project.toString();
+    const oldOrderInProject = task.orderInProject ?? 0;
+
+    console.log('Old Project ID:', oldProjectId);
+    console.log('Old Order:', oldOrderInProject);
+
+    // If moving to the same project, just update the order
+    if (oldProjectId === newProjectId) {
+      console.log('Moving within the same project');
+
+      // Update the task's order
+      task.project = new Types.ObjectId(newProjectId);
+      task.orderInProject = newOrderInProject;
+      task.lastModifier = new Types.ObjectId(userId);
+      task.updatedAt = new Date();
+
+      await task.save();
+
+      // Reorder other tasks in the same project
+      if (oldOrderInProject !== newOrderInProject) {
+        if (newOrderInProject > oldOrderInProject) {
+          // Moving down: decrease order for tasks between old and new position
+          await this.taskModel.updateMany(
+            {
+              project: new Types.ObjectId(newProjectId),
+              orderInProject: {
+                $gt: oldOrderInProject,
+                $lte: newOrderInProject
+              },
+              _id: { $ne: taskId }
+            },
+            { $inc: { orderInProject: -1 } }
+          );
+        } else {
+          // Moving up: increase order for tasks between new and old position
+          await this.taskModel.updateMany(
+            {
+              project: new Types.ObjectId(newProjectId),
+              orderInProject: {
+                $gte: newOrderInProject,
+                $lt: oldOrderInProject
+              },
+              _id: { $ne: taskId }
+            },
+            { $inc: { orderInProject: 1 } }
+          );
+        }
+      }
+    } else {
+      console.log('Moving to a different project');
+
+      // Update the task's project and order
+      task.project = new Types.ObjectId(newProjectId);
+      task.orderInProject = newOrderInProject;
+      task.lastModifier = new Types.ObjectId(userId);
+      task.updatedAt = new Date();
+
+      await task.save();
+
+      // Reorder tasks in the old project (decrease order for tasks after the moved task)
+      await this.taskModel.updateMany(
+        {
+          project: new Types.ObjectId(oldProjectId),
+          orderInProject: { $gt: oldOrderInProject }
+        },
+        { $inc: { orderInProject: -1 } }
+      );
+
+      // Reorder tasks in the new project (increase order for tasks at or after the new position)
+      await this.taskModel.updateMany(
+        {
+          project: new Types.ObjectId(newProjectId),
+          orderInProject: { $gte: newOrderInProject },
+          _id: { $ne: taskId }
+        },
+        { $inc: { orderInProject: 1 } }
+      );
+    }
+
+    // Return the updated task
+    const updatedTask = await this.taskModel
+      .findById(taskId)
+      .populate('creator', 'name email')
+      .populate('assignee', 'name email')
+      .populate('lastModifier', 'name email')
+      .exec();
+
+    if (!updatedTask) {
+      throw new NotFoundException('Task not found after update');
+    }
+
+    console.log('Task moved successfully');
+    return await this.toTaskResponse(updatedTask);
+  }
 }

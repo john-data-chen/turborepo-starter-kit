@@ -37,7 +37,8 @@ export function Board() {
   ); // Get loading state
   const filter = useWorkspaceStore((state) => state.filter);
   const setProjects = useWorkspaceStore((state) => state.setProjects);
-  const dragTaskOnProject = useWorkspaceStore(
+  // Unused but keeping for future reference
+  const _dragTaskOnProject = useWorkspaceStore(
     (state) => state.dragTaskOnProject
   );
 
@@ -61,7 +62,7 @@ export function Board() {
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
-  const getTask = async (taskId: string) => {
+  const _getTask = async (taskId: string) => {
     if (taskId === activeTask?._id && taskData) {
       return taskData;
     }
@@ -163,35 +164,33 @@ export function Board() {
         return;
       }
 
-      try {
-        // Move task to the new project
-        await dragTaskOnProject(activeTask._id, overProject._id, getTask);
+      // Skip if it's the same project
+      if (overProject._id === activeTask.project) {
+        return;
+      }
 
-        // Update local state
-        activeTask.project = overProject._id;
-        overProject.tasks.push(activeTask);
+      try {
+        // Remove task from source project
         activeProject.tasks.splice(activeTaskIdx, 1);
 
-        // Update orderInProject for tasks in the target project
-        overProject.tasks.forEach((task, index) => {
-          task.orderInProject = index;
-        });
+        // Add task to target project at the end (bottom)
+        const newOrderInProject = overProject.tasks.length;
+        activeTask.project = overProject._id;
+        activeTask.orderInProject = newOrderInProject;
+        overProject.tasks.push(activeTask);
 
-        // Update the projects in the store
+        // Update local state optimistically
         setProjects(updatedProjects);
 
-        // Update the backend with new order
-        const updates = overProject.tasks.map((task, index) =>
-          taskApi.updateTask(task._id, {
-            orderInProject: index,
-            lastModifier: useWorkspaceStore.getState().userId || ''
-          })
+        // Update the backend - move task to new project
+        await taskApi.moveTask(
+          activeTask._id,
+          overProject._id,
+          newOrderInProject
         );
 
-        await Promise.all(updates);
-
         toast.success(
-          `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+          `Task: "${activeTask.title}" moved to Project: "${overProject.title}"`
         );
       } catch (error) {
         console.error('Failed to move task:', error);
@@ -223,33 +222,36 @@ export function Board() {
       // If moving to a different project
       if (overTask.project !== activeTask.project) {
         try {
-          // Move task to the new project
-          await dragTaskOnProject(activeTask._id, overTask.project, getTask);
+          const userId = useWorkspaceStore.getState().userId;
+          if (!userId) {
+            throw new Error('User not authenticated');
+          }
 
-          // Update local state
-          activeTask.project = overTask.project;
-          overProject.tasks.splice(overTaskIdx, 0, activeTask);
+          // Remove task from source project
           activeProject.tasks.splice(activeTaskIdx, 1);
 
-          // Update orderInProject for tasks in the target project
+          // Insert task at the position of the over task
+          activeTask.project = overTask.project;
+          activeTask.orderInProject = overTaskIdx;
+          overProject.tasks.splice(overTaskIdx, 0, activeTask);
+
+          // Update orderInProject for all tasks in the target project
           overProject.tasks.forEach((task, index) => {
             task.orderInProject = index;
           });
 
+          // Update local state optimistically
           setProjects(updatedProjects);
 
-          // Update the backend with new order
-          const updates = overProject.tasks.map((task, index) =>
-            taskApi.updateTask(task._id, {
-              orderInProject: index,
-              lastModifier: useWorkspaceStore.getState().userId || ''
-            })
+          // Update the backend - move task to new project at specific position
+          await taskApi.moveTask(
+            activeTask._id,
+            overTask.project,
+            overTaskIdx
           );
 
-          await Promise.all(updates);
-
           toast.success(
-            `Task: "${activeTask.title}" is moved into Project: "${overProject.title}"`
+            `Task: "${activeTask.title}" moved to Project: "${overProject.title}"`
           );
         } catch (error) {
           console.error('Failed to move task:', error);

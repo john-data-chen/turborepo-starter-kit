@@ -8,7 +8,8 @@ import {
   Post,
   Query,
   Req,
-  UseGuards
+  UseGuards,
+  UnauthorizedException
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -140,5 +141,32 @@ export class TasksController {
     @Req() req
   ): Promise<TaskResponseDto> {
     return this.tasksService.updateStatus(id, status, req.user.userId);
+  }
+
+  @Patch(':id/move')
+  @ApiOperation({ summary: 'Move task to a different project' })
+  @ApiResponse({
+    status: 200,
+    description: 'Task moved successfully',
+    type: TaskResponseDto
+  })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  moveTask(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() moveData: { projectId: string; orderInProject: number },
+    @Req() req
+  ): Promise<TaskResponseDto> {
+    console.log('Move task - User from request:', req.user); // Debug log
+    if (!req.user || !req.user._id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    return this.tasksService.moveTask(
+      id,
+      moveData.projectId,
+      moveData.orderInProject,
+      req.user._id
+    );
   }
 }

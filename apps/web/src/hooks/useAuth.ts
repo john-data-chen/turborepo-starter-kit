@@ -34,13 +34,6 @@ function createSession(user: UserInfo): Session {
 }
 
 // Helper function to update stores with user data
-function updateStoresWithUser(
-  user: UserInfo,
-  setUserInfo: (name: string, id: string) => void
-) {
-  setUserInfo(user.name || user.email, user._id);
-  useAuthStore.getState().setUser(user);
-}
 
 export interface AuthState {
   isAuthenticated: boolean;
