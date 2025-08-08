@@ -43,9 +43,12 @@ export class TasksController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req
+    @Req() req: { user: { _id: string } }
   ): Promise<TaskResponseDto> {
-    return this.tasksService.create(createTaskDto, req.user.userId);
+    if (!req.user?._id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    return this.tasksService.create(createTaskDto, req.user._id);
   }
 
   @Get()
@@ -103,7 +106,10 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Task deleted successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Only the task creator can delete the task' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Only the task creator can delete the task'
+  })
   remove(
     @Param('id', ParseObjectIdPipe) id: string,
     @Req() req

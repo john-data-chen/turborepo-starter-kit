@@ -243,6 +243,36 @@ export class ProjectsService {
     );
   }
 
+  /**
+   * Add a user to project members if they're not already a member
+   * @param projectId Project ID
+   * @param userId User ID to add as member
+   */
+  async addMemberIfNotExists(projectId: string, userId: string): Promise<void> {
+    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
+      console.error('Invalid project ID or user ID', { projectId, userId });
+      return;
+    }
+
+    const userIdObj = new Types.ObjectId(userId);
+
+    // Check if user is already a member
+    const isMember = await this.projectModel.exists({
+      _id: projectId,
+      members: userIdObj
+    });
+
+    if (isMember) {
+      return; // Already a member, nothing to do
+    }
+
+    // Add user to members array if not already a member
+    await this.projectModel.updateOne(
+      { _id: projectId },
+      { $addToSet: { members: userIdObj } }
+    );
+  }
+
   async create(
     createProjectDto: CreateProjectDto & { owner: string }
   ): Promise<ProjectDocument> {

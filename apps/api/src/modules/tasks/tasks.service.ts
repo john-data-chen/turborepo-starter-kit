@@ -1,7 +1,14 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { ProjectsService } from '../projects/projects.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -9,7 +16,11 @@ import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
+  constructor(
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+    @Inject(forwardRef(() => ProjectsService))
+    private projectsService: ProjectsService
+  ) {}
 
   /**
    * Delete all tasks associated with a project
@@ -123,12 +134,29 @@ export class TasksService {
 
   async create(
     createTaskDto: CreateTaskDto,
-    _userId: string // Keep for backward compatibility but mark as unused
+    userId: string
   ): Promise<TaskResponseDto> {
+    if (!userId) {
+      throw new Error('User ID is required to create a task');
+    }
+
     try {
       // Convert string IDs to ObjectIds
-      const creatorId = new Types.ObjectId(createTaskDto.creator);
+      const creatorId = new Types.ObjectId(userId);
       const projectId = new Types.ObjectId(createTaskDto.project);
+
+      // Add creator to project members if not already a member
+      if (createTaskDto.project) {
+        try {
+          await this.projectsService.addMemberIfNotExists(
+            createTaskDto.project,
+            userId
+          );
+        } catch (error) {
+          console.error('Error adding creator to project members:', error);
+          // Continue with task creation even if adding to members fails
+        }
+      }
 
       // Always respect the orderInProject from the frontend
       // If not provided, default to 0 (will be handled by the frontend)
@@ -150,6 +178,7 @@ export class TasksService {
 
       const createdTask = new this.taskModel(taskData);
       const savedTask = await createdTask.save();
+
       return await this.toTaskResponse(savedTask);
     } catch (error) {
       console.error('Error creating task:', error);
@@ -205,11 +234,15 @@ export class TasksService {
     const isAssignee = task.assignee && task.assignee.equals(userIdObj);
 
     if (requireCreator && !isCreator) {
-      throw new ForbiddenException('Only the task creator can perform this action');
+      throw new ForbiddenException(
+        'Only the task creator can perform this action'
+      );
     }
 
     if (!isCreator && !isAssignee) {
-      throw new ForbiddenException('You do not have permission to modify this task');
+      throw new ForbiddenException(
+        'You do not have permission to modify this task'
+      );
     }
 
     return task;
@@ -258,7 +291,7 @@ export class TasksService {
   async remove(id: string, userId: string): Promise<void> {
     // Check if user is the creator of the task
     const taskToDelete = await this.checkTaskPermission(id, userId, true);
-    
+
     const objectId = new Types.ObjectId(id);
 
     const { project: projectId, orderInProject: deletedOrder } = taskToDelete;
