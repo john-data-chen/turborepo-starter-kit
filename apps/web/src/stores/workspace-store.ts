@@ -289,14 +289,9 @@ export const useWorkspaceStore = create<State>()(
           }
 
           // Call the update function provided by the component
-          const updateData: {
-            title: string;
-            description: string;
-            modifier: string;
-          } = {
+          const updateData = {
             title: newTitle,
-            description: newDescription ?? '',
-            modifier
+            description: newDescription ?? ''
           };
 
           await updateFn(id, updateData);

@@ -348,7 +348,7 @@ export function Board() {
     }
   }
 
-  function onDragEnd(event: DragEndEvent) {
+  async function onDragEnd(event: DragEndEvent) {
     setActiveProject(null);
     setActiveTask(null);
 
@@ -366,6 +366,7 @@ export function Board() {
 
     const isActiveAProject = activeData?.type === 'Project';
     if (!isActiveAProject) return;
+
     const activeProjectIndex = projects.findIndex(
       (project: Project) => project._id === activeId
     );
@@ -374,7 +375,76 @@ export function Board() {
       (project: Project) => project._id === overId
     );
 
-    setProjects(arrayMove(projects, activeProjectIndex, overProjectIndex));
+    // Create backup for rollback
+    const previousProjects = [...rawProjects];
+
+    // Optimistically update the UI
+    const reorderedProjects = arrayMove(
+      projects,
+      activeProjectIndex,
+      overProjectIndex
+    );
+
+    // Update orderInBoard for all affected projects
+    const updatedProjects = reorderedProjects.map((project, index) => ({
+      ...project,
+      orderInBoard: index
+    }));
+
+    // Update the store with new order
+    setProjects(updatedProjects);
+
+    try {
+      const userId = useWorkspaceStore.getState().userId;
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+
+      // Update backend for all projects that changed position
+      const updatePromises = updatedProjects.map(async (project, newIndex) => {
+        const oldProject = previousProjects.find((p) => p._id === project._id);
+        const oldIndex = oldProject?.orderInBoard ?? 0;
+
+        // Only update if the order actually changed
+        if (oldIndex !== newIndex) {
+          console.log(
+            `Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`
+          );
+
+          // Import projectApi dynamically to avoid circular dependency
+          const { projectApi } = await import('@/lib/api/projectApi');
+
+          console.log(
+            `Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`
+          );
+
+          return projectApi.updateProject(project._id, {
+            orderInBoard: newIndex
+          });
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all(updatePromises);
+
+      toast.success('Project order updated successfully');
+    } catch (error) {
+      console.error('Failed to update project order:', error);
+      toast.error('Failed to update project order. Please try again.');
+
+      // Revert to previous state on error
+      setProjects(previousProjects);
+
+      // Refresh data to ensure consistency
+      try {
+        const { fetchProjects, currentBoardId } = useWorkspaceStore.getState();
+        if (currentBoardId) {
+          await fetchProjects(currentBoardId);
+        }
+      } catch (refreshError) {
+        console.error('Failed to refresh projects:', refreshError);
+      }
+    }
   }
 
   const pickedUpTaskProject = useRef<string | null>(null);

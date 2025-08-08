@@ -186,6 +186,10 @@ export class ProjectsService {
         : null;
     }
 
+    if (updateProjectDto.orderInBoard !== undefined) {
+      updateData.orderInBoard = updateProjectDto.orderInBoard;
+    }
+
     console.log('Updating project with data:', updateData);
 
     try {
@@ -323,7 +327,6 @@ export class ProjectsService {
         owner: new Types.ObjectId(owner),
         board: new Types.ObjectId(boardId),
         members: [new Types.ObjectId(owner)],
-        status: 'TODO' as const,
         orderInBoard: order,
         createdAt: new Date(),
         updatedAt: new Date()
