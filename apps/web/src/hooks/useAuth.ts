@@ -1,13 +1,46 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
+import { routing } from '@/i18n/routing';
 import { AuthService } from '@/lib/auth/authService';
+import { getLocalePath } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Session, UserInfo } from '@/types/dbInterface';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+
+// Helper function to get current locale from pathname
+function getCurrentLocale(): string {
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  const currentLocale = pathSegments[0];
+
+  return routing.locales.includes(currentLocale as any)
+    ? currentLocale
+    : routing.defaultLocale;
+}
+
+// Helper function to create session from user data
+function createSession(user: UserInfo): Session {
+  return {
+    user: {
+      _id: user._id,
+      email: user.email,
+      name: user.name || user.email.split('@')[0]
+    },
+    accessToken: 'http-only-cookie'
+  };
+}
+
+// Helper function to update stores with user data
+function updateStoresWithUser(
+  user: UserInfo,
+  setUserInfo: (name: string, id: string) => void
+) {
+  setUserInfo(user.name || user.email, user._id);
+  useAuthStore.getState().setUser(user);
+}
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -36,14 +69,7 @@ export function useAuth() {
     try {
       setIsCheckingAuth(true);
       const user = await AuthService.getProfile();
-      const currentSession: Session = {
-        user: {
-          _id: user._id,
-          email: user.email,
-          name: user.name || user.email.split('@')[0]
-        },
-        accessToken: 'http-only-cookie'
-      };
+      const currentSession = createSession(user);
       setSession(currentSession);
       return currentSession;
     } catch (error) {
@@ -55,13 +81,26 @@ export function useAuth() {
     }
   }, []);
 
-  // Check for existing session on mount
+  // Check for existing session on mount only if we have a JWT cookie
   useEffect(() => {
     const initAuth = async () => {
-      try {
-        await checkSession();
-      } catch (error) {
-        console.error('Failed to check session on mount:', error);
+      // Check for authentication cookie (could be jwt= or isAuthenticated=)
+      const hasAuthCookie = document.cookie.split(';').some((item) => {
+        const trimmed = item.trim();
+        return (
+          trimmed.startsWith('jwt=') || trimmed.startsWith('isAuthenticated=')
+        );
+      });
+
+      if (hasAuthCookie) {
+        try {
+          await checkSession();
+        } catch (error) {
+          console.error('Failed to check session on mount:', error);
+        }
+      } else {
+        // No authentication cookie, set loading to false immediately
+        setIsCheckingAuth(false);
       }
     };
 
@@ -79,15 +118,7 @@ export function useAuth() {
 
         // Then, fetch the user profile using the session
         const user = await AuthService.getProfile();
-        const session: Session = {
-          user: {
-            _id: user._id,
-            email: user.email,
-            name: user.name || user.email.split('@')[0]
-          },
-          accessToken: 'http-only-cookie' // The actual token is in the HTTP-only cookie
-        };
-
+        const session = createSession(user);
         return { session };
       } catch (err) {
         console.error('Login error:', err);
@@ -108,14 +139,6 @@ export function useAuth() {
         setUserInfo(user.name || user.email, user._id);
         // Update the auth store
         useAuthStore.getState().setUser(user);
-
-        console.log('Login successful, redirecting to boards...');
-        // Ensure we're using the full URL for redirection
-        const redirectUrl = new URL(
-          ROUTES.BOARDS.OVERVIEW_PAGE,
-          window.location.origin
-        );
-        window.location.href = redirectUrl.toString();
       }
     },
     onError: (error) => {
@@ -133,13 +156,9 @@ export function useAuth() {
       // Clear the local session state
       setSession(null);
 
-      // Clear the auth store
-      const { clear: clearAuthStore } = useAuthStore.getState();
-      clearAuthStore();
-
-      // Clear the workspace store
-      const { setUserInfo } = useWorkspaceStore.getState();
-      setUserInfo('', '');
+      // Clear the stores
+      useAuthStore.getState().clear();
+      useWorkspaceStore.getState().setUserInfo('', '');
 
       // Redirect to login page with a full page reload to ensure all state is cleared
       window.location.href = ROUTES.AUTH.LOGIN_PAGE;
@@ -158,7 +177,6 @@ export function useAuth() {
       if (user.email && user._id) {
         setUserInfo(user.name || user.email, user._id);
       } else {
-        console.warn('Session user is missing email or _id:', user);
       }
     }
   }, [session, setUserInfo]);
@@ -183,29 +201,28 @@ export function useAuth() {
 
 export function useAuthForm() {
   const { login, isLoading, error } = useAuth();
-  const [isNavigating, startNavigationTransition] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
-  const setUserInfo = useWorkspaceStore((state) => state.setUserInfo);
 
   const handleSubmit = async (email: string) => {
     try {
+      setIsNavigating(true);
       const result = await login(email);
-      // The login mutation now returns the user profile
-      if (result?.session?.user) {
-        setUserInfo(result.session.user.email, result.session.user._id);
-      } else {
-        // Fallback to just setting the email if user data is not available
-        setUserInfo(email, '');
+
+      if (!result?.session?.user) {
+        throw new Error('No user data received after login');
       }
 
-      // Use startTransition for smoother navigation
-      startNavigationTransition(true);
-      router.push(ROUTES.BOARDS.OVERVIEW_PAGE);
+      // Get current locale and construct redirect path
+      const locale = getCurrentLocale();
+      const redirectPath = getLocalePath('/boards', locale);
+
+      // Navigate to boards page
+      router.push(redirectPath);
     } catch (err) {
-      console.error('Login failed:', err);
-      // Error is already handled by the login mutation
+      // Error is already handled by useAuth hook
     } finally {
-      startNavigationTransition(false);
+      setIsNavigating(false);
     }
   };
 
