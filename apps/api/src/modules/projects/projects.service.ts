@@ -10,7 +10,6 @@ import { Model, Types } from 'mongoose';
 
 import { TasksService } from '../tasks/tasks.service';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { ProjectPermissionsDto } from './dto/project-permissions.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
 
@@ -61,63 +60,6 @@ export class ProjectsService {
     return projects as ProjectDocument[];
   }
 
-  async checkProjectPermissions(
-    projectId: string,
-    userId: string
-  ): Promise<ProjectPermissionsDto> {
-    // Input validation
-    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
-      throw new BadRequestException('Invalid project or user ID');
-    }
-
-    try {
-      // Find the project with board and owner information
-      const project = await this.projectModel
-        .findById(projectId)
-        .populate({
-          path: 'board',
-          select: 'owner',
-          populate: {
-            path: 'owner',
-            select: '_id'
-          }
-        })
-        .lean();
-
-      if (!project) {
-        throw new NotFoundException('Project not found');
-      }
-
-      // Type assertion for the populated board
-      const board = project.board as unknown as { owner: Types.ObjectId };
-      if (!board?.owner) {
-        throw new NotFoundException('Board owner information not found');
-      }
-
-      // Get owner IDs as strings for comparison
-      const projectOwnerId = project.owner?.toString();
-      const boardOwnerId = board.owner.toString();
-      const currentUserId = new Types.ObjectId(userId).toString();
-
-      // Check permissions
-      const isProjectOwner = projectOwnerId === currentUserId;
-      const isBoardOwner = boardOwnerId === currentUserId;
-      const canModify = isProjectOwner || isBoardOwner;
-
-      return {
-        canEditProject: canModify,
-        canDeleteProject: canModify
-      };
-    } catch (error) {
-      console.error('Error checking project permissions:', error);
-      // Default to most restrictive permissions on error
-      return {
-        canEditProject: false,
-        canDeleteProject: false
-      };
-    }
-  }
-
   async update(
     id: string,
     updateProjectDto: UpdateProjectDto,
@@ -148,11 +90,8 @@ export class ProjectsService {
     console.log('Found project:', project);
     console.log('Checking permissions...');
 
-    // Check if the user has permission to update the project
-    const permissions = await this.checkProjectPermissions(id, userId);
-    console.log('Permissions:', permissions);
-
-    if (!permissions.canEditProject) {
+    // Check if the user is the owner of the project
+    if (project.owner.toString() !== userId) {
       const error = 'You do not have permission to update this project';
       console.error(error, { userId, projectId: id });
       throw new BadRequestException(error);
@@ -242,11 +181,8 @@ export class ProjectsService {
       throw new NotFoundException(error);
     }
 
-    console.log('Checking permissions...');
-    const permissions = await this.checkProjectPermissions(id, userId);
-    console.log('Permissions:', permissions);
-
-    if (!permissions.canDeleteProject) {
+    // Check if the user is the owner of the project
+    if (project.owner.toString() !== userId) {
       const error = 'You do not have permission to delete this project';
       console.error(error, { userId, projectId: id });
       throw new BadRequestException(error);
