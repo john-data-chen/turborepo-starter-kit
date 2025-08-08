@@ -221,6 +221,7 @@ export function useAuthForm() {
       router.push(redirectPath);
     } catch (err) {
       // Error is already handled by useAuth hook
+      console.error('Login failed:', err);
     } finally {
       setIsNavigating(false);
     }
