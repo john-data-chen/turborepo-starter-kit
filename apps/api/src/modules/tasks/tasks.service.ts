@@ -262,10 +262,36 @@ export class TasksService {
   async remove(id: string): Promise<void> {
     // Convert string ID to ObjectId
     const objectId = new Types.ObjectId(id);
+
+    // First, find the task to get its project and order
+    const taskToDelete = await this.taskModel.findById(objectId).exec();
+
+    if (!taskToDelete) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    }
+
+    const { project: projectId, orderInProject: deletedOrder } = taskToDelete;
+
+    // Delete the task
     const result = await this.taskModel.deleteOne({ _id: objectId }).exec();
+
     if (result.deletedCount === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
+
+    // Reorder remaining tasks in the same project
+    // Decrease order by 1 for all tasks with order greater than deleted task
+    await this.taskModel
+      .updateMany(
+        {
+          project: projectId,
+          orderInProject: { $gt: deletedOrder }
+        },
+        {
+          $inc: { orderInProject: -1 }
+        }
+      )
+      .exec();
   }
 
   async updateStatus(
