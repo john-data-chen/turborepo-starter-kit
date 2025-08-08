@@ -252,6 +252,9 @@ export class ProjectsService {
       throw new BadRequestException(error);
     }
 
+    // Store project info before deletion for reordering
+    const { board: boardId, orderInBoard: deletedOrder } = project;
+
     console.log('Deleting project and associated tasks...');
 
     // First delete all tasks associated with this project
@@ -275,7 +278,33 @@ export class ProjectsService {
       throw new Error(error);
     }
 
-    console.log('Project and associated tasks deleted successfully');
+    // Reorder remaining projects in the same board
+    // Decrease orderInBoard by 1 for all projects with order greater than deleted project
+    if (deletedOrder !== undefined) {
+      console.log(
+        `Reordering projects in board ${boardId} after deleting project with order ${deletedOrder}`
+      );
+
+      const reorderResult = await this.projectModel
+        .updateMany(
+          {
+            board: boardId,
+            orderInBoard: { $gt: deletedOrder }
+          },
+          {
+            $inc: { orderInBoard: -1 }
+          }
+        )
+        .exec();
+
+      console.log(
+        `Reordered ${reorderResult.modifiedCount} projects in board ${boardId}`
+      );
+    }
+
+    console.log(
+      'Project, associated tasks, and project order updated successfully'
+    );
   }
 
   async create(
