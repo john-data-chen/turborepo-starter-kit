@@ -103,8 +103,12 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Task deleted successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  remove(@Param('id', ParseObjectIdPipe) id: string): Promise<void> {
-    return this.tasksService.remove(id);
+  @ApiResponse({ status: 403, description: 'Forbidden - Only the task creator can delete the task' })
+  remove(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Req() req
+  ): Promise<void> {
+    return this.tasksService.remove(id, req.user.userId);
   }
 
   @Patch(':id/move')

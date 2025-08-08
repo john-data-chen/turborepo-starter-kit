@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries';
+import { useWorkspaceStore } from '@/stores/workspace-store';
 import { TaskStatus } from '@/types/dbInterface';
 import { TASK_KEYS } from '@/types/taskApi';
 import { TaskFormSchema } from '@/types/taskForm';
@@ -80,9 +81,19 @@ export function TaskActions({
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
 
-  // Permissions (in a real app, this would come from auth context)
-  const canEdit = true;
-  const canDelete = true;
+  // Get current user ID from workspace store
+  const { userId } = useWorkspaceStore();
+
+  // Determine permissions based on user role
+  const isCreator = task?.creator?._id === userId;
+  const isAssignee = task?.assignee?._id === userId;
+
+  // Permission logic:
+  // - Creator can edit and delete
+  // - Assignee can only edit
+  // - Others can't do anything
+  const canEdit = isCreator || isAssignee;
+  const canDelete = isCreator;
 
   // Prepare default values for the form
   const defaultValues = {
@@ -375,10 +386,12 @@ export function TaskActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
-            onSelect={() => setIsEditDialogOpen(true)}
+            onSelect={() => canEdit && setIsEditDialogOpen(true)}
             disabled={!canEdit}
             className={
-              !canEdit ? 'text-muted-foreground cursor-not-allowed' : ''
+              !canEdit
+                ? 'text-muted-foreground line-through cursor-not-allowed'
+                : ''
             }
           >
             {t('edit')}
@@ -387,11 +400,11 @@ export function TaskActions({
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
+            onSelect={() => canDelete && setShowDeleteDialog(true)}
             disabled={!canDelete}
             className={
               !canDelete
-                ? 'text-muted-foreground cursor-not-allowed'
+                ? 'text-muted-foreground line-through cursor-not-allowed'
                 : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
             }
           >

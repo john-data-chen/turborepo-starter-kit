@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
@@ -190,11 +190,38 @@ export class TasksService {
     return this.toTaskResponse(task);
   }
 
+  private async checkTaskPermission(
+    taskId: string,
+    userId: string,
+    requireCreator = false
+  ): Promise<TaskDocument> {
+    const task = await this.taskModel.findById(taskId);
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${taskId} not found`);
+    }
+
+    const userIdObj = new Types.ObjectId(userId);
+    const isCreator = task.creator && task.creator.equals(userIdObj);
+    const isAssignee = task.assignee && task.assignee.equals(userIdObj);
+
+    if (requireCreator && !isCreator) {
+      throw new ForbiddenException('Only the task creator can perform this action');
+    }
+
+    if (!isCreator && !isAssignee) {
+      throw new ForbiddenException('You do not have permission to modify this task');
+    }
+
+    return task;
+  }
+
   async update(
     id: string,
     updateTaskDto: UpdateTaskDto,
     userId: string
   ): Promise<TaskResponseDto> {
+    // Check if user has permission to edit this task
+    await this.checkTaskPermission(id, userId);
     // Create update data with lastModifier set to current user
     const updateData: any = {
       ...updateTaskDto,
@@ -228,16 +255,11 @@ export class TasksService {
     return this.toTaskResponse(updatedTask);
   }
 
-  async remove(id: string): Promise<void> {
-    // Convert string ID to ObjectId
+  async remove(id: string, userId: string): Promise<void> {
+    // Check if user is the creator of the task
+    const taskToDelete = await this.checkTaskPermission(id, userId, true);
+    
     const objectId = new Types.ObjectId(id);
-
-    // First, find the task to get its project and order
-    const taskToDelete = await this.taskModel.findById(objectId).exec();
-
-    if (!taskToDelete) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
-    }
 
     const { project: projectId, orderInProject: deletedOrder } = taskToDelete;
 
@@ -269,6 +291,8 @@ export class TasksService {
     newOrderInProject: number,
     userId: string
   ): Promise<TaskResponseDto> {
+    // Check if user has permission to edit this task
+    await this.checkTaskPermission(taskId, userId);
     console.log('=== moveTask called ===');
     console.log('Task ID:', taskId);
     console.log('New Project ID:', newProjectId);
