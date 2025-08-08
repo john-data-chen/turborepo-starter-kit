@@ -130,12 +130,5 @@ export const boardApi = {
     return fetchWithAuth(`${BOARDS_ENDPOINT}/${boardId}/members/${memberId}`, {
       method: 'POST'
     });
-  },
-
-  // Remove a member from a board
-  async removeBoardMember(boardId: string, memberId: string): Promise<Board> {
-    return fetchWithAuth(`${BOARDS_ENDPOINT}/${boardId}/members/${memberId}`, {
-      method: 'DELETE'
-    });
   }
 };

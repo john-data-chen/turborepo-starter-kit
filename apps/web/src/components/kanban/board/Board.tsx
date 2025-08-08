@@ -244,11 +244,7 @@ export function Board() {
           setProjects(updatedProjects);
 
           // Update the backend - move task to new project at specific position
-          await taskApi.moveTask(
-            activeTask._id,
-            overTask.project,
-            overTaskIdx
-          );
+          await taskApi.moveTask(activeTask._id, overTask.project, overTaskIdx);
 
           toast.success(
             `Task: "${activeTask.title}" moved to Project: "${overProject.title}"`

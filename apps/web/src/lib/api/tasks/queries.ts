@@ -51,9 +51,14 @@ export const useCreateTask = () => {
       board: string;
       project: string;
       creator: string;
-      assignee?: string;
+      assignee?: string | { _id: string };
       orderInProject?: number;
     }) => {
+      // Ensure assignee is a string (user ID)
+      const assigneeId =
+        typeof input.assignee === 'string'
+          ? input.assignee
+          : input.assignee?._id;
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -62,21 +67,27 @@ export const useCreateTask = () => {
         board: input.board,
         project: input.project,
         creator: input.creator,
-        assignee: input.assignee,
+        assignee: assigneeId,
         lastModifier: input.creator,
         orderInProject: input.orderInProject
       });
     },
-    onSuccess: (newTask, variables) => {
+    onSuccess: (variables) => {
       // Invalidate the tasks list query to refetch
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.list({ project: variables.project })
       });
 
       // Also invalidate the assignee's tasks if applicable
-      if (variables.assignee) {
+      const assigneeId = variables.assignee
+        ? typeof variables.assignee === 'string'
+          ? variables.assignee
+          : variables.assignee._id
+        : undefined;
+
+      if (assigneeId) {
         queryClient.invalidateQueries({
-          queryKey: TASK_KEYS.list({ assignee: variables.assignee })
+          queryKey: TASK_KEYS.list({ assignee: assigneeId })
         });
       }
     }

@@ -92,26 +92,3 @@ export const useAddBoardMember = () => {
     }
   });
 };
-
-export const useRemoveBoardMember = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      boardId,
-      memberId
-    }: {
-      boardId: string;
-      memberId: string;
-    }) => boardApi.removeBoardMember(boardId, memberId),
-    onSuccess: (updatedBoard) => {
-      // Invalidate the board data
-      queryClient.invalidateQueries({
-        queryKey: BOARD_KEYS.detail(updatedBoard._id)
-      });
-      queryClient.invalidateQueries({
-        queryKey: BOARD_KEYS.list()
-      });
-    }
-  });
-};

@@ -11,7 +11,6 @@ export interface CreateProjectInput {
 export interface UpdateProjectInput {
   title?: string;
   description?: string | null;
-  status?: 'TODO' | 'IN_PROGRESS' | 'DONE' | 'ARCHIVED';
   dueDate?: string;
   assigneeId?: string | null;
   orderInBoard?: number;
