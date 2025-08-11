@@ -112,6 +112,10 @@ export function BoardOverview() {
           setSession(session);
           setUserInfo(session.user.email, session.user._id);
 
+          // Manually trigger boards data refresh after user info is set
+          console.log('[BoardOverview] Triggering boards refresh after login');
+          await refresh();
+
           // Show success message
           toast.success(tLogin('success'));
 
@@ -134,7 +138,32 @@ export function BoardOverview() {
     };
 
     processLogin();
-  }, [searchParams, router, pathname, tLogin, setSession, setUserInfo]);
+  }, [
+    searchParams,
+    router,
+    pathname,
+    tLogin,
+    setSession,
+    setUserInfo,
+    refresh
+  ]);
+
+  // Ensure boards data is fetched when user is authenticated
+  useEffect(() => {
+    const { userId } = useWorkspaceStore.getState();
+    console.log(
+      '[BoardOverview] Checking if boards need to be fetched, userId:',
+      userId
+    );
+
+    // If user is authenticated but we don't have boards data, fetch it
+    if (userId && !boardsLoading && !myBoards?.length && !teamBoards?.length) {
+      console.log(
+        '[BoardOverview] User authenticated but no boards data, triggering refresh'
+      );
+      refresh();
+    }
+  }, [refresh, myBoards, teamBoards, boardsLoading]);
 
   // Handle data refresh on tab visibility change
   useEffect(() => {

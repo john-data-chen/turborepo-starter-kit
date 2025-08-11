@@ -1,6 +1,6 @@
 'use client';
 
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, URL_PARAMS } from '@/constants/routes';
 import { routing } from '@/i18n/routing';
 import { AuthService } from '@/lib/auth/authService';
 import { getLocalePath } from '@/lib/utils';
@@ -217,12 +217,14 @@ export function useAuthForm() {
         throw new Error('No user data received after login');
       }
 
-      // Get current locale and construct redirect path
+      // Get current locale and construct redirect path with login success parameter
       const locale = getCurrentLocale();
       const redirectPath = getLocalePath('/boards', locale);
+      const redirectUrl = `${redirectPath}?${URL_PARAMS.LOGIN_SUCCESS}`;
 
-      // Navigate to boards page
-      router.push(redirectPath);
+      // Navigate to boards page with login success parameter
+      console.log('[useAuthForm] Navigating to:', redirectUrl);
+      router.push(redirectUrl);
     } catch (err) {
       // Error is already handled by useAuth hook
       console.error('Login failed:', err);
