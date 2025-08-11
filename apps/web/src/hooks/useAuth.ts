@@ -8,7 +8,6 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Session, UserInfo } from '@/types/dbInterface';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 // Helper function to get current locale from pathname
@@ -206,7 +205,6 @@ export function useAuth() {
 export function useAuthForm() {
   const { login, isLoading, error } = useAuth();
   const [isNavigating, setIsNavigating] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (email: string) => {
     try {
