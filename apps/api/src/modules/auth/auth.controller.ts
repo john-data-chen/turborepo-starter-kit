@@ -91,13 +91,14 @@ export class AuthController {
         secure: isProduction || isVercel, // Only secure in production HTTPS
         sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax', // 'none' for cross-site in production, 'lax' for local
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/',
+        path: '/'
         // For cross-subdomain cookies, set domain to .vercel.app
-        ...(isProduction || isVercel
-          ? {
-              domain: process.env.COOKIE_DOMAIN || '.vercel.app'
-            }
-          : {})
+        // Note: Don't set domain for now, let browser handle it automatically
+        // ...(isProduction || isVercel
+        //   ? {
+        //       domain: process.env.COOKIE_DOMAIN || '.vercel.app'
+        //     }
+        //   : {})
       };
 
       this.logger.log(
@@ -105,11 +106,11 @@ export class AuthController {
         {
           secure: cookieOptions.secure,
           sameSite: cookieOptions.sameSite,
-          domain: cookieOptions.domain,
+          domain: 'not set (browser default)',
           httpOnly: cookieOptions.httpOnly,
           maxAge: cookieOptions.maxAge,
           path: cookieOptions.path,
-          cookieDomainEnv: process.env.COOKIE_DOMAIN,
+          cookieDomainEnv: process.env.COOKIE_DOMAIN || 'not set',
           requestOrigin: req.headers.origin,
           requestHost: req.headers.host
         }
@@ -192,12 +193,13 @@ export class AuthController {
       secure: isProduction || isVercel, // Only secure in production HTTPS
       sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax', // Match login settings
       path: '/',
-      maxAge: 0, // Expire immediately
-      ...(isProduction || isVercel
-        ? {
-            domain: process.env.COOKIE_DOMAIN || '.vercel.app'
-          }
-        : {})
+      maxAge: 0 // Expire immediately
+      // Note: Don't set domain for now, let browser handle it automatically
+      // ...(isProduction || isVercel
+      //   ? {
+      //       domain: process.env.COOKIE_DOMAIN || '.vercel.app'
+      //     }
+      //   : {})
     };
 
     // Clear both possible cookie names
