@@ -26,30 +26,58 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   private static fromCookie(req: Request): string | null {
+    const requestId = Math.random().toString(36).substring(2, 8);
+    console.log(`[${requestId}] [JwtStrategy] Extracting JWT from request`);
+    console.log(`[${requestId}] [JwtStrategy] Request URL: ${req.url}`);
+    console.log(`[${requestId}] [JwtStrategy] Request method: ${req.method}`);
+    console.log(
+      `[${requestId}] [JwtStrategy] Request origin: ${req.headers.origin}`
+    );
+    console.log(
+      `[${requestId}] [JwtStrategy] Request host: ${req.headers.host}`
+    );
+
     // First try to get JWT from cookies
     if (req.cookies && req.cookies.jwt) {
-      console.log('Found JWT in cookies');
+      console.log(
+        `[${requestId}] [JwtStrategy] Found JWT in cookies, length: ${req.cookies.jwt.length}`
+      );
+      console.log(
+        `[${requestId}] [JwtStrategy] JWT cookie value preview: ${req.cookies.jwt.substring(0, 50)}...`
+      );
       return req.cookies.jwt;
     }
 
     // Check for JWT in Authorization header as fallback
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
-      console.log('Found JWT in Authorization header');
+      console.log(
+        `[${requestId}] [JwtStrategy] Found JWT in Authorization header`
+      );
       return authHeader.substring(7); // Remove 'Bearer ' prefix
     }
 
     // Debug: Log all cookies and headers for troubleshooting
-    console.log('JWT not found in cookies or Authorization header', {
-      cookies: req.cookies,
-      headers: {
-        cookie: req.headers.cookie,
-        authorization: req.headers.authorization ? 'present' : 'missing',
-        host: req.headers.host,
-        origin: req.headers.origin,
-        referer: req.headers.referer
+    console.log(
+      `[${requestId}] [JwtStrategy] JWT not found in cookies or Authorization header`,
+      {
+        cookies: req.cookies,
+        cookieHeader: req.headers.cookie,
+        allCookieKeys: req.cookies
+          ? Object.keys(req.cookies)
+          : 'no cookies object',
+        headers: {
+          cookie: req.headers.cookie
+            ? `present (${req.headers.cookie.length} chars)`
+            : 'missing',
+          authorization: req.headers.authorization ? 'present' : 'missing',
+          host: req.headers.host,
+          origin: req.headers.origin,
+          referer: req.headers.referer,
+          'user-agent': req.headers['user-agent']
+        }
       }
-    });
+    );
 
     return null;
   }

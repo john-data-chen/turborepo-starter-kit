@@ -59,31 +59,47 @@ async function bootstrap() {
       console.error(errorMsg);
       return callback(new Error(errorMsg));
     },
-    credentials: true,
+    credentials: true, // This is crucial for cookies
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders:
-      'Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN',
-    exposedHeaders: 'Authorization, XSRF-TOKEN, set-cookie'
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-Requested-With',
+      'X-XSRF-TOKEN',
+      'Cookie' // Explicitly allow Cookie header
+    ],
+    exposedHeaders: [
+      'Authorization',
+      'XSRF-TOKEN',
+      'Set-Cookie' // Expose Set-Cookie header
+    ]
   });
 
   // Enhanced CORS middleware with detailed logging
   const corsMiddleware = (req: any, res: any, next: any) => {
+    const requestId = Math.random().toString(36).substring(2, 8);
     const origin = req.headers.origin;
     const requestMethod = req.method;
     const requestHeaders = req.headers['access-control-request-headers'];
 
-    console.log('CORS - Incoming request:', {
+    console.log(`[${requestId}] [CORS] Incoming request:`, {
       origin,
       method: requestMethod,
       path: req.path,
-      headers: req.headers,
+      url: req.url,
+      cookies: req.cookies,
+      cookieHeader: req.headers.cookie,
       'access-control-request-method': requestMethod,
-      'access-control-request-headers': requestHeaders
+      'access-control-request-headers': requestHeaders,
+      'user-agent': req.headers['user-agent']
     });
 
     // Handle preflight requests
     if (requestMethod === 'OPTIONS') {
-      console.log('CORS - Handling preflight request');
+      console.log(
+        `[${requestId}] [CORS] Handling preflight request for origin: ${origin}`
+      );
       res.header('Access-Control-Allow-Origin', origin);
       res.header(
         'Access-Control-Allow-Methods',
@@ -96,11 +112,22 @@ async function bootstrap() {
           'Accept',
           'Authorization',
           'X-Requested-With',
-          'X-XSRF-TOKEN'
+          'X-XSRF-TOKEN',
+          'Cookie'
         ].join(',')
       );
       res.header('Access-Control-Allow-Credentials', 'true');
       res.header('Access-Control-Max-Age', '86400'); // 24 hours
+
+      console.log(`[${requestId}] [CORS] Preflight response headers set:`, {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Methods':
+          'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        'Access-Control-Allow-Headers':
+          'Content-Type,Accept,Authorization,X-Requested-With,X-XSRF-TOKEN,Cookie'
+      });
+
       return res.status(204).end();
     }
 
@@ -111,14 +138,17 @@ async function bootstrap() {
       );
 
       if (isAllowed) {
-        console.log('CORS - Allowing origin:', origin);
+        console.log(`[${requestId}] [CORS] Allowing origin: ${origin}`);
         res.header('Access-Control-Allow-Origin', origin);
         res.header('Access-Control-Allow-Credentials', 'true');
+        console.log(
+          `[${requestId}] [CORS] Regular request headers set for ${origin}`
+        );
       } else {
-        console.log('CORS - Origin not allowed:', origin);
+        console.log(`[${requestId}] [CORS] Origin not allowed: ${origin}`);
       }
     } else {
-      console.log('CORS - No origin header present');
+      console.log(`[${requestId}] [CORS] No origin header present`);
     }
 
     next();
