@@ -79,7 +79,9 @@ export class AuthService {
     }
   }
 
-  static async login(email: string): Promise<{ access_token: string }> {
+  static async login(
+    email: string
+  ): Promise<{ access_token: string; user?: UserInfo }> {
     const requestId = Math.random().toString(36).substring(2, 8);
     console.log(
       `[${requestId}] [AuthService] Attempting login for email:`,
@@ -170,7 +172,10 @@ export class AuthService {
         );
       }
 
-      return { access_token: data.access_token || 'http-only-cookie' };
+      return {
+        access_token: data.access_token || 'http-only-cookie',
+        user: data.user // Include user data from backend response
+      };
     } catch (error) {
       console.error(
         `[${requestId}] [AuthService] Login request failed:`,

@@ -106,10 +106,21 @@ export function useAuth() {
       setIsLoading(true);
       setError(null);
       try {
-        // First, call the login endpoint which will set the HTTP-only cookie
-        await AuthService.login(email);
+        // Call the login endpoint which now returns user data and token
+        const loginResult = await AuthService.login(email);
 
-        // Then, fetch the user profile using the session
+        // If login returned user data directly, use it
+        if (
+          loginResult &&
+          typeof loginResult === 'object' &&
+          'user' in loginResult
+        ) {
+          const user = (loginResult as any).user;
+          const session = createSession(user);
+          return { session };
+        }
+
+        // Fallback: fetch the user profile using the session
         const user = await AuthService.getProfile();
         const session = createSession(user);
         return { session };
