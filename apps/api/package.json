@@ -61,7 +61,7 @@
     "global-tsconfig": "workspace:*",
     "globals": "^15.15.0",
     "linter-config": "workspace:*",
-    "oxlint": "^1.11.0",
+    "oxlint": "^1.11.1",
     "prettier": "^3.6.2",
     "source-map-support": "^0.5.21",
     "style-formatter-config": "workspace:*",
