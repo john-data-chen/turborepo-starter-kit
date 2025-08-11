@@ -162,7 +162,15 @@ export class AuthService {
         !!authCookie
       );
 
-      return { access_token: 'http-only-cookie' };
+      // Store the token for Authorization header
+      if (data.access_token) {
+        localStorage.setItem('auth_token', data.access_token);
+        console.log(
+          `[${requestId}] [AuthService] Token stored in localStorage`
+        );
+      }
+
+      return { access_token: data.access_token || 'http-only-cookie' };
     } catch (error) {
       console.error(
         `[${requestId}] [AuthService] Login request failed:`,
@@ -211,13 +219,28 @@ export class AuthService {
       );
     }
 
+    // Try to get token from localStorage for Authorization header
+    const token = localStorage.getItem('auth_token');
+    console.log(
+      `[${requestId}] [AuthService] Token from localStorage:`,
+      !!token
+    );
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    };
+
+    // Add Authorization header if token exists
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+      console.log(`[${requestId}] [AuthService] Added Authorization header`);
+    }
+
     const response = await fetch(`${API_BASE}/auth/profile`, {
       method: 'GET',
-      credentials: 'include', // This is crucial for sending cookies
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
+      credentials: 'include', // Still try cookies as fallback
+      headers,
       // Add cache control to prevent caching issues
       cache: 'no-store',
       mode: 'cors'
@@ -306,6 +329,8 @@ export class AuthService {
   static logout(): void {
     if (typeof window !== 'undefined') {
       Cookies.remove('jwt', { path: '/' });
+      localStorage.removeItem('auth_token');
+      console.log('[AuthService] Cleared cookies and localStorage token');
     }
   }
 }

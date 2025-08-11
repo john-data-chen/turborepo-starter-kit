@@ -136,8 +136,11 @@ export class AuthController {
         }
       );
 
-      // Return user data without the token (it's in the cookie)
-      return { user: result.user };
+      // Return user data AND token for Authorization header fallback
+      return {
+        user: result.user,
+        access_token: result.access_token // Include token for Authorization header
+      };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
