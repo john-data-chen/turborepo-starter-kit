@@ -1,28 +1,40 @@
+'use client';
+
 import RootWrapper from '@/components/layout/RootWrapper';
-import { isAuthenticated } from '@/lib/auth/authChecker';
-import { getTranslations } from 'next-intl/server';
-import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { Suspense, use, useEffect } from 'react';
 
 interface AppLayoutProps {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default async function AppLayout({
+export default function AppLayout({
   children,
   params
 }: Readonly<AppLayoutProps>) {
-  // Get the current locale
-  const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: 'sidebar' });
+  const { locale } = use(params);
+  const t = useTranslations('sidebar');
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
-  // Check if user is authenticated
-  const { isAuthenticated: isUserAuthenticated } = await isAuthenticated();
+  useEffect(() => {
+    // Only redirect if we're not loading and not authenticated
+    if (!isLoading && !isAuthenticated) {
+      router.replace(`/${locale}/login`);
+    }
+  }, [isAuthenticated, isLoading, locale, router]);
 
-  // If not authenticated, redirect to login
-  if (!isUserAuthenticated) {
-    redirect(`/${locale}/login`);
+  // Show loading while checking authentication
+  if (isLoading) {
+    return <div>{t('loading')}</div>;
+  }
+
+  // Don't render children if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return <div>{t('loading')}</div>;
   }
 
   return (
