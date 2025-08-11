@@ -89,16 +89,9 @@ export class AuthController {
       const cookieOptions = {
         httpOnly: true,
         secure: isProduction || isVercel, // Only secure in production HTTPS
-        sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax', // 'none' for cross-site in production, 'lax' for local
+        sameSite: 'lax' as const, // Try 'lax' instead of 'none' for cross-site
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/'
-        // For cross-subdomain cookies, set domain to .vercel.app
-        // Note: Don't set domain for now, let browser handle it automatically
-        // ...(isProduction || isVercel
-        //   ? {
-        //       domain: process.env.COOKIE_DOMAIN || '.vercel.app'
-        //     }
-        //   : {})
       };
 
       this.logger.log(
@@ -116,7 +109,7 @@ export class AuthController {
         }
       );
 
-      // Set the JWT cookie
+      // Set the JWT cookie (keep for local development)
       res.cookie('jwt', result.access_token, cookieOptions);
       this.logger.log(
         `[${requestId}] [AuthController] JWT cookie set with value length: ${result.access_token.length}`
@@ -191,15 +184,9 @@ export class AuthController {
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction || isVercel, // Only secure in production HTTPS
-      sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax', // Match login settings
+      sameSite: 'lax' as const, // Match login settings
       path: '/',
       maxAge: 0 // Expire immediately
-      // Note: Don't set domain for now, let browser handle it automatically
-      // ...(isProduction || isVercel
-      //   ? {
-      //       domain: process.env.COOKIE_DOMAIN || '.vercel.app'
-      //     }
-      //   : {})
     };
 
     // Clear both possible cookie names
