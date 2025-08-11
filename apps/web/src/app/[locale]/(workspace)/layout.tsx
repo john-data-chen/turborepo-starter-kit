@@ -21,10 +21,15 @@ export default function AppLayout({
   const router = useRouter();
 
   useEffect(() => {
-    // Only redirect if we're not loading and not authenticated
-    if (!isLoading && !isAuthenticated) {
-      router.replace(`/${locale}/login`);
-    }
+    // Add a small delay to prevent race conditions with fresh logins
+    const timer = setTimeout(() => {
+      // Only redirect if we're not loading and not authenticated
+      if (!isLoading && !isAuthenticated) {
+        router.replace(`/${locale}/login`);
+      }
+    }, 200); // 200ms delay to allow auth state to settle
+
+    return () => clearTimeout(timer);
   }, [isAuthenticated, isLoading, locale, router]);
 
   // Show loading while checking authentication
