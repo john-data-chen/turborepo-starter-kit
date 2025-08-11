@@ -11,13 +11,23 @@ async function fetchWithAuth<T>(
   options: RequestInit = {}
 ): Promise<T> {
   try {
+    // Get token from localStorage for Authorization header
+    const token = localStorage.getItem('auth_token');
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...options.headers
+    };
+
+    // Add Authorization header if token exists
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(url, {
       ...options,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
+      credentials: 'include', // Still include for cookie fallback
+      headers
     });
 
     const responseText = await response.text();
@@ -86,12 +96,22 @@ export const boardApi = {
   // Delete a board
   async deleteBoard(id: string): Promise<void> {
     try {
+      // Get token from localStorage for Authorization header
+      const token = localStorage.getItem('auth_token');
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+
+      // Add Authorization header if token exists
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${BOARDS_ENDPOINT}/${id}`, {
         method: 'DELETE',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers
       });
 
       // For 204 No Content responses, we don't expect a response body
