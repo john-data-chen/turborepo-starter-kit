@@ -73,7 +73,7 @@ export function useAuth() {
     }
   }, []);
 
-  // Check for existing session on mount only if we have a JWT cookie
+  // Check for existing session on mount if we have auth indicators
   useEffect(() => {
     const initAuth = async () => {
       // Check for authentication cookie (could be jwt= or isAuthenticated=)
@@ -84,14 +84,17 @@ export function useAuth() {
         );
       });
 
-      if (hasAuthCookie) {
+      // Also check for token in localStorage (fallback for httpOnly cookies)
+      const hasStoredToken = localStorage.getItem('auth_token');
+
+      if (hasAuthCookie || hasStoredToken) {
         try {
           await checkSession();
         } catch (error) {
           console.error('Failed to check session on mount:', error);
         }
       } else {
-        // No authentication cookie, set loading to false immediately
+        // No authentication indicators, set loading to false immediately
         setIsCheckingAuth(false);
       }
     };
