@@ -244,6 +244,16 @@ src/
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
 
+### Turbopack in build mode
+
+- status: enabled
+- benefit: It is faster than webpack, and it can be used as a drop-in replacement for webpack
+
+### Rspack
+
+- status: enabled
+- benefit: It is faster than webpack, and it can be used as a drop-in replacement for webpack
+
 ### React Compiler
 
 - status: disabled (enable it will increase build time 30~40%, so I disable it)
@@ -268,6 +278,7 @@ src/
 - [ ] Hide drag icon when user is not owner of board or project
 - [ ] Fix the issue of drag icon display incorrect
 - [ ] Fix the issues of CRUD of project and task
+- [ ] Refactor the shadcn ui components into packages folder
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
