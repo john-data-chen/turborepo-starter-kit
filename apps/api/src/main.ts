@@ -23,6 +23,8 @@ async function bootstrap() {
   const allowedOrigins = [
     // Production frontend URL from environment variables
     process.env.NEXT_PUBLIC_WEB_URL,
+    // Explicit production frontend URL as fallback
+    'https://turborepo-starter-kit-web.vercel.app',
     // Regex for Vercel preview URLs for this project
     /^https:\/\/turborepo-starter-kit-web-*\.vercel\.app$/,
     // Local development

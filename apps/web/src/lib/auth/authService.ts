@@ -128,7 +128,10 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
-      }
+      },
+      // Add cache control to prevent caching issues
+      cache: 'no-store',
+      mode: 'cors'
     });
 
     console.log('Profile response status:', response.status);
