@@ -2,6 +2,10 @@
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+export const URL_PARAMS = {
+  LOGIN_SUCCESS: 'login_success=true'
+} as const;
+
 export const ROUTES = {
   HOME: '/',
   API: API_URL,

@@ -18,6 +18,10 @@ function normalizeBoard(board: Board): Board {
 
 export function useBoards() {
   const { userId } = useWorkspaceStore();
+
+  // Add logging to debug the issue
+  console.log('[useBoards] Hook called with userId:', userId);
+
   const { data, isLoading, error, refetch } = useApiBoards();
 
   // Split boards into myBoards and teamBoards based on ownership
