@@ -222,7 +222,11 @@ export function useAuthForm() {
 
       // Navigate to boards page with login success parameter
       console.log('[useAuthForm] Navigating to:', redirectUrl);
-      window.location.href = redirectUrl;
+
+      // Add a small delay to ensure the cookie is properly set before redirect
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 100);
     } catch (err) {
       // Error is already handled by useAuth hook
       console.error('Login failed:', err);
