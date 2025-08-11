@@ -67,10 +67,14 @@ export class AuthController {
       // Cookie settings that match frontend
       const cookieOptions = {
         httpOnly: true,
-        secure: isProduction, // true in production for HTTPS
-        sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-site in production
+        secure: isProduction || isVercel, // true in production/Vercel for HTTPS
+        sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax', // 'none' for cross-site in production
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/'
+        path: '/',
+        // Add domain setting for cross-subdomain cookies if needed
+        ...(isProduction && {
+          domain: process.env.COOKIE_DOMAIN || undefined
+        })
       };
 
       // Set the JWT cookie
@@ -118,12 +122,16 @@ export class AuthController {
     const isProduction = process.env.NODE_ENV === 'production';
 
     // Clear the JWT cookie with the same options used when setting it
+    const isVercel = process.env.VERCEL === '1';
     const cookieOptions = {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: isProduction || isVercel,
+      sameSite: (isProduction || isVercel ? 'none' : 'lax') as 'none' | 'lax',
       path: '/',
-      maxAge: 0 // Expire immediately
+      maxAge: 0, // Expire immediately
+      ...(isProduction && {
+        domain: process.env.COOKIE_DOMAIN || undefined
+      })
     };
 
     // Clear both possible cookie names
