@@ -10,13 +10,43 @@ async function fetchWithAuth<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
+  // Get token from localStorage for Authorization header
+  const token = localStorage.getItem('auth_token');
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+
+  // Add existing headers if they exist
+  if (options.headers) {
+    if (options.headers instanceof Headers) {
+      options.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+    } else if (Array.isArray(options.headers)) {
+      // Handle array format [['key', 'value'], ...]
+      options.headers.forEach(([key, value]) => {
+        headers[key] = value;
+      });
+    } else {
+      // Handle object format
+      Object.entries(options.headers).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          headers[key] = value;
+        }
+      });
+    }
+  }
+
+  // Add Authorization header if token exists
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(url, {
     ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
-    }
+    credentials: 'include', // Still include for cookie fallback
+    headers
   });
 
   if (!response.ok) {
