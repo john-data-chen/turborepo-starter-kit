@@ -264,17 +264,15 @@ src/
 - [x] Add task order sorting to database
 - [x] Add project order sorting to database
 - [x] Add user permissions management to limit the different actions
+- [x] Fix the issue of not auto redirecting after login (only in production)
 - [ ] Hide drag icon when user is not owner of board or project
 - [ ] Fix the issue of drag icon display incorrect
 - [ ] Fix the issues of CRUD of project and task
-- [ ] Fix the issue of not auto redirecting after login (only in production)
-- [ ] Update README.md in root
-- [ ] Update README.md in `apps/web`
-- [ ] Update README.md in `apps/api`
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
 - [ ] Add github actions for CI
+- [ ] Update README.md in root
 
 ---
 
