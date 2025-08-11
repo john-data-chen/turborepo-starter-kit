@@ -224,7 +224,7 @@ export function useAuthForm() {
 
       // Navigate to boards page with login success parameter
       console.log('[useAuthForm] Navigating to:', redirectUrl);
-      router.push(redirectUrl);
+      window.location.href = redirectUrl;
     } catch (err) {
       // Error is already handled by useAuth hook
       console.error('Login failed:', err);
