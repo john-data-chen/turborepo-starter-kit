@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo run build",
-    "lint": "turbo lint",
-    "format": "turbo format",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "playwright": "turbo run playwright --filter=web",
@@ -22,20 +22,20 @@
   "engines": {
     "node": "22.x"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "lint-staged": {
     "apps/web/**/*.{js,jsx,ts,tsx,css,scss}": [
       "pnpm --filter web format"
     ],
     "apps/web/**/*.{js,jsx,ts,tsx}": [
-      "pnpm --filter web lint --fix"
+      "pnpm --filter web lint"
     ],
     "apps/api/**/*.{js,ts}": [
       "pnpm --filter api format",
-      "pnpm --filter api lint --fix"
+      "pnpm --filter api lint"
     ],
     "packages/**/*.{js,ts,json}": [
-      "prettier --write --no-error-on-unmatched-pattern"
+      "pnpm --filter style-formatter-config exec prettier --write --no-error-on-unmatched-pattern"
     ]
   },
   "config": {
@@ -50,9 +50,7 @@
     "commitizen": "^4.3.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "oxlint": "^1.11.1",
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.5"
+    "turbo": "^2.5.6"
   },
   "pnpm": {
     "overrides": {
