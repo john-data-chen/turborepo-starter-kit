@@ -402,10 +402,10 @@ export function Board() {
       overProjectIndex
     );
 
-    // Update orderInBoard for all affected projects
+    // Update orderInBoard for all affected projects, ensuring it's a number
     const updatedProjects = reorderedProjects.map((project, index) => ({
       ...project,
-      orderInBoard: index
+      orderInBoard: Number(index)
     }));
 
     // Update the store with new order
@@ -435,9 +435,26 @@ export function Board() {
             `Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`
           );
 
-          return projectApi.updateProject(project._id, {
-            orderInBoard: newIndex
+          // Ensure orderInBoard is a number
+          const order =
+            typeof newIndex === 'number' ? newIndex : Number(newIndex);
+          if (isNaN(order)) {
+            console.error('Invalid orderInBoard value:', newIndex);
+            return Promise.reject(new Error('Invalid order value'));
+          }
+
+          const updateData = {
+            orderInBoard: order
+          };
+
+          console.log('Updating project with data:', {
+            projectId: project._id,
+            updateData,
+            newIndexType: typeof newIndex,
+            orderType: typeof order
           });
+
+          return projectApi.updateProject(project._id, updateData);
         }
         return Promise.resolve();
       });
