@@ -183,43 +183,61 @@ pnpm build
 
 ## 📖 Detailed Technical Documentation
 
-### Project Structure (only `apps/web`, wait to update more)
+### Project Structure (it is on development, so it is not complete and may change any time)
 
 ```text
-__tests__/
-│   ├── e2e/ # End-to-end tests (by Playwright)
-│   └── unit/ # Unit tests (by Vitest)
 .github/ # GitHub Actions workflows
 .husky/ # Husky configuration
-database/ # MongoDB docker-compose and initialization
-messages/ # i18n translations
-public/ # Static files such as images
-src/
-├── app/ # Next.js App routes
-│   └── [locale] # i18n locale routers
-│        ├── page.tsx # Root page
-│        ├── layout.tsx # Layout component
-│        ├── not-found.tsx # 404 page
-│        ├── (auth)/ # Authentication routes
-│             └── login/ # Login page
-│        └── (workspace)/ # Workspace routes
-│             └── boards/ # Kanban Overview routes
-│                 └── [boardId]/ # Board
-├── components/ # Reusable React components
-│   └── ui/ # Shadcn UI components
-├── constants/ # Application-wide constants
-├── hooks/ # Custom React hooks
-├── i18n/ # i18n configs
-├── lib/
-│   ├── db/ # Database functions
-│   ├── auth.ts # Authentication functions
-│   ├── store.ts # State management functions
-│   └── utils.ts # tailwindcss utils
-├── middleware.ts
-├── models/ # Database models
-├── styles/ # Global styles
-├── types/ # Type definitions
-└── env.example # Environment variables example
+apps/
+├── api/ # NestJS API server
+│   ├── __tests__/
+│   │   └── unit/ # Unit tests (by Vitest)
+│   ├── database/ # MongoDB docker-compose and initialization
+│   ├── src/
+│   │   ├── common/ # Nest pipe
+│   │   ├── constants/ # Nest constants
+│   │   ├── controllers/ # Nest controllers
+│   │   └── modules/ # Nest modules
+│   └── env.example # Environment variables example
+├── web/ # NextJS Web app
+│   ├── __tests__/
+│   │   ├── e2e/ # End-to-end tests (by Playwright)
+│   │   └── unit/ # Unit tests (by Vitest)
+│   ├── .github/ # GitHub Actions workflows
+│   ├── .husky/ # Husky configuration
+│   ├── database/ # MongoDB docker-compose and initialization
+│   ├── messages/ # i18n translations
+│   ├── public/ # Static files such as images
+│   ├── src/
+│   │   ├── app/ # Next.js App routes
+│   │   │   └── [locale] # i18n locale routers
+│   │        ├── page.tsx # Root page
+│   │        ├── layout.tsx # Layout component
+│   │        ├── not-found.tsx # 404 page
+│   │        ├── (auth)/ # Authentication routes
+│   │             └── login/ # Login page
+│   │        └── (workspace)/ # Workspace routes
+│   │             └── boards/ # Kanban Overview routes
+│   │                 └── [boardId]/ # Board
+│   ├── components/ # Reusable React components
+│   │   └── ui/ # Shadcn UI components
+│   ├── constants/ # Application-wide constants
+│   ├── hooks/ # Custom React hooks
+│   ├── i18n/ # i18n configs
+│   ├── lib/
+│   │   ├── db/ # Database functions
+│   │   ├── auth.ts # Authentication functions
+│   │   ├── store.ts # State management functions
+│   │   └── utils.ts # tailwindcss utils
+│   ├── middleware.ts
+│   ├── models/ # Database models
+│   ├── styles/ # Global styles
+│   ├── types/ # Type definitions
+    └── env.example # Environment variables example
+packages/
+├── global-tsconfig # global tsconfig
+├── linter-config # linter config
+├── style-formatter-config # prettier config
 ```
 
 ---
