@@ -183,43 +183,61 @@ pnpm build
 
 ## 📖 Detailed Technical Documentation
 
-### Project Structure (only `apps/web`, wait to update more)
+### Project Structure (it is on development, so it is not complete and may change any time)
 
 ```text
-__tests__/
-│   ├── e2e/ # End-to-end tests (by Playwright)
-│   └── unit/ # Unit tests (by Vitest)
 .github/ # GitHub Actions workflows
 .husky/ # Husky configuration
-database/ # MongoDB docker-compose and initialization
-messages/ # i18n translations
-public/ # Static files such as images
-src/
-├── app/ # Next.js App routes
-│   └── [locale] # i18n locale routers
-│        ├── page.tsx # Root page
-│        ├── layout.tsx # Layout component
-│        ├── not-found.tsx # 404 page
-│        ├── (auth)/ # Authentication routes
-│             └── login/ # Login page
-│        └── (workspace)/ # Workspace routes
-│             └── boards/ # Kanban Overview routes
-│                 └── [boardId]/ # Board
-├── components/ # Reusable React components
-│   └── ui/ # Shadcn UI components
-├── constants/ # Application-wide constants
-├── hooks/ # Custom React hooks
-├── i18n/ # i18n configs
-├── lib/
-│   ├── db/ # Database functions
-│   ├── auth.ts # Authentication functions
-│   ├── store.ts # State management functions
-│   └── utils.ts # tailwindcss utils
-├── middleware.ts
-├── models/ # Database models
-├── styles/ # Global styles
-├── types/ # Type definitions
-└── env.example # Environment variables example
+apps/
+├── api/ # NestJS API server
+│   ├── __tests__/
+│   │   └── unit/ # Unit tests (by Vitest)
+│   ├── database/ # MongoDB docker-compose and initialization
+│   ├── src/
+│   │   ├── common/ # Nest pipe
+│   │   ├── constants/ # Nest constants
+│   │   ├── controllers/ # Nest controllers
+│   │   └── modules/ # Nest modules
+│   └── env.example # Environment variables example
+├── web/ # NextJS Web app
+│   ├── __tests__/
+│   │   ├── e2e/ # End-to-end tests (by Playwright)
+│   │   └── unit/ # Unit tests (by Vitest)
+│   ├── .github/ # GitHub Actions workflows
+│   ├── .husky/ # Husky configuration
+│   ├── database/ # MongoDB docker-compose and initialization
+│   ├── messages/ # i18n translations
+│   ├── public/ # Static files such as images
+│   ├── src/
+│   │   ├── app/ # Next.js App routes
+│   │   │   └── [locale] # i18n locale routers
+│   │        ├── page.tsx # Root page
+│   │        ├── layout.tsx # Layout component
+│   │        ├── not-found.tsx # 404 page
+│   │        ├── (auth)/ # Authentication routes
+│   │             └── login/ # Login page
+│   │        └── (workspace)/ # Workspace routes
+│   │             └── boards/ # Kanban Overview routes
+│   │                 └── [boardId]/ # Board
+│   ├── components/ # Reusable React components
+│   │   └── ui/ # Shadcn UI components
+│   ├── constants/ # Application-wide constants
+│   ├── hooks/ # Custom React hooks
+│   ├── i18n/ # i18n configs
+│   ├── lib/
+│   │   ├── db/ # Database functions
+│   │   ├── auth.ts # Authentication functions
+│   │   ├── store.ts # State management functions
+│   │   └── utils.ts # tailwindcss utils
+│   ├── middleware.ts
+│   ├── models/ # Database models
+│   ├── styles/ # Global styles
+│   ├── types/ # Type definitions
+    └── env.example # Environment variables example
+packages/
+├── global-tsconfig # global tsconfig
+├── linter-config # linter config
+├── style-formatter-config # prettier config
 ```
 
 ---
@@ -235,7 +253,7 @@ src/
 
 ## Experimental Tools
 
-### Oxlint
+### Oxlint and Type-Aware plug-in
 
 - status: enabled
 - benefit:
@@ -243,6 +261,18 @@ src/
   - easier to setup
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
+- note: Oxlint is in a stable version, and I have used it in production for a long time.
+  But Type-Aware plug-in is in a preview version. It is not recommended to use it in production. It is a experimental in this project.
+
+### Turbopack in build mode
+
+- status: enabled
+- benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
+
+### Rspack
+
+- status: enabled
+- benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 
 ### React Compiler
 
@@ -264,17 +294,17 @@ src/
 - [x] Add task order sorting to database
 - [x] Add project order sorting to database
 - [x] Add user permissions management to limit the different actions
+- [x] Fix the issue of not auto redirecting after login (only in production)
+- [x] Fix the issue of drag project
 - [ ] Hide drag icon when user is not owner of board or project
 - [ ] Fix the issue of drag icon display incorrect
 - [ ] Fix the issues of CRUD of project and task
-- [ ] Fix the issue of not auto redirecting after login (only in production)
-- [ ] Update README.md in root
-- [ ] Update README.md in `apps/web`
-- [ ] Update README.md in `apps/api`
+- [ ] Refactor the shadcn ui components into packages folder
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
 - [ ] Add github actions for CI
+- [ ] Update README.md in root
 
 ---
 
@@ -287,6 +317,7 @@ This is a demo project, and I know little of German, so errors of translations m
 ### UI library
 
 - **Radix UI Ref Warning**:
+
   - Issue: Function components cannot be given refs warning in Dialog components
   - Impact: Development warning only, no production impact
   - Solution: Keep using `asChild` as per Radix UI docs, warning can be safely ignored

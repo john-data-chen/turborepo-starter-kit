@@ -45,6 +45,10 @@ apps/web/next-env.d.ts
 # Turborepo
 .turbo
 
+# files of AI
 .windsurfrules
 GEMINI.md
+.geminiignore
 .kiro
+LLXPRT.md
+.zed

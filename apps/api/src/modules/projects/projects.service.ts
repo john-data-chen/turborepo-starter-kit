@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
 import { TasksService } from '../tasks/tasks.service';
+import { BoardService } from '../boards/boards.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project, ProjectDocument } from './schemas/projects.schema';
@@ -18,7 +19,9 @@ export class ProjectsService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
     @Inject(forwardRef(() => TasksService))
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    @Inject(forwardRef(() => BoardService))
+    private boardService: BoardService
   ) {}
 
   /**
@@ -90,11 +93,46 @@ export class ProjectsService {
     console.log('Found project:', project);
     console.log('Checking permissions...');
 
-    // Check if the user is the owner of the project
-    if (project.owner.toString() !== userId) {
-      const error = 'You do not have permission to update this project';
-      console.error(error, { userId, projectId: id });
-      throw new BadRequestException(error);
+    // Permission model:
+    // - Owner can update any field
+    // - Board members (owner or members) can update orderInBoard only
+    const isOwner = project.owner.toString() === userId;
+    const isOrderOnly =
+      updateProjectDto.orderInBoard !== undefined &&
+      updateProjectDto.title === undefined &&
+      updateProjectDto.description === undefined &&
+      updateProjectDto.status === undefined &&
+      updateProjectDto.dueDate === undefined &&
+      updateProjectDto.assigneeId === undefined;
+
+    if (!isOwner) {
+      if (isOrderOnly) {
+        // Allow if user is a member of the board containing this project
+        try {
+          const boardId = project.board.toString();
+          const board = await this.boardService.findOne(boardId, userId);
+          if (!board) {
+            const error =
+              'You do not have permission to reorder projects in this board';
+            console.error(error, { userId, projectId: id, boardId });
+            throw new BadRequestException(error);
+          }
+        } catch (err) {
+          const error =
+            'You do not have permission to reorder projects in this board';
+          console.error(error, {
+            userId,
+            projectId: id,
+            boardId: project.board.toString(),
+            originalError: err instanceof Error ? err.message : String(err)
+          });
+          throw new BadRequestException(error);
+        }
+      } else {
+        const error = 'You do not have permission to update this project';
+        console.error(error, { userId, projectId: id });
+        throw new BadRequestException(error);
+      }
     }
 
     console.log('Updating project with data:', updateProjectDto);
