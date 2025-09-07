@@ -235,7 +235,7 @@ src/
 
 ## Experimental Tools
 
-### Oxlint
+### Oxlint and Type-Aware plug-in
 
 - status: enabled
 - benefit:
@@ -243,16 +243,18 @@ src/
   - easier to setup
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
+- note: Oxlint is in a stable version, and I have used it in production for a long time.
+  But Type-Aware plug-in is in a preview version. It is not recommended to use it in production. It is a experimental in this project.
 
 ### Turbopack in build mode
 
 - status: enabled
-- benefit: It is faster than webpack, and it can be used as a drop-in replacement for webpack
+- benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
 
 ### Rspack
 
 - status: enabled
-- benefit: It is faster than webpack, and it can be used as a drop-in replacement for webpack
+- benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 
 ### React Compiler
 
@@ -275,6 +277,7 @@ src/
 - [x] Add project order sorting to database
 - [x] Add user permissions management to limit the different actions
 - [x] Fix the issue of not auto redirecting after login (only in production)
+- [x] Fix the issue of drag project
 - [ ] Hide drag icon when user is not owner of board or project
 - [ ] Fix the issue of drag icon display incorrect
 - [ ] Fix the issues of CRUD of project and task
@@ -296,6 +299,7 @@ This is a demo project, and I know little of German, so errors of translations m
 ### UI library
 
 - **Radix UI Ref Warning**:
+
   - Issue: Function components cannot be given refs warning in Dialog components
   - Impact: Development warning only, no production impact
   - Solution: Keep using `asChild` as per Radix UI docs, warning can be safely ignored
