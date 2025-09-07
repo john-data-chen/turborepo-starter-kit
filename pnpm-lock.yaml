@@ -378,7 +378,7 @@ importers:
         version: 0.1.5
 
   packages/style-formatter-config:
-    dependencies:
+    devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^5.2.2
         version: 5.2.2(prettier@3.6.2)
