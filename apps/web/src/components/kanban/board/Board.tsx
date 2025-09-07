@@ -3,7 +3,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
 import { taskApi } from '@/lib/api/taskApi';
-import { useTask } from '@/lib/api/tasks/queries';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { Project, Task } from '@/types/dbInterface';
 import DraggableData from '@/types/drag&drop';
@@ -77,24 +76,8 @@ export function Board() {
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const { data: taskData } = useTask(activeTask?._id || '');
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-
-  const _getTask = async (taskId: string) => {
-    if (taskId === activeTask?._id && taskData) {
-      return taskData;
-    }
-    // Fallback to fetching the task if not in cache
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`);
-      if (!response.ok) throw new Error('Failed to fetch task');
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching task:', error);
-      return undefined;
-    }
-  };
 
   function hasDraggableData<T extends Active | Over>(
     entry: T | null | undefined
