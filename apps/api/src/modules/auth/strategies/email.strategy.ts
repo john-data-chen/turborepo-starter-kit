@@ -5,9 +5,6 @@ import { Strategy } from 'passport-custom'
 
 import { AuthService } from '../auth.service'
 
-// Enable debug logging for this file
-const DEBUG = true;
-
 @Injectable()
 export class EmailStrategy extends PassportStrategy(Strategy, 'email') {
   private readonly logger = new Logger(EmailStrategy.name)
