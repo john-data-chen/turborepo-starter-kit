@@ -1,50 +1,45 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { Task } from '@/types/dbInterface';
-import { TaskStatus } from '@/types/dbInterface';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { cva } from 'class-variance-authority';
-import { format } from 'date-fns';
-import { PointerIcon } from 'lucide-react';
-import { Calendar1Icon, FileTextIcon, UserIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { TaskActions } from './TaskAction';
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { Task } from '@/types/dbInterface'
+import { TaskStatus } from '@/types/dbInterface'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { cva } from 'class-variance-authority'
+import { format } from 'date-fns'
+import { PointerIcon } from 'lucide-react'
+import { Calendar1Icon, FileTextIcon, UserIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useEffect } from 'react'
+import { TaskActions } from './TaskAction'
 
 interface TaskCardProps {
-  task: Task;
-  isOverlay?: boolean;
-  onUpdate?: () => void;
-  isDragEnabled?: boolean;
+  task: Task
+  isOverlay?: boolean
+  onUpdate?: () => void
+  isDragEnabled?: boolean
 }
 
-export type TaskType = 'Task';
+export type TaskType = 'Task'
 
 export interface TaskDragData {
-  type: TaskType;
-  task: Task;
+  type: TaskType
+  task: Task
 }
 
 function getLastField(task: Task): string {
-  const visibleFields = [];
-  if (task.creator) visibleFields.push('creator');
-  if (task.lastModifier) visibleFields.push('lastModifier');
-  if (task.assignee) visibleFields.push('assignee');
-  if (task.dueDate) visibleFields.push('dueDate');
-  if (task.description) visibleFields.push('description');
+  const visibleFields = []
+  if (task.creator) visibleFields.push('creator')
+  if (task.lastModifier) visibleFields.push('lastModifier')
+  if (task.assignee) visibleFields.push('assignee')
+  if (task.dueDate) visibleFields.push('dueDate')
+  if (task.description) visibleFields.push('description')
 
-  return visibleFields[visibleFields.length - 1] || '';
+  return visibleFields[visibleFields.length - 1] || ''
 }
 
-export function TaskCard({
-  task,
-  isOverlay = false,
-  onUpdate,
-  isDragEnabled = false
-}: TaskCardProps) {
-  const t = useTranslations('kanban.task');
+export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = false }: TaskCardProps) {
+  const t = useTranslations('kanban.task')
 
   // Debug log for component props
   console.log(`[TaskCard] Rendering task: ${task._id}`, {
@@ -53,14 +48,12 @@ export function TaskCard({
     isOverlay,
     isDragEnabled,
     timestamp: new Date().toISOString()
-  });
+  })
 
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
-    console.log(
-      `[TaskCard] Skipping deleted task: ${task?._id || 'undefined'}`
-    );
-    return null;
+    console.log(`[TaskCard] Skipping deleted task: ${task?._id || 'undefined'}`)
+    return null
   }
 
   // Log before useSortable
@@ -70,18 +63,9 @@ export function TaskCard({
     isDragEnabled,
     dragDisabled: isOverlay || !isDragEnabled,
     timestamp: new Date().toISOString()
-  });
+  })
 
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-    active,
-    over
-  } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging, active, over } = useSortable({
     id: task._id,
     data: {
       type: 'Task',
@@ -95,7 +79,7 @@ export function TaskCard({
       // @ts-ignore - Adding custom data attributes for debugging
       'data-draggable': String(isDragEnabled && !isOverlay)
     }
-  });
+  })
 
   // Log after useSortable
   useEffect(() => {
@@ -108,13 +92,13 @@ export function TaskCard({
       isDragEnabled,
       isOverlay,
       timestamp: new Date().toISOString()
-    });
-  }, [isDragging, active, over, transform, task._id, isDragEnabled, isOverlay]);
+    })
+  }, [isDragging, active, over, transform, task._id, isDragEnabled, isOverlay])
 
   const cardStyle: React.CSSProperties = {
     transition,
     transform: CSS.Translate.toString(transform)
-  };
+  }
 
   const cardVariants = cva('', {
     variants: {
@@ -123,14 +107,10 @@ export function TaskCard({
         overlay: 'ring-2 ring-primary'
       }
     }
-  });
+  })
 
-  type DragState = 'over' | 'overlay' | undefined;
-  const dragState: DragState = isOverlay
-    ? 'overlay'
-    : isDragging
-      ? 'over'
-      : undefined;
+  type DragState = 'over' | 'overlay' | undefined
+  const dragState: DragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
 
   // Log drag state changes
   useEffect(() => {
@@ -140,7 +120,7 @@ export function TaskCard({
         isOverlay,
         isDragEnabled,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     return () => {
@@ -148,16 +128,16 @@ export function TaskCard({
         console.log(`[TaskCard] Drag ended for task: ${task._id}`, {
           taskId: task._id,
           timestamp: new Date().toISOString()
-        });
+        })
       }
-    };
-  }, [isDragging, task._id, isOverlay, isDragEnabled]);
+    }
+  }, [isDragging, task._id, isOverlay, isDragEnabled])
 
   const statusConfig: Record<
     TaskStatus,
     {
-      label: string;
-      className: string;
+      label: string
+      className: string
     }
   > = {
     TODO: {
@@ -172,7 +152,7 @@ export function TaskCard({
       label: t('statusDone'),
       className: 'bg-green-500 hover:bg-green-500'
     }
-  };
+  }
 
   return (
     <Card
@@ -195,18 +175,8 @@ export function TaskCard({
           )}
         </div>
         <div className="flex flex-col gap-2 items-start flex-1 mx-2">
-          {task.title && (
-            <h3 className="text-lg leading-none font-medium tracking-tight">
-              {task.title}
-            </h3>
-          )}
-          <Badge
-            variant="secondary"
-            className={cn(
-              'text-white',
-              task.status && statusConfig[task.status]?.className
-            )}
-          >
+          {task.title && <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>}
+          <Badge variant="secondary" className={cn('text-white', task.status && statusConfig[task.status]?.className)}>
             {task.status ? statusConfig[task.status]?.label : t('noStatus')}
           </Badge>
         </div>
@@ -234,15 +204,11 @@ export function TaskCard({
           </div>
         )}
         {task.lastModifier && (
-          <div
-            className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}
-          >
+          <div className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                <span>
-                  {t('lastModifiedBy', { name: task.lastModifier.name })}
-                </span>
+                <span>{t('lastModifiedBy', { name: task.lastModifier.name })}</span>
               </div>
             </CardContent>
           </div>
@@ -263,10 +229,7 @@ export function TaskCard({
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar1Icon className="h-4 w-4 flex-shrink-0 mt-0.5" />
                 <span>
-                  {t('dueDate')}:{' '}
-                  {task.dueDate
-                    ? format(new Date(task.dueDate), 'yyyy/MM/dd')
-                    : ''}
+                  {t('dueDate')}: {task.dueDate ? format(new Date(task.dueDate), 'yyyy/MM/dd') : ''}
                 </span>
               </div>
             </CardContent>
@@ -277,10 +240,7 @@ export function TaskCard({
             <CardContent className="px-3 py-2">
               <div className="flex items-start gap-2">
                 <FileTextIcon className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                <p
-                  className="text-sm text-muted-foreground leading-relaxed"
-                  data-testid="task-card-description"
-                >
+                <p className="text-sm text-muted-foreground leading-relaxed" data-testid="task-card-description">
                   {task.description}
                 </p>
               </div>
@@ -289,7 +249,7 @@ export function TaskCard({
         )}
       </div>
     </Card>
-  );
+  )
 }
 
-export default TaskCard;
+export default TaskCard

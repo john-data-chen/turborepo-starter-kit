@@ -10,20 +10,15 @@ import {
   Req,
   UnauthorizedException,
   UseGuards
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags
-} from '@nestjs/swagger';
+} from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskResponseDto } from './dto/task-response.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { TasksService } from './tasks.service';
+import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { CreateTaskDto } from './dto/create-task.dto'
+import { TaskResponseDto } from './dto/task-response.dto'
+import { UpdateTaskDto } from './dto/update-task.dto'
+import { TasksService } from './tasks.service'
 
 @ApiTags('tasks')
 @ApiBearerAuth()
@@ -41,14 +36,11 @@ export class TasksController {
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  create(
-    @Body() createTaskDto: CreateTaskDto,
-    @Req() req: { user: { _id: string } }
-  ): Promise<TaskResponseDto> {
+  create(@Body() createTaskDto: CreateTaskDto, @Req() req: { user: { _id: string } }): Promise<TaskResponseDto> {
     if (!req.user?._id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException('User not authenticated')
     }
-    return this.tasksService.create(createTaskDto, req.user._id);
+    return this.tasksService.create(createTaskDto, req.user._id)
   }
 
   @Get()
@@ -65,7 +57,7 @@ export class TasksController {
     @Query('projectId') projectId?: string,
     @Query('assigneeId') assigneeId?: string
   ): Promise<TaskResponseDto[]> {
-    return this.tasksService.findAll(projectId, assigneeId);
+    return this.tasksService.findAll(projectId, assigneeId)
   }
 
   @Get(':id')
@@ -77,10 +69,8 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  findOne(
-    @Param('id', ParseObjectIdPipe) id: string
-  ): Promise<TaskResponseDto> {
-    return this.tasksService.findOne(id);
+  findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<TaskResponseDto> {
+    return this.tasksService.findOne(id)
   }
 
   @Patch(':id')
@@ -98,7 +88,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req
   ): Promise<TaskResponseDto> {
-    return this.tasksService.update(id, updateTaskDto, req.user.userId);
+    return this.tasksService.update(id, updateTaskDto, req.user.userId)
   }
 
   @Delete(':id')
@@ -110,11 +100,8 @@ export class TasksController {
     status: 403,
     description: 'Forbidden - Only the task creator can delete the task'
   })
-  remove(
-    @Param('id', ParseObjectIdPipe) id: string,
-    @Req() req
-  ): Promise<void> {
-    return this.tasksService.remove(id, req.user.userId);
+  remove(@Param('id', ParseObjectIdPipe) id: string, @Req() req): Promise<void> {
+    return this.tasksService.remove(id, req.user.userId)
   }
 
   @Patch(':id/move')
@@ -132,15 +119,10 @@ export class TasksController {
     @Body() moveData: { projectId: string; orderInProject: number },
     @Req() req
   ): Promise<TaskResponseDto> {
-    console.log('Move task - User from request:', req.user); // Debug log
+    console.log('Move task - User from request:', req.user) // Debug log
     if (!req.user || !req.user._id) {
-      throw new UnauthorizedException('User not authenticated');
+      throw new UnauthorizedException('User not authenticated')
     }
-    return this.tasksService.moveTask(
-      id,
-      moveData.projectId,
-      moveData.orderInProject,
-      req.user._id
-    );
+    return this.tasksService.moveTask(id, moveData.projectId, moveData.orderInProject, req.user._id)
   }
 }

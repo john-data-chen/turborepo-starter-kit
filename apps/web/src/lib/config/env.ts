@@ -3,32 +3,32 @@
 
 // Only load dotenv in Node.js environment
 if (typeof process !== 'undefined' && !process.env.VERCEL) {
-  (async () => {
+  ;(async () => {
     try {
       // Use dynamic import for ESM compatibility
-      const dotenv = await import('dotenv');
-      const path = await import('path');
+      const dotenv = await import('dotenv')
+      const path = await import('path')
 
       // Load environment variables from .env file in the project root
-      const envPath = path.resolve(process.cwd(), '.env');
-      console.log('Loading .env from:', envPath);
+      const envPath = path.resolve(process.cwd(), '.env')
+      console.log('Loading .env from:', envPath)
 
-      const result = dotenv.config({ path: envPath });
+      const result = dotenv.config({ path: envPath })
       if (result.error) {
-        console.error('Error loading .env file:', result.error);
+        console.error('Error loading .env file:', result.error)
         if (process.env.NODE_ENV !== 'production') {
-          throw result.error;
+          throw result.error
         }
       }
     } catch (error) {
-      console.warn('Failed to load .env file:', error);
+      console.warn('Failed to load .env file:', error)
     }
-  })();
+  })()
 }
 
 // Get environment variables with defaults
-const nodeEnv = process.env.NODE_ENV || 'development';
-const databaseUrl = process.env.DATABASE_URL;
+const nodeEnv = process.env.NODE_ENV || 'development'
+const databaseUrl = process.env.DATABASE_URL
 
 // Validate required environment variables in Node.js environment
 if (typeof process !== 'undefined' && !process.env.VERCEL) {
@@ -37,10 +37,10 @@ if (typeof process !== 'undefined' && !process.env.VERCEL) {
       nodeEnv === 'production'
         ? 'Production DATABASE_URL is not defined'
         : 'Local development DATABASE_URL is not defined. Please create a .env file with DATABASE_URL.'
-    );
-    console.error('Environment configuration error:', error);
+    )
+    console.error('Environment configuration error:', error)
     if (nodeEnv !== 'production') {
-      throw error;
+      throw error
     }
   }
 }
@@ -62,4 +62,4 @@ export const config = {
   // Feature flags
   enableAnalytics: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true',
   debug: process.env.NEXT_PUBLIC_DEBUG === 'true'
-};
+}

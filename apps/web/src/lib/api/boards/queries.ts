@@ -1,31 +1,31 @@
-import { BOARD_KEYS } from '@/types/boardApi';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { boardApi } from '../boardApi';
+import { BOARD_KEYS } from '@/types/boardApi'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { boardApi } from '../boardApi'
 
 export const useBoards = () => {
   return useQuery({
     queryKey: BOARD_KEYS.list(),
     queryFn: () => {
-      console.log('[useBoards] Fetching boards from API...');
-      return boardApi.getBoards();
+      console.log('[useBoards] Fetching boards from API...')
+      return boardApi.getBoards()
     },
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000 // 10 minutes (formerly cacheTime)
-  });
-};
+  })
+}
 
 export const useBoard = (boardId?: string) => {
   return useQuery({
     queryKey: BOARD_KEYS.detail(boardId || ''),
     queryFn: () => boardApi.getBoardById(boardId || ''),
     enabled: !!boardId
-  });
-};
+  })
+}
 
 export const useCreateBoard = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: boardApi.createBoard,
@@ -33,34 +33,31 @@ export const useCreateBoard = () => {
       // Invalidate the boards list query to refetch
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
-      });
+      })
     }
-  });
-};
+  })
+}
 
 export const useUpdateBoard = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({
-      id,
-      ...updates
-    }: { id: string } & Parameters<typeof boardApi.updateBoard>[1]) =>
+    mutationFn: ({ id, ...updates }: { id: string } & Parameters<typeof boardApi.updateBoard>[1]) =>
       boardApi.updateBoard(id, updates),
     onSuccess: (updatedBoard) => {
       // Invalidate both the list and the specific board
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.detail(updatedBoard._id)
-      });
+      })
     }
-  });
-};
+  })
+}
 
 export const useDeleteBoard = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: boardApi.deleteBoard,
@@ -68,34 +65,29 @@ export const useDeleteBoard = () => {
       // Invalidate the boards list
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
-      });
+      })
       // Remove the specific board from the cache
       queryClient.removeQueries({
         queryKey: BOARD_KEYS.detail(boardId)
-      });
+      })
     }
-  });
-};
+  })
+}
 
 export const useAddBoardMember = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({
-      boardId,
-      memberId
-    }: {
-      boardId: string;
-      memberId: string;
-    }) => boardApi.addBoardMember(boardId, memberId),
+    mutationFn: ({ boardId, memberId }: { boardId: string; memberId: string }) =>
+      boardApi.addBoardMember(boardId, memberId),
     onSuccess: (updatedBoard) => {
       // Invalidate the board data
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.detail(updatedBoard._id)
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
-      });
+      })
     }
-  });
-};
+  })
+}

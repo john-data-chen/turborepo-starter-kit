@@ -1,31 +1,25 @@
-import {
-  IsArray,
-  IsMongoId,
-  IsNotEmpty,
-  IsOptional,
-  IsString
-} from 'class-validator';
+import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export class CreateBoardDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title: string
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string
 
   @IsMongoId()
   @IsNotEmpty()
-  owner: string;
+  owner: string
 
   @IsArray()
   @IsMongoId({ each: true })
   @IsOptional()
-  members?: string[];
+  members?: string[]
 
   @IsArray()
   @IsMongoId({ each: true })
   @IsOptional()
-  projects?: string[];
+  projects?: string[]
 }

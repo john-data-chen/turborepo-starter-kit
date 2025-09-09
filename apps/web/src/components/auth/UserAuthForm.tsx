@@ -1,40 +1,33 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { defaultEmail } from '@/constants/demoData';
-import { useAuthForm } from '@/hooks/useAuth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { defaultEmail } from '@/constants/demoData'
+import { useAuthForm } from '@/hooks/useAuth'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address')
-});
+})
 
 export default function UserAuthForm() {
-  const { handleSubmit, isLoading, error, isNavigating } = useAuthForm();
-  const t = useTranslations('login');
+  const { handleSubmit, isLoading, error, isNavigating } = useAuthForm()
+  const t = useTranslations('login')
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: defaultEmail
     }
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await handleSubmit(values.email);
-  };
+    await handleSubmit(values.email)
+  }
 
   return (
     <Form {...form}>
@@ -65,27 +58,15 @@ export default function UserAuthForm() {
         />
 
         {error && (
-          <div
-            className="text-sm text-red-600 mt-2"
-            data-testid="error-message"
-          >
+          <div className="text-sm text-red-600 mt-2" data-testid="error-message">
             {error}
           </div>
         )}
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isLoading || isNavigating}
-          data-testid="submit-button"
-        >
-          {isLoading || isNavigating ? (
-            <div className="h-4 w-4 animate-spin" />
-          ) : (
-            t('continueButton')
-          )}
+        <Button type="submit" className="w-full" disabled={isLoading || isNavigating} data-testid="submit-button">
+          {isLoading || isNavigating ? <div className="h-4 w-4 animate-spin" /> : t('continueButton')}
         </Button>
       </form>
     </Form>
-  );
+  )
 }

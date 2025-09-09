@@ -1,50 +1,47 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
-import { useWorkspaceStore } from '@/stores/workspace-store';
-import { Project, type Task, UserInfo } from '@/types/dbInterface';
-import { SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { cva } from 'class-variance-authority';
-import { PointerIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import NewTaskDialog from '../task/NewTaskDialog';
-import { TaskCard } from '../task/TaskCard';
-import { ProjectActions as ProjectActionsComponent } from './ProjectAction';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { Project, type Task, UserInfo } from '@/types/dbInterface'
+import { SortableContext, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { cva } from 'class-variance-authority'
+import { PointerIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import NewTaskDialog from '../task/NewTaskDialog'
+import { TaskCard } from '../task/TaskCard'
+import { ProjectActions as ProjectActionsComponent } from './ProjectAction'
 
 export interface ProjectDragData {
-  type: 'Project';
-  project: Project;
+  type: 'Project'
+  project: Project
 }
 
 interface BoardProjectProps {
-  project: Project;
-  tasks: Task[];
-  isOverlay?: boolean;
-  isBoardOwner: boolean;
-  currentUserId: string;
+  project: Project
+  tasks: Task[]
+  isOverlay?: boolean
+  isBoardOwner: boolean
+  currentUserId: string
 }
 
 // Memoize the component to prevent unnecessary re-renders
-export const BoardProject = memo(
-  BoardProjectComponent,
-  (prevProps, nextProps) => {
-    // Only re-render if these props change
-    return (
-      prevProps.project._id === nextProps.project._id &&
-      prevProps.project.title === nextProps.project.title &&
-      prevProps.project.description === nextProps.project.description &&
-      JSON.stringify(prevProps.tasks) === JSON.stringify(nextProps.tasks) &&
-      prevProps.isOverlay === nextProps.isOverlay
-    );
-  }
-);
+export const BoardProject = memo(BoardProjectComponent, (prevProps, nextProps) => {
+  // Only re-render if these props change
+  return (
+    prevProps.project._id === nextProps.project._id &&
+    prevProps.project.title === nextProps.project.title &&
+    prevProps.project.description === nextProps.project.description &&
+    JSON.stringify(prevProps.tasks) === JSON.stringify(nextProps.tasks) &&
+    prevProps.isOverlay === nextProps.isOverlay
+  )
+})
 
 // Set display name for better dev tools
-BoardProject.displayName = 'BoardProject';
+BoardProject.displayName = 'BoardProject'
 
 function BoardProjectComponent({
   project,
@@ -53,26 +50,23 @@ function BoardProjectComponent({
   isBoardOwner,
   currentUserId: _currentUserId
 }: BoardProjectProps) {
-  const { filter, fetchTasksByProject } = useWorkspaceStore();
-  const t = useTranslations('kanban.project');
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [_isLoading, setIsLoading] = useState(false);
-  const [_error, setError] = useState<string | null>(null);
+  const { filter, fetchTasksByProject } = useWorkspaceStore()
+  const t = useTranslations('kanban.project')
+  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  const [_isLoading, setIsLoading] = useState(false)
+  const [_error, setError] = useState<string | null>(null)
 
   // Memoize the helper function
-  const getUserDisplayName = useCallback(
-    (user: string | UserInfo | null | undefined): string => {
-      if (!user) return 'Unassigned';
-      if (typeof user === 'string') return user;
-      return user.name || user.email || 'Unknown User';
-    },
-    []
-  );
+  const getUserDisplayName = useCallback((user: string | UserInfo | null | undefined): string => {
+    if (!user) return 'Unassigned'
+    if (typeof user === 'string') return user
+    return user.name || user.email || 'Unknown User'
+  }, [])
 
   // Update local state when initialTasks changes
   useEffect(() => {
-    setTasks(initialTasks);
-  }, [initialTasks]);
+    setTasks(initialTasks)
+  }, [initialTasks])
 
   // Memoize the project actions to prevent unnecessary re-renders
   const _projectActions = useMemo(
@@ -81,61 +75,52 @@ function BoardProjectComponent({
         id={project._id}
         title={project.title}
         description={project.description ?? undefined}
-        ownerId={
-          typeof project.owner === 'string' ? project.owner : project.owner._id
-        }
+        ownerId={typeof project.owner === 'string' ? project.owner : project.owner._id}
       />
     ),
     [project._id, project.title, project.description, project.owner]
-  );
+  )
 
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
-    if (!project?._id) return;
+    if (!project?._id) return
 
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
-      const fetchedTasks = await fetchTasksByProject(project._id);
-      setTasks(fetchedTasks);
+      const fetchedTasks = await fetchTasksByProject(project._id)
+      setTasks(fetchedTasks)
     } catch (err) {
-      console.error('Failed to load tasks:', err);
-      setError('Failed to load tasks');
+      console.error('Failed to load tasks:', err)
+      setError('Failed to load tasks')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [project?._id, fetchTasksByProject]);
+  }, [project?._id, fetchTasksByProject])
 
   // Handle task updates from child components
   const handleTaskUpdate = useCallback(async () => {
     try {
-      const fetchedTasks = await fetchTasksByProject(project._id);
-      setTasks(fetchedTasks);
+      const fetchedTasks = await fetchTasksByProject(project._id)
+      setTasks(fetchedTasks)
     } catch (error) {
-      console.error('Error updating tasks:', error);
+      console.error('Error updating tasks:', error)
     }
-  }, [project._id, fetchTasksByProject]);
+  }, [project._id, fetchTasksByProject])
 
   // Fetch tasks when the project changes
   useEffect(() => {
-    loadTasks();
-  }, [loadTasks]);
+    loadTasks()
+  }, [loadTasks])
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks?.length) return tasks || [];
-    return tasks.filter((task) => task.status === filter.status);
-  }, [tasks, filter.status]);
+    if (!filter.status || !tasks?.length) return tasks || []
+    return tasks.filter((task) => task.status === filter.status)
+  }, [tasks, filter.status])
 
   // Setup drag & drop functionality
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: project._id,
     data: {
       type: 'Project',
@@ -145,7 +130,7 @@ function BoardProjectComponent({
     attributes: {
       roleDescription: `Project: ${project.title}`
     }
-  });
+  })
 
   // Add data attributes for debugging
   const containerProps = {
@@ -153,50 +138,40 @@ function BoardProjectComponent({
     'data-board-owner': isBoardOwner,
     'data-project-id': project._id,
     'data-draggable': isBoardOwner ? 'true' : 'false'
-  };
+  }
 
   // Define drag & drop styles
   const style = {
     transition,
     transform: CSS.Translate.toString(transform)
-  };
+  }
 
   // Define card style variants based on drag state
-  const variants = cva(
-    'h-[75vh] max-h-[75vh] w-full md:w-[380px] bg-secondary flex flex-col shrink-0 snap-center',
-    {
-      variants: {
-        dragging: {
-          default: 'border-2 border-transparent',
-          over: 'ring-2 opacity-30',
-          overlay: 'ring-2 ring-primary'
-        }
+  const variants = cva('h-[75vh] max-h-[75vh] w-full md:w-[380px] bg-secondary flex flex-col shrink-0 snap-center', {
+    variants: {
+      dragging: {
+        default: 'border-2 border-transparent',
+        over: 'ring-2 opacity-30',
+        overlay: 'ring-2 ring-primary'
       }
     }
-  );
+  })
 
-  const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined;
+  const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
 
   // Memoize task items with drag enabled for board owners
   const _taskItems = useMemo(() => {
     // Filter out any tasks that are marked as deleted
-    const validTasks = tasks.filter((task) => !task._deleted);
+    const validTasks = tasks.filter((task) => !task._deleted)
 
     return validTasks.map((task) => ({
       id: task._id,
-      element: (
-        <TaskCard
-          key={task._id}
-          task={task}
-          onUpdate={loadTasks}
-          isDragEnabled={isBoardOwner}
-        />
-      )
-    }));
-  }, [tasks, loadTasks, isBoardOwner]);
+      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} isDragEnabled={isBoardOwner} />
+    }))
+  }, [tasks, loadTasks, isBoardOwner])
 
   // Memoize task IDs for better performance
-  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
+  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks])
 
   return (
     <Card
@@ -208,18 +183,13 @@ function BoardProjectComponent({
         isBoardOwner ? 'cursor-grab active:cursor-grabbing' : 'cursor-default', // Add cursor style based on drag ability
         'project-container' // Added for easier debugging
       )}
-      data-testid={`project-container`}
+      data-testid="project-container"
       {...containerProps}
     >
       <CardHeader className="flex flex-row items-center justify-between border-b-2 p-4 space-y-0">
         <div className="flex items-center gap-2">
           {isBoardOwner ? (
-            <Button
-              variant="ghost"
-              {...attributes}
-              {...listeners}
-              className="text-primary/50 h-8 w-16 cursor-grab p-0"
-            >
+            <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
               <span className="sr-only">drag project: {project.title}</span>
               <PointerIcon className="h-4 w-4" />
             </Button>
@@ -261,11 +231,7 @@ function BoardProjectComponent({
                 {filteredTasks
                   .filter((task) => !task._deleted) // Ensure we don't render deleted tasks
                   .map((task) => (
-                    <TaskCard
-                      key={task._id}
-                      task={task}
-                      onUpdate={handleTaskUpdate}
-                    />
+                    <TaskCard key={task._id} task={task} onUpdate={handleTaskUpdate} />
                   ))}
               </div>
             </SortableContext>
@@ -273,7 +239,7 @@ function BoardProjectComponent({
         </ScrollArea>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 export function BoardContainer({ children }: { children: React.ReactNode }) {
@@ -282,5 +248,5 @@ export function BoardContainer({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col md:flex-row gap-4">{children}</div>
       <ScrollBar orientation="horizontal" className="hidden md:flex" />
     </ScrollArea>
-  );
+  )
 }

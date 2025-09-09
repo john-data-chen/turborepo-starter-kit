@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { useAuthStore } from '@/stores/auth-store';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ThemeProvider } from 'next-themes';
+import { useAuthStore } from '@/stores/auth-store'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ThemeProvider } from 'next-themes'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -14,26 +14,21 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false
     }
   }
-});
+})
 
 function SyncAuthStore() {
-  useAuthStore();
-  return null;
+  useAuthStore()
+  return null
 }
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <SyncAuthStore />
         {children}
         <ReactQueryDevtools initialIsOpen={false} />
       </ThemeProvider>
     </QueryClientProvider>
-  );
+  )
 }

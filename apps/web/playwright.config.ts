@@ -1,23 +1,23 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 // Add this line to import dotenv
-import dotenv from 'dotenv';
-import path from 'path';
+import dotenv from 'dotenv'
+import path from 'path'
 
 // Load environment variables from .env file first (as fallback)
 // dotenv will not override existing environment variables (e.g., from CI)
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '.env') })
 
 // Load environment variables from .env.test file
 // Variables in .env.test will override those in .env if they exist
 // Existing environment variables (e.g., from CI) will still take precedence
-dotenv.config({ path: path.resolve(__dirname, '.env.test'), override: true }); // Use override: true here to ensure .env.test takes precedence over .env
+dotenv.config({ path: path.resolve(__dirname, '.env.test'), override: true }) // Use override: true here to ensure .env.test takes precedence over .env
 
 // Ensure environment variables are set or use default values
 // process.env will now contain variables loaded according to the priority:
 // 1. System Env (CI)
 // 2. .env.test
 // 3. .env
-const baseURL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const baseURL = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -97,4 +97,4 @@ export default defineConfig({
     stdout: 'pipe',
     stderr: 'pipe'
   }
-});
+})

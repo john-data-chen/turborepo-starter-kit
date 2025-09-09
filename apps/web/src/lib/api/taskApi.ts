@@ -1,75 +1,65 @@
-import { API_URL } from '@/constants/routes';
-import { Task } from '@/types/dbInterface';
-import {
-  CreateTaskInput,
-  TaskPermissions,
-  UpdateTaskInput
-} from '@/types/taskApi';
+import { API_URL } from '@/constants/routes'
+import { Task } from '@/types/dbInterface'
+import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from '@/types/taskApi'
 
 // API Endpoint
-const TASKS_ENDPOINT = `${API_URL}/tasks`;
+const TASKS_ENDPOINT = `${API_URL}/tasks`
 
 // Helper function to handle fetch requests
-async function fetchWithAuth<T>(
-  url: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise<T> {
   // Get token from localStorage for Authorization header
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem('auth_token')
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'
-  };
+  }
 
   // Add existing headers if they exist
   if (options.headers) {
     if (options.headers instanceof Headers) {
       options.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
+        headers[key] = value
+      })
     } else if (Array.isArray(options.headers)) {
       // Handle array format [['key', 'value'], ...]
       options.headers.forEach(([key, value]) => {
-        headers[key] = value;
-      });
+        headers[key] = value
+      })
     } else {
       // Handle object format
       Object.entries(options.headers).forEach(([key, value]) => {
         if (typeof value === 'string') {
-          headers[key] = value;
+          headers[key] = value
         }
-      });
+      })
     }
   }
 
   // Add Authorization header if token exists
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`
   }
 
   const response = await fetch(url, {
     ...options,
     credentials: 'include', // Still include for cookie fallback
     headers
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.text().catch(() => 'Request failed');
+    const error = await response.text().catch(() => 'Request failed')
     if (typeof window !== 'undefined' && response.status === 401) {
       // Handle unauthorized (e.g., redirect to login)
     }
-    throw new Error(error || 'Request failed');
+    throw new Error(error || 'Request failed')
   }
 
   // Handle 204 No Content or empty responses
-  if (
-    response.status === 204 ||
-    response.headers.get('content-length') === '0'
-  ) {
-    return null as unknown as T;
+  if (response.status === 204 || response.headers.get('content-length') === '0') {
+    return null as unknown as T
   }
 
-  return response.json();
+  return response.json()
 }
 
 /**
@@ -79,21 +69,21 @@ async function fetchWithAuth<T>(
 export const taskApi = {
   // Get all tasks (with optional filters)
   async getTasks(projectId?: string, assigneeId?: string): Promise<Task[]> {
-    const params = new URLSearchParams();
-    if (projectId) params.append('projectId', projectId);
-    if (assigneeId) params.append('assigneeId', assigneeId);
+    const params = new URLSearchParams()
+    if (projectId) params.append('projectId', projectId)
+    if (assigneeId) params.append('assigneeId', assigneeId)
 
-    const query = params.toString();
-    const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT;
+    const query = params.toString()
+    const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT
 
-    return fetchWithAuth(url);
+    return fetchWithAuth(url)
   },
 
   // Get a single task by ID
   async getTaskById(id: string): Promise<Task> {
     // Ensure the ID is properly encoded to handle special characters
-    const encodedId = encodeURIComponent(id);
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`);
+    const encodedId = encodeURIComponent(id)
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`)
   },
 
   // Create a new task
@@ -102,12 +92,12 @@ export const taskApi = {
     const requestBody = {
       ...input
       // No need to transform fields since we updated the CreateTaskInput type
-    };
+    }
 
     return fetchWithAuth(TASKS_ENDPOINT, {
       method: 'POST',
       body: JSON.stringify(requestBody)
-    });
+    })
   },
 
   // Update a task
@@ -115,33 +105,29 @@ export const taskApi = {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(input)
-    });
+    })
   },
 
   // Delete a task
   async deleteTask(id: string): Promise<void> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
       method: 'DELETE'
-    });
+    })
   },
 
   // Check user permissions for a task
   async getTaskPermissions(taskId: string): Promise<TaskPermissions> {
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`);
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`)
   },
 
   // Move task to a different project
-  async moveTask(
-    taskId: string,
-    projectId: string,
-    orderInProject: number
-  ): Promise<Task> {
+  async moveTask(taskId: string, projectId: string, orderInProject: number): Promise<Task> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/move`, {
       method: 'PATCH',
       body: JSON.stringify({
         projectId,
         orderInProject
       })
-    });
+    })
   }
-};
+}

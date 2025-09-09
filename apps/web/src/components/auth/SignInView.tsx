@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { Presentation } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import UserAuthForm from './UserAuthForm';
+import { Presentation } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import UserAuthForm from './UserAuthForm'
 
 export default function SignInViewPage() {
-  const t = useTranslations('login');
+  const t = useTranslations('login')
   return (
     <main
       aria-label="Sign in page"
@@ -21,14 +21,12 @@ export default function SignInViewPage() {
       <div className="flex h-full items-center justify-center p-4 lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {t('description')}
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight">{t('description')}</h1>
             <p className="text-muted-foreground text-sm">{t('formHint')}</p>
           </div>
           <UserAuthForm />
         </div>
       </div>
     </main>
-  );
+  )
 }

@@ -1,17 +1,12 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model, Types } from 'mongoose'
 
-import { ProjectsService } from '../projects/projects.service';
-import { TasksService } from '../tasks/tasks.service';
-import { CreateBoardDto } from './dto/create-boards.dto';
-import { UpdateBoardDto } from './dto/update-boards.dto';
-import { Board, BoardDocument } from './schemas/boards.schema';
+import { ProjectsService } from '../projects/projects.service'
+import { TasksService } from '../tasks/tasks.service'
+import { CreateBoardDto } from './dto/create-boards.dto'
+import { UpdateBoardDto } from './dto/update-boards.dto'
+import { Board, BoardDocument } from './schemas/boards.schema'
 
 @Injectable()
 export class BoardService {
@@ -25,31 +20,26 @@ export class BoardService {
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
     // Convert owner string to ObjectId
-    const ownerId = new Types.ObjectId(createBoardDto.owner);
+    const ownerId = new Types.ObjectId(createBoardDto.owner)
 
     // Create the board with the owner as ObjectId
     const createdBoard = new this.boardModel({
       ...createBoardDto,
       owner: ownerId,
       // Add owner to members if not already present
-      members: [
-        ...new Set([
-          ownerId,
-          ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))
-        ])
-      ]
-    });
+      members: [...new Set([ownerId, ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))])]
+    })
 
-    return createdBoard.save();
+    return createdBoard.save()
   }
 
   async findAll(userId: string): Promise<Board[]> {
     try {
       // Ensure userId is a valid ObjectId
-      const isValidObjectId = Types.ObjectId.isValid(userId);
+      const isValidObjectId = Types.ObjectId.isValid(userId)
       if (!isValidObjectId) {
-        console.error(`[BoardService] Invalid user ID format: ${userId}`);
-        return [];
+        console.error(`[BoardService] Invalid user ID format: ${userId}`)
+        return []
       }
       // First, find boards where user is the owner
       const ownedBoards = await this.boardModel.aggregate([
@@ -146,7 +136,7 @@ export class BoardService {
             updatedAt: 1
           }
         }
-      ]);
+      ])
 
       // Then find boards where user is a member but not the owner
       const memberBoards = await this.boardModel.aggregate([
@@ -237,14 +227,14 @@ export class BoardService {
             updatedAt: 1
           }
         }
-      ]);
+      ])
 
-      const allBoards = [...ownedBoards, ...memberBoards];
+      const allBoards = [...ownedBoards, ...memberBoards]
 
-      return allBoards;
+      return allBoards
     } catch (error) {
-      console.error('[BoardService] Error finding boards:', error);
-      throw error;
+      console.error('[BoardService] Error finding boards:', error)
+      throw error
     }
   }
 
@@ -252,17 +242,14 @@ export class BoardService {
     try {
       // Validate ObjectIds
       if (!Types.ObjectId.isValid(id) || !Types.ObjectId.isValid(userId)) {
-        throw new NotFoundException('Invalid board or user ID format');
+        throw new NotFoundException('Invalid board or user ID format')
       }
 
       const [board] = await this.boardModel.aggregate([
         {
           $match: {
             _id: new Types.ObjectId(id),
-            $or: [
-              { owner: new Types.ObjectId(userId) },
-              { members: new Types.ObjectId(userId) }
-            ]
+            $or: [{ owner: new Types.ObjectId(userId) }, { members: new Types.ObjectId(userId) }]
           }
         },
         {
@@ -347,156 +334,116 @@ export class BoardService {
           }
         },
         { $limit: 1 }
-      ]);
-      return board;
+      ])
+      return board
     } catch (error) {
-      console.error(`[BoardService] Error finding board ${id}:`, error);
-      throw error;
+      console.error(`[BoardService] Error finding board ${id}:`, error)
+      throw error
     }
   }
 
-  async update(
-    id: string,
-    updateBoardDto: UpdateBoardDto,
-    userId: string
-  ): Promise<Board> {
+  async update(id: string, updateBoardDto: UpdateBoardDto, userId: string): Promise<Board> {
     // First, verify the board exists and the user has permission
-    const board = await this.boardModel.findById(id).exec();
+    const board = await this.boardModel.findById(id).exec()
 
     if (!board) {
-      throw new NotFoundException(`Board with ID "${id}" not found`);
+      throw new NotFoundException(`Board with ID "${id}" not found`)
     }
 
     // Check if the user is the owner or a member
-    const isOwner = board.owner.toString() === userId;
-    const isMember = board.members.some(
-      (memberId) => memberId.toString() === userId
-    );
+    const isOwner = board.owner.toString() === userId
+    const isMember = board.members.some((memberId) => memberId.toString() === userId)
 
     if (!isOwner && !isMember) {
-      throw new NotFoundException(
-        `Board with ID "${id}" not found or access denied`
-      );
+      throw new NotFoundException(`Board with ID "${id}" not found or access denied`)
     }
 
     // Update the board
-    const updatedBoard = await this.boardModel
-      .findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true })
-      .exec();
+    const updatedBoard = await this.boardModel.findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true }).exec()
 
     if (!updatedBoard) {
       // This should theoretically never happen since we already checked the board exists
-      throw new NotFoundException(`Failed to update board with ID "${id}"`);
+      throw new NotFoundException(`Failed to update board with ID "${id}"`)
     }
 
-    return updatedBoard;
+    return updatedBoard
   }
 
   async remove(id: string, userId: string): Promise<void> {
     // First, check if the board exists and the user has permission
-    const board = await this.boardModel.findById(id).exec();
+    const board = await this.boardModel.findById(id).exec()
 
     if (!board) {
-      console.error(`[BoardService] Board with ID "${id}" not found`);
-      throw new NotFoundException(`Board with ID "${id}" not found`);
+      console.error(`[BoardService] Board with ID "${id}" not found`)
+      throw new NotFoundException(`Board with ID "${id}" not found`)
     }
 
     // Check if the user is the owner
     if (!board.owner.equals(userId)) {
       console.error(
         `[BoardService] User ${userId.toString()} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
-      );
-      throw new NotFoundException(`Board with ID "${id}" not found`);
+      )
+      throw new NotFoundException(`Board with ID "${id}" not found`)
     }
 
     try {
       // First, find all projects associated with this board
-      const projects = await this.projectsService.findByBoardId(id);
-      console.log(
-        `Found ${projects.length} projects to delete for board ${id}`
-      );
+      const projects = await this.projectsService.findByBoardId(id)
+      console.log(`Found ${projects.length} projects to delete for board ${id}`)
 
       // Delete all tasks for each project
       for (const project of projects) {
         try {
-          const deleteResult = await this.tasksService.deleteTasksByProjectId(
-            project._id.toString()
-          );
-          console.log(
-            `Deleted ${deleteResult.deletedCount} tasks for project ${project._id}`
-          );
+          const deleteResult = await this.tasksService.deleteTasksByProjectId(project._id.toString())
+          console.log(`Deleted ${deleteResult.deletedCount} tasks for project ${project._id}`)
         } catch (error) {
-          console.error(
-            `Error deleting tasks for project ${project._id}:`,
-            error
-          );
+          console.error(`Error deleting tasks for project ${project._id}:`, error)
           // Continue with next project even if one fails
         }
       }
 
       // Delete all projects for this board
-      const deleteProjectsResult =
-        await this.projectsService.deleteByBoardId(id);
-      console.log(
-        `Deleted ${deleteProjectsResult.deletedCount} projects for board ${id}`
-      );
+      const deleteProjectsResult = await this.projectsService.deleteByBoardId(id)
+      console.log(`Deleted ${deleteProjectsResult.deletedCount} projects for board ${id}`)
 
       // Finally, delete the board itself
-      const result = await this.boardModel.deleteOne({ _id: id }).exec();
+      const result = await this.boardModel.deleteOne({ _id: id }).exec()
 
       if (result.deletedCount === 0) {
         // This should theoretically never happen because we already checked the board exists
-        console.error(
-          `[BoardService] Failed to delete board ${id} for unknown reason`
-        );
-        throw new NotFoundException(`Failed to delete board with ID "${id}"`);
+        console.error(`[BoardService] Failed to delete board ${id} for unknown reason`)
+        throw new NotFoundException(`Failed to delete board with ID "${id}"`)
       }
 
-      console.log(`Successfully deleted board ${id} and all associated data`);
+      console.log(`Successfully deleted board ${id} and all associated data`)
     } catch (error) {
-      console.error(`Error during board deletion for board ${id}:`, error);
-      throw error; // Re-throw to be handled by the controller
+      console.error(`Error during board deletion for board ${id}:`, error)
+      throw error // Re-throw to be handled by the controller
     }
   }
 
   // Additional methods for board management
-  async addMember(
-    boardId: string,
-    userId: string,
-    memberId: string
-  ): Promise<Board> {
+  async addMember(boardId: string, userId: string, memberId: string): Promise<Board> {
     const board = await this.boardModel
-      .findOneAndUpdate(
-        { _id: boardId, owner: userId },
-        { $addToSet: { members: memberId } },
-        { new: true }
-      )
-      .exec();
+      .findOneAndUpdate({ _id: boardId, owner: userId }, { $addToSet: { members: memberId } }, { new: true })
+      .exec()
 
     if (!board) {
-      throw new NotFoundException(`Board with ID "${boardId}" not found`);
+      throw new NotFoundException(`Board with ID "${boardId}" not found`)
     }
 
-    return board;
+    return board
   }
 
-  async removeMember(
-    boardId: string,
-    userId: string,
-    memberId: string
-  ): Promise<Board> {
+  async removeMember(boardId: string, userId: string, memberId: string): Promise<Board> {
     const board = await this.boardModel
-      .findOneAndUpdate(
-        { _id: boardId, owner: userId },
-        { $pull: { members: memberId } },
-        { new: true }
-      )
-      .exec();
+      .findOneAndUpdate({ _id: boardId, owner: userId }, { $pull: { members: memberId } }, { new: true })
+      .exec()
 
     if (!board) {
-      throw new NotFoundException(`Board with ID "${boardId}" not found`);
+      throw new NotFoundException(`Board with ID "${boardId}" not found`)
     }
 
-    return board;
+    return board
   }
 }

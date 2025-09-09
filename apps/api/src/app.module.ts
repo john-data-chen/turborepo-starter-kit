@@ -1,20 +1,14 @@
-import {
-  Logger,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod
-} from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { BoardsModule } from './modules/boards/boards.module';
-import { DatabaseModule } from './modules/database/database.module';
-import { ProjectsModule } from './modules/projects/projects.module';
-import { TasksModule } from './modules/tasks/tasks.module';
-import { UsersModule } from './modules/users/users.module';
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { AuthModule } from './modules/auth/auth.module'
+import { BoardsModule } from './modules/boards/boards.module'
+import { DatabaseModule } from './modules/database/database.module'
+import { ProjectsModule } from './modules/projects/projects.module'
+import { TasksModule } from './modules/tasks/tasks.module'
+import { UsersModule } from './modules/users/users.module'
 
 @Module({
   imports: [
@@ -35,33 +29,29 @@ import { UsersModule } from './modules/users/users.module';
   providers: [AppService]
 })
 export class AppModule implements NestModule {
-  private readonly logger = new Logger('AppModule');
+  private readonly logger = new Logger('AppModule')
 
   configure(consumer: MiddlewareConsumer) {
     // Apply middleware for all routes
     consumer
       .apply((req, res, next) => {
         // Log all incoming requests
-        const { method, originalUrl, body } = req;
-        this.logger.log(
-          `[${new Date().toISOString()}] ${method} ${originalUrl}`
-        );
+        const { method, originalUrl, body } = req
+        this.logger.log(`[${new Date().toISOString()}] ${method} ${originalUrl}`)
 
         if (Object.keys(body || {}).length > 0) {
-          this.logger.debug('Request body:', JSON.stringify(body, null, 2));
+          this.logger.debug('Request body:', JSON.stringify(body, null, 2))
         }
 
         // Log response when it's finished
-        const start = Date.now();
+        const start = Date.now()
         res.on('finish', () => {
-          const duration = Date.now() - start;
-          this.logger.log(
-            `[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`
-          );
-        });
+          const duration = Date.now() - start
+          this.logger.log(`[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`)
+        })
 
-        next();
+        next()
       })
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .forRoutes({ path: '*', method: RequestMethod.ALL })
   }
 }

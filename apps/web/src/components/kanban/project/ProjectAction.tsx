@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   AlertDialog,
@@ -8,62 +8,52 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries';
-import { useWorkspaceStore } from '@/stores/workspace-store';
-import { projectSchema } from '@/types/projectForm';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
-import * as React from 'react';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { ProjectForm } from './ProjectForm';
+} from '@/components/ui/dropdown-menu'
+import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { projectSchema } from '@/types/projectForm'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { useTranslations } from 'next-intl'
+import * as React from 'react'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { ProjectForm } from './ProjectForm'
 
 interface ProjectActionsProps {
-  id: string;
-  title: string;
-  description?: string;
-  ownerId: string; // Add ownerId to check permissions
+  id: string
+  title: string
+  description?: string
+  ownerId: string // Add ownerId to check permissions
 }
 
-export function ProjectActions({
-  id,
-  title,
-  description,
-  ownerId
-}: ProjectActionsProps) {
+export function ProjectActions({ id, title, description, ownerId }: ProjectActionsProps) {
   // Check if current user is the project owner
-  const { userId } = useWorkspaceStore();
-  const isOwner = userId === ownerId;
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-  const [editEnable, setEditEnable] = React.useState(false);
-  const updateProject = useWorkspaceStore((state) => state.updateProject);
-  const deleteProjectMutation = useDeleteProject();
-  const updateProjectMutation = useUpdateProject();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
+  const { userId } = useWorkspaceStore()
+  const isOwner = userId === ownerId
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
+  const [editEnable, setEditEnable] = React.useState(false)
+  const updateProject = useWorkspaceStore((state) => state.updateProject)
+  const deleteProjectMutation = useDeleteProject()
+  const updateProjectMutation = useUpdateProject()
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false) // State for controlling menu
 
-  type ProjectFormData = z.infer<typeof projectSchema>;
+  type ProjectFormData = z.infer<typeof projectSchema>
 
-  const t = useTranslations('kanban.project');
+  const t = useTranslations('kanban.project')
 
   async function onSubmit(values: ProjectFormData) {
     if (!userId) {
-      toast.error(t('userNotAuthenticated'));
-      return;
+      toast.error(t('userNotAuthenticated'))
+      return
     }
 
     try {
@@ -77,20 +67,20 @@ export function ProjectActions({
             title: data.title,
             description: data.description || null,
             owner: userId
-          };
+          }
 
-          return updateProjectMutation.mutateAsync(updateData);
+          return updateProjectMutation.mutateAsync(updateData)
         }
-      );
-      toast.success(t('updateSuccess'));
-      setEditEnable(false);
+      )
+      toast.success(t('updateSuccess'))
+      setEditEnable(false)
     } catch (error) {
-      toast.error(t('updateFailed', { error: (error as Error).message }));
+      toast.error(t('updateFailed', { error: (error as Error).message }))
     }
   }
 
   function removeProject(id: string, _p0: (id: any) => Promise<void>) {
-    deleteProjectMutation.mutate(id);
+    deleteProjectMutation.mutate(id)
   }
 
   return (
@@ -100,16 +90,9 @@ export function ProjectActions({
           <DialogHeader>
             <DialogTitle>{t('editProjectTitle')}</DialogTitle>
           </DialogHeader>
-          <ProjectForm
-            onSubmit={onSubmit}
-            defaultValues={{ title, description }}
-          >
+          <ProjectForm onSubmit={onSubmit} defaultValues={{ title, description }}>
             <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditEnable(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setEditEnable(false)}>
                 {t('cancel')}
               </Button>
               <Button type="submit">{t('save')}</Button>
@@ -118,11 +101,7 @@ export function ProjectActions({
         </DialogContent>
       </Dialog>
 
-      <DropdownMenu
-        modal={false}
-        open={isMenuOpen}
-        onOpenChange={setIsMenuOpen}
-      >
+      <DropdownMenu modal={false} open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
@@ -137,11 +116,7 @@ export function ProjectActions({
           <DropdownMenuItem
             onSelect={() => setEditEnable(true)}
             data-testid="edit-project-button"
-            className={
-              !isOwner
-                ? 'text-muted-foreground line-through cursor-not-allowed'
-                : ''
-            }
+            className={!isOwner ? 'text-muted-foreground line-through cursor-not-allowed' : ''}
             disabled={!isOwner}
           >
             {t('edit')}
@@ -165,23 +140,17 @@ export function ProjectActions({
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('confirmDeleteTitle', { title })}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('confirmDeleteDescription')}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t('confirmDeleteTitle', { title })}</AlertDialogTitle>
+            <AlertDialogDescription>{t('confirmDeleteDescription')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
             <Button
               variant="destructive"
               onClick={() => {
-                setShowDeleteDialog(false);
-                removeProject(id, (id) =>
-                  deleteProjectMutation.mutateAsync(id)
-                );
-                toast.success(t('deleteSuccess', { title }));
+                setShowDeleteDialog(false)
+                removeProject(id, (id) => deleteProjectMutation.mutateAsync(id))
+                toast.success(t('deleteSuccess', { title }))
               }}
             >
               {t('delete')}
@@ -190,5 +159,5 @@ export function ProjectActions({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
+  )
 }
