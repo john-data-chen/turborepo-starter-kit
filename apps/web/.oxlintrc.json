@@ -3,8 +3,11 @@
   "plugins": ["react", "react-perf", "nextjs", "jsx-a11y"],
   "rules": {
     "react/jsx-no-undef": "warn",
-    "no-debugger": "off",
-    "eqeqeq": "warn",
+    "react/self-closing-comp": "error",
+    "react/jsx-no-useless-fragment": "error",
+    "react/no-unescaped-entities": "error",
+    "react/no-unknown-property": "error",
+    "react/jsx-curly-brace-presence": ["error", "never"],
     "typescript/await-thenable": "error",
     "typescript/no-array-delete": "error",
     "typescript/no-base-to-string": "error",
@@ -46,9 +49,5 @@
     "typescript/unbound-method": "error",
     "typescript/use-unknown-in-catch-callback-variable": "error"
   },
-  "ignorePatterns": [
-    "__tests__/**/*",
-    "src/components/ui/**/*",
-    "src/styles/globals.css"
-  ]
+  "ignorePatterns": ["__tests__/**/*", "src/components/ui/**/*", "src/styles/globals.css"]
 }
