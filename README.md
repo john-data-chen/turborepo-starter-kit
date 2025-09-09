@@ -253,11 +253,16 @@ packages/
 
 ## Experimental Tools
 
+### Prettier-oxc-parser
+
+- status: enabled
+- benefit: On this [benchmark](https://github.com/ArnaudBarre/prettier-oxc-parser/blob/main/benchmark/report.md), this plugin is faster than [@prettier/plugin-oxc](https://www.npmjs.com/package/@prettier/plugin-oxc)
+
 ### Oxlint and Type-Aware plug-in
 
 - status: enabled
 - benefit:
-  - 50~100 times faster than ESLint (it can lint this small project in 500 ms, it has more potential in big projects with thousands of files)
+  - 50~100 times faster than ESLint (it can lint this small project in 1.5 seconds, it has more potential in big projects with thousands of files)
   - easier to setup
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
@@ -266,16 +271,19 @@ packages/
 
 ### Turbopack in build mode
 
+- location: apps/web (NextJS)
 - status: enabled
 - benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
 
 ### Rspack
 
+- location: apps/api (NestJS)
 - status: enabled
 - benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 
 ### React Compiler
 
+- location: apps/web (NextJS)
 - status: disabled (enable it will increase build time 30~40%, so I disable it)
 - benefit: It can increase the performance score in lighthouse test 5~10% (not significant)
 
