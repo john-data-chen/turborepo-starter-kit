@@ -4,6 +4,9 @@ import { Model } from 'mongoose'
 
 import { User, UserDocument } from './schemas/users.schema'
 
+// Enable debug logging for this file
+const DEBUG = true;
+
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name)
@@ -28,6 +31,17 @@ export class UserService {
       const user = await this.userModel.findOne({ email }).exec()
 
       if (user) {
+        this.logger.log(
+          `[${requestId}] [UserService] User found in ${queryDuration}ms`,
+          DEBUG
+            ? {
+                userId: user._id?.toString(),
+                email: user.email,
+                queryDuration: `${queryDuration}ms`
+              }
+            : undefined
+        );
+
         this.logger.debug(
           `[${requestId}] [UserService] Found user: ${JSON.stringify(
             {

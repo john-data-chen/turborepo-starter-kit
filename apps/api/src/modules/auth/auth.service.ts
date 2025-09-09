@@ -30,6 +30,15 @@ export class AuthService {
 
       const user = await this.userService.findByEmail(email)
 
+      this.logger.debug(
+        `[${requestId}] [AuthService] User lookup completed in ${Date.now() - startTime}ms`,
+        {
+          userFound: !!user,
+          userId: user?._id?.toString(),
+          userEmail: user?.email
+        }
+      );
+
       if (user) {
         this.logger.debug(
           `[${requestId}] [AuthService] User found: ${JSON.stringify(
@@ -69,6 +78,13 @@ export class AuthService {
         2
       )}`
     )
+
+    this.logger.debug(`[${requestId}] [AuthService] User details for JWT`, {
+      _id: user._id?.toString(),
+      email: user.email,
+      name: user.name,
+      userObject: JSON.stringify(user, null, 2)
+    });
 
     try {
       const payload = { email: user.email, sub: user._id }
