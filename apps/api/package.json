@@ -39,7 +39,7 @@
     "reflect-metadata": "^0.2.2",
     "run-script-webpack-plugin": "^0.2.3",
     "rxjs": "^7.8.2",
-    "uuid": "^11.1.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
@@ -59,7 +59,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "cross-env": "^10.0.0",
     "global-tsconfig": "workspace:*",
-    "globals": "^16.3.0",
+    "globals": "^16.4.0",
     "linter-config": "workspace:*",
     "oxlint": "^1.14.0",
     "oxlint-tsgolint": "^0.1.6",
