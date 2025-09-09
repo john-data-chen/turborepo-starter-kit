@@ -28,10 +28,12 @@ export class AuthService {
       // Log the userService instance to ensure it's properly injected
       this.logger.debug(`[${requestId}] [AuthService] UserService instance: ${this.userService ? 'exists' : 'missing'}`)
 
+      const startTime = Date.now()
       const user = await this.userService.findByEmail(email)
+      const lookupDuration = Date.now() - startTime
 
       this.logger.debug(
-        `[${requestId}] [AuthService] User lookup completed in ${Date.now() - startTime}ms`,
+        `[${requestId}] [AuthService] User lookup completed in ${lookupDuration}ms`,
         {
           userFound: !!user,
           userId: user?._id?.toString(),
@@ -66,9 +68,10 @@ export class AuthService {
   }
 
   async login(user: User) {
-    this.logger.log(`[AuthService] Generating JWT for user: ${user.email}`)
+    const requestId = Math.random().toString(36).substring(2, 8)
+    this.logger.log(`[${requestId}] [AuthService] Generating JWT for user: ${user.email}`)
     this.logger.debug(
-      `[AuthService] User details for JWT: ${JSON.stringify(
+      `[${requestId}] [AuthService] User details for JWT: ${JSON.stringify(
         {
           _id: user._id?.toString(),
           email: user.email,
@@ -78,13 +81,6 @@ export class AuthService {
         2
       )}`
     )
-
-    this.logger.debug(`[${requestId}] [AuthService] User details for JWT`, {
-      _id: user._id?.toString(),
-      email: user.email,
-      name: user.name,
-      userObject: JSON.stringify(user, null, 2)
-    });
 
     try {
       const payload = { email: user.email, sub: user._id }

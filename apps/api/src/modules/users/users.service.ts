@@ -28,7 +28,9 @@ export class UserService {
       // Log the userModel instance to ensure it's properly injected
       this.logger.debug(`[${requestId}] [UserService] UserModel instance: ${this.userModel ? 'exists' : 'missing'}`)
 
+      const startTime = Date.now()
       const user = await this.userModel.findOne({ email }).exec()
+      const queryDuration = Date.now() - startTime
 
       if (user) {
         this.logger.log(
