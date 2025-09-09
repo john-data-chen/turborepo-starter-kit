@@ -263,9 +263,7 @@
   transform: none !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  bottom: calc(
-    var(--viewport-padding) + env(safe-area-inset-bottom, 0px)
-  ) !important;
+  bottom: calc(var(--viewport-padding) + env(safe-area-inset-bottom, 0px)) !important;
 
   @media (min-width: 640px) {
     left: unset !important;

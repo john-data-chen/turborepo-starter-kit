@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { ApiProperty } from '@nestjs/swagger'
+import { Document, Types } from 'mongoose'
 
 export enum TaskStatus {
   TODO = 'TODO',
@@ -8,7 +8,7 @@ export enum TaskStatus {
   DONE = 'DONE'
 }
 
-export type TaskDocument = Task & Document;
+export type TaskDocument = Task & Document
 
 @Schema({ timestamps: true })
 export class Task {
@@ -19,7 +19,7 @@ export class Task {
     description: 'The title of the task',
     example: 'Implement authentication'
   })
-  title: string;
+  title: string
 
   @Prop({ type: String })
   @ApiProperty({
@@ -27,7 +27,7 @@ export class Task {
     example: 'Implement JWT authentication with refresh tokens',
     required: false
   })
-  description?: string;
+  description?: string
 
   @Prop({ type: String, enum: TaskStatus, default: TaskStatus.TODO })
   @ApiProperty({
@@ -36,7 +36,7 @@ export class Task {
     default: TaskStatus.TODO,
     example: TaskStatus.TODO
   })
-  status: TaskStatus;
+  status: TaskStatus
 
   @Prop({ type: Date })
   @ApiProperty({
@@ -44,7 +44,7 @@ export class Task {
     example: '2025-12-31T23:59:59.999Z',
     required: false
   })
-  dueDate?: Date;
+  dueDate?: Date
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({
@@ -52,7 +52,7 @@ export class Task {
     type: 'string',
     example: '507f1f77bcf86cd799439011'
   })
-  creator: Types.ObjectId;
+  creator: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   @ApiProperty({
@@ -61,7 +61,7 @@ export class Task {
     required: false,
     example: '507f1f77bcf86cd799439012'
   })
-  assignee?: Types.ObjectId;
+  assignee?: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   @ApiProperty({
@@ -69,21 +69,21 @@ export class Task {
     type: 'string',
     example: '507f1f77bcf86cd799439014'
   })
-  lastModifier: Types.ObjectId;
+  lastModifier: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
   @ApiProperty({
     description: 'The ID of the board this task belongs to',
     example: '507f1f77bcf86cd799439011'
   })
-  board: Types.ObjectId;
+  board: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'Project', required: true })
   @ApiProperty({
     description: 'The ID of the project this task belongs to',
     example: '507f1f77bcf86cd799439011'
   })
-  project: Types.ObjectId;
+  project: Types.ObjectId
 
   @Prop({ type: Number, default: 0 })
   @ApiProperty({
@@ -91,7 +91,7 @@ export class Task {
     example: 0,
     default: 0
   })
-  orderInProject: number;
+  orderInProject: number
 
   // User reference fields are defined above with proper documentation
 
@@ -100,14 +100,14 @@ export class Task {
     description: 'The date when the task was created',
     example: '2023-01-01T00:00:00.000Z'
   })
-  createdAt: Date;
+  createdAt: Date
 
   @Prop({ type: Date, default: Date.now })
   @ApiProperty({
     description: 'The date when the task was last updated',
     example: '2023-01-01T00:00:00.000Z'
   })
-  updatedAt: Date;
+  updatedAt: Date
 }
 
-export const TaskSchema = SchemaFactory.createForClass(Task);
+export const TaskSchema = SchemaFactory.createForClass(Task)

@@ -1,22 +1,16 @@
-'use client';
+'use client'
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { useWorkspaceStore } from '@/stores/workspace-store';
-import { useTranslations } from 'next-intl';
-import React from 'react';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { useTranslations } from 'next-intl'
+import React from 'react'
 
 export function TaskFilter() {
-  const { filter, setFilter, projects } = useWorkspaceStore();
-  const t = useTranslations('kanban.task');
+  const { filter, setFilter, projects } = useWorkspaceStore()
+  const t = useTranslations('kanban.task')
 
   const statusCounts = React.useMemo(() => {
     const counts = {
@@ -24,39 +18,39 @@ export function TaskFilter() {
       TODO: 0,
       IN_PROGRESS: 0,
       DONE: 0
-    };
+    }
 
     if (!Array.isArray(projects)) {
-      return counts;
+      return counts
     }
 
     projects.forEach((project) => {
-      const tasks = Array.isArray(project?.tasks) ? project.tasks : [];
+      const tasks = Array.isArray(project?.tasks) ? project.tasks : []
       tasks.forEach((task) => {
-        if (!task) return;
-        counts.TOTAL++;
+        if (!task) return
+        counts.TOTAL++
         if (task.status && counts.hasOwnProperty(task.status)) {
-          counts[task.status as keyof typeof counts]++;
+          counts[task.status as keyof typeof counts]++
         }
-      });
-    });
+      })
+    })
 
-    return counts;
-  }, [projects]);
+    return counts
+  }, [projects])
 
   const handleFilterChange = React.useCallback(
     (value: string) => {
-      setFilter({ status: value === 'TOTAL' ? null : value });
+      setFilter({ status: value === 'TOTAL' ? null : value })
     },
     [setFilter]
-  );
+  )
 
   const handleSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFilter({ search: event.target.value });
+      setFilter({ search: event.target.value })
     },
     [setFilter]
-  );
+  )
 
   return (
     <div className="flex items-center gap-2 mb-4 w-full md:w-auto">
@@ -68,10 +62,7 @@ export function TaskFilter() {
         className="bg-background w-full md:w-[300px]"
         data-testid="search-input"
       />
-      <Select
-        value={filter.status || 'TOTAL'}
-        onValueChange={handleFilterChange}
-      >
+      <Select value={filter.status || 'TOTAL'} onValueChange={handleFilterChange}>
         <SelectTrigger className="w-[140px]" data-testid="status-select">
           <SelectValue placeholder={t('filterByStatus')} />
         </SelectTrigger>
@@ -108,7 +99,7 @@ export function TaskFilter() {
           variant="ghost"
           size="sm"
           onClick={() => {
-            setFilter({ status: null, search: '' });
+            setFilter({ status: null, search: '' })
           }}
           data-testid="clear-filter-button"
         >
@@ -116,5 +107,5 @@ export function TaskFilter() {
         </Button>
       )}
     </div>
-  );
+  )
 }

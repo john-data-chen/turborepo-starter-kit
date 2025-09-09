@@ -1,13 +1,16 @@
 /** @type {import('prettier').Config} */
 
 module.exports = {
+  plugins: ['prettier-oxc-parser'],
   arrowParens: 'always',
   bracketSpacing: true,
-  semi: true,
-  useTabs: false,
-  trailingComma: 'none',
+  bracketSameLine: false,
+  jsxSingleQuote: false,
+  printWidth: 120,
+  proseWrap: 'preserve',
+  semi: false,
   singleQuote: true,
   tabWidth: 2,
-  endOfLine: 'lf',
-  printWidth: 80
-};
+  trailingComma: 'none',
+  useTabs: false
+}

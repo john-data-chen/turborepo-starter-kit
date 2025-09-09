@@ -1,53 +1,30 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
-import { useTaskForm } from '@/hooks/useTaskForm';
-import { cn } from '@/lib/utils';
-import { TaskFormSchema } from '@/types/taskForm';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import React from 'react';
-import { z } from 'zod';
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
+import { useTaskForm } from '@/hooks/useTaskForm'
+import { cn } from '@/lib/utils'
+import { TaskFormSchema } from '@/types/taskForm'
+import { format } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import React from 'react'
+import { z } from 'zod'
 
 interface TaskFormProps {
-  defaultValues?: z.infer<typeof TaskFormSchema>;
-  onSubmit: (values: z.infer<typeof TaskFormSchema>) => Promise<void>;
-  onCancel?: () => void;
-  submitLabel?: string;
+  defaultValues?: z.infer<typeof TaskFormSchema>
+  onSubmit: (values: z.infer<typeof TaskFormSchema>) => Promise<void>
+  onCancel?: () => void
+  submitLabel?: string
 }
 
-export function TaskForm({
-  defaultValues,
-  onSubmit,
-  onCancel,
-  submitLabel = 'Submit'
-}: TaskFormProps) {
+export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Submit' }: TaskFormProps) {
   const {
     form,
     isSubmitting,
@@ -58,9 +35,9 @@ export function TaskForm({
     assignOpen,
     setAssignOpen,
     handleSubmit
-  } = useTaskForm({ defaultValues, onSubmit });
-  const [calendarOpen, setCalendarOpen] = React.useState(false);
-  const t = useTranslations('kanban.task');
+  } = useTaskForm({ defaultValues, onSubmit })
+  const [calendarOpen, setCalendarOpen] = React.useState(false)
+  const t = useTranslations('kanban.task')
 
   return (
     <Form {...form}>
@@ -94,25 +71,17 @@ export function TaskForm({
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={'outline'}
+                    variant="outline"
                     aria-label="Select due date"
-                    className={cn(
-                      'w-auto pl-3 text-left font-normal',
-                      !field.value && 'text-muted-foreground'
-                    )}
+                    className={cn('w-auto pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
                     type="button"
                   >
                     {field.value ? (
                       format(field.value, 'yyyy-MM-dd')
                     ) : (
-                      <span data-testid="task-date-picker-trigger">
-                        {t('pickDate')}
-                      </span>
+                      <span data-testid="task-date-picker-trigger">{t('pickDate')}</span>
                     )}
-                    <CalendarIcon
-                      className="ml-auto h-4 w-4 opacity-50"
-                      aria-hidden="true"
-                    />
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" aria-hidden="true" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 z-[60]" align="start">
@@ -120,13 +89,13 @@ export function TaskForm({
                     mode="single"
                     selected={field.value}
                     onSelect={(date) => {
-                      field.onChange(date);
-                      setCalendarOpen(false);
+                      field.onChange(date)
+                      setCalendarOpen(false)
                     }}
                     disabled={(date) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      return date < today;
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
+                      return date < today
                     }}
                     data-testid="task-date-picker-calendar"
                   />
@@ -141,9 +110,7 @@ export function TaskForm({
           name="assignee"
           render={({ field }) => {
             // Find the full user object from the users list
-            const selectedUser = field.value?._id
-              ? users.find((u) => u._id === field.value?._id)
-              : null;
+            const selectedUser = field.value?._id ? users.find((u) => u._id === field.value?._id) : null
 
             return (
               <FormItem className="flex flex-col">
@@ -159,10 +126,7 @@ export function TaskForm({
                         className="w-full justify-between"
                         data-testid="assignee-trigger"
                       >
-                        {selectedUser?.name ||
-                          selectedUser?.email ||
-                          field.value?._id ||
-                          t('selectUser')}
+                        {selectedUser?.name || selectedUser?.email || field.value?._id || t('selectUser')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent
@@ -179,26 +143,20 @@ export function TaskForm({
                           onValueChange={setSearchQuery}
                         />
                         <CommandList>
-                          <CommandEmpty>
-                            {isSearching ? t('searching') : t('noUsersFound')}
-                          </CommandEmpty>
+                          <CommandEmpty>{isSearching ? t('searching') : t('noUsersFound')}</CommandEmpty>
                           <CommandGroup>
                             {users.map((user) => (
                               <CommandItem
                                 key={user._id}
                                 value={user.name!}
                                 onSelect={() => {
-                                  field.onChange(user);
-                                  setAssignOpen(false);
+                                  field.onChange(user)
+                                  setAssignOpen(false)
                                 }}
                                 className="flex flex-col items-start"
                               >
                                 <span>{user.name || user.email}</span>
-                                {user.name && (
-                                  <span className="text-xs text-muted-foreground">
-                                    {user.email}
-                                  </span>
-                                )}
+                                {user.name && <span className="text-xs text-muted-foreground">{user.email}</span>}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -208,7 +166,7 @@ export function TaskForm({
                   </Popover>
                 </FormControl>
               </FormItem>
-            );
+            )
           }}
         />
         <FormField
@@ -227,25 +185,19 @@ export function TaskForm({
                     <FormControl>
                       <RadioGroupItem value="TODO" />
                     </FormControl>
-                    <FormLabel className="font-normal">
-                      {t('statusTodo')}
-                    </FormLabel>
+                    <FormLabel className="font-normal">{t('statusTodo')}</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="IN_PROGRESS" />
                     </FormControl>
-                    <FormLabel className="font-normal">
-                      {t('statusInProgress')}
-                    </FormLabel>
+                    <FormLabel className="font-normal">{t('statusInProgress')}</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="DONE" />
                     </FormControl>
-                    <FormLabel className="font-normal">
-                      {t('statusDone')}
-                    </FormLabel>
+                    <FormLabel className="font-normal">{t('statusDone')}</FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
@@ -272,24 +224,15 @@ export function TaskForm({
         />
         <div className="flex justify-end space-x-4">
           {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              data-testid="cancel-task-button"
-            >
+            <Button type="button" variant="outline" onClick={onCancel} data-testid="cancel-task-button">
               {t('cancel')}
             </Button>
           )}
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            data-testid="submit-task-button"
-          >
+          <Button type="submit" disabled={isSubmitting} data-testid="submit-task-button">
             {isSubmitting ? t('submitting') : submitLabel}
           </Button>
         </div>
       </form>
     </Form>
-  );
+  )
 }

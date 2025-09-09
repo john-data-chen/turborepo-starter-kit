@@ -1,64 +1,60 @@
-import { API_URL } from '@/constants/routes';
-import { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi';
-import { Board } from '@/types/dbInterface';
+import { API_URL } from '@/constants/routes'
+import { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi'
+import { Board } from '@/types/dbInterface'
 
 // API Endpoint
-const BOARDS_ENDPOINT = `${API_URL}/boards`;
+const BOARDS_ENDPOINT = `${API_URL}/boards`
 
 // Helper function to handle fetch requests
-async function fetchWithAuth<T>(
-  url: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise<T> {
   try {
     // Get token from localStorage for Authorization header
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth_token')
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...options.headers
-    };
+    }
 
     // Add Authorization header if token exists
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`
     }
 
     const response = await fetch(url, {
       ...options,
       credentials: 'include', // Still include for cookie fallback
       headers
-    });
+    })
 
-    const responseText = await response.text();
+    const responseText = await response.text()
 
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Request failed'
       try {
-        const errorData = responseText ? JSON.parse(responseText) : {};
-        errorMessage =
-          errorData.message || response.statusText || 'Request failed';
+        const errorData = responseText ? JSON.parse(responseText) : {}
+        errorMessage = errorData.message || response.statusText || 'Request failed'
       } catch (parseError) {
-        console.error('Error parsing error response:', parseError);
-        errorMessage = responseText || 'Request failed';
+        console.error('Error parsing error response:', parseError)
+        errorMessage = responseText || 'Request failed'
       }
 
       if (typeof window !== 'undefined' && response.status === 401) {
-        console.error('Authentication error - redirecting to login');
+        console.error('Authentication error - redirecting to login')
         // Handle unauthorized (e.g., redirect to login)
-        window.location.href = '/login';
+        window.location.href = '/login'
       }
 
-      throw new Error(errorMessage);
+      throw new Error(errorMessage)
     }
 
     if (!responseText) {
-      throw new Error('Empty response from server');
+      throw new Error('Empty response from server')
     }
-    return JSON.parse(responseText) as T;
+    return JSON.parse(responseText) as T
   } catch (error) {
-    console.error('Fetch error:', error);
-    throw error;
+    console.error('Fetch error:', error)
+    throw error
   }
 }
 
@@ -69,12 +65,12 @@ async function fetchWithAuth<T>(
 export const boardApi = {
   // Get all boards for the current user
   async getBoards(): Promise<{ myBoards: Board[]; teamBoards: Board[] }> {
-    return fetchWithAuth(BOARDS_ENDPOINT);
+    return fetchWithAuth(BOARDS_ENDPOINT)
   },
 
   // Get a single board by ID
   async getBoardById(id: string): Promise<Board> {
-    return fetchWithAuth(`${BOARDS_ENDPOINT}/${id}`);
+    return fetchWithAuth(`${BOARDS_ENDPOINT}/${id}`)
   },
 
   // Create a new board
@@ -82,7 +78,7 @@ export const boardApi = {
     return fetchWithAuth(BOARDS_ENDPOINT, {
       method: 'POST',
       body: JSON.stringify(input)
-    });
+    })
   },
 
   // Update a board
@@ -90,58 +86,58 @@ export const boardApi = {
     return fetchWithAuth(`${BOARDS_ENDPOINT}/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(input)
-    });
+    })
   },
 
   // Delete a board
   async deleteBoard(id: string): Promise<void> {
     try {
       // Get token from localStorage for Authorization header
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('auth_token')
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
-      };
+      }
 
       // Add Authorization header if token exists
       if (token) {
-        headers.Authorization = `Bearer ${token}`;
+        headers.Authorization = `Bearer ${token}`
       }
 
       const response = await fetch(`${BOARDS_ENDPOINT}/${id}`, {
         method: 'DELETE',
         credentials: 'include',
         headers
-      });
+      })
 
       // For 204 No Content responses, we don't expect a response body
       if (response.status === 204) {
-        return;
+        return
       }
 
       // For other successful responses, try to parse the response
       if (response.ok) {
-        const responseText = await response.text();
+        const responseText = await response.text()
         if (!responseText) {
-          return; // Empty response is acceptable for DELETE
+          return // Empty response is acceptable for DELETE
         }
-        return JSON.parse(responseText);
+        return JSON.parse(responseText)
       }
 
       // Handle error responses
-      const errorText = await response.text();
-      let errorMessage = 'Failed to delete board';
+      const errorText = await response.text()
+      let errorMessage = 'Failed to delete board'
       try {
-        const errorData = errorText ? JSON.parse(errorText) : {};
-        errorMessage = errorData.message || response.statusText || errorMessage;
+        const errorData = errorText ? JSON.parse(errorText) : {}
+        errorMessage = errorData.message || response.statusText || errorMessage
       } catch (e) {
-        errorMessage = errorText || errorMessage;
-        console.error('Error parsing error response:', e);
+        errorMessage = errorText || errorMessage
+        console.error('Error parsing error response:', e)
       }
-      throw new Error(errorMessage);
+      throw new Error(errorMessage)
     } catch (error) {
-      console.error('Error in deleteBoard:', error);
-      throw error;
+      console.error('Error in deleteBoard:', error)
+      throw error
     }
   },
 
@@ -149,6 +145,6 @@ export const boardApi = {
   async addBoardMember(boardId: string, memberId: string): Promise<Board> {
     return fetchWithAuth(`${BOARDS_ENDPOINT}/${boardId}/members/${memberId}`, {
       method: 'POST'
-    });
+    })
   }
-};
+}
