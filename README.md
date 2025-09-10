@@ -256,7 +256,7 @@ packages/
 ### Prettier-oxc-parser
 
 - status: enabled
-- benefit: On this [benchmark](https://github.com/ArnaudBarre/prettier-oxc-parser/blob/main/benchmark/report.md), this plugin is faster than [@prettier/plugin-oxc](https://www.npmjs.com/package/@prettier/plugin-oxc)
+- benefit: Increase Prettier formatting speed, on this [benchmark](https://github.com/ArnaudBarre/prettier-oxc-parser/blob/main/benchmark/report.md), this plugin is faster than [@prettier/plugin-oxc](https://www.npmjs.com/package/@prettier/plugin-oxc)
 
 ### Oxlint and Type-Aware plug-in
 
@@ -269,7 +269,7 @@ packages/
 - note: Oxlint is in a stable version, and I have used it in production for a long time.
   But Type-Aware plug-in is in a preview version. It is not recommended to use it in production. It is a experimental in this project.
 
-### Turbopack in build mode
+### Turbopack
 
 - location: apps/web (NextJS)
 - status: enabled
@@ -325,7 +325,6 @@ This is a demo project, and I know little of German, so errors of translations m
 ### UI library
 
 - **Radix UI Ref Warning**:
-
   - Issue: Function components cannot be given refs warning in Dialog components
   - Impact: Development warning only, no production impact
   - Solution: Keep using `asChild` as per Radix UI docs, warning can be safely ignored
