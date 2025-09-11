@@ -5,7 +5,7 @@ import { Model } from 'mongoose'
 import { User, UserDocument } from './schemas/users.schema'
 
 // Enable debug logging for this file
-const DEBUG = true;
+const DEBUG = true
 
 @Injectable()
 export class UserService {
@@ -42,7 +42,7 @@ export class UserService {
                 queryDuration: `${queryDuration}ms`
               }
             : undefined
-        );
+        )
 
         this.logger.debug(
           `[${requestId}] [UserService] Found user: ${JSON.stringify(

@@ -32,14 +32,11 @@ export class AuthService {
       const user = await this.userService.findByEmail(email)
       const lookupDuration = Date.now() - startTime
 
-      this.logger.debug(
-        `[${requestId}] [AuthService] User lookup completed in ${lookupDuration}ms`,
-        {
-          userFound: !!user,
-          userId: user?._id?.toString(),
-          userEmail: user?.email
-        }
-      );
+      this.logger.debug(`[${requestId}] [AuthService] User lookup completed in ${lookupDuration}ms`, {
+        userFound: !!user,
+        userId: user?._id?.toString(),
+        userEmail: user?.email
+      })
 
       if (user) {
         this.logger.debug(

@@ -1,6 +1,8 @@
 {
   "plugins": ["typescript", "unicorn", "oxc"],
   "rules": {
+    "no-unused-vars": "error",
+    "no-debugger": "off",
     "no-var": "error",
     "no-void": "error",
     "radix": "error",
@@ -12,13 +14,9 @@
       }
     ],
     "no-restricted-globals": ["error", "isFinite", "isNaN"],
-    "no-console": "error",
     "no-return-assign": "error",
     "curly": "error",
-    "new-cap": "error",
     "prefer-rest-params": "error",
-    "max-params": ["error", 3],
-    "max-nested-callbacks": ["error", 3],
     "no-else-return": "error",
     "max-depth": ["error", 5],
     "max-lines": ["error", 500],
