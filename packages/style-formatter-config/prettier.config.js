@@ -1,7 +1,7 @@
 /** @type {import('prettier').Config} */
 
 module.exports = {
-  plugins: ['prettier-oxc-parser'],
+  plugins: ['@prettier/plugin-oxc', '@ianvs/prettier-plugin-sort-imports'],
   arrowParens: 'always',
   bracketSpacing: true,
   bracketSameLine: false,
@@ -12,5 +12,8 @@ module.exports = {
   singleQuote: true,
   tabWidth: 2,
   trailingComma: 'none',
-  useTabs: false
+  useTabs: false,
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
+  importOrderTypeScriptVersion: '5.9.2',
+  importOrderCaseSensitive: false
 }

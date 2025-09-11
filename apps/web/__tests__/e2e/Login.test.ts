@@ -1,7 +1,7 @@
-import { defaultEmail } from '@/constants/demoData'
-import { expect, test } from '@playwright/test'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { defaultEmail } from '@/constants/demoData'
+import { expect, test } from '@playwright/test'
 
 // Read the JSON file synchronously
 const enMessages = JSON.parse(readFileSync(join(process.cwd(), 'messages', 'en.json'), 'utf-8'))

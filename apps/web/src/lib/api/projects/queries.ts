@@ -1,5 +1,4 @@
-import { PROJECT_KEYS } from '@/types/projectApi'
-import type { UpdateProjectInput } from '@/types/projectApi'
+import { PROJECT_KEYS, type UpdateProjectInput } from '@/types/projectApi'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { projectApi } from '../projectApi'
 

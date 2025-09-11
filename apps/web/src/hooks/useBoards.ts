@@ -1,9 +1,9 @@
 'use client'
 
+import { useEffect, useMemo } from 'react'
 import { useBoards as useApiBoards } from '@/lib/api/boards/queries'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { Board } from '@/types/dbInterface'
-import { useEffect, useMemo } from 'react'
 
 // Helper function to ensure consistent board data structure
 function normalizeBoard(board: Board): Board {

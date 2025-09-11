@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -15,7 +16,6 @@ import { useRouter } from '@/i18n/navigation'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { boardSchema } from '@/types/boardForm'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { BoardForm } from './BoardForm'

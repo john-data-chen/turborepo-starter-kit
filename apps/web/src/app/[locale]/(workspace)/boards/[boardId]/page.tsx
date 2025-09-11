@@ -1,11 +1,11 @@
 'use client'
 
+import { memo, Suspense, useEffect } from 'react'
 import { Board } from '@/components/kanban/board/Board'
 import PageContainer from '@/components/layout/PageContainer'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
-import { memo, Suspense, useEffect } from 'react'
 
 const MemoizedBoard = memo(Board)
 

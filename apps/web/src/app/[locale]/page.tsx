@@ -1,9 +1,9 @@
 'use client'
 
+import { useEffect } from 'react'
 import { ROUTES } from '@/constants/routes'
 import { useRouter } from '@/i18n/navigation'
 import { useAuthStore } from '@/stores/auth-store'
-import { useEffect } from 'react'
 
 // This page acts as a client-side entry point to redirect users
 // based on their authentication status.

@@ -4,10 +4,10 @@
   "private": true,
   "main": "oxlint-global.json",
   "peerDependencies": {
-    "oxlint": ">=1.14.0"
+    "oxlint": ">=1.15.0"
   },
   "devDependencies": {
-    "oxlint": "^1.14.0",
+    "oxlint": "^1.15.0",
     "oxlint-tsgolint": "^0.2.0"
   }
 }

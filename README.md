@@ -253,10 +253,11 @@ packages/
 
 ## Experimental Tools
 
-### Prettier-oxc-parser
+### Prettier oxc plugin
 
 - status: enabled
-- benefit: Increase Prettier formatting speed, on this [benchmark](https://github.com/ArnaudBarre/prettier-oxc-parser/blob/main/benchmark/report.md), this plugin is faster than [@prettier/plugin-oxc](https://www.npmjs.com/package/@prettier/plugin-oxc)
+- benefit: Increase Prettier formatting speed
+- [introduction](https://www.npmjs.com/package/@prettier/plugin-oxc)
 
 ### Oxlint and Type-Aware plug-in
 
@@ -269,23 +270,31 @@ packages/
 - note: Oxlint is in a stable version, and I have used it in production for a long time.
   But Type-Aware plug-in is in a preview version. It is not recommended to use it in production. It is a experimental in this project.
 
+#### Introductions
+
+- [Oxlint](https://oxc.rs/blog/2025-06-10-oxlint-stable.html)
+- [Oxlint Type-Aware Preview](https://oxc.rs/blog/2025-08-17-oxlint-type-aware.html)
+
 ### Turbopack
 
 - location: apps/web (NextJS)
 - status: enabled
 - benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
+- [introduction](https://nextjs.org/docs/app/api-reference/turbopack)
 
 ### Rspack
 
 - location: apps/api (NestJS)
 - status: enabled
 - benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
+- [introduction](https://rspack.rs/guide/start/introduction)
 
 ### React Compiler
 
 - location: apps/web (NextJS)
 - status: disabled (enable it will increase build time 30~40%, so I disable it)
 - benefit: It can increase the performance score in lighthouse test 5~10% (not significant)
+- [introduction](https://react.dev/learn/react-compiler)
 
 ---
 

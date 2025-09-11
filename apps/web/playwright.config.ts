@@ -1,7 +1,7 @@
+import path from 'path'
 import { defineConfig, devices } from '@playwright/test'
 // Add this line to import dotenv
 import dotenv from 'dotenv'
-import path from 'path'
 
 // Load environment variables from .env file first (as fallback)
 // dotenv will not override existing environment variables (e.g., from CI)

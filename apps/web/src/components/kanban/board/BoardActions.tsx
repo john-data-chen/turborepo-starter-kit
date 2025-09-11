@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -24,7 +25,6 @@ import { Board } from '@/types/dbInterface'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { BoardForm } from './BoardForm'

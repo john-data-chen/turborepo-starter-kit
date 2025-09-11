@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback, useEffect, useState } from 'react'
 import { ROUTES, URL_PARAMS } from '@/constants/routes'
 import { routing } from '@/i18n/routing'
 import { AuthService } from '@/lib/auth/authService'
@@ -8,7 +9,6 @@ import { useAuthStore } from '@/stores/auth-store'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { Session, UserInfo } from '@/types/dbInterface'
 import { useMutation } from '@tanstack/react-query'
-import { useCallback, useEffect, useState } from 'react'
 
 // Helper function to get current locale from pathname
 function getCurrentLocale(): string {

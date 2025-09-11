@@ -1,5 +1,4 @@
 import { Controller, Get, Logger, Post, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common'
-
 import { AuthService } from './auth.service'
 import { EmailAuthGuard } from './guards/email-auth.guard'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
