@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types } from 'mongoose'
-
 import { ProjectStatus } from '../dto/update-project.dto'
 
 export type ProjectDocument = Project & Document

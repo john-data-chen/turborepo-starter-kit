@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator'
-
 import { TaskStatus } from '../schemas/tasks.schema'
 
 export class UpdateTaskDto {

@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from 'react'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -23,7 +24,6 @@ import { useWorkspaceStore } from '@/stores/workspace-store'
 import { projectSchema } from '@/types/projectForm'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useTranslations } from 'next-intl'
-import * as React from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { ProjectForm } from './ProjectForm'

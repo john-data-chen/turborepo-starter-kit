@@ -1,11 +1,11 @@
 'use client'
 
+import { useEffect } from 'react'
 import { ROUTES } from '@/constants/routes'
 import { useBoard } from '@/lib/api/boards/queries'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
 
 type BreadcrumbItem = {
   title: string

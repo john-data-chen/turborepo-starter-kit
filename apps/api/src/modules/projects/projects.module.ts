@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
-
 import { BoardsModule } from '../boards/boards.module'
 import { TasksModule } from '../tasks/tasks.module'
 import { UsersModule } from '../users/users.module'

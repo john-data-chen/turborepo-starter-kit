@@ -1,10 +1,10 @@
 'use client'
 
+import { Suspense, use, useEffect } from 'react'
 import RootWrapper from '@/components/layout/RootWrapper'
 import { useAuth } from '@/hooks/useAuth'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { Suspense, use, useEffect } from 'react'
 
 interface AppLayoutProps {
   children: React.ReactNode

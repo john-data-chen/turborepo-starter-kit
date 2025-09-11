@@ -1,7 +1,6 @@
 import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-
 import { BoardService } from '../boards/boards.service'
 import { TasksService } from '../tasks/tasks.service'
 import { CreateProjectDto } from './dto/create-project.dto'

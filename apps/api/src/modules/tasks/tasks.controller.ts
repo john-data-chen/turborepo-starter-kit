@@ -12,7 +12,6 @@ import {
   UseGuards
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { CreateTaskDto } from './dto/create-task.dto'

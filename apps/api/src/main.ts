@@ -2,7 +2,6 @@ import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
-
 import { AppModule } from './app.module'
 import { API_PORT } from './constants/api'
 

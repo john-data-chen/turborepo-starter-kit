@@ -1,12 +1,12 @@
 'use client'
 
+import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { useTranslations } from 'next-intl'
-import React from 'react'
 
 export function TaskFilter() {
   const { filter, setFilter, projects } = useWorkspaceStore()

@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
-
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BoardService } from './boards.service'
 import { CreateBoardDto } from './dto/create-boards.dto'
