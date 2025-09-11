@@ -322,20 +322,6 @@ packages/
 
 This is a demo project, and I know little of German, so errors of translations might not be fixed in the near future.
 
-### UI library
-
-- **Radix UI Ref Warning**:
-  - Issue: Function components cannot be given refs warning in Dialog components
-  - Impact: Development warning only, no production impact
-  - Solution: Keep using `asChild` as per Radix UI docs, warning can be safely ignored
-  - Reason: Internal implementation detail of Radix UI
-
-- **Radix UI ARIA Warning**:
-  - Issue: Blocked aria-hidden on a <body> element warning in Dialog components
-  - Impact: Development warning only, no production impact
-  - Solution: Can be safely ignored as most modern browsers handle this correctly
-  - Reason: Internal implementation of Radix UI's Dialog component
-
 ### Server
 
 - **Slow response from server**:
