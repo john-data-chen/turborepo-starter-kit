@@ -25,6 +25,7 @@ interface BoardProjectProps {
   tasks: Task[]
   isOverlay?: boolean
   isBoardOwner: boolean
+  isBoardMember: boolean
   currentUserId: string
 }
 
@@ -48,6 +49,7 @@ function BoardProjectComponent({
   tasks: initialTasks,
   isOverlay = false,
   isBoardOwner,
+  isBoardMember,
   currentUserId: _currentUserId
 }: BoardProjectProps) {
   const { filter, fetchTasksByProject } = useWorkspaceStore()
@@ -126,7 +128,7 @@ function BoardProjectComponent({
       type: 'Project',
       project
     } satisfies ProjectDragData,
-    disabled: !isBoardOwner, // Disable drag if not board owner
+    disabled: !isBoardMember, // Disable drag if not board member
     attributes: {
       roleDescription: `Project: ${project.title}`
     }
@@ -180,7 +182,6 @@ function BoardProjectComponent({
       className={cn(
         variants({ dragging: dragState }),
         'overflow-hidden', // Prevent content from overflowing
-        isBoardOwner ? 'cursor-grab active:cursor-grabbing' : 'cursor-default', // Add cursor style based on drag ability
         'project-container' // Added for easier debugging
       )}
       data-testid="project-container"
@@ -188,16 +189,10 @@ function BoardProjectComponent({
     >
       <CardHeader className="flex flex-row items-center justify-between border-b-2 p-4 space-y-0">
         <div className="flex items-center gap-2">
-          {isBoardOwner ? (
-            <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
-              <span className="sr-only">drag project: {project.title}</span>
-              <PointerIcon className="h-4 w-4" />
-            </Button>
-          ) : (
-            <div className="h-8 w-16 flex items-center justify-center text-muted-foreground/30 p-0">
-              <PointerIcon className="h-4 w-4" />
-            </div>
-          )}
+          <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
+            <span className="sr-only">drag project: {project.title}</span>
+            <PointerIcon className="h-4 w-4" />
+          </Button>
           <h3 className="text-lg font-semibold">{project.title}</h3>
         </div>
         {_projectActions}
