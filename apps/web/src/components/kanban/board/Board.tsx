@@ -39,6 +39,7 @@ export function Board() {
   const myBoards = useWorkspaceStore((state) => state.myBoards)
   const { user: currentUser, isAuthenticated } = useAuth()
   const currentUserId = currentUser?._id || ''
+  const teamBoards = useWorkspaceStore((state) => state.teamBoards)
 
   // Check if current user is the board owner
   const isBoardOwner = useMemo(() => {
@@ -54,6 +55,16 @@ export function Board() {
 
     return ownerId === currentUserId
   }, [currentBoardId, currentUserId, myBoards, isAuthenticated])
+
+  const isBoardMember = useMemo(() => {
+    if (!currentBoardId || !currentUserId) return false
+    if (!isAuthenticated) return false
+
+    const currentBoard = [...myBoards, ...teamBoards].find((board) => board._id === currentBoardId)
+    if (!currentBoard) return false
+
+    return currentBoard.members.some((member) => member._id === currentUserId)
+  }, [currentBoardId, currentUserId, myBoards, teamBoards, isAuthenticated])
 
   // Sort projects by orderInBoard
   const projects = useMemo(() => {
@@ -534,6 +545,7 @@ export function Board() {
                     project={project}
                     tasks={filterTasks(project.tasks)}
                     isBoardOwner={isBoardOwner}
+                    isBoardMember={isBoardMember}
                     currentUserId={currentUser?._id || ''}
                   />
                 </Fragment>
@@ -548,6 +560,7 @@ export function Board() {
               project={activeProject}
               tasks={filterTasks(activeProject.tasks)}
               isBoardOwner={isBoardOwner}
+              isBoardMember={isBoardMember}
               currentUserId={currentUser?._id || ''}
             />
           )}

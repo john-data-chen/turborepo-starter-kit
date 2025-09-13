@@ -32,13 +32,13 @@ export class BoardService {
     return createdBoard.save()
   }
 
-  async findAll(userId: string): Promise<Board[]> {
+  async findAll(userId: string): Promise<{ myBoards: Board[]; teamBoards: Board[] }> {
     try {
       // Ensure userId is a valid ObjectId
       const isValidObjectId = Types.ObjectId.isValid(userId)
       if (!isValidObjectId) {
         console.error(`[BoardService] Invalid user ID format: ${userId}`)
-        return []
+        return { myBoards: [], teamBoards: [] }
       }
       // First, find boards where user is the owner
       const ownedBoards = await this.boardModel.aggregate([
@@ -228,9 +228,7 @@ export class BoardService {
         }
       ])
 
-      const allBoards = [...ownedBoards, ...memberBoards]
-
-      return allBoards
+      return { myBoards: ownedBoards, teamBoards: memberBoards }
     } catch (error) {
       console.error('[BoardService] Error finding boards:', error)
       throw error

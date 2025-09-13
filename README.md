@@ -56,12 +56,12 @@ Every star motivates me to deliver more high-quality templates. 🚀
 
 ### Backend
 
-- **Framework**: [NestJS](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/)
-- **Build**: [Rspack](https://rspack.dev/)
-- **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/)
-- **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/)
-- **Testing**: [Jest](https://jestjs.io/), [Supertest](https://github.com/visionmedia/supertest)
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
+- **Framework**: [NestJS](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/): modern server-side application framework with strong type safety and performance
+- **Build**: [Rspack](https://rspack.dev/): high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
+- **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/): modern database with strong type safety and performance
+- **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/): modern authentication with strong type safety and performance
+- **Testing**: [Vitest](https://vitest.dev/): modern testing with strong type safety and performance
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions): modern CI/CD with strong type safety and performance
 
 ---
 
@@ -278,7 +278,7 @@ packages/
 ### Turbopack
 
 - location: apps/web (NextJS)
-- status: enabled
+- status: enabled (dev and build mode)
 - benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
 - [introduction](https://nextjs.org/docs/app/api-reference/turbopack)
 
@@ -312,7 +312,8 @@ packages/
 - [x] Add project order sorting to database
 - [x] Add user permissions management to limit the different actions
 - [x] Fix the issue of not auto redirecting after login (only in production)
-- [x] Fix the issue of drag project
+- [x] Fix the issue of drag project in my boards
+- [x] Remove the limit of drag project in team boards, you don't need to be owner of board to drag projects
 - [ ] Hide drag icon when user is not owner of board or project
 - [ ] Fix the issue of drag icon display incorrect
 - [ ] Fix the issues of CRUD of project and task

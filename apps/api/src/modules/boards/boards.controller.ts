@@ -11,7 +11,7 @@ import {
   UnauthorizedException,
   UseGuards
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger'
 import { Request } from 'express'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BoardService } from './boards.service'
@@ -61,8 +61,14 @@ export class BoardController {
   @ApiOperation({ summary: 'Get all boards for the authenticated user' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Return all boards for the user.',
-    type: [Board]
+    description: 'Return all boards for the user, separated into owned and team boards.',
+    schema: {
+      type: 'object',
+      properties: {
+        myBoards: { type: 'array', items: { $ref: getSchemaPath(Board) } },
+        teamBoards: { type: 'array', items: { $ref: getSchemaPath(Board) } }
+      }
+    }
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
