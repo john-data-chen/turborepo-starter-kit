@@ -22,7 +22,7 @@
   "engines": {
     "node": "22.x"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "lint-staged": {
     "apps/web/**/*.{js,jsx,ts,tsx,css,scss}": [
       "pnpm --filter web format"
