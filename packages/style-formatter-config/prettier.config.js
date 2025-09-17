@@ -1,7 +1,7 @@
 /** @type {import('prettier').Config} */
 
 module.exports = {
-  plugins: ['@prettier/plugin-oxc', '@ianvs/prettier-plugin-sort-imports'],
+  plugins: ['@ianvs/prettier-plugin-sort-imports'],
   arrowParens: 'always',
   bracketSpacing: true,
   bracketSameLine: false,

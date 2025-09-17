@@ -253,12 +253,6 @@ packages/
 
 ## Experimental Tools
 
-### Prettier oxc plugin
-
-- status: enabled
-- benefit: Increase Prettier formatting speed
-- [introduction](https://www.npmjs.com/package/@prettier/plugin-oxc)
-
 ### Oxlint and Type-Aware plug-in
 
 - status: enabled
@@ -288,6 +282,12 @@ packages/
 - status: enabled
 - benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 - [introduction](https://rspack.rs/guide/start/introduction)
+
+### Prettier oxc plugin
+
+- status: disabled (it is conflict with Windsurf, since this is a small project, the speed difference is not significant)
+- benefit: Increase Prettier formatting speed
+- [introduction](https://www.npmjs.com/package/@prettier/plugin-oxc)
 
 ### React Compiler
 
