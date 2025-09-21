@@ -1,6 +1,10 @@
 'use client'
 
 import React from 'react'
+import { useDeleteBoard, useUpdateBoard } from '@/lib/api/boards/queries'
+import { boardSchema } from '@/types/boardForm'
+import { Board } from '@/types/dbInterface'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,20 +13,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+} from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useDeleteBoard, useUpdateBoard } from '@/lib/api/boards/queries'
-import { boardSchema } from '@/types/boardForm'
-import { Board } from '@/types/dbInterface'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+} from '@repo/ui/components/dropdown-menu'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'

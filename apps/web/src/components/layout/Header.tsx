@@ -1,6 +1,6 @@
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
-import { Separator } from '@/components/ui/separator'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+import { Separator } from '@repo/ui/components/separator'
+import { SidebarTrigger } from '@repo/ui/components/sidebar'
 import LanguageSwitcher from './LanguageSwitcher'
 import ThemeToggle from './ThemeToggle'
 import { UserNav } from './UserNav'

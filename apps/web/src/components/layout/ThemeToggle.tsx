@@ -1,8 +1,13 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import { Button } from '@repo/ui/components/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@repo/ui/components/dropdown-menu'
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 

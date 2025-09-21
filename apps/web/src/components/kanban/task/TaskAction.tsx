@@ -2,6 +2,12 @@
 
 import { useState } from 'react'
 import { TaskForm } from '@/components/kanban/task/TaskForm'
+import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { TaskStatus } from '@/types/dbInterface'
+import { TASK_KEYS } from '@/types/taskApi'
+import { TaskFormSchema } from '@/types/taskForm'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,22 +16,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+} from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { TaskStatus } from '@/types/dbInterface'
-import { TASK_KEYS } from '@/types/taskApi'
-import { TaskFormSchema } from '@/types/taskForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+} from '@repo/ui/components/dropdown-menu'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'

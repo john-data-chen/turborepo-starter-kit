@@ -1,9 +1,14 @@
 'use client'
 
 import { useTransition } from 'react'
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { usePathname, useRouter } from '@/i18n/navigation'
+import { Button } from '@repo/ui/components/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@repo/ui/components/dropdown-menu'
 import { useParams } from 'next/navigation'
 
 export default function LanguageSwitcher() {

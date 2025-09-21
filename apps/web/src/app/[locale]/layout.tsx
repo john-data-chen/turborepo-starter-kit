@@ -1,6 +1,6 @@
 import { routing } from '@/i18n/routing'
 import { ClientProviders } from '@/providers/client-providers'
-import '@/styles/globals.css'
+import '@repo/ui/styles.css'
 import { Analytics } from '@vercel/analytics/react'
 import { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'

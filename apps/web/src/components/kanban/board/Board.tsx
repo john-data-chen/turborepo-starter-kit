@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useMemo, useRef, useState } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/useAuth'
 import { taskApi } from '@/lib/api/taskApi'
 import { useWorkspaceStore } from '@/stores/workspace-store'
@@ -24,6 +23,7 @@ import {
   type DragStartEvent
 } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { Skeleton } from '@repo/ui/components/skeleton'
 import { toast } from 'sonner'
 import NewProjectDialog from '../project/NewProjectDialog'
 import { BoardContainer, BoardProject } from '../project/Project'

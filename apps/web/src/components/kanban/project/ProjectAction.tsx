@@ -1,6 +1,10 @@
 'use client'
 
 import * as React from 'react'
+import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { projectSchema } from '@/types/projectForm'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,20 +13,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+} from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { projectSchema } from '@/types/projectForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+} from '@repo/ui/components/dropdown-menu'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { z } from 'zod'

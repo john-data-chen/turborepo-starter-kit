@@ -1,7 +1,8 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
+import { Avatar, AvatarFallback } from '@repo/ui/components/avatar'
+import { Button } from '@repo/ui/components/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useAuth } from '@/hooks/useAuth'
+} from '@repo/ui/components/dropdown-menu'
 import { useTranslations } from 'next-intl'
 
 export function UserNav() {

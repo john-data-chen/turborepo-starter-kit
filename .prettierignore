@@ -39,8 +39,8 @@ CHANGELOG.md
 pnpm-lock.yaml
 
 # Shadcn UI
-apps/web/src/components/ui/**/*
-apps/web/src/hooks/use-mobile.ts
+packages/ui/src/components/ui/**/*
+packages/ui/src/hooks/use-mobile.ts
 
 # mongodb docker volumes
 apps/api/database/mongodb/**/*

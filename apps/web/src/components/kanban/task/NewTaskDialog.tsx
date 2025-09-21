@@ -2,7 +2,10 @@
 
 import React from 'react'
 import { TaskForm } from '@/components/kanban/task/TaskForm'
-import { Button } from '@/components/ui/button'
+import { useCreateTask } from '@/lib/api/tasks/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { TaskFormSchema } from '@/types/taskForm'
+import { Button } from '@repo/ui/components/button'
 import {
   Dialog,
   DialogContent,
@@ -10,10 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog'
-import { useCreateTask } from '@/lib/api/tasks/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { TaskFormSchema } from '@/types/taskForm'
+} from '@repo/ui/components/dialog'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { z } from 'zod'

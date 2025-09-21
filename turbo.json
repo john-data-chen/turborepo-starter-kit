@@ -17,6 +17,10 @@
         "dist/**"
       ]
     },
+    "@repo/ui#build": {
+      "dependsOn": [],
+      "outputs": []
+    },
     "web#build": {
       "dependsOn": [
         "^build"

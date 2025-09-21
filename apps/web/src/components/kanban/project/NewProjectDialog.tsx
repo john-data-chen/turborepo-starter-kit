@@ -1,7 +1,11 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { useCreateProject } from '@/lib/api/projects/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { projectSchema } from '@/types/projectForm'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from '@repo/ui/components/button'
 import {
   Dialog,
   DialogContent,
@@ -10,11 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog'
-import { useCreateProject } from '@/lib/api/projects/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { projectSchema } from '@/types/projectForm'
-import { zodResolver } from '@hookform/resolvers/zod'
+} from '@repo/ui/components/dialog'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

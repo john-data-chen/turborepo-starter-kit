@@ -1,10 +1,3 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
 export const getLocalePath = (path: string, locale: string | string[] | undefined) => {
   const currentLocale = Array.isArray(locale) ? locale[0] : locale
   if (currentLocale) {

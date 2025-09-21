@@ -3,8 +3,8 @@
 import React from 'react'
 import AppSidebar from '@/components/layout/AppSidebar'
 import Header from '@/components/layout/Header'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { TOAST_DURATION } from '@/constants/ui'
+import { SidebarInset, SidebarProvider } from '@repo/ui/components/sidebar'
 import { Toaster } from 'sonner'
 
 export default function RootWrapper({ children }: { children: React.ReactNode }) {

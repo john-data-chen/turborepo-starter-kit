@@ -1,6 +1,8 @@
 'use client'
 
 import { Icons } from '@/components/layout/Icons'
+import { useBoards } from '@/hooks/useBoards'
+import { Link, usePathname } from '@/i18n/navigation'
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
-} from '@/components/ui/sidebar'
-import { useBoards } from '@/hooks/useBoards'
-import { Link, usePathname } from '@/i18n/navigation'
+} from '@repo/ui/components/sidebar'
 import { HomeIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 

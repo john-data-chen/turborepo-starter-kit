@@ -314,10 +314,9 @@ packages/
 - [x] Fix the issue of not auto redirecting after login (only in production)
 - [x] Fix the issue of drag project in my boards
 - [x] Remove the limit of drag project in team boards, you don't need to be owner of board to drag projects
-- [ ] Hide drag icon when user is not owner of board or project
-- [ ] Fix the issue of drag icon display incorrect
-- [ ] Fix the issues of CRUD of project and task
-- [ ] Refactor the shadcn ui components into packages folder
+- [x] Fix the issue of task can't be dragged
+- [x] Refactor the shadcn ui components into packages folder
+- [ ] Fix the issue of css style not working after refactor shadcn ui components
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
