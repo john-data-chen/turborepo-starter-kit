@@ -161,17 +161,6 @@ function BoardProjectComponent({
 
   const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
 
-  // Memoize task items with drag enabled for board owners
-  const _taskItems = useMemo(() => {
-    // Filter out any tasks that are marked as deleted
-    const validTasks = tasks.filter((task) => !task._deleted)
-
-    return validTasks.map((task) => ({
-      id: task._id,
-      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} isDragEnabled={isBoardOwner} />
-    }))
-  }, [tasks, loadTasks, isBoardOwner])
-
   // Memoize task IDs for better performance
   const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks])
 
@@ -226,7 +215,7 @@ function BoardProjectComponent({
                 {filteredTasks
                   .filter((task) => !task._deleted) // Ensure we don't render deleted tasks
                   .map((task) => (
-                    <TaskCard key={task._id} task={task} onUpdate={handleTaskUpdate} />
+                    <TaskCard key={task._id} task={task} onUpdate={handleTaskUpdate} isDragEnabled={isBoardOwner} />
                   ))}
               </div>
             </SortableContext>
