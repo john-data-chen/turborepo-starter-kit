@@ -2,7 +2,7 @@
   "name": "linter-config",
   "version": "1.0.0",
   "private": true,
-  "main": "oxlint-global.json",
+  "main": ".oxlintrc.json",
   "peerDependencies": {
     "oxlint": ">=1.16.0"
   },

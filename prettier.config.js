@@ -1,7 +1,7 @@
 /** @type {import('prettier').Config} */
 
 module.exports = {
-  plugins: ['@ianvs/prettier-plugin-sort-imports'],
+  plugins: ['prettier-plugin-tailwindcss', '@ianvs/prettier-plugin-sort-imports'],
   arrowParens: 'always',
   bracketSpacing: true,
   bracketSameLine: false,
@@ -13,6 +13,7 @@ module.exports = {
   tabWidth: 2,
   trailingComma: 'none',
   useTabs: false,
+  importOrder: ['^react$', '^nestjs$', '<THIRD_PARTY_MODULES>', '^@ui/(.*)$', '^@/modules/(.*)$', '^[./]'],
   importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
   importOrderTypeScriptVersion: '5.9.2',
   importOrderCaseSensitive: false

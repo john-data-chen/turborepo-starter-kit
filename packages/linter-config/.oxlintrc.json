@@ -1,10 +1,38 @@
 {
-  "extends": ["linter-config"],
-  "plugins": ["node"],
+  "plugins": ["node", "typescript", "unicorn", "oxc", "react", "react-perf", "nextjs", "jsx-a11y"],
   "rules": {
     "no-unused-vars": "error",
     "no-debugger": "off",
-    "eqeqeq": "warn",
+    "no-var": "error",
+    "no-void": "error",
+    "radix": "error",
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "no-restricted-globals": ["error", "isFinite", "isNaN"],
+    "no-return-assign": "error",
+    "curly": "error",
+    "prefer-rest-params": "error",
+    "no-else-return": "error",
+    "max-depth": ["error", 5],
+    "max-lines": ["error", 500],
+    "prefer-object-spread": "error",
+    "prefer-object-has-own": "error",
+    "prefer-promise-reject-errors": "error",
+    "react/no-namespace": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-non-null-asserted-nullish-coalescing": "error",
+    "typescript/adjacent-overload-signatures": "error",
+    "typescript/consistent-type-definitions": ["error", "interface"],
+    "typescript/no-empty-interface": "error",
+    "typescript/no-inferrable-types": "error",
+    "typescript/prefer-for-of": "error",
+    "typescript/prefer-function-type": "error",
+    "typescript/prefer-namespace-keyword": "error",
     "typescript/await-thenable": "error",
     "typescript/no-array-delete": "error",
     "typescript/no-base-to-string": "error",
@@ -44,7 +72,19 @@
     "typescript/return-await": "error",
     "typescript/switch-exhaustiveness-check": "error",
     "typescript/unbound-method": "error",
-    "typescript/use-unknown-in-catch-callback-variable": "error"
+    "typescript/use-unknown-in-catch-callback-variable": "error",
+    "react/jsx-no-undef": "warn",
+    "react/self-closing-comp": "error",
+    "react/jsx-no-useless-fragment": "error",
+    "react/no-unescaped-entities": "error",
+    "react/no-unknown-property": "error",
+    "react/jsx-curly-brace-presence": ["error", "never"]
   },
-  "ignorePatterns": ["dist", "database/mongodb"]
+  "ignorePatterns": [
+    "node_modules/",
+    "dist",
+    "apps/api/database/mongodb",
+    "packages/ui/src/components/**/*",
+    "packages/ui/src/styles/globals.css"
+  ]
 }

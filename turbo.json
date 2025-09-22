@@ -3,7 +3,6 @@
   "globalDependencies": [
     "**/.env.*",
     "packages/linter-config/*",
-    "packages/style-formatter-config/*",
     "packages/global-tsconfig/*"
   ],
   "tasks": {
