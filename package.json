@@ -25,10 +25,10 @@
   "packageManager": "pnpm@10.17.0",
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,scss}": [
-      "pnpm format --ignore-path ./.prettierignore"
+      "prettier --ignore-path ./.prettierignore"
     ],
     "**/*.{js,jsx,ts,tsx}": [
-      "pnpm lint"
+      "npx oxlint --config ./packages/linter-config/.oxlintrc.json --type-aware --fix"
     ]
   },
   "config": {
