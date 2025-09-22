@@ -415,9 +415,6 @@ importers:
       global-tsconfig:
         specifier: workspace:*
         version: link:../global-tsconfig
-      linter-config:
-        specifier: workspace:*
-        version: link:../linter-config
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.1.1)
@@ -452,6 +449,9 @@ importers:
       '@types/react-dom':
         specifier: 19.1.5
         version: 19.1.5(@types/react@19.1.4)
+      linter-config:
+        specifier: workspace:*
+        version: link:../linter-config
       typescript:
         specifier: ^5.9.2
         version: 5.9.2

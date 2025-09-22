@@ -8,5 +8,8 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist"
   },
-  "exclude": ["node_modules", "__tests__"]
+  "exclude": [
+    "node_modules",
+    "__tests__"
+  ]
 }
