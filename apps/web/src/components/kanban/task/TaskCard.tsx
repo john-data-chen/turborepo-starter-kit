@@ -27,11 +27,11 @@ export interface TaskDragData {
 
 function getLastField(task: Task): string {
   const visibleFields = []
-  if (task.creator) visibleFields.push('creator')
-  if (task.lastModifier) visibleFields.push('lastModifier')
-  if (task.assignee) visibleFields.push('assignee')
-  if (task.dueDate) visibleFields.push('dueDate')
-  if (task.description) visibleFields.push('description')
+  if (task.creator) {visibleFields.push('creator')}
+  if (task.lastModifier) {visibleFields.push('lastModifier')}
+  if (task.assignee) {visibleFields.push('assignee')}
+  if (task.dueDate) {visibleFields.push('dueDate')}
+  if (task.description) {visibleFields.push('description')}
 
   return visibleFields[visibleFields.length - 1] || ''
 }

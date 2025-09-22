@@ -88,7 +88,7 @@ export function BoardOverview() {
     const loginSuccess = searchParams.get('login_success')
 
     const processLogin = async () => {
-      if (loginSuccess !== 'true') return
+      if (loginSuccess !== 'true') {return}
 
       try {
         setIsProcessingLogin(true)

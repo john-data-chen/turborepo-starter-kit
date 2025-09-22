@@ -204,7 +204,7 @@ export function TaskActions({
       // 2. Create a function to safely update queries
       const updateQueries = (queryKey: readonly (string | readonly string[])[], taskId: string) => {
         queryClient.setQueryData(queryKey, (old: any) => {
-          if (!old || !Array.isArray(old)) return old
+          if (!old || !Array.isArray(old)) {return old}
           return old.filter((task: any) => task._id !== taskId)
         })
       }
@@ -324,7 +324,7 @@ export function TaskActions({
   }
 
   // If we don't have task data, don't render anything
-  if (!task) return null
+  if (!task) {return null}
 
   return (
     <>

@@ -5,8 +5,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 
-import { useIsMobile } from "../hooks/use-mobile";
-import { cn } from "../lib/utils";
+import { useIsMobile } from "../../hooks/use-mobile";
+import { cn } from "../../lib/utils";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Separator } from "./separator";
@@ -32,7 +32,7 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
-type SidebarContextProps = {
+interface SidebarContextProps {
   state: "expanded" | "collapsed";
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -40,7 +40,7 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
-};
+}
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 

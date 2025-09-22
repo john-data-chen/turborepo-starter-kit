@@ -17,7 +17,7 @@ export default function BoardPage() {
   const fetchProjects = useWorkspaceStore((state) => state.fetchProjects)
 
   useEffect(() => {
-    if (!boardId) return
+    if (!boardId) {return}
     setCurrentBoardId(boardId)
     fetchProjects(boardId)
   }, [boardId, setCurrentBoardId, fetchProjects])

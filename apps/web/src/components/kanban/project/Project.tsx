@@ -60,8 +60,8 @@ function BoardProjectComponent({
 
   // Memoize the helper function
   const getUserDisplayName = useCallback((user: string | UserInfo | null | undefined): string => {
-    if (!user) return 'Unassigned'
-    if (typeof user === 'string') return user
+    if (!user) {return 'Unassigned'}
+    if (typeof user === 'string') {return user}
     return user.name || user.email || 'Unknown User'
   }, [])
 
@@ -85,7 +85,7 @@ function BoardProjectComponent({
 
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
-    if (!project?._id) return
+    if (!project?._id) {return}
 
     setIsLoading(true)
     setError(null)
@@ -117,7 +117,7 @@ function BoardProjectComponent({
   }, [loadTasks])
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks?.length) return tasks || []
+    if (!filter.status || !tasks?.length) {return tasks || []}
     return tasks.filter((task) => task.status === filter.status)
   }, [tasks, filter.status])
 

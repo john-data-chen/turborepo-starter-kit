@@ -7,7 +7,7 @@ import { useWorkspaceStore } from '@/stores/workspace-store'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 
-type BreadcrumbItem = {
+interface BreadcrumbItem {
   title: string
   link: string
   isRoot?: boolean

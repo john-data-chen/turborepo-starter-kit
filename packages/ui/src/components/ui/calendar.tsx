@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 import { Button, buttonVariants } from "./button";
 
 function Calendar({
@@ -182,7 +182,7 @@ function CalendarDayButton({
 
   const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
-    if (modifiers.focused) ref.current?.focus();
+    if (modifiers.focused) {ref.current?.focus();}
   }, [modifiers.focused]);
 
   return (

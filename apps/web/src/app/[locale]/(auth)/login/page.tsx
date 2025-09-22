@@ -2,7 +2,7 @@ import SignInView from '@/components/auth/SignInView'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
-type Props = {
+interface Props {
   params: { locale: string }
 }
 
