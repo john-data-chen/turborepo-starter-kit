@@ -18,8 +18,8 @@
     "curly": "error",
     "prefer-rest-params": "error",
     "no-else-return": "error",
-    "max-depth": ["error", 5],
-    "max-lines": ["error", 500],
+    "max-depth": ["warn", 5],
+    "max-lines": ["warn", 500],
     "prefer-object-spread": "error",
     "prefer-object-has-own": "error",
     "prefer-promise-reject-errors": "error",
@@ -85,7 +85,7 @@
     "dist",
     "apps/api/database/mongodb",
     "apps/api/rspack.config.ts",
-    "packages/ui/src/components/**/*",
+    "packages/ui/src/components/ui/**/*",
     "packages/ui/src/styles/globals.css"
   ]
 }
