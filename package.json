@@ -24,18 +24,11 @@
   },
   "packageManager": "pnpm@10.17.0",
   "lint-staged": {
-    "apps/web/**/*.{js,jsx,ts,tsx,css,scss}": [
-      "pnpm --filter web format"
+    "**/*.{js,jsx,ts,tsx,css,scss}": [
+      "pnpm format --ignore-path ./.prettierignore"
     ],
-    "apps/web/**/*.{js,jsx,ts,tsx}": [
-      "pnpm --filter web lint"
-    ],
-    "apps/api/**/*.{js,ts}": [
-      "pnpm --filter api format",
-      "pnpm --filter api lint"
-    ],
-    "packages/**/*.{js,ts,json}": [
-      "pnpm --filter style-formatter-config exec prettier --write --no-error-on-unmatched-pattern"
+    "**/*.{js,jsx,ts,tsx}": [
+      "pnpm lint"
     ]
   },
   "config": {
