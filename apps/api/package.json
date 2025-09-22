@@ -13,7 +13,7 @@
     "init-db": "tsx database/init-db-data.ts",
     "init-db:force": "tsx database/init-db-data.ts --force",
     "format": "prettier --write . --ignore-path ../../.prettierignore",
-    "lint": "npx oxlint --type-aware --fix",
+    "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
     "test": "vitest run --coverage",
     "test:watch": "vitest --watch"
   },

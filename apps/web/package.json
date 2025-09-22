@@ -10,7 +10,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "oxlint --config ../../.oxlintrc.json --type-aware --fix",
+    "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "test": "vitest run --coverage",
