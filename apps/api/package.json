@@ -31,7 +31,7 @@
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.2",
-    "mongoose": "^8.18.1",
+    "mongoose": "^8.18.2",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
