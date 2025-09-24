@@ -60,8 +60,6 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "global-tsconfig": "workspace:*",
-    "linter-config": "workspace:*",
     "lucide-react": "^0.544.0",
     "react-day-picker": "^9.11.0",
     "react-hook-form": "^7.63.0",
