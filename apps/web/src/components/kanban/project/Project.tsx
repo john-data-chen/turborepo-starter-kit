@@ -60,8 +60,12 @@ function BoardProjectComponent({
 
   // Memoize the helper function
   const getUserDisplayName = useCallback((user: string | UserInfo | null | undefined): string => {
-    if (!user) {return 'Unassigned'}
-    if (typeof user === 'string') {return user}
+    if (!user) {
+      return 'Unassigned'
+    }
+    if (typeof user === 'string') {
+      return user
+    }
     return user.name || user.email || 'Unknown User'
   }, [])
 
@@ -85,7 +89,9 @@ function BoardProjectComponent({
 
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
-    if (!project?._id) {return}
+    if (!project?._id) {
+      return
+    }
 
     setIsLoading(true)
     setError(null)
@@ -117,7 +123,9 @@ function BoardProjectComponent({
   }, [loadTasks])
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks?.length) {return tasks || []}
+    if (!filter.status || !tasks?.length) {
+      return tasks || []
+    }
     return tasks.filter((task) => task.status === filter.status)
   }, [tasks, filter.status])
 
@@ -176,7 +184,7 @@ function BoardProjectComponent({
       data-testid="project-container"
       {...containerProps}
     >
-      <CardHeader className="flex flex-row items-center justify-between border-b-2 p-4 space-y-0">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-2 p-4">
         <div className="flex items-center gap-2">
           <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
             <span className="sr-only">drag project: {project.title}</span>
@@ -187,17 +195,17 @@ function BoardProjectComponent({
         {_projectActions}
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 p-0 overflow-hidden">
+      <CardContent className="flex flex-col gap-4 overflow-hidden p-0">
         <ScrollArea className="h-full px-2 pt-2">
           <div className="flex flex-col gap-1">
             <Badge variant="outline" className="text-xs">
               {t('description')}: {project.description || t('noDescription')}
             </Badge>
-            <Badge variant="outline" className="text-xs truncate">
+            <Badge variant="outline" className="truncate text-xs">
               {t('owner')}: {getUserDisplayName(project.owner)}
             </Badge>
             {Array.isArray(project.members) && project.members.length > 0 && (
-              <Badge variant="outline" className="text-xs truncate">
+              <Badge variant="outline" className="truncate text-xs">
                 {t('members')}:{' '}
                 {project.members
                   .map((member) => getUserDisplayName(member))
@@ -229,7 +237,7 @@ function BoardProjectComponent({
 export function BoardContainer({ children }: { children: React.ReactNode }) {
   return (
     <ScrollArea className="w-full">
-      <div className="flex flex-col md:flex-row gap-4">{children}</div>
+      <div className="flex flex-col gap-4 md:flex-row">{children}</div>
       <ScrollBar orientation="horizontal" className="hidden md:flex" />
     </ScrollArea>
   )

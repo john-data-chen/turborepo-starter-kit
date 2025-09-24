@@ -53,7 +53,7 @@ export default function AppSidebar() {
           </div>
           <SidebarMenu>
             {loading ? (
-              <div className="px-4 py-2 text-sm text-muted-foreground">{t('loading')}</div>
+              <div className="text-muted-foreground px-4 py-2 text-sm">{t('loading')}</div>
             ) : (
               myBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>
@@ -75,7 +75,7 @@ export default function AppSidebar() {
           </div>
           <SidebarMenu>
             {loading ? (
-              <div className="px-4 py-2 text-sm text-muted-foreground">{t('loading')}</div>
+              <div className="text-muted-foreground px-4 py-2 text-sm">{t('loading')}</div>
             ) : (
               teamBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>

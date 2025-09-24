@@ -204,7 +204,9 @@ export function TaskActions({
       // 2. Create a function to safely update queries
       const updateQueries = (queryKey: readonly (string | readonly string[])[], taskId: string) => {
         queryClient.setQueryData(queryKey, (old: any) => {
-          if (!old || !Array.isArray(old)) {return old}
+          if (!old || !Array.isArray(old)) {
+            return old
+          }
           return old.filter((task: any) => task._id !== taskId)
         })
       }
@@ -324,7 +326,9 @@ export function TaskActions({
   }
 
   // If we don't have task data, don't render anything
-  if (!task) {return null}
+  if (!task) {
+    return null
+  }
 
   return (
     <>
@@ -362,7 +366,7 @@ export function TaskActions({
           <DropdownMenuItem
             onSelect={() => canEdit && setIsEditDialogOpen(true)}
             disabled={!canEdit}
-            className={!canEdit ? 'text-muted-foreground line-through cursor-not-allowed' : ''}
+            className={!canEdit ? 'text-muted-foreground cursor-not-allowed line-through' : ''}
           >
             {t('edit')}
           </DropdownMenuItem>
@@ -374,8 +378,8 @@ export function TaskActions({
             disabled={!canDelete}
             className={
               !canDelete
-                ? 'text-muted-foreground line-through cursor-not-allowed'
-                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+                ? 'text-muted-foreground cursor-not-allowed line-through'
+                : 'hover:!bg-destructive/10 text-red-600 hover:!text-red-600'
             }
           >
             {t('delete')}

@@ -88,7 +88,9 @@ export function BoardOverview() {
     const loginSuccess = searchParams.get('login_success')
 
     const processLogin = async () => {
-      if (loginSuccess !== 'true') {return}
+      if (loginSuccess !== 'true') {
+        return
+      }
 
       try {
         setIsProcessingLogin(true)
@@ -156,9 +158,9 @@ export function BoardOverview() {
   // Show loading state while processing login or loading boards
   if (isProcessingLogin || boardsLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
           <p>{t('loading')}</p>
         </div>
       </div>
@@ -173,21 +175,21 @@ export function BoardOverview() {
   const shouldShowTeamBoards = filter === 'all' || filter === 'team'
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-4 bg-background sticky top-0 z-10">
+    <div className="flex h-[calc(100vh-8rem)] flex-col">
+      <div className="bg-background sticky top-0 z-10 flex flex-col items-start justify-between gap-2 p-4 sm:flex-row sm:items-center">
         <div className="w-full sm:w-[200px]">
           <NewBoardDialog>
             <Button
-              className="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+              className="ring-offset-background focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               data-testid="new-board-trigger"
             >
               {t('newBoard')}
             </Button>
           </NewBoardDialog>
         </div>
-        <div className="flex w-full sm:w-auto gap-2">
+        <div className="flex w-full gap-2 sm:w-auto">
           <div className="relative w-full sm:w-[200px]">
-            <MagnifyingGlassIcon className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+            <MagnifyingGlassIcon className="text-muted-foreground absolute left-2.5 top-2.5 h-5 w-5" />
             <Input
               placeholder={t('searchBoards')}
               className="pl-8"
@@ -220,22 +222,22 @@ export function BoardOverview() {
         <div className="space-y-6">
           {shouldShowMyBoards && (
             <section>
-              <div className="flex items-center gap-2 mb-2 px-4">
+              <div className="mb-2 flex items-center gap-2 px-4">
                 <h2 className="text-2xl font-bold" data-testid="myBoardsTitle">
                   {t('myBoards')}
                 </h2>
               </div>
-              <div className="flex items-center gap-2 mb-2 px-4">
-                <span className="text-sm text-muted-foreground">{t('myBoardsDescription')}</span>
+              <div className="mb-2 flex items-center gap-2 px-4">
+                <span className="text-muted-foreground text-sm">{t('myBoardsDescription')}</span>
               </div>
               {filteredMyBoards?.length === 0 ? (
                 <p className="text-muted-foreground px-4">{t('noBoardsFound')}</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
                   {filteredMyBoards?.map((board) => (
                     <Card
                       key={board._id}
-                      className="cursor-pointer hover:border-primary transition-colors"
+                      className="hover:border-primary cursor-pointer transition-colors"
                       onClick={() => handleBoardClick(board._id)}
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -249,7 +251,7 @@ export function BoardOverview() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 -mr-2"
+                            className="-mr-2 h-8 w-8"
                             onClick={(e) => {
                               e.stopPropagation()
                             }}
@@ -266,12 +268,12 @@ export function BoardOverview() {
                         </BoardActions>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-muted-foreground">{board.description || t('noDescription')}</p>
-                        <p className="text-sm mt-2">
+                        <p className="text-muted-foreground text-sm">{board.description || t('noDescription')}</p>
+                        <p className="mt-2 text-sm">
                           {t('projects')}:{' '}
                           {board.projects.length > 0 ? board.projects.map((p) => p.title).join(' / ') : '0'}
                         </p>
-                        <p className="text-sm mt-2">
+                        <p className="mt-2 text-sm">
                           {t('members')}: {board.members.map((m) => m.name).join(', ')}
                         </p>
                       </CardContent>
@@ -284,29 +286,29 @@ export function BoardOverview() {
 
           {shouldShowTeamBoards && (
             <section>
-              <div className="flex items-center gap-2 mb-2 px-4">
+              <div className="mb-2 flex items-center gap-2 px-4">
                 <h2 className="text-2xl font-bold" data-testid="teamBoardsTitle">
                   {t('teamBoards')}
                 </h2>
               </div>
-              <div className="flex items-center gap-2 mb-2 px-4">
-                <span className="text-sm text-muted-foreground">{t('teamBoardsDescription')}</span>
+              <div className="mb-2 flex items-center gap-2 px-4">
+                <span className="text-muted-foreground text-sm">{t('teamBoardsDescription')}</span>
               </div>
               {filteredTeamBoards?.length === 0 ? (
                 <p className="text-muted-foreground px-4">{t('noTeamBoardsFound')}</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
                   {filteredTeamBoards?.map((board) => (
                     <Card
                       key={board._id}
-                      className="cursor-pointer hover:border-primary transition-colors"
+                      className="hover:border-primary cursor-pointer transition-colors"
                       onClick={() => handleBoardClick(board._id)}
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>{board.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-muted-foreground">{board.description || t('noDescription')}</p>
+                        <p className="text-muted-foreground text-sm">{board.description || t('noDescription')}</p>
                         <div className="mt-2 space-y-1">
                           <p className="text-sm">
                             {t('owner')}:{' '}

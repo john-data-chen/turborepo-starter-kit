@@ -56,7 +56,7 @@ export default function UserAuthForm() {
         />
 
         {error && (
-          <div className="text-sm text-red-600 mt-2" data-testid="error-message">
+          <div className="mt-2 text-sm text-red-600" data-testid="error-message">
             {error}
           </div>
         )}

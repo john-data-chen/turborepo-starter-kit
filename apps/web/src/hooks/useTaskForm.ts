@@ -26,7 +26,9 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
   // Process default values to ensure assignee is in the correct format
   const processedDefaultValues = useMemo(() => {
-    if (!defaultValues?.assignee) {return defaultValues}
+    if (!defaultValues?.assignee) {
+      return defaultValues
+    }
 
     // If assignee is just an ID, we need to fetch the full user data
     if (typeof defaultValues.assignee === 'string') {
@@ -68,7 +70,9 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!assignOpen || !debouncedSearchQuery) {return}
+      if (!assignOpen || !debouncedSearchQuery) {
+        return
+      }
 
       setIsSearching(true)
       try {

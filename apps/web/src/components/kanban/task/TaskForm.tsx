@@ -91,7 +91,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" aria-hidden="true" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-[60]" align="start">
+                <PopoverContent className="z-[60] w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
@@ -139,7 +139,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                     <PopoverContent
                       id="assignee-options"
                       role="listbox"
-                      className="p-0 z-[60]"
+                      className="z-[60] p-0"
                       side="bottom"
                       align="start"
                     >
@@ -163,7 +163,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                                 className="flex flex-col items-start"
                               >
                                 <span>{user.name || user.email}</span>
-                                {user.name && <span className="text-xs text-muted-foreground">{user.email}</span>}
+                                {user.name && <span className="text-muted-foreground text-xs">{user.email}</span>}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -186,7 +186,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex flex-col space-y-1 mt-4"
+                  className="mt-4 flex flex-col space-y-1"
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>

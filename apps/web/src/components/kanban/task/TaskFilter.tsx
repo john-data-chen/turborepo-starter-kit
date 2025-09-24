@@ -27,7 +27,9 @@ export function TaskFilter() {
     projects.forEach((project) => {
       const tasks = Array.isArray(project?.tasks) ? project.tasks : []
       tasks.forEach((task) => {
-        if (!task) {return}
+        if (!task) {
+          return
+        }
         counts.TOTAL++
         if (task.status && counts.hasOwnProperty(task.status)) {
           counts[task.status as keyof typeof counts]++
@@ -53,7 +55,7 @@ export function TaskFilter() {
   )
 
   return (
-    <div className="flex items-center gap-2 mb-4 w-full md:w-auto">
+    <div className="mb-4 flex w-full items-center gap-2 md:w-auto">
       <Input
         type="text"
         placeholder={t('searchPlaceholder')}

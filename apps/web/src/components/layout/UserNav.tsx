@@ -19,7 +19,7 @@ export function UserNav() {
 
   // While loading, show a placeholder to prevent flicker
   if (isLoading) {
-    return <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+    return <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
   }
 
   // If the user is logged in, show the avatar and dropdown menu
@@ -37,7 +37,7 @@ export function UserNav() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm leading-none font-medium">{user.email?.split('@')[0]}</p>
+              <p className="text-sm font-medium leading-none">{user.email?.split('@')[0]}</p>
               <p className="text-muted-foreground text-xs leading-none">{user.email}</p>
             </div>
           </DropdownMenuLabel>
