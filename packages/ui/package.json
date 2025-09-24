@@ -10,8 +10,8 @@
       "import": "./src/index.ts"
     },
     "./components/*": {
-      "types": "./src/components/*.tsx",
-      "import": "./src/components/*.tsx"
+      "types": "./src/components/ui/*.tsx",
+      "import": "./src/components/ui/*.tsx"
     },
     "./lib/*": {
       "types": "./src/lib/*.ts",
