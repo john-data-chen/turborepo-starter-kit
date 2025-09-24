@@ -1,7 +1,9 @@
 /** @type {import('prettier').Config} */
 
 module.exports = {
-  plugins: ['prettier-plugin-tailwindcss', '@ianvs/prettier-plugin-sort-imports'],
+  plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
+  tailwindStylesheet: './packages/ui/src/styles/globals.css',
+  tailwindFunctions: ['clsx'],
   arrowParens: 'always',
   bracketSpacing: true,
   bracketSameLine: false,
