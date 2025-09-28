@@ -12,73 +12,77 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
     const token = localStorage.getItem('auth_token')
 
     // Helper to convert headers to Record<string, string>
-    const getHeadersAsRecord = (inputHeaders?: Headers | string[][] | Record<string, string>): Record<string, string> => {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const getHeadersAsRecord = (
+      inputHeaders?: Headers | string[][] | Record<string, string>
+    ): Record<string, string> => {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
-      if (!inputHeaders) {return headers;}
+      if (!inputHeaders) {
+        return headers
+      }
 
       if (inputHeaders instanceof Headers) {
         inputHeaders.forEach((value, key) => {
-          headers[key] = value;
-        });
+          headers[key] = value
+        })
       } else if (Array.isArray(inputHeaders)) {
         inputHeaders.forEach(([key, value]) => {
           if (typeof value === 'string') {
-            headers[key] = value;
+            headers[key] = value
           }
-        });
+        })
       } else {
         Object.entries(inputHeaders).forEach(([key, value]) => {
           if (typeof value === 'string') {
-            headers[key] = value;
+            headers[key] = value
           }
-        });
+        })
       }
 
-      return headers;
-    };
+      return headers
+    }
 
-    const baseHeaders = getHeadersAsRecord(options.headers);
+    const baseHeaders = getHeadersAsRecord(options.headers)
 
     // Add Authorization header if token exists
     if (token) {
-      baseHeaders.Authorization = `Bearer ${token}`;
+      baseHeaders.Authorization = `Bearer ${token}`
     }
 
     const response = await fetch(url, {
       ...options,
       credentials: 'include', // Still include for cookie fallback
       headers: baseHeaders
-    });
+    })
 
-    const responseText = await response.text();
+    const responseText = await response.text()
 
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Request failed'
       try {
-        const errorData = responseText ? JSON.parse(responseText) : {};
-        errorMessage = errorData.message || response.statusText || 'Request failed';
+        const errorData = responseText ? JSON.parse(responseText) : {}
+        errorMessage = errorData.message || response.statusText || 'Request failed'
       } catch (parseError) {
-        console.error('Error parsing error response:', parseError);
-        errorMessage = responseText || 'Request failed';
+        console.error('Error parsing error response:', parseError)
+        errorMessage = responseText || 'Request failed'
       }
 
       if (typeof window !== 'undefined' && response.status === 401) {
-        console.error('Authentication error - redirecting to login');
+        console.error('Authentication error - redirecting to login')
         // Handle unauthorized (e.g., redirect to login)
-        window.location.href = '/login';
+        window.location.href = '/login'
       }
 
-      throw new Error(errorMessage);
+      throw new Error(errorMessage)
     }
 
     if (!responseText) {
-      throw new Error('Empty response from server');
+      throw new Error('Empty response from server')
     }
-    return JSON.parse(responseText) as T;
+    return JSON.parse(responseText) as T
   } catch (error) {
-    console.error('Fetch error:', error);
-    throw error;
+    console.error('Fetch error:', error)
+    throw error
   }
 }
 
@@ -117,7 +121,7 @@ export const boardApi = {
   async deleteBoard(id: string): Promise<void> {
     await fetchWithAuth<void>(`${BOARDS_ENDPOINT}/${id}`, {
       method: 'DELETE'
-    });
+    })
   },
 
   // Add a member to a board
