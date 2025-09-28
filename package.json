@@ -60,7 +60,8 @@
       "@swc/core",
       "@tailwindcss/oxide",
       "esbuild",
-      "sharp"
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }
