@@ -1,3 +1,0 @@
-# Shadcn UI
-packages/ui/src/components/ui/**/*
-packages/ui/src/hooks/use-mobile.ts
