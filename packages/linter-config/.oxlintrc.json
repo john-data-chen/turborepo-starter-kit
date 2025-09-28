@@ -85,7 +85,6 @@
     "dist",
     "apps/api/database/mongodb",
     "apps/api/rspack.config.ts",
-    "packages/ui/src/components/ui/**/*",
-    "packages/ui/src/styles/globals.css"
+    "packages/ui/src/components/ui/"
   ]
 }

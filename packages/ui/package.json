@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "lint": "npx oxlint --config ../linter-config/.oxlintrc.json --fix",
+    "lint": "npx oxlint --config ../linter-config/.oxlintrc.json",
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "test": "vitest run --coverage"
   },
