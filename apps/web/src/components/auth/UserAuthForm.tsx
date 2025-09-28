@@ -47,6 +47,7 @@ export default function UserAuthForm() {
                   placeholder={t('emailPlaceholder')}
                   disabled={isLoading || isNavigating}
                   data-testid="email-input"
+                  className="h-10 py-2 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                   {...field}
                 />
               </FormControl>
