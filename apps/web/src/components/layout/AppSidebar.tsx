@@ -22,7 +22,7 @@ export default function AppSidebar() {
   const { myBoards, teamBoards, loading } = useBoards()
 
   return (
-    <Sidebar>
+    <Sidebar className="!block">
       <SidebarHeader>
         <div className="text-sidebar-accent-foreground flex gap-2 py-2">
           <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
