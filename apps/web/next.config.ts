@@ -35,10 +35,6 @@ const nextConfig: NextConfig = {
   },
   // Explicitly configure the output directory structure
   webpack: (config, { isServer }) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, '../../packages/ui/src'),
-    }
     // Ensure public files are properly copied to the output directory
     if (!isServer) {
       config.resolve.fallback = {
