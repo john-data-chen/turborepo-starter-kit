@@ -7,7 +7,7 @@
     "oxlint": ">=1.18.0"
   },
   "devDependencies": {
-    "oxlint": "^1.18.0",
+    "oxlint": "^1.19.0",
     "oxlint-tsgolint": "^0.2.0"
   },
   "engines": {
