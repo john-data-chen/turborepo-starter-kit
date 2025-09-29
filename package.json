@@ -20,12 +20,12 @@
     "commit": "git-cz"
   },
   "engines": {
-    "node": "22.x"
+    "node": ">=22.11.0"
   },
   "packageManager": "pnpm@10.17.1",
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,scss}": [
-      "prettier --ignore-path ./.prettierignore"
+      "prettier --ignore-path ./.prettierignore --write --no-error-on-unmatched-pattern --config ./prettier.config.js"
     ],
     "**/*.{js,jsx,ts,tsx}": [
       "npx oxlint --config ./packages/linter-config/.oxlintrc.json --type-aware --fix"

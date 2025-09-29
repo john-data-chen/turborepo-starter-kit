@@ -23,9 +23,13 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "npx oxlint --config ../linter-config/.oxlintrc.json",
-    "format": "prettier --write . --ignore-path ../../.prettierignore",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --write --no-error-on-unmatched-pattern --config ../../prettier.config.js",
     "test": "vitest run --coverage"
   },
+  "engines": {
+    "node": ">=22.11.0"
+  },
+  "packageManager": "pnpm@10.17.1",
   "peerDependencies": {
     "postcss": "^8.5.6",
     "react": "^19.1.1",

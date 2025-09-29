@@ -12,11 +12,15 @@
     "start": "node dist/main.js",
     "init-db": "tsx database/init-db-data.ts",
     "init-db:force": "tsx database/init-db-data.ts --force",
-    "format": "prettier --write . --ignore-path ../../.prettierignore",
     "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern --config ../../prettier.config.js",
     "test": "vitest run --coverage",
     "test:watch": "vitest --watch"
   },
+  "engines": {
+    "node": ">=22.11.0"
+  },
+  "packageManager": "pnpm@10.17.1",
   "dependencies": {
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
