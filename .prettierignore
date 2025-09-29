@@ -38,11 +38,19 @@ CHANGELOG.md
 
 pnpm-lock.yaml
 
+# Other common ignores
+node_modules
+.next
+build
+dist
+ico
+
 # Shadcn UI
 packages/ui/src/components/ui/**/*
 packages/ui/src/hooks/use-mobile.ts
 
 # mongodb docker volumes
 apps/api/database/mongodb/**
+apps/api/database/docker-compose.yml
 
 env.example

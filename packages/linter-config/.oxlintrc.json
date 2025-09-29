@@ -84,9 +84,10 @@
     "node_modules/",
     "dist",
     "__tests__/",
-    "apps/api/database/mongodb",
-    "apps/api/database/docker-compose.yml",
-    "apps/api/rspack.config.ts",
-    "packages/ui/src/components/ui/"
+    "../../apps/api/database/mongodb",
+    "../../apps/api/database/docker-compose.yml",
+    "../../apps/api/rspack.config.ts",
+    "../ui/src/components/ui",
+    "../ui/src/hooks/use-mobile.ts"
   ]
 }
