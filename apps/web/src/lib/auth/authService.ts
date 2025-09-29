@@ -7,11 +7,6 @@ const API_BASE = ROUTES.API
 export class AuthService {
   static async login(email: string): Promise<{ access_token: string; user?: UserInfo }> {
     const requestId = Math.random().toString(36).substring(2, 8)
-    console.log(`[${requestId}] [AuthService] Attempting login for email:`, email)
-    console.log(`[${requestId}] [AuthService] Login API URL:`, ROUTES.AUTH.LOGIN_API)
-    console.log(`[${requestId}] [AuthService] Current domain:`, window.location.hostname)
-    console.log(`[${requestId}] [AuthService] Current protocol:`, window.location.protocol)
-    console.log(`[${requestId}] [AuthService] Existing cookies:`, document.cookie)
 
     try {
       const response = await fetch(ROUTES.AUTH.LOGIN_API, {
@@ -75,27 +70,16 @@ export class AuthService {
 
   static async getProfile(): Promise<UserInfo> {
     const requestId = Math.random().toString(36).substring(2, 8)
-    console.log(`[${requestId}] [AuthService] Fetching profile from:`, `${API_BASE}/auth/profile`)
-    console.log(`[${requestId}] [AuthService] Current domain:`, window.location.hostname)
-    console.log(`[${requestId}] [AuthService] Current cookies before request:`, document.cookie)
 
     // Check for specific cookies
     // Note: JWT cookie is httpOnly, so it won't appear in document.cookie - this is expected!
     const jwtCookie = document.cookie.split(';').find((c) => c.trim().startsWith('jwt='))
-    const authCookie = document.cookie.split(';').find((c) => c.trim().startsWith('isAuthenticated='))
-    console.log(
-      `[${requestId}] [AuthService] JWT cookie in document.cookie:`,
-      !!jwtCookie,
-      '(should be false for httpOnly cookies)'
-    )
-    console.log(`[${requestId}] [AuthService] Auth cookie present:`, !!authCookie)
     if (jwtCookie) {
       console.log(`[${requestId}] [AuthService] JWT cookie length:`, jwtCookie.length)
     }
 
     // Try to get token from localStorage for Authorization header
     const token = localStorage.getItem('auth_token')
-    console.log(`[${requestId}] [AuthService] Token from localStorage:`, !!token)
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -105,7 +89,6 @@ export class AuthService {
     // Add Authorization header if token exists
     if (token) {
       headers.Authorization = `Bearer ${token}`
-      console.log(`[${requestId}] [AuthService] Added Authorization header`)
     }
 
     const response = await fetch(`${API_BASE}/auth/profile`, {
