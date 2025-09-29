@@ -68,7 +68,6 @@ async function bootstrap() {
 
   // Enhanced CORS middleware with detailed logging
   const corsMiddleware = (req: any, res: any, next: any) => {
-    const requestId = Math.random().toString(36).substring(2, 8)
     const origin = req.headers.origin
     const requestMethod = req.method
 
