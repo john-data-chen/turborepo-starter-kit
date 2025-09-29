@@ -72,7 +72,7 @@ Every star motivates me to deliver more high-quality templates. 🚀
 
 ### Requirements
 
-- Node.JS v22.x, please use [NVM](https://github.com/nvm-sh/nvm) or [FNM](https://github.com/Schniz/fnm) to install
+- Node.JS version >= 22.11.0 (the newest version of 22.x LTS), please use [NVM](https://github.com/nvm-sh/nvm) or [FNM](https://github.com/Schniz/fnm) to install
 - [PNPM](https://pnpm.io/) 10.x
 
 ### Database
@@ -261,8 +261,7 @@ packages/
   - easier to setup
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
-- note: Oxlint is in a stable version, and I have used it in production for a long time.
-  But Type-Aware plug-in is in a preview version. It is not recommended to use it in production. It is a experimental in this project.
+- note: Oxlint is in a stable version, and I have used it in production for a long time. But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production, and it is a experimental in this project.
 
 #### Introductions
 
@@ -285,7 +284,7 @@ packages/
 
 ### Prettier oxc plugin
 
-- status: disabled (it is conflict with Windsurf, since this is a small project, the speed difference is not significant)
+- status: disabled (it is conflict with vs code auto formatting, since this is a small project, the speed difference is not significant)
 - benefit: Increase Prettier formatting speed
 - [introduction](https://www.npmjs.com/package/@prettier/plugin-oxc)
 
@@ -316,16 +315,21 @@ packages/
 - [x] Remove the limit of drag project in team boards, you don't need to be owner of board to drag projects
 - [x] Fix the issue of task can't be dragged
 - [x] Refactor the shadcn ui components into packages folder
-- [ ] Fix the issue of css style not working after refactor shadcn ui components
+- [x] Fix the issue of css style not working after refactor shadcn ui components
+- [ ] Fix the UI issues of new shadcn components
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Update e2e tests for NextJS in `apps/web`
 - [ ] Add github actions for CI
-- [ ] Update README.md in root
 
 ---
 
 ## Known Issues & Limitations
+
+### The errors / code smells of Oxlint and Type-Aware plug-in
+
+After I enabled new rules of Oxlint and Type-Aware plug-in, linter finds more code smells in the project, but warnings and errors of linter are not issues, no effect in functional.
+Cleaning technical debt is a long term plan, it is impossible to finish at once. I will clean by small steps each time.
 
 ### German Translations
 
