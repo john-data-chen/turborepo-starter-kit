@@ -32,13 +32,13 @@
   "packageManager": "pnpm@10.17.1",
   "peerDependencies": {
     "postcss": "^8.5.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.18.8",
-    "@types/react": "19.1.17",
-    "@types/react-dom": "19.1.11",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
     "global-tsconfig": "workspace:*",
     "linter-config": "workspace:*",
     "typescript": "^5.9.3",
