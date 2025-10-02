@@ -22,7 +22,7 @@
   "engines": {
     "node": ">=22.11.0"
   },
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.18.0",
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,scss}": [
       "prettier --ignore-path ./.prettierignore --write --no-error-on-unmatched-pattern --config ./prettier.config.js"
