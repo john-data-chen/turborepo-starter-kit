@@ -47,7 +47,6 @@ apps/web/next-env.d.ts
 
 # files of AI
 GEMINI.md
-.geminiignore
 .zed
 windsurf.md
 CLAUDE.md
