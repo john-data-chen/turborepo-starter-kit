@@ -316,6 +316,7 @@ packages/
 - [x] Fix the issue of task can't be dragged
 - [x] Refactor the shadcn ui components into packages folder
 - [x] Fix the issue of css style not working after refactor shadcn ui components
+- [x] Refactor vitest into root folder
 - [ ] Fix the UI issues of new shadcn components
 - [ ] Update unit tests for NextJS in `apps/web`
 - [ ] Write unit tests for NestJS in `apps/api`

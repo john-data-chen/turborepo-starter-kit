@@ -1,13 +1,15 @@
 import '@testing-library/jest-dom'
 import dotenv from 'dotenv'
 import 'dotenv/config'
-import path from 'path'
-import { beforeAll, vi } from 'vitest'
-
 // Import vi for mocking if needed
 
 // Determine the correct path to the .env.test file relative to the project root
-const envPath = path.resolve(process.cwd(), '.env.test')
+import { execSync } from 'child_process'
+import path from 'path'
+import { beforeAll, vi } from 'vitest'
+
+const root = execSync('git rev-parse --show-toplevel').toString().trim()
+const envPath = path.resolve(root, '.env.test')
 
 // Load environment variables from .env.test specifically for tests
 const result = dotenv.config({ path: envPath })
