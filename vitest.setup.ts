@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import dotenv from 'dotenv'
 import 'dotenv/config'
 // Import vi for mocking if needed
@@ -27,23 +27,25 @@ console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL)
 // --- Add other global test setups below ---
 
 // Example: Mocking matchMedia for testing hooks like useIsMobile or other browser APIs
-beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // deprecated
-      removeListener: vi.fn(), // deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
-    }))
+if (typeof window !== 'undefined') {
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(), // deprecated
+        removeListener: vi.fn(), // deprecated
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn()
+      }))
+    })
+    // Mock other browser APIs if necessary for your tests
+    // e.g., localStorage, sessionStorage, etc.
   })
-  // Mock other browser APIs if necessary for your tests
-  // e.g., localStorage, sessionStorage, etc.
-})
+}
 
 // You can add other global mocks or configurations here
 

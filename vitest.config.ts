@@ -1,33 +1,37 @@
 import path from 'path'
-import react from '@vitejs/plugin-react-swc'
-import swc from 'unplugin-swc'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [react(), swc.vite()],
   test: {
     globals: true,
-    include: ['apps/**/*.test.{ts,tsx}'],
-    exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**'],
+    environment: 'node',
+    include: ['apps/api/__tests__/**/*.test.{ts,tsx}', 'apps/web/__tests__/**/*.test.{ts,tsx}'],
+    exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages'],
     setupFiles: ['./vitest.setup.ts'],
     alias: {
-      '@src': path.resolve(__dirname, './apps/api/src'),
-      '@tests': path.resolve(__dirname, './apps/api/__tests__'),
-      '@': path.resolve(__dirname, './apps/web/src')
+      '@api': path.resolve(__dirname, './apps/api/src'),
+      '@web': path.resolve(__dirname, './apps/web/src')
     },
-    deps: {
-      optimizer: {
-        web: {
-          include: ['next-intl']
-        }
-      }
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['apps/api/src/**/*.{ts,tsx}', 'apps/web/src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/node_modules/**',
+        '**/database/**',
+        '**/__tests__/**',
+        '**/dist/**',
+        '**/.turbo/**',
+        '**/.next/**',
+        '**/coverage/**',
+        '**/packages/**'
+      ]
     }
   },
   resolve: {
     alias: {
-      '@src': path.resolve(__dirname, './apps/api/src'),
-      '@tests': path.resolve(__dirname, './apps/api/__tests__'),
-      '@': path.resolve(__dirname, './apps/web/src')
+      '@api': path.resolve(__dirname, './apps/api/src'),
+      '@web': path.resolve(__dirname, './apps/web/src')
     }
   }
 })

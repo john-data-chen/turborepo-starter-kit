@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { defaultEmail } from '@/constants/demoData'
 import { useAuthForm } from '@/hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'

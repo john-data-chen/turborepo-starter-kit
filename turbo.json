@@ -77,6 +77,10 @@
       ],
       "cache": false
     },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
     "init-db": {
       "env": [
         "DATABASE_URL"

@@ -48,9 +48,6 @@ export class TasksService {
   }
 
   private async toTaskResponse(task: TaskDocument): Promise<TaskResponseDto> {
-    console.log('=== toTaskResponse called ===')
-    console.log('Raw task input:', JSON.stringify(task, null, 2))
-
     try {
       // First populate the user fields with detailed error handling
       let populatedTask
@@ -60,7 +57,6 @@ export class TasksService {
           { path: 'assignee', select: 'name email' },
           { path: 'lastModifier', select: 'name email' }
         ])
-        console.log('After population:', JSON.stringify(populatedTask, null, 2))
       } catch (populateError) {
         console.error('Error during population:', populateError)
         // If population fails, use the original task
@@ -191,14 +187,22 @@ export class TasksService {
   }
 
   private async checkTaskPermission(taskId: string, userId: string, requireCreator = false): Promise<TaskDocument> {
+    console.log('checkTaskPermission called:')
+    console.log('  taskId:', taskId)
+    console.log('  userId:', userId)
     const task = await this.taskModel.findById(taskId)
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`)
     }
+    console.log('  Found task.creator:', task.creator)
+    console.log('  Found task.assignee:', task.assignee)
 
     const userIdObj = new Types.ObjectId(userId)
+    console.log('  userIdObj:', userIdObj)
     const isCreator = task.creator && task.creator.equals(userIdObj)
     const isAssignee = task.assignee && task.assignee.equals(userIdObj)
+    console.log('  isCreator:', isCreator)
+    console.log('  isAssignee:', isAssignee)
 
     if (requireCreator && !isCreator) {
       throw new ForbiddenException('Only the task creator can perform this action')

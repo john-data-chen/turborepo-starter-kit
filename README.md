@@ -251,6 +251,37 @@ packages/
 
 ---
 
+## AI Tools
+
+I am using AI tools to help our team to improve the quality of code and the efficiency of development, this project is one of playgrounds of AI tools.
+
+### Editor with AI
+
+- [Windsurf](https://windsurf.com/)
+- [Zed](https://zed.dev/)
+
+### VS code extension
+
+- [Kilo Code](https://github.com/Kilo-Org/kilocode)
+
+### Command line interface
+
+- [gemini-cli](https://github.com/google-gemini/gemini-cli)
+- [claude-code](https://github.com/anthropics/claude-code)
+
+### MCP
+
+- [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)
+- [context7](https://github.com/upstash/context7)
+
+### Github Action (code review, PR summary)
+
+- [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist)
+
+### Documentation
+
+- [NotebookLM](https://notebooklm.google.com/)
+
 ## Experimental Tools
 
 ### Oxlint and Type-Aware plug-in
@@ -299,28 +330,7 @@ packages/
 
 ## To-Do
 
-- [x] Add Vercel deployment
-- [x] Add a refresh after edit a task
-- [x] Add a refresh after delete a task
-- [x] Add a method to load name if assignee is not null
-- [x] Fix CORS blocking login issue (only in production)
-- [x] Fix issue of not auto redirecting after login
-- [x] Fix the issue of edit a task
-- [x] Remove the fetching the task after it is deleted
-- [x] Add task order sorting to database
-- [x] Add project order sorting to database
-- [x] Add user permissions management to limit the different actions
-- [x] Fix the issue of not auto redirecting after login (only in production)
-- [x] Fix the issue of drag project in my boards
-- [x] Remove the limit of drag project in team boards, you don't need to be owner of board to drag projects
-- [x] Fix the issue of task can't be dragged
-- [x] Refactor the shadcn ui components into packages folder
-- [x] Fix the issue of css style not working after refactor shadcn ui components
-- [x] Refactor vitest into root folder
-- [x] Update e2e tests for NextJS in `apps/web`
 - [ ] Fix the UI issues of new shadcn components
-- [ ] Update unit tests for NextJS in `apps/web`
-- [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Add github actions for CI
 
 ---

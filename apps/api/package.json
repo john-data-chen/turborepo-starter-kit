@@ -14,8 +14,8 @@
     "init-db:force": "tsx database/init-db-data.ts --force",
     "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
     "format": "prettier --write . --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern --config ../../prettier.config.js",
-    "test": "vitest run --coverage --root ../..",
-    "test:watch": "vitest --watch --root ../.."
+    "test": "vitest run --coverage",
+    "test:watch": "vitest --watch"
   },
   "engines": {
     "node": ">=22.11.0"
