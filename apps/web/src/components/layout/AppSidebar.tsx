@@ -38,7 +38,7 @@ export default function AppSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname.endsWith('/boards')}>
-                <Link href="/boards" className="flex items-center gap-2">
+                <Link href="/boards" className="flex items-center gap-2 px-2 py-2">
                   <HomeIcon className="h-4 w-4" />
                   <span>{t('overview')}</span>
                 </Link>
@@ -58,8 +58,9 @@ export default function AppSidebar() {
               myBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>
                   <SidebarMenuButton asChild isActive={pathname.endsWith(`/boards/${board._id}`)}>
-                    <Link href={`/boards/${board._id}`}>
-                      <span>{board.title}</span>
+                    <Link href={`/boards/${board._id}`} className="flex items-center gap-2 px-2 py-2">
+                      <span className="h-4 w-4" />
+                      <span className="truncate">{board.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -80,8 +81,9 @@ export default function AppSidebar() {
               teamBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>
                   <SidebarMenuButton asChild isActive={pathname.endsWith(`/boards/${board._id}`)}>
-                    <Link href={`/boards/${board._id}`}>
-                      <span>{board.title}</span>
+                    <Link href={`/boards/${board._id}`} className="flex items-center gap-2 px-2 py-2">
+                      <span className="h-4 w-4" />
+                      <span className="truncate">{board.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
