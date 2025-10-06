@@ -7,13 +7,12 @@ export default defineConfig({
   plugins: [react(), swc.vite()],
   test: {
     globals: true,
-    include: ['apps/**/*.test.{ts,tsx}'],
-    exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**'],
+    include: ['apps/api/**/*.test.{ts,tsx}', 'apps/web/**/*.test.{ts,tsx}'],
+    exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages'],
     setupFiles: ['./vitest.setup.ts'],
     alias: {
-      '@src': path.resolve(__dirname, './apps/api/src'),
-      '@tests': path.resolve(__dirname, './apps/api/__tests__'),
-      '@': path.resolve(__dirname, './apps/web/src')
+      '@api': path.resolve(__dirname, './apps/api/src'),
+      '@web': path.resolve(__dirname, './apps/web/src')
     },
     deps: {
       optimizer: {
@@ -21,13 +20,17 @@ export default defineConfig({
           include: ['next-intl']
         }
       }
+    },
+    coverage: {
+      reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['apps/api/src/**/*.{ts,tsx}', 'apps/web/src/**/*.{ts,tsx}'],
+      exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages']
     }
   },
   resolve: {
     alias: {
-      '@src': path.resolve(__dirname, './apps/api/src'),
-      '@tests': path.resolve(__dirname, './apps/api/__tests__'),
-      '@': path.resolve(__dirname, './apps/web/src')
+      '@api': path.resolve(__dirname, './apps/api/src'),
+      '@web': path.resolve(__dirname, './apps/web/src')
     }
   }
 })
