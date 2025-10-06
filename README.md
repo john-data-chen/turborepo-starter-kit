@@ -326,10 +326,7 @@ I use AI tools to help me with the development of this project.
 
 ## To-Do
 
-- [x] Set vitest configs in Turborepo
 - [ ] Fix the UI issues of new shadcn components
-- [ ] Update unit tests for NextJS in `apps/web`
-- [ ] Write unit tests for NestJS in `apps/api`
 - [ ] Add github actions for CI
 
 ---
