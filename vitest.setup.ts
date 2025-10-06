@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import dotenv from 'dotenv'
 import 'dotenv/config'
 // Import vi for mocking if needed
