@@ -66,6 +66,13 @@
         "coverage/**"
       ]
     },
+    "playwright": {
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "__tests__/**/*.{ts,tsx,js,jsx}"
+      ],
+      "cache": false
+    },
     "init-db": {
       "env": [
         "DATABASE_URL"
