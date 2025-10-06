@@ -87,6 +87,9 @@ describe('ProjectsService', () => {
 
       const projectModel = module.get(getModelToken(Project.name))
 
+      // Mock the constructor
+      ;(projectModel as any).mockImplementation(() => mockProjectInstance)
+
       // Mock static methods needed for create
       projectModel.findOne = vi.fn().mockReturnValue({
         sort: vi.fn().mockReturnThis(),
@@ -182,6 +185,7 @@ describe('ProjectsService', () => {
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const projectModel = module.get(getModelToken(Project.name))
       projectModel.exists = vi.fn().mockResolvedValue(null)
+      projectModel.updateOne = vi.fn().mockResolvedValue({ acknowledged: true })
 
       await service.addMemberIfNotExists(projectId, userId)
 

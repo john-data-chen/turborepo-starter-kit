@@ -7,35 +7,28 @@ import { Board } from '../../src/modules/boards/schemas/boards.schema'
 import { ProjectsService } from '../../src/modules/projects/projects.service'
 import { TasksService } from '../../src/modules/tasks/tasks.service'
 
-// Define a mock class for the BoardModel
-class MockBoardModel {
-  save: any
-  populate: any
-  exec: any
+// Define a mock constructor for the BoardModel
+const MockBoardModel = vi.fn().mockImplementation((data) => ({
+  ...data,
+  save: vi.fn().mockResolvedValue(data),
+  populate: vi.fn().mockReturnThis(),
+  exec: vi.fn().mockResolvedValue(data)
+})) as any
 
-  constructor(data?: any) {
-    // Mock instance methods
-    this.save = vi.fn().mockResolvedValue(data)
-    this.populate = vi.fn().mockReturnThis()
-    this.exec = vi.fn().mockResolvedValue(data)
-  }
-
-  // Mock static methods
-  static find = vi.fn().mockReturnThis()
-  static findOne = vi.fn().mockReturnThis()
-  static findById = vi.fn().mockReturnThis()
-  static create = vi.fn()
-  static findByIdAndUpdate = vi.fn().mockReturnThis()
-  static deleteOne = vi.fn().mockReturnThis()
-  static findOneAndUpdate = vi.fn().mockReturnThis()
-  static aggregate = vi.fn().mockReturnThis()
-}
+// Add static methods to the mock constructor
+MockBoardModel.find = vi.fn().mockReturnThis()
+MockBoardModel.findOne = vi.fn().mockReturnThis()
+MockBoardModel.findById = vi.fn().mockReturnThis()
+MockBoardModel.create = vi.fn()
+MockBoardModel.findByIdAndUpdate = vi.fn().mockReturnThis()
+MockBoardModel.deleteOne = vi.fn().mockReturnThis()
+MockBoardModel.findOneAndUpdate = vi.fn().mockReturnThis()
+MockBoardModel.aggregate = vi.fn().mockReturnThis()
 
 describe('BoardService', () => {
   let service: BoardService
-  let boardModel: typeof MockBoardModel & Model<Board>
+  let boardModel: Model<Board>
   let projectsService: ProjectsService
-  // oxlint-disable-next-line no-unused-vars
   let tasksService: TasksService
 
   beforeEach(async () => {
@@ -49,7 +42,7 @@ describe('BoardService', () => {
         {
           provide: ProjectsService,
           useValue: {
-            findByBoardId: vi.fn(),
+            findByBoardId: vi.fn().mockResolvedValue([]),
             deleteByBoardId: vi.fn().mockResolvedValue({ deletedCount: 1 }) // Mock deletedCount
           }
         },
@@ -74,23 +67,26 @@ describe('BoardService', () => {
 
   describe('create', () => {
     it('should create a board', async () => {
-      const createBoardDto = { name: 'Test Board', owner: '60f6e1b3b3f3b3b3b3f3b3b3' }
-      const mockBoardInstance = new MockBoardModel({ ...createBoardDto, _id: '1', owner: '1' })
-
-      // Mock the static create method to return the mock instance
-      MockBoardModel.create = vi.fn().mockResolvedValue(mockBoardInstance)
+      const createBoardDto = { title: 'Test Board', owner: '60f6e1b3b3f3b3b3b3f3b3b3' }
+      const expectedResult = {
+        title: 'Test Board',
+        owner: '60f6e1b3b3f3b3b3b3f3b3b3',
+        members: ['60f6e1b3b3f3b3b3b3f3b3b3']
+      }
 
       const result = await service.create(createBoardDto as any)
 
-      expect(mockBoardInstance.save).toHaveBeenCalled()
-      expect(result).toEqual(mockBoardInstance)
+      // Only check the relevant fields since the result includes additional fields
+      expect(result.title).toBe(expectedResult.title)
+      expect(result.owner.toString()).toBe(expectedResult.owner)
+      expect(result.members.map((id) => id.toString())).toEqual(expectedResult.members)
     })
   })
 
   describe('findAll', () => {
     it('should find all boards for a user', async () => {
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      ;(boardModel.aggregate as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue([]) })
+      ;(boardModel.aggregate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue([]) })
 
       await service.findAll(userId)
 
@@ -102,7 +98,7 @@ describe('BoardService', () => {
     it('should find a board by id', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      ;(boardModel.aggregate as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue([{}]) })
+      ;(boardModel.aggregate as any).mockResolvedValue([{}])
 
       await service.findOne(boardId, userId)
 
@@ -114,11 +110,11 @@ describe('BoardService', () => {
     it('should update a board', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const updateBoardDto = { name: 'Test Board Updated' }
+      const updateBoardDto = { title: 'Test Board Updated' }
       const board = { _id: boardId, owner: userId, members: [], save: vi.fn() }
 
-      ;(boardModel.findById as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
-      ;(boardModel.findByIdAndUpdate as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
+      ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
+      ;(boardModel.findByIdAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
 
       await service.update(boardId, updateBoardDto, userId)
 
@@ -133,9 +129,9 @@ describe('BoardService', () => {
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const board = { _id: boardId, owner: { equals: () => true }, members: [] }
 
-      ;(boardModel.findById as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
-      ;(boardModel.deleteOne as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
-      ;(projectsService.deleteByBoardId as vi.Mock).mockResolvedValue({ deletedCount: 0 })
+      ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
+      ;(boardModel.deleteOne as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
+      ;(projectsService.deleteByBoardId as any).mockResolvedValue({ deletedCount: 0 })
 
       await service.remove(boardId, userId)
 
@@ -150,7 +146,7 @@ describe('BoardService', () => {
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const memberId = '60f6e1b3b3f3b3b3b3f3b3b5'
 
-      ;(boardModel.findOneAndUpdate as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
+      ;(boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
 
       await service.addMember(boardId, userId, memberId)
 
@@ -168,7 +164,7 @@ describe('BoardService', () => {
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const memberId = '60f6e1b3b3f3b3b3b3f3b3b5'
 
-      ;(boardModel.findOneAndUpdate as vi.Mock).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
+      ;(boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
 
       await service.removeMember(boardId, userId, memberId)
 
