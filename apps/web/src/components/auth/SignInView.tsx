@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Presentation } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import UserAuthForm from './UserAuthForm'
