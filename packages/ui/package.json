@@ -46,7 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "lucide-react": "^0.544.0",
+    "lucide-react": "^0.545.0",
     "radix-ui": "latest",
     "react-day-picker": "^9.11.0",
     "react-hook-form": "^7.64.0",
