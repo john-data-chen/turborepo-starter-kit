@@ -23,8 +23,7 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "npx oxlint --config ../linter-config/.oxlintrc.json",
-    "format": "prettier --write . --ignore-path ../../.prettierignore --write --no-error-on-unmatched-pattern --config ../../prettier.config.js",
-    "test": "vitest run --coverage --root ../.."
+    "format": "prettier --write . --ignore-path ../../.prettierignore --write --no-error-on-unmatched-pattern --config ../../prettier.config.js"
   },
   "engines": {
     "node": ">=22.11.0"
@@ -40,8 +39,7 @@
     "@types/react-dom": "19.2.0",
     "global-tsconfig": "workspace:*",
     "linter-config": "workspace:*",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
