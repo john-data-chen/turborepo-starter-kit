@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useMemo, useRef, useState } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/useAuth'
 import { taskApi } from '@/lib/api/taskApi'
 import { useWorkspaceStore } from '@/stores/workspace-store'
@@ -24,6 +23,7 @@ import {
   type DragStartEvent
 } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { Skeleton } from '@repo/ui/components/skeleton'
 import { toast } from 'sonner'
 import NewProjectDialog from '../project/NewProjectDialog'
 import { BoardContainer, BoardProject } from '../project/Project'
@@ -43,12 +43,18 @@ export function Board() {
 
   // Check if current user is the board owner
   const isBoardOwner = useMemo(() => {
-    if (!currentBoardId || !currentUserId) return false
-    if (!isAuthenticated) return false
+    if (!currentBoardId || !currentUserId) {
+      return false
+    }
+    if (!isAuthenticated) {
+      return false
+    }
 
     // Find the current board
     const currentBoard = myBoards.find((board) => board._id === currentBoardId)
-    if (!currentBoard) return false
+    if (!currentBoard) {
+      return false
+    }
 
     // Check if current user is the owner of the board
     const ownerId = typeof currentBoard.owner === 'string' ? currentBoard.owner : currentBoard.owner?._id
@@ -57,11 +63,17 @@ export function Board() {
   }, [currentBoardId, currentUserId, myBoards, isAuthenticated])
 
   const isBoardMember = useMemo(() => {
-    if (!currentBoardId || !currentUserId) return false
-    if (!isAuthenticated) return false
+    if (!currentBoardId || !currentUserId) {
+      return false
+    }
+    if (!isAuthenticated) {
+      return false
+    }
 
     const currentBoard = [...myBoards, ...teamBoards].find((board) => board._id === currentBoardId)
-    if (!currentBoard) return false
+    if (!currentBoard) {
+      return false
+    }
 
     return currentBoard.members.some((member) => member._id === currentUserId)
   }, [currentBoardId, currentUserId, myBoards, teamBoards, isAuthenticated])
@@ -117,7 +129,9 @@ export function Board() {
   }
 
   function onDragStart(event: DragStartEvent) {
-    if (!hasDraggableData(event.active)) return
+    if (!hasDraggableData(event.active)) {
+      return
+    }
     const data = event.active.data.current
     if (data?.type === 'Project') {
       setActiveProject(data?.project)
@@ -133,10 +147,18 @@ export function Board() {
     const { active, over } = event
 
     // Early returns for invalid states
-    if (!over) return
-    if (active.id === over.id) return
-    if (!hasDraggableData(active) || !hasDraggableData(over)) return
-    if (active.data.current!.type === 'Project') return
+    if (!over) {
+      return
+    }
+    if (active.id === over.id) {
+      return
+    }
+    if (!hasDraggableData(active) || !hasDraggableData(over)) {
+      return
+    }
+    if (active.data.current!.type === 'Project') {
+      return
+    }
 
     const activeTask = active.data.current!.task
     const activeProject = updatedProjects.find((project: Project) => project._id === activeTask.project)
@@ -237,7 +259,9 @@ export function Board() {
       // Moving within the same project
       else {
         // Only proceed if the position actually changed
-        if (activeTaskIdx === overTaskIdx) return
+        if (activeTaskIdx === overTaskIdx) {
+          return
+        }
 
         // Create a new array to avoid mutating the original
         const newTasks = [...overProject.tasks]
@@ -320,19 +344,27 @@ export function Board() {
     setActiveTask(null)
 
     const { active, over } = event
-    if (!over) return
+    if (!over) {
+      return
+    }
 
     const activeId = active.id
     const overId = over.id
 
-    if (!hasDraggableData(active)) return
+    if (!hasDraggableData(active)) {
+      return
+    }
 
     const activeData = active.data.current
 
-    if (activeId === overId) return
+    if (activeId === overId) {
+      return
+    }
 
     const isActiveAProject = activeData?.type === 'Project'
-    if (!isActiveAProject) return
+    if (!isActiveAProject) {
+      return
+    }
 
     const activeProjectIndex = projects.findIndex((project: Project) => project._id === activeId)
 
@@ -422,7 +454,9 @@ export function Board() {
 
   const announcements: Announcements = {
     onDragStart({ active }) {
-      if (!hasDraggableData(active)) return
+      if (!hasDraggableData(active)) {
+        return
+      }
       if (active.data.current?.type === 'Project') {
         const startProjectIdx = projectsId.findIndex((id: string) => id === active.id)
         const startProject = projects[startProjectIdx]
@@ -439,7 +473,9 @@ export function Board() {
       }
     },
     onDragOver({ active, over }) {
-      if (!hasDraggableData(active) || !hasDraggableData(over)) return
+      if (!hasDraggableData(active) || !hasDraggableData(over)) {
+        return
+      }
       if (active.data.current?.type === 'Project' && over.data.current?.type === 'Project') {
         const overProjectIdx = projectsId.findIndex((id: string) => id === over.id)
         return `Project ${active.data.current.project.title} was moved over ${
@@ -488,7 +524,9 @@ export function Board() {
       pickedUpTaskProject.current = null
     },
     onDragCancel({ active }) {
-      if (!hasDraggableData(active)) return
+      if (!hasDraggableData(active)) {
+        return
+      }
       return `Dragging ${active.data.current?.type} cancelled.`
     }
   }
@@ -526,7 +564,7 @@ export function Board() {
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
       >
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+        <div className="mb-4 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
           <div className="w-full sm:w-[200px]">
             <NewProjectDialog />
           </div>
@@ -536,7 +574,7 @@ export function Board() {
         </div>
         <BoardContainer>
           {isLoadingProjects ? (
-            <Skeleton className="h-[75vh] max-h-[75vh] w-full md:w-[380px] bg-secondary flex flex-col shrink-0 snap-center" />
+            <Skeleton className="bg-secondary flex h-[75vh] max-h-[75vh] w-full shrink-0 snap-center flex-col md:w-[380px]" />
           ) : (
             <SortableContext items={projectsId}>
               {projects?.map((project: Project) => (

@@ -1,7 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useBoards } from '@/hooks/useBoards'
+import { useRouter } from '@/i18n/navigation'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { boardSchema } from '@/types/boardForm'
+import { Button } from '@repo/ui/components/button'
 import {
   Dialog,
   DialogContent,
@@ -10,11 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog'
-import { useBoards } from '@/hooks/useBoards'
-import { useRouter } from '@/i18n/navigation'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { boardSchema } from '@/types/boardForm'
+} from '@repo/ui/components/dialog'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { z } from 'zod'

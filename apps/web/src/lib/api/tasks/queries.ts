@@ -33,7 +33,9 @@ export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
     retry:
       retry ??
       ((failureCount: number, error: any) => {
-        if (error?.response?.status === 404) return false
+        if (error?.response?.status === 404) {
+          return false
+        }
         return failureCount < 3
       })
   })
@@ -113,10 +115,18 @@ export const useUpdateTask = () => {
       }
 
       // Only include fields that are defined in the updates
-      if (updates.title !== undefined) apiUpdates.title = updates.title
-      if (updates.description !== undefined) apiUpdates.description = updates.description
-      if (updates.status !== undefined) apiUpdates.status = updates.status
-      if (updates.dueDate !== undefined) apiUpdates.dueDate = updates.dueDate
+      if (updates.title !== undefined) {
+        apiUpdates.title = updates.title
+      }
+      if (updates.description !== undefined) {
+        apiUpdates.description = updates.description
+      }
+      if (updates.status !== undefined) {
+        apiUpdates.status = updates.status
+      }
+      if (updates.dueDate !== undefined) {
+        apiUpdates.dueDate = updates.dueDate
+      }
 
       // Handle assigneeId separately to ensure it's not sent as undefined
       if ('assigneeId' in updates) {
@@ -143,10 +153,18 @@ export const useUpdateTask = () => {
         const updateFields: Partial<Task> = {}
 
         // Only include fields that were actually provided in the update
-        if ('title' in updatedTask) updateFields.title = updatedTask.title
-        if ('description' in updatedTask) updateFields.description = updatedTask.description
-        if ('status' in updatedTask) updateFields.status = updatedTask.status
-        if ('dueDate' in updatedTask) updateFields.dueDate = updatedTask.dueDate
+        if ('title' in updatedTask) {
+          updateFields.title = updatedTask.title
+        }
+        if ('description' in updatedTask) {
+          updateFields.description = updatedTask.description
+        }
+        if ('status' in updatedTask) {
+          updateFields.status = updatedTask.status
+        }
+        if ('dueDate' in updatedTask) {
+          updateFields.dueDate = updatedTask.dueDate
+        }
 
         // Handle assignee update - we need to include all required UserInfo fields
         if ('assigneeId' in updatedTask) {
@@ -187,7 +205,9 @@ export const useUpdateTask = () => {
 
         // Also update the task in any lists it might be in
         queryClient.setQueriesData({ queryKey: TASK_KEYS.lists() }, (old: Task[] | undefined) => {
-          if (!old) return old
+          if (!old) {
+            return old
+          }
           return old.map((task) => (task._id === taskId ? { ...task, ...updateFields } : task))
         })
       }
@@ -242,7 +262,9 @@ export const useDeleteTask = () => {
       // Optimistically update the task list
       if (taskToDelete) {
         queryClient.setQueriesData({ queryKey: TASK_KEYS.lists() }, (old: Task[] | undefined) => {
-          if (!old) return old
+          if (!old) {
+            return old
+          }
 
           // Filter out the deleted task and update orders for remaining tasks
           return old
@@ -266,7 +288,9 @@ export const useDeleteTask = () => {
       } else {
         // Fallback: just remove the task if we don't have its details
         queryClient.setQueriesData({ queryKey: TASK_KEYS.lists() }, (old: Task[] | undefined) => {
-          if (!old) return old
+          if (!old) {
+            return old
+          }
           return old.filter((task) => task._id !== taskId)
         })
       }

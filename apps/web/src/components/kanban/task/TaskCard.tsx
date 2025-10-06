@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
 import { Task, TaskStatus } from '@/types/dbInterface'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Badge } from '@repo/ui/components/badge'
+import { Card, CardContent, CardHeader } from '@repo/ui/components/card'
+import { cn } from '@repo/ui/lib/utils'
 import { cva } from 'class-variance-authority'
 import { format } from 'date-fns'
 import { Calendar1Icon, FileTextIcon, PointerIcon, UserIcon } from 'lucide-react'
@@ -27,11 +27,21 @@ export interface TaskDragData {
 
 function getLastField(task: Task): string {
   const visibleFields = []
-  if (task.creator) visibleFields.push('creator')
-  if (task.lastModifier) visibleFields.push('lastModifier')
-  if (task.assignee) visibleFields.push('assignee')
-  if (task.dueDate) visibleFields.push('dueDate')
-  if (task.description) visibleFields.push('description')
+  if (task.creator) {
+    visibleFields.push('creator')
+  }
+  if (task.lastModifier) {
+    visibleFields.push('lastModifier')
+  }
+  if (task.assignee) {
+    visibleFields.push('assignee')
+  }
+  if (task.dueDate) {
+    visibleFields.push('dueDate')
+  }
+  if (task.description) {
+    visibleFields.push('description')
+  }
 
   return visibleFields[visibleFields.length - 1] || ''
 }
@@ -165,15 +175,15 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
       {...(isDragEnabled ? { ...attributes, ...listeners } : {})}
     >
       <CardHeader className="flex flex-row border-b-2 px-3 pb-2">
-        <div className="h-8 w-8 flex-shrink-0 flex items-center justify-center text-muted-foreground/30">
+        <div className="text-muted-foreground/30 flex h-8 w-8 flex-shrink-0 items-center justify-center">
           {isDragEnabled && (
             <div title={t('moveTask')}>
               <PointerIcon className="h-4 w-4" aria-label={t('moveTask')} />
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-2 items-start flex-1 mx-2">
-          {task.title && <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>}
+        <div className="mx-2 flex flex-1 flex-col items-start gap-2">
+          {task.title && <h3 className="text-lg font-medium leading-none tracking-tight">{task.title}</h3>}
           <Badge variant="secondary" className={cn('text-white', task.status && statusConfig[task.status]?.className)}>
             {task.status ? statusConfig[task.status]?.label : t('noStatus')}
           </Badge>
@@ -194,8 +204,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.creator && (
           <div className={getLastField(task) !== 'creator' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <UserIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('createdBy', { name: task.creator.name })}</span>
               </div>
             </CardContent>
@@ -204,8 +214,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.lastModifier && (
           <div className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <UserIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('lastModifiedBy', { name: task.lastModifier.name })}</span>
               </div>
             </CardContent>
@@ -214,8 +224,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.assignee && (
           <div className={getLastField(task) !== 'assignee' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <UserIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('assignee', { name: task.assignee.name })}</span>
               </div>
             </CardContent>
@@ -224,8 +234,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.dueDate && (
           <div className={getLastField(task) !== 'dueDate' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar1Icon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <Calendar1Icon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>
                   {t('dueDate')}: {task.dueDate ? format(new Date(task.dueDate), 'yyyy/MM/dd') : ''}
                 </span>
@@ -237,8 +247,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
           <div>
             <CardContent className="px-3 py-2">
               <div className="flex items-start gap-2">
-                <FileTextIcon className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground leading-relaxed" data-testid="task-card-description">
+                <FileTextIcon className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+                <p className="text-muted-foreground text-sm leading-relaxed" data-testid="task-card-description">
                   {task.description}
                 </p>
               </div>

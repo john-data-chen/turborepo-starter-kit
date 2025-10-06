@@ -134,7 +134,9 @@ export const useWorkspaceStore = create<State>()(
 
       // Project actions
       fetchProjects: async (boardId: string) => {
-        if (!boardId) return
+        if (!boardId) {
+          return
+        }
 
         set({ isLoadingProjects: true })
 

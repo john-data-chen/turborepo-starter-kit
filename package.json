@@ -13,29 +13,22 @@
     "format": "turbo run format",
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
-    "playwright": "turbo run playwright --filter=web",
+    "playwright": "turbo run playwright --filter=./apps/web",
     "init-db": "turbo run init-db",
     "init-db:force": "turbo run init-db:force",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "commit": "git-cz"
   },
   "engines": {
-    "node": "22.x"
+    "node": ">=22.11.0"
   },
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.18.0",
   "lint-staged": {
-    "apps/web/**/*.{js,jsx,ts,tsx,css,scss}": [
-      "pnpm --filter web format"
+    "**/*.{js,jsx,ts,tsx,css,scss}": [
+      "prettier --ignore-path ./.prettierignore --write --no-error-on-unmatched-pattern --config ./prettier.config.js"
     ],
-    "apps/web/**/*.{js,jsx,ts,tsx}": [
-      "pnpm --filter web lint"
-    ],
-    "apps/api/**/*.{js,ts}": [
-      "pnpm --filter api format",
-      "pnpm --filter api lint"
-    ],
-    "packages/**/*.{js,ts,json}": [
-      "pnpm --filter style-formatter-config exec prettier --write --no-error-on-unmatched-pattern"
+    "**/*.{js,jsx,ts,tsx}": [
+      "npx oxlint --config ./packages/linter-config/.oxlintrc.json --type-aware --fix"
     ]
   },
   "config": {
@@ -44,18 +37,35 @@
     }
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/cz-commitlint": "^19.8.1",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/cz-commitlint": "^20.1.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "commitizen": "^4.3.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
-    "turbo": "^2.5.6"
+    "lint-staged": "^16.2.3",
+    "oxlint": "^1.19.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "turbo": "^2.5.8",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^27.0.0",
+    "unplugin-swc": "^1.5.7",
+    "vitest": "^3.2.4",
+    "dotenv": "^17.2.3"
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "19.1.4",
-      "@types/react-dom": "19.1.5"
+      "react": "^19.2.0",
+      "react-dom": "^19.2.0",
+      "postcss": "^8.5.6",
+      "@types/react": "19.2.0",
+      "@types/react-dom": "19.2.0",
+      "oxlint": "^1.19.0",
+      "typescript": "^5.9.3"
     },
     "onlyBuiltDependencies": [
       "@nestjs/core",
@@ -63,7 +73,8 @@
       "@swc/core",
       "@tailwindcss/oxide",
       "esbuild",
-      "sharp"
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

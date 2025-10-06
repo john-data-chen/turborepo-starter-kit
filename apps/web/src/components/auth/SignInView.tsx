@@ -9,7 +9,7 @@ export default function SignInViewPage() {
   return (
     <main
       aria-label="Sign in page"
-      className="relative min-h-screen grid grid-rows-2 md:grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 lg:px-0"
+      className="relative grid min-h-screen grid-rows-2 md:grid-rows-2 lg:grid-cols-2 lg:grid-rows-1 lg:px-0"
     >
       <div className="bg-muted relative flex h-full flex-col p-10 text-white dark:border-r">
         <div className="absolute inset-0 bg-zinc-900" />

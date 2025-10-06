@@ -19,7 +19,7 @@ export default function RootPage() {
 
     if (user) {
       // If user is logged in, redirect to the main content page
-      router.replace(ROUTES.BOARDS.ROOT)
+      router.replace(ROUTES.BOARDS.OVERVIEW_PAGE)
     } else {
       // If user is not logged in, redirect to the login page
       // Note: We are hardcoding '/login' as it's a frontend route

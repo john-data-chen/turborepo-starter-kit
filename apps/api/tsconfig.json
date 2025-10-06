@@ -1,5 +1,5 @@
 {
-  "extends": "global-tsconfig/base-tsconfig.json",
+  "extends": "../../packages/global-tsconfig/base-tsconfig.json",
   "compilerOptions": {
     "declaration": true,
     "removeComments": true,

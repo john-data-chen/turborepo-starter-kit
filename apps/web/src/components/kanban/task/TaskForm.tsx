@@ -1,17 +1,24 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Textarea } from '@/components/ui/textarea'
 import { useTaskForm } from '@/hooks/useTaskForm'
-import { cn } from '@/lib/utils'
 import { TaskFormSchema } from '@/types/taskForm'
+import { Button } from '@repo/ui/components/button'
+import { Calendar } from '@repo/ui/components/calendar'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@repo/ui/components/command'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@repo/ui/components/form'
+import { Input } from '@repo/ui/components/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/popover'
+import { RadioGroup, RadioGroupItem } from '@repo/ui/components/radio-group'
+import { Textarea } from '@repo/ui/components/textarea'
+import { cn } from '@repo/ui/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -84,7 +91,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" aria-hidden="true" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-[60]" align="start">
+                <PopoverContent className="z-[60] w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
@@ -132,7 +139,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                     <PopoverContent
                       id="assignee-options"
                       role="listbox"
-                      className="p-0 z-[60]"
+                      className="z-[60] p-0"
                       side="bottom"
                       align="start"
                     >
@@ -156,7 +163,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                                 className="flex flex-col items-start"
                               >
                                 <span>{user.name || user.email}</span>
-                                {user.name && <span className="text-xs text-muted-foreground">{user.email}</span>}
+                                {user.name && <span className="text-muted-foreground text-xs">{user.email}</span>}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -179,7 +186,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex flex-col space-y-1 mt-4"
+                  className="mt-4 flex flex-col space-y-1"
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>

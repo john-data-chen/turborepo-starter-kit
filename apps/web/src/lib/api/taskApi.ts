@@ -70,8 +70,12 @@ export const taskApi = {
   // Get all tasks (with optional filters)
   async getTasks(projectId?: string, assigneeId?: string): Promise<Task[]> {
     const params = new URLSearchParams()
-    if (projectId) params.append('projectId', projectId)
-    if (assigneeId) params.append('assigneeId', assigneeId)
+    if (projectId) {
+      params.append('projectId', projectId)
+    }
+    if (assigneeId) {
+      params.append('assigneeId', assigneeId)
+    }
 
     const query = params.toString()
     const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT

@@ -11,20 +11,48 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
     // Get token from localStorage for Authorization header
     const token = localStorage.getItem('auth_token')
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      ...options.headers
+    // Helper to convert headers to Record<string, string>
+    const getHeadersAsRecord = (
+      inputHeaders?: Headers | string[][] | Record<string, string>
+    ): Record<string, string> => {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+      if (!inputHeaders) {
+        return headers
+      }
+
+      if (inputHeaders instanceof Headers) {
+        inputHeaders.forEach((value, key) => {
+          headers[key] = value
+        })
+      } else if (Array.isArray(inputHeaders)) {
+        inputHeaders.forEach(([key, value]) => {
+          if (typeof value === 'string') {
+            headers[key] = value
+          }
+        })
+      } else {
+        Object.entries(inputHeaders).forEach(([key, value]) => {
+          if (typeof value === 'string') {
+            headers[key] = value
+          }
+        })
+      }
+
+      return headers
     }
+
+    const baseHeaders = getHeadersAsRecord(options.headers)
 
     // Add Authorization header if token exists
     if (token) {
-      headers.Authorization = `Bearer ${token}`
+      baseHeaders.Authorization = `Bearer ${token}`
     }
 
     const response = await fetch(url, {
       ...options,
       credentials: 'include', // Still include for cookie fallback
-      headers
+      headers: baseHeaders
     })
 
     const responseText = await response.text()
@@ -91,54 +119,9 @@ export const boardApi = {
 
   // Delete a board
   async deleteBoard(id: string): Promise<void> {
-    try {
-      // Get token from localStorage for Authorization header
-      const token = localStorage.getItem('auth_token')
-
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json'
-      }
-
-      // Add Authorization header if token exists
-      if (token) {
-        headers.Authorization = `Bearer ${token}`
-      }
-
-      const response = await fetch(`${BOARDS_ENDPOINT}/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers
-      })
-
-      // For 204 No Content responses, we don't expect a response body
-      if (response.status === 204) {
-        return
-      }
-
-      // For other successful responses, try to parse the response
-      if (response.ok) {
-        const responseText = await response.text()
-        if (!responseText) {
-          return // Empty response is acceptable for DELETE
-        }
-        return JSON.parse(responseText)
-      }
-
-      // Handle error responses
-      const errorText = await response.text()
-      let errorMessage = 'Failed to delete board'
-      try {
-        const errorData = errorText ? JSON.parse(errorText) : {}
-        errorMessage = errorData.message || response.statusText || errorMessage
-      } catch (e) {
-        errorMessage = errorText || errorMessage
-        console.error('Error parsing error response:', e)
-      }
-      throw new Error(errorMessage)
-    } catch (error) {
-      console.error('Error in deleteBoard:', error)
-      throw error
-    }
+    await fetchWithAuth<void>(`${BOARDS_ENDPOINT}/${id}`, {
+      method: 'DELETE'
+    })
   },
 
   // Add a member to a board

@@ -3,7 +3,6 @@
   "globalDependencies": [
     "**/.env.*",
     "packages/linter-config/*",
-    "packages/style-formatter-config/*",
     "packages/global-tsconfig/*"
   ],
   "tasks": {
@@ -16,6 +15,10 @@
         "!.next/cache/**",
         "dist/**"
       ]
+    },
+    "@repo/ui#build": {
+      "dependsOn": [],
+      "outputs": []
     },
     "web#build": {
       "dependsOn": [
@@ -62,6 +65,13 @@
       "outputs": [
         "coverage/**"
       ]
+    },
+    "playwright": {
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "__tests__/**/*.{ts,tsx,js,jsx}"
+      ],
+      "cache": false
     },
     "init-db": {
       "env": [

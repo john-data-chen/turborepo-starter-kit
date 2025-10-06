@@ -1,5 +1,5 @@
 {
-  "extends": "global-tsconfig/base-tsconfig.json",
+  "extends": "../../packages/global-tsconfig/base-tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -14,7 +14,8 @@
     "baseUrl": ".",
     "types": ["node", "@testing-library/jest-dom", "vitest/globals"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@repo/*": ["../../packages/*/src"]
     },
     "plugins": [
       {

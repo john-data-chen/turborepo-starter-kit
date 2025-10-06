@@ -2,6 +2,12 @@
 
 import { useState } from 'react'
 import { TaskForm } from '@/components/kanban/task/TaskForm'
+import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { TaskStatus } from '@/types/dbInterface'
+import { TASK_KEYS } from '@/types/taskApi'
+import { TaskFormSchema } from '@/types/taskForm'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,22 +16,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+} from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { TaskStatus } from '@/types/dbInterface'
-import { TASK_KEYS } from '@/types/taskApi'
-import { TaskFormSchema } from '@/types/taskForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+} from '@repo/ui/components/dropdown-menu'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -204,7 +204,9 @@ export function TaskActions({
       // 2. Create a function to safely update queries
       const updateQueries = (queryKey: readonly (string | readonly string[])[], taskId: string) => {
         queryClient.setQueryData(queryKey, (old: any) => {
-          if (!old || !Array.isArray(old)) return old
+          if (!old || !Array.isArray(old)) {
+            return old
+          }
           return old.filter((task: any) => task._id !== taskId)
         })
       }
@@ -324,7 +326,9 @@ export function TaskActions({
   }
 
   // If we don't have task data, don't render anything
-  if (!task) return null
+  if (!task) {
+    return null
+  }
 
   return (
     <>
@@ -362,7 +366,7 @@ export function TaskActions({
           <DropdownMenuItem
             onSelect={() => canEdit && setIsEditDialogOpen(true)}
             disabled={!canEdit}
-            className={!canEdit ? 'text-muted-foreground line-through cursor-not-allowed' : ''}
+            className={!canEdit ? 'text-muted-foreground cursor-not-allowed line-through' : ''}
           >
             {t('edit')}
           </DropdownMenuItem>
@@ -374,8 +378,8 @@ export function TaskActions({
             disabled={!canDelete}
             className={
               !canDelete
-                ? 'text-muted-foreground line-through cursor-not-allowed'
-                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+                ? 'text-muted-foreground cursor-not-allowed line-through'
+                : 'hover:!bg-destructive/10 text-red-600 hover:!text-red-600'
             }
           >
             {t('delete')}

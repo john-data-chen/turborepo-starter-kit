@@ -1,13 +1,11 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { defaultEmail } from '@/constants/demoData'
 import { useAuthForm } from '@/hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@repo/ui'
 import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
+import { ControllerRenderProps, useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 const formSchema = z.object({
@@ -40,7 +38,7 @@ export default function UserAuthForm() {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => (
+          render={({ field }: { field: ControllerRenderProps<z.infer<typeof formSchema>, 'email'> }) => (
             <FormItem>
               <FormLabel>{t('emailLabel')}</FormLabel>
               <FormControl>
@@ -49,6 +47,7 @@ export default function UserAuthForm() {
                   placeholder={t('emailPlaceholder')}
                   disabled={isLoading || isNavigating}
                   data-testid="email-input"
+                  className="h-10 py-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
                   {...field}
                 />
               </FormControl>
@@ -58,7 +57,7 @@ export default function UserAuthForm() {
         />
 
         {error && (
-          <div className="text-sm text-red-600 mt-2" data-testid="error-message">
+          <div className="mt-2 text-sm text-red-600" data-testid="error-message">
             {error}
           </div>
         )}

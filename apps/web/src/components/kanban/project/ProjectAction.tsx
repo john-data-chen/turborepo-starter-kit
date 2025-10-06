@@ -1,6 +1,10 @@
 'use client'
 
 import * as React from 'react'
+import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
+import { useWorkspaceStore } from '@/stores/workspace-store'
+import { projectSchema } from '@/types/projectForm'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,20 +13,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+} from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { projectSchema } from '@/types/projectForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+} from '@repo/ui/components/dropdown-menu'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -106,7 +106,7 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-12 p-0 bg-background hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
+            className="bg-background hover:bg-secondary/80 text-muted-foreground hover:text-foreground h-8 w-12 p-0"
             data-testid="project-option-button"
           >
             <DotsHorizontalIcon className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
           <DropdownMenuItem
             onSelect={() => setEditEnable(true)}
             data-testid="edit-project-button"
-            className={!isOwner ? 'text-muted-foreground line-through cursor-not-allowed' : ''}
+            className={!isOwner ? 'text-muted-foreground cursor-not-allowed line-through' : ''}
             disabled={!isOwner}
           >
             {t('edit')}
@@ -126,8 +126,8 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
             onSelect={() => setShowDeleteDialog(true)}
             className={
               !isOwner
-                ? 'text-muted-foreground line-through cursor-not-allowed'
-                : 'text-red-600 hover:!text-red-600 hover:!bg-destructive/10'
+                ? 'text-muted-foreground cursor-not-allowed line-through'
+                : 'hover:!bg-destructive/10 text-red-600 hover:!text-red-600'
             }
             data-testid="delete-project-button"
             disabled={!isOwner}

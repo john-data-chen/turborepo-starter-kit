@@ -1,5 +1,5 @@
-const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
+const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin')
+const nodeExternals = require('webpack-node-externals')
 
 /** @type {import('@rspack/cli').Configuration} */
 const config = {
@@ -91,6 +91,6 @@ const config = {
       message: /the request of a dependency is an expression/
     }
   ]
-};
+}
 
-module.exports = config;
+module.exports = config

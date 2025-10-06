@@ -1,0 +1,783 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility min-h-screen {
+  min-height: 100vh; /* Fallback */
+  min-height: 100dvh;
+}
+
+@utility h-screen {
+  height: 100vh; /* Fallback */
+  height: 100dvh;
+}
+
+@layer base {
+  :root {
+    --background: 180 35% 99%;
+    --foreground: 180 45% 8%;
+    --muted: 180 25% 92%;
+    --muted-foreground: 180 45% 25%;
+    --popover: 180 35% 99%;
+    --popover-foreground: 180 45% 8%;
+    --card: 180 35% 98%;
+    --card-foreground: 180 45% 8%;
+    --border: 180 20% 92%;
+    --input: 180 20% 92%;
+    --primary: 180 75% 35%;
+    --primary-foreground: 180 10% 98%;
+    --secondary: 180 20% 92%;
+    --secondary-foreground: 180 45% 25%;
+    --accent: 180 75% 35%;
+    --accent-foreground: 180 10% 98%;
+    --destructive: 0 85% 45%;
+    --destructive-foreground: 0 10% 98%;
+    --ring: 180 75% 35%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-width: 255px;
+  }
+
+  .dark {
+    --background: 180 35% 5%;
+    --foreground: 180 20% 99%;
+    --muted: 180 30% 12%;
+    --muted-foreground: 180 25% 80%;
+    --popover: 180 35% 6%;
+    --popover-foreground: 180 20% 99%;
+
+    /* Board overview visual parity: make cards blend with page */
+    --card: 180 35% 10%;
+    --card-foreground: 180 20% 99%;
+
+    /* Subtle borders/inputs like reference (less contrast on dark) */
+    --border: 180 12% 8%;
+    --input: 180 12% 9%;
+
+    --primary: 180 75% 45%;
+    --primary-foreground: 180 10% 98%;
+    --secondary: 180 20% 20%;
+    --secondary-foreground: 180 20% 80%;
+    --accent: 180 75% 45%;
+    --accent-foreground: 180 10% 98%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 10% 98%;
+    --ring: 180 75% 45%;
+
+    /* Sidebar lines toned down to reduce visible outlines */
+    --sidebar-background: 240 6% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 12%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Toast styles */
+@layer base {
+  :root {
+    --toast-border-radius: var(--radius);
+    --toast-background: hsl(180 35% 8%); /* dark background */
+    --toast-foreground: hsl(180 20% 98%); /* dark foreground */
+    --toast-border: hsl(180 20% 18%); /* dark border */
+    --toast-width: min(calc(100vw - 2rem), 280px);
+  }
+
+  .dark {
+    --toast-background: hsl(180 35% 98%); /* light background */
+    --toast-foreground: hsl(180 45% 10%); /* light foreground */
+    --toast-border: hsl(180 20% 92%); /* light border */
+  }
+}
+
+[data-sonner-toaster] {
+  --viewport-padding: 16px !important;
+  position: fixed !important;
+  z-index: 999999 !important;
+  width: var(--toast-width) !important;
+  transform: none !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  bottom: calc(var(--viewport-padding) + env(safe-area-inset-bottom, 0px)) !important;
+
+  @media (min-width: 640px) {
+    left: unset !important;
+    right: var(--viewport-padding) !important;
+    transform: none !important;
+    bottom: var(--viewport-padding) !important;
+  }
+}
+
+[data-sonner-toast] {
+  background: var(--toast-background) !important;
+  border: 1px solid var(--toast-border) !important;
+  color: var(--toast-foreground) !important;
+  border-radius: var(--toast-border-radius) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Boards Overview visual parity with reference */
+/* Scope: keep shadcn-ui components untouched; tweak surface/border via data-slot targets */
+@layer components {
+  /* Flatter cards like reference: same surface as page, no drop shadow, subtle border */
+  [data-slot='card'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important; /* neutralize shadow-sm utility */
+    border-color: hsl(var(--border)) !important;
+  }
+
+  /* Slightly bolder card titles for readability parity */
+  [data-slot='card-title'] {
+    font-weight: 600;
+  }
+}
+@layer components {
+  /* Keep faint border but allow hover highlight to primary (user preference) */
+  [data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important; /* override earlier base border-color */
+  }
+}
+/* file: [css.@layer components](packages/ui/src/styles/globals.css:1) */
+@layer components {
+  /* Ensure faint but visible border on cards (global, matches user preference) */
+  [data-slot='card'] {
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+  }
+}
+@layer components {
+  /* Boards Overview controls sizing and borders to match reference */
+  [data-slot='input'] {
+    height: 2.25rem !important; /* 36px */
+    padding-top: 0.375rem !important; /* 6px */
+    padding-bottom: 0.375rem !important; /* 6px */
+    padding-left: 2rem !important; /* keep space for search icon */
+    padding-right: 0.75rem !important; /* 12px */
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    background-color: transparent !important;
+  }
+  [data-slot='input']::placeholder {
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.8 !important;
+  }
+
+  [data-slot='select-trigger'][data-size='default'],
+  [data-slot='select-trigger'][data-size='sm'] {
+    height: 2.25rem !important; /* 36px for visual parity */
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    background-color: transparent !important;
+  }
+}
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+@layer utilities {
+  /* Force parity: make cards flat (no shadow) and same surface as page; utilities layer ensures final override */
+  [data-slot='card'],
+  [data-slot='card'].bg-card,
+  [data-slot='card'][class*='shadow'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important;
+  }
+}
+/* Boards Overview – final overrides appended for precedence */
+@layer utilities {
+  /* Cards: same surface as page + no shadow */
+  [data-slot='card'],
+  [data-slot='card'].bg-card,
+  [data-slot='card'][class*='shadow'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important;
+  }
+
+  /* Inputs/Select: transparent surface, faint border */
+  input[data-slot='input'],
+  [data-slot='select-trigger'] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: hsl(var(--border)) !important;
+  }
+}
+
+/* Trace: appended for highest precedence in build order */
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) | block [css.@layer()](packages/ui/src/styles/globals.css:1) */
+@layer utilities {
+  /* Stronger specificity to override Tailwind utilities compiled later */
+  [data-slot='card'][data-slot='card'] {
+    /* Visual parity: faint border, flat surface, tighter radius and vertical padding */
+    box-shadow: none !important;
+    background-color: hsl(var(--background)) !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important; /* override rounded-xl */
+    padding-block: 1rem !important; /* override py-6 -> 16px like reference */
+  }
+
+  /* Keep hover affordance as requested */
+  [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+}
+/* file: [css.@layer utilities()](packages/ui/src/styles/globals.css:1) */
+/* Boards Overview – specificity bump to lock final look matching reference and your preference */
+@layer utilities {
+  /* Card: keep faint border + hover highlight, remove shadow, keep subtle card surface (not same as page) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* use --card, not page bg */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    box-shadow: none !important; /* kill shadow-sm/md */
+    border-radius: 8px !important; /* tighter than rounded-xl */
+    padding-block: 1rem !important; /* override py-6 -> 16px */
+    /* Tailwind v4 shadow variables guard */
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Controls: transparent surface, faint border (no elevation), 36px tall */
+  :root input[data-slot='input'][data-slot='input'],
+  .dark input[data-slot='input'][data-slot='input'] {
+    background-color: transparent !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    height: 2.25rem !important; /* 36px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='select-trigger'][data-slot='select-trigger'],
+  .dark [data-slot='select-trigger'][data-slot='select-trigger'] {
+    background-color: transparent !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    height: 2.25rem !important; /* 36px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+}
+/* trace: [css.globals](packages/ui/src/styles/globals.css:1) */
+
+/* Boards Overview — alignment fixes from user feedback */
+/* 1) Sidebar background + spacing, 2) Sticky head overlap, 3) Select list covered, 4) Minor gaps */
+@layer utilities {
+  /* Sidebar spacing and background parity */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* Keep page/overview surface stable */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Sticky controls bar should not cover top global header */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 56px !important; /* place under global header */
+    z-index: 1 !important; /* stay behind popovers/menus/header */
+  }
+
+  /* Menus/Select/Popover should always float above sticky bars */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 60 !important;
+    margin-top: 0.25rem !important; /* small gap from trigger to avoid visual clipping */
+    overflow: visible !important;
+  }
+
+  /* Ensure select items are never visually cropped under sticky bar */
+  .sticky:has([data-testid='new-board-trigger']) ~ * [data-slot='select-content'] {
+    z-index: 60 !important;
+  }
+
+  /* Card surface parity (reference shows slightly lifted surface) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* keep card slightly brighter than background */
+  }
+}
+/* refs:
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities()](packages/ui/src/styles/globals.css:1)
+*/
+/* FINAL OVERRIDES — align target to reference based on latest feedback */
+@layer utilities {
+  /* 1) Sidebar background + spacing */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--background)) !important; /* align with reference */
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* 2) Overview background (main working surface) */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* 3) Card background same as page, faint border, tighter radius, reduced padding */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--background)) !important; /* same as page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    padding-block: 1rem !important; /* 16px like reference */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* 4) Select/Filter popups covered — raise z-index and avoid clipping */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 9999 !important; /* over sticky/header icons */
+    margin-top: 0.25rem !important;
+    overflow: visible !important;
+  }
+
+  /* Sticky controls bar should not obscure menus or header */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 64px !important; /* push below global header */
+    z-index: 10 !important; /* below popovers/menus */
+    overflow: visible !important;
+  }
+
+  /* 5) Topbar buttons/labels should not overlap content below (ensure stacking of popovers) */
+  header [data-slot='tooltip-content'],
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'] {
+    z-index: 10000 !important;
+  }
+}
+
+/* Trace: applied above all previous blocks to ensure precedence
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities](packages/ui/src/styles/globals.css:1)
+*/
+/* HARD FINAL ALIGNMENT BLOCK — placed at EOF for highest cascade priority */
+@layer utilities {
+  /* Sidebar: darker panel + inner spacing + subtle right border like reference */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+    padding-block: 0.5rem !important;
+    padding-inline: 0.25rem !important;
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-block: 0.25rem !important;
+  }
+
+  /* Main working surface */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Cards: same surface as page (reference), faint border, tighter radius, no shadow */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--background)) !important; /* override any var(--card) rules */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    padding-block: 1rem !important; /* 16px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Sticky overview bar must sit below global header and not cover top-right buttons */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 64px !important; /* push under header */
+    z-index: 0 !important; /* keep below header/popovers */
+    overflow: visible !important;
+  }
+
+  /* Popups (Select/Dropdown/Popover) must float above sticky/header; avoid clipping */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 10050 !important;
+    margin-top: 0.25rem !important;
+    overflow: visible !important;
+  }
+
+  /* Safety: ensure header tooltips/menus are always on top */
+  header [data-slot='tooltip-content'],
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'] {
+    z-index: 10100 !important;
+  }
+}
+/* eof: hard final alignment for Board Overview */
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+
+/* FINAL ROUND — address: 1) full-height sidebar, 2) card different bg, 3) menus covered, 4) topbar spacing */
+@layer utilities {
+  /* 1) Sidebar must be a full-height pane (top to bottom), not only inner area */
+  [data-slot='sidebar'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-gap'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  /* keep subtle divider at the content edge */
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* 2) Cards should have a surface different from page */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* not same as page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* 3) Menus / Select lists covered — force them above everything */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [role='menu'],
+  [role='listbox'],
+  [data-radix-popper-content-wrapper] {
+    z-index: 2147483647 !important; /* effectively max */
+    overflow: visible !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* 4) Topbar buttons spacing, and make sticky bar not collide with header */
+  header [data-slot='button'] {
+    margin-inline: 0.25rem !important;
+  }
+  header > * {
+    gap: 0.5rem !important;
+  }
+  header {
+    padding-right: 0.5rem !important;
+  }
+
+  /* Sticky overview controls below header to avoid overlap */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important; /* keep popovers/menus above */
+  }
+}
+/* trace: alignment fixes | file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+/* THIRD PASS — per feedback:
+   - Sidebar spans full height
+   - Card bg differs from page
+   - Select/menus not covered (solid surface + max z-index)
+   - Top bar buttons spacing; menus from header never covered
+*/
+@layer utilities {
+  /* Sidebar: full height pane, consistent bg top-to-bottom */
+  [data-slot='sidebar'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-gap'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  [data-slot='sidebar'] {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Card: use a surface different from page (reference shows subtle contrast) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* DIFFERENT from page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* Menus/Select/Popover: ensure solid surface and stay above everything */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [role='menu'],
+  [role='listbox'],
+  [data-radix-popper-content-wrapper] {
+    z-index: 2147483647 !important;
+    background-color: hsl(var(--popover)) !important; /* SOLID bg */
+    color: hsl(var(--popover-foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+    overflow: visible !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* Top bar buttons: add consistent horizontal breathing room */
+  header [data-slot='button'] {
+    padding-inline: 0.5rem !important;
+    margin-inline: 0.25rem !important;
+  }
+  header {
+    position: relative !important;
+    z-index: 10010 !important; /* header sits above sticky bar */
+    padding-right: 0.5rem !important;
+  }
+
+  /* Overview sticky bar: keep below header so header/menu never covered */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important;
+  }
+}
+/* eof block — see file [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+/* FOURTH PASS — address remaining gaps from feedback:
+   - Sidebar background spans ENTIRE left column (all inner parts)
+   - Card background different from page (kept)
+   - Menus (user menu / select list) never covered
+   - Top bar buttons spacing improved (padding/margin), menus from top bar not covered
+*/
+@layer utilities {
+  /* Sidebar full-height + every sidebar part shares same background */
+  [data-sidebar],
+  [data-slot='sidebar-wrapper'],
+  [data-slot='sidebar'],
+  [data-slot='sidebar-gap'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-header'],
+  [data-slot='sidebar-content'],
+  [data-slot='sidebar-footer'],
+  [data-slot='sidebar-group'],
+  [data-slot='sidebar-separator'],
+  [data-slot='sidebar-rail'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  [data-slot='sidebar'] {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Keep card surface different from page (subtle contrast) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* different from page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* Raise overlay layers so text is never covered by inputs/sticky bars */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [data-radix-popper-content-wrapper],
+  [role='listbox'],
+  [role='menu'] {
+    z-index: 2147483647 !important;
+    background-color: hsl(var(--popover)) !important;
+    color: hsl(var(--popover-foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Top bar: add breathing space for buttons; ensure its menus are on top */
+  header {
+    position: relative !important;
+    z-index: 10010 !important;
+    padding-right: 0.75rem !important;
+  }
+  header [data-slot='button'] {
+    padding-inline: 0.5rem !important;
+    margin-inline: 0.25rem !important;
+  }
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'],
+  header [data-slot='tooltip-content'] {
+    z-index: 2147483647 !important;
+  }
+
+  /* Ensure the sticky controls bar sits below header to avoid covering menus */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important;
+    overflow: visible !important;
+  }
+}
+/* refs:
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities()](packages/ui/src/styles/globals.css:1)
+*/
+
+/* ========================================
+   FINAL FIX - Card BG, Wider Sidebar, Active Page Highlight
+   ======================================== */
+
+@layer utilities {
+  /* 1. Wider Sidebar - from ~255px to 288px (18rem) */
+  [data-slot='sidebar-wrapper'] {
+    --sidebar-width: 18rem !important;
+  }
+
+  /* 2. Active/Current Page Highlight in Sidebar */
+  [data-slot='sidebar-menu-button'][data-active='true'],
+  [data-slot='sidebar-menu-button'][aria-current='page'] {
+    background-color: hsl(var(--sidebar-accent)) !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
+  }
+
+  /* 3. Card Background MUST be different from page - use --card */
+  [data-slot='card'] {
+    background-color: hsl(var(--card)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* Keep hover effect */
+  [data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+}

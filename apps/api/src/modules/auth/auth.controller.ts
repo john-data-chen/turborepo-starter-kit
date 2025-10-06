@@ -140,13 +140,6 @@ export class AuthController {
     res.clearCookie('jwt', cookieOptions)
     res.clearCookie('isAuthenticated', { ...cookieOptions, httpOnly: false })
 
-    // Log the cookie clearing for debugging
-    console.log('Clearing cookies with options:', {
-      ...cookieOptions,
-      requestOrigin: req.headers.origin,
-      requestHost: req.headers.host
-    })
-
     return { message: 'Successfully logged out' }
   }
 }

@@ -11,14 +11,14 @@ jobs:
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
-          version: 10.16.1
+          version: 10.18.0
           run_install: false
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
@@ -44,7 +44,7 @@ jobs:
           slug: john-data-chen/next-dnd-starter-kit
 
       - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

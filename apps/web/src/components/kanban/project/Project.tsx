@@ -1,13 +1,13 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { cn } from '@/lib/utils'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { Project, UserInfo, type Task } from '@/types/dbInterface'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Badge } from '@repo/ui/components/badge'
+import { Button } from '@repo/ui/components/button'
+import { Card, CardContent, CardHeader } from '@repo/ui/components/card'
+import { ScrollArea, ScrollBar } from '@repo/ui/components/scroll-area'
+import { cn } from '@repo/ui/lib/utils'
 import { cva } from 'class-variance-authority'
 import { PointerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -60,8 +60,12 @@ function BoardProjectComponent({
 
   // Memoize the helper function
   const getUserDisplayName = useCallback((user: string | UserInfo | null | undefined): string => {
-    if (!user) return 'Unassigned'
-    if (typeof user === 'string') return user
+    if (!user) {
+      return 'Unassigned'
+    }
+    if (typeof user === 'string') {
+      return user
+    }
     return user.name || user.email || 'Unknown User'
   }, [])
 
@@ -85,7 +89,9 @@ function BoardProjectComponent({
 
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
-    if (!project?._id) return
+    if (!project?._id) {
+      return
+    }
 
     setIsLoading(true)
     setError(null)
@@ -117,7 +123,9 @@ function BoardProjectComponent({
   }, [loadTasks])
 
   const filteredTasks = useMemo(() => {
-    if (!filter.status || !tasks?.length) return tasks || []
+    if (!filter.status || !tasks?.length) {
+      return tasks || []
+    }
     return tasks.filter((task) => task.status === filter.status)
   }, [tasks, filter.status])
 
@@ -161,17 +169,6 @@ function BoardProjectComponent({
 
   const dragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
 
-  // Memoize task items with drag enabled for board owners
-  const _taskItems = useMemo(() => {
-    // Filter out any tasks that are marked as deleted
-    const validTasks = tasks.filter((task) => !task._deleted)
-
-    return validTasks.map((task) => ({
-      id: task._id,
-      element: <TaskCard key={task._id} task={task} onUpdate={loadTasks} isDragEnabled={isBoardOwner} />
-    }))
-  }, [tasks, loadTasks, isBoardOwner])
-
   // Memoize task IDs for better performance
   const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks])
 
@@ -187,7 +184,7 @@ function BoardProjectComponent({
       data-testid="project-container"
       {...containerProps}
     >
-      <CardHeader className="flex flex-row items-center justify-between border-b-2 p-4 space-y-0">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-2 p-4">
         <div className="flex items-center gap-2">
           <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
             <span className="sr-only">drag project: {project.title}</span>
@@ -198,17 +195,17 @@ function BoardProjectComponent({
         {_projectActions}
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 p-0 overflow-hidden">
+      <CardContent className="flex flex-col gap-4 overflow-hidden p-0">
         <ScrollArea className="h-full px-2 pt-2">
           <div className="flex flex-col gap-1">
             <Badge variant="outline" className="text-xs">
               {t('description')}: {project.description || t('noDescription')}
             </Badge>
-            <Badge variant="outline" className="text-xs truncate">
+            <Badge variant="outline" className="truncate text-xs">
               {t('owner')}: {getUserDisplayName(project.owner)}
             </Badge>
             {Array.isArray(project.members) && project.members.length > 0 && (
-              <Badge variant="outline" className="text-xs truncate">
+              <Badge variant="outline" className="truncate text-xs">
                 {t('members')}:{' '}
                 {project.members
                   .map((member) => getUserDisplayName(member))
@@ -226,7 +223,7 @@ function BoardProjectComponent({
                 {filteredTasks
                   .filter((task) => !task._deleted) // Ensure we don't render deleted tasks
                   .map((task) => (
-                    <TaskCard key={task._id} task={task} onUpdate={handleTaskUpdate} />
+                    <TaskCard key={task._id} task={task} onUpdate={handleTaskUpdate} isDragEnabled={isBoardOwner} />
                   ))}
               </div>
             </SortableContext>
@@ -240,7 +237,7 @@ function BoardProjectComponent({
 export function BoardContainer({ children }: { children: React.ReactNode }) {
   return (
     <ScrollArea className="w-full">
-      <div className="flex flex-col md:flex-row gap-4">{children}</div>
+      <div className="flex flex-col gap-4 md:flex-row">{children}</div>
       <ScrollBar orientation="horizontal" className="hidden md:flex" />
     </ScrollArea>
   )

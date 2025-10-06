@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { ROUTES, URL_PARAMS } from '@/constants/routes'
 import { routing } from '@/i18n/routing'
 import { AuthService } from '@/lib/auth/authService'
-import { getLocalePath } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth-store'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import { Session, UserInfo } from '@/types/dbInterface'
+import { getLocalePath } from '@repo/ui/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 
 // Helper function to get current locale from pathname
