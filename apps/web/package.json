@@ -13,8 +13,8 @@
     "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
     "format": "prettier --write . --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern --config ../../prettier.config.js",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
-    "test": "vitest run --coverage --root ../..",
-    "test:watch": "vitest watch --root ../..",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch",
     "playwright": "npx playwright test"
   },
   "engines": {
