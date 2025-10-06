@@ -101,7 +101,7 @@
     --muted-foreground: 180 45% 25%;
     --popover: 180 35% 99%;
     --popover-foreground: 180 45% 8%;
-    --card: 180 35% 99%;
+    --card: 180 35% 98%;
     --card-foreground: 180 45% 8%;
     --border: 180 20% 92%;
     --input: 180 20% 92%;
@@ -135,7 +135,7 @@
     --popover-foreground: 180 20% 99%;
 
     /* Board overview visual parity: make cards blend with page */
-    --card: 180 35% 6%;
+    --card: 180 35% 10%;
     --card-foreground: 180 20% 99%;
 
     /* Subtle borders/inputs like reference (less contrast on dark) */
@@ -144,7 +144,7 @@
 
     --primary: 180 75% 45%;
     --primary-foreground: 180 10% 98%;
-    --secondary: 180 20% 16%;
+    --secondary: 180 20% 20%;
     --secondary-foreground: 180 20% 80%;
     --accent: 180 75% 45%;
     --accent-foreground: 180 10% 98%;
