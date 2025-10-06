@@ -371,3 +371,178 @@
   }
 }
 /* trace: [css.globals](packages/ui/src/styles/globals.css:1) */
+
+/* Boards Overview — alignment fixes from user feedback */
+/* 1) Sidebar background + spacing, 2) Sticky head overlap, 3) Select list covered, 4) Minor gaps */
+@layer utilities {
+  /* Sidebar spacing and background parity */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* Keep page/overview surface stable */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Sticky controls bar should not cover top global header */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 56px !important; /* place under global header */
+    z-index: 1 !important; /* stay behind popovers/menus/header */
+  }
+
+  /* Menus/Select/Popover should always float above sticky bars */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 60 !important;
+    margin-top: 0.25rem !important; /* small gap from trigger to avoid visual clipping */
+    overflow: visible !important;
+  }
+
+  /* Ensure select items are never visually cropped under sticky bar */
+  .sticky:has([data-testid='new-board-trigger']) ~ * [data-slot='select-content'] {
+    z-index: 60 !important;
+  }
+
+  /* Card surface parity (reference shows slightly lifted surface) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* keep card slightly brighter than background */
+  }
+}
+/* refs:
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities()](packages/ui/src/styles/globals.css:1)
+*/
+/* FINAL OVERRIDES — align target to reference based on latest feedback */
+@layer utilities {
+  /* 1) Sidebar background + spacing */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--background)) !important; /* align with reference */
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* 2) Overview background (main working surface) */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* 3) Card background same as page, faint border, tighter radius, reduced padding */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--background)) !important; /* same as page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    padding-block: 1rem !important; /* 16px like reference */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* 4) Select/Filter popups covered — raise z-index and avoid clipping */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 9999 !important; /* over sticky/header icons */
+    margin-top: 0.25rem !important;
+    overflow: visible !important;
+  }
+
+  /* Sticky controls bar should not obscure menus or header */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 64px !important; /* push below global header */
+    z-index: 10 !important; /* below popovers/menus */
+    overflow: visible !important;
+  }
+
+  /* 5) Topbar buttons/labels should not overlap content below (ensure stacking of popovers) */
+  header [data-slot='tooltip-content'],
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'] {
+    z-index: 10000 !important;
+  }
+}
+
+/* Trace: applied above all previous blocks to ensure precedence
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities](packages/ui/src/styles/globals.css:1)
+*/
+/* HARD FINAL ALIGNMENT BLOCK — placed at EOF for highest cascade priority */
+@layer utilities {
+  /* Sidebar: darker panel + inner spacing + subtle right border like reference */
+  [data-slot='sidebar-inner'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+    padding-block: 0.5rem !important;
+    padding-inline: 0.25rem !important;
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+  [data-slot='sidebar-content'] {
+    padding-block: 0.25rem !important;
+  }
+
+  /* Main working surface */
+  [data-slot='sidebar-inset'] {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Cards: same surface as page (reference), faint border, tighter radius, no shadow */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--background)) !important; /* override any var(--card) rules */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    padding-block: 1rem !important; /* 16px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Sticky overview bar must sit below global header and not cover top-right buttons */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 64px !important; /* push under header */
+    z-index: 0 !important; /* keep below header/popovers */
+    overflow: visible !important;
+  }
+
+  /* Popups (Select/Dropdown/Popover) must float above sticky/header; avoid clipping */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'] {
+    z-index: 10050 !important;
+    margin-top: 0.25rem !important;
+    overflow: visible !important;
+  }
+
+  /* Safety: ensure header tooltips/menus are always on top */
+  header [data-slot='tooltip-content'],
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'] {
+    z-index: 10100 !important;
+  }
+}
+/* eof: hard final alignment for Board Overview */
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
