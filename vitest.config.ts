@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), swc.vite()],
   test: {
     globals: true,
-    include: ['apps/api/**/*.test.{ts,tsx}', 'apps/web/**/*.test.{ts,tsx}'],
+    include: ['apps/api/__tests__/**/*.test.{ts,tsx}', 'apps/web/__tests__/**/*.test.{ts,tsx}'],
     exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages'],
     setupFiles: ['./vitest.setup.ts'],
     alias: {
@@ -24,7 +24,16 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['apps/api/src/**/*.{ts,tsx}', 'apps/web/src/**/*.{ts,tsx}'],
-      exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages']
+      exclude: [
+        '**/node_modules/**',
+        '**/database/**',
+        '**/__tests__/**',
+        '**/dist/**',
+        '**/.turbo/**',
+        '**/.next/**',
+        '**/coverage/**',
+        '**/packages/**'
+      ]
     }
   },
   resolve: {
