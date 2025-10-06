@@ -253,7 +253,7 @@ packages/
 
 ## AI Tools
 
-I use AI tools to help me with the development of this project.
+I am using AI tools to help our team to improve the quality of code and the efficiency of development, this project is one of playgrounds of AI tools.
 
 ### Editor with AI
 
@@ -273,6 +273,10 @@ I use AI tools to help me with the development of this project.
 
 - [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - [context7](https://github.com/upstash/context7)
+
+### Github Action (code review, PR summary)
+
+- [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist)
 
 ### Documentation
 
