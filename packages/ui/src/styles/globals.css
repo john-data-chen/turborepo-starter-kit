@@ -546,3 +546,75 @@
 }
 /* eof: hard final alignment for Board Overview */
 /* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+
+/* FINAL ROUND — address: 1) full-height sidebar, 2) card different bg, 3) menus covered, 4) topbar spacing */
+@layer utilities {
+  /* 1) Sidebar must be a full-height pane (top to bottom), not only inner area */
+  [data-slot='sidebar'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-gap'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  /* keep subtle divider at the content edge */
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* 2) Cards should have a surface different from page */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* not same as page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* 3) Menus / Select lists covered — force them above everything */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [role='menu'],
+  [role='listbox'],
+  [data-radix-popper-content-wrapper] {
+    z-index: 2147483647 !important; /* effectively max */
+    overflow: visible !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* 4) Topbar buttons spacing, and make sticky bar not collide with header */
+  header [data-slot='button'] {
+    margin-inline: 0.25rem !important;
+  }
+  header > * {
+    gap: 0.5rem !important;
+  }
+  header {
+    padding-right: 0.5rem !important;
+  }
+
+  /* Sticky overview controls below header to avoid overlap */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important; /* keep popovers/menus above */
+  }
+}
+
+@layer utilities {
+  /* Sidebar: full height pane, consistent bg top-to-bottom */
+  [data-slot='sidebar'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-gap'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  [data-slot='sidebar'] {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+}
