@@ -1,5 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NODE_ENV",
+    "ENABLE_EXPERIMENTAL_COREPACK"
+  ],
   "globalDependencies": [
     "**/.env.*",
     "packages/linter-config/*",
