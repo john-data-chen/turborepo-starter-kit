@@ -1,1 +1,52 @@
-.kilocode/
+# Dependencies
+**/node_modules
+**/.pnp
+.pnp.js
+
+# Debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
+
+# OS & Editor Generated Files
+**/.DS_Store
+**/.vscode/
+**/*.pem
+
+# TypeScript Cache
+**/*.tsbuildinfo
+
+# Environment variables
+**/.env*
+
+# Next.js
+apps/web/.next/
+apps/web/out/
+apps/web/next-env.d.ts
+
+# General Build Artifacts
+**/build/
+**/dist/
+
+# Testing
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
+
+# Vercel
+.vercel
+
+# Docker
+/apps/api/database/mongodb/
+
+# Turborepo
+.turbo
+
+# files of AI
+GEMINI.md
+.zed
+windsurf.md
+CLAUDE.md
