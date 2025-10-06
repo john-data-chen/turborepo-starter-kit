@@ -1,38 +1,32 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { vi } from 'vitest'
-import { JwtAuthGuard } from '../../src/modules/auth/guards/jwt-auth.guard'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { BoardController } from '../../src/modules/boards/boards.controller'
 import { BoardService } from '../../src/modules/boards/boards.service'
 
 describe('BoardController', () => {
   let controller: BoardController
-  let service: BoardService
-  let module: TestingModule
+  let service: {
+    create: vi.Mock
+    findAll: vi.Mock
+    findOne: vi.Mock
+    update: vi.Mock
+    remove: vi.Mock
+    addMember: vi.Mock
+    removeMember: vi.Mock
+  }
 
-  beforeEach(async () => {
-    module = await Test.createTestingModule({
-      controllers: [BoardController],
-      providers: [
-        {
-          provide: BoardService,
-          useValue: {
-            create: vi.fn(),
-            findAll: vi.fn(),
-            findOne: vi.fn(),
-            update: vi.fn(),
-            remove: vi.fn(),
-            addMember: vi.fn(),
-            removeMember: vi.fn()
-          }
-        }
-      ]
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: vi.fn(() => true) })
-      .compile()
+  beforeEach(() => {
+    service = {
+      create: vi.fn(),
+      findAll: vi.fn(),
+      findOne: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+      addMember: vi.fn(),
+      removeMember: vi.fn()
+    }
 
-    controller = module.get<BoardController>(BoardController)
-    service = module.get<BoardService>(BoardService)
+    // Manually instantiate BoardController with the mock BoardService
+    controller = new BoardController(service as any)
   })
 
   it('should be defined', () => {
@@ -45,7 +39,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { ...createBoardDto, _id: '1', owner: '1' }
 
-      vi.spyOn(service, 'create').mockResolvedValue(result as any)
+      service.create.mockResolvedValue(result as any)
 
       expect(await controller.create(createBoardDto, req as any)).toEqual(result)
       expect(service.create).toHaveBeenCalledWith({ ...createBoardDto, owner: '1' })
@@ -57,7 +51,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { myBoards: [], teamBoards: [] }
 
-      vi.spyOn(service, 'findAll').mockResolvedValue(result)
+      service.findAll.mockResolvedValue(result)
 
       expect(await controller.findAll(req as any)).toEqual(result)
       expect(service.findAll).toHaveBeenCalledWith('1')
@@ -69,7 +63,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { _id: '1', name: 'Test Board', owner: '1' }
 
-      vi.spyOn(service, 'findOne').mockResolvedValue(result as any)
+      service.findOne.mockResolvedValue(result as any)
 
       expect(await controller.findOne('1', req as any)).toEqual(result)
       expect(service.findOne).toHaveBeenCalledWith('1', '1')
@@ -82,7 +76,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { _id: '1', name: 'Test Board Updated', owner: '1' }
 
-      vi.spyOn(service, 'update').mockResolvedValue(result as any)
+      service.update.mockResolvedValue(result as any)
 
       expect(await controller.update('1', updateBoardDto, req as any)).toEqual(result)
       expect(service.update).toHaveBeenCalledWith('1', updateBoardDto, '1')
@@ -94,7 +88,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { acknowledged: true, deletedCount: 1 }
 
-      vi.spyOn(service, 'remove').mockResolvedValue(result as any)
+      service.remove.mockResolvedValue(result as any)
 
       expect(await controller.remove('1', req as any)).toEqual(result)
       expect(service.remove).toHaveBeenCalledWith('1', '1')
@@ -106,7 +100,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { _id: '1', name: 'Test Board', owner: '1', members: ['2'] }
 
-      vi.spyOn(service, 'addMember').mockResolvedValue(result as any)
+      service.addMember.mockResolvedValue(result as any)
 
       expect(await controller.addMember('1', '2', req as any)).toEqual(result)
       expect(service.addMember).toHaveBeenCalledWith('1', '1', '2')
@@ -118,7 +112,7 @@ describe('BoardController', () => {
       const req = { user: { _id: '1' } }
       const result = { _id: '1', name: 'Test Board', owner: '1', members: [] }
 
-      vi.spyOn(service, 'removeMember').mockResolvedValue(result as any)
+      service.removeMember.mockResolvedValue(result as any)
 
       expect(await controller.removeMember('1', '2', req as any)).toEqual(result)
       expect(service.removeMember).toHaveBeenCalledWith('1', '1', '2')

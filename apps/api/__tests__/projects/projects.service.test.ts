@@ -1,6 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Types } from 'mongoose'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { BoardService } from '../../src/modules/boards/boards.service'
 import { ProjectsService } from '../../src/modules/projects/projects.service'
 import { Project } from '../../src/modules/projects/schemas/projects.schema'
@@ -16,35 +17,38 @@ describe('ProjectsService', () => {
         ProjectsService,
         {
           provide: getModelToken(Project.name),
-          useValue: {
-            ...vi.fn().mockImplementation(() => ({
-              save: vi.fn().mockResolvedValue({}),
+          useValue: vi
+            .fn()
+            .mockImplementation((data) => ({
+              ...data,
+              save: vi.fn().mockResolvedValue({ ...data, _id: '1' }),
               populate: vi.fn().mockReturnThis(),
-              lean: vi.fn().mockResolvedValue({})
-            })),
-            find: vi.fn().mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue([]) }),
-            findOne: vi
-              .fn()
-              .mockReturnValue({
+              lean: vi.fn().mockResolvedValue({ ...data, _id: '1' })
+            }))
+            .mockReturnValue({
+              find: vi
+                .fn()
+                .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue([]) }),
+              findOne: vi.fn().mockReturnValue({
                 sort: vi.fn().mockReturnThis(),
                 select: vi.fn().mockReturnThis(),
                 lean: vi.fn().mockResolvedValue(null)
               }),
-            findById: vi
-              .fn()
-              .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue({}) }),
-            create: vi.fn(),
-            save: vi.fn(),
-            exec: vi.fn(),
-            deleteMany: vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) }),
-            findByIdAndUpdate: vi
-              .fn()
-              .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue({}) }),
-            deleteOne: vi.fn().mockResolvedValue({ deletedCount: 1 }),
-            updateMany: vi.fn().mockReturnValue({ exec: vi.fn() }),
-            exists: vi.fn().mockResolvedValue(null),
-            updateOne: vi.fn()
-          }
+              findById: vi
+                .fn()
+                .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue({}) }),
+              create: vi.fn(),
+              save: vi.fn(),
+              exec: vi.fn(),
+              deleteMany: vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) }),
+              findByIdAndUpdate: vi
+                .fn()
+                .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue({}) }),
+              deleteOne: vi.fn().mockResolvedValue({ deletedCount: 1 }),
+              updateMany: vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ modifiedCount: 1 }) }),
+              exists: vi.fn().mockResolvedValue(null),
+              updateOne: vi.fn().mockResolvedValue({ acknowledged: true })
+            })
         },
         {
           provide: TasksService,
@@ -71,18 +75,33 @@ describe('ProjectsService', () => {
   describe('create', () => {
     it('should create a project', async () => {
       const createProjectDto = {
-        name: 'Test Project',
+        title: 'Test Project',
         owner: '60f6e1b3b3f3b3b3b3f3b3b3',
         boardId: '60f6e1b3b3f3b3b3b3f3b3b4'
       }
-      const project = { ...createProjectDto, _id: '1', save: vi.fn().mockResolvedValue(this) }
+      const mockProjectInstance = {
+        ...createProjectDto,
+        _id: '1',
+        save: vi.fn().mockResolvedValue({ ...createProjectDto, _id: '1' })
+      }
 
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.mockReturnValue(project)
 
+      // Mock static methods needed for create
+      projectModel.findOne = vi.fn().mockReturnValue({
+        sort: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        lean: vi.fn().mockResolvedValue(null)
+      })
+      projectModel.findById = vi.fn().mockReturnValue({
+        populate: vi.fn().mockReturnThis(),
+        lean: vi.fn().mockResolvedValue({ ...createProjectDto, _id: '1' })
+      })
+
+      // oxlint-disable-next-line no-unused-vars
       const result = await service.create(createProjectDto as any)
 
-      expect(result.save).toHaveBeenCalled()
+      expect(mockProjectInstance.save).toHaveBeenCalled()
     })
   })
 
@@ -90,7 +109,7 @@ describe('ProjectsService', () => {
     it('should delete projects by board id', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.deleteMany.mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
+      projectModel.deleteMany = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
 
       const result = await service.deleteByBoardId(boardId)
 
@@ -102,7 +121,9 @@ describe('ProjectsService', () => {
     it('should find projects by board id', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.find.mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue([]) })
+      projectModel.find = vi
+        .fn()
+        .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue([]) })
 
       await service.findByBoardId(boardId)
 
@@ -114,16 +135,16 @@ describe('ProjectsService', () => {
     it('should update a project', async () => {
       const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const updateProjectDto = { name: 'Test Project Updated' }
-      const project = { _id: projectId, owner: userId, board: '60f6e1b3b3f3b3b3b3f3b3b4' }
+      const updateProjectDto = { title: 'Test Project Updated' }
+      const project = { _id: projectId, owner: userId, board: '60f6e1b3b3f3b3b3f3b3b3b4' }
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.findById.mockResolvedValue(project)
-      projectModel.findByIdAndUpdate.mockReturnValue({
+      projectModel.findById = vi.fn().mockResolvedValue(project)
+      projectModel.findByIdAndUpdate = vi.fn().mockReturnValue({
         populate: vi.fn().mockReturnThis(),
         lean: vi.fn().mockResolvedValue(project)
       })
 
-      await service.update(projectId, updateProjectDto, userId)
+      await service.update(projectId, updateProjectDto as any, userId)
 
       expect(projectModel.findById).toHaveBeenCalledWith(projectId)
       expect(projectModel.findByIdAndUpdate).toHaveBeenCalled()
@@ -141,9 +162,9 @@ describe('ProjectsService', () => {
         orderInBoard: 0
       }
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.findById.mockResolvedValue(project)
-      projectModel.deleteOne.mockResolvedValue({ deletedCount: 1 })
-      projectModel.updateMany.mockReturnValue({ exec: vi.fn() })
+      projectModel.findById = vi.fn().mockResolvedValue(project)
+      projectModel.deleteOne = vi.fn().mockResolvedValue({ deletedCount: 1 })
+      projectModel.updateMany = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ modifiedCount: 1 }) })
 
       const tasksService = module.get(TasksService)
       vi.spyOn(tasksService, 'deleteTasksByProjectId').mockResolvedValue({ deletedCount: 0 })
@@ -160,7 +181,7 @@ describe('ProjectsService', () => {
       const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.exists.mockResolvedValue(null)
+      projectModel.exists = vi.fn().mockResolvedValue(null)
 
       await service.addMemberIfNotExists(projectId, userId)
 

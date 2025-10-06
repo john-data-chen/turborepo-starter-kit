@@ -1,37 +1,29 @@
-import { createMock } from '@golevelup/ts-jest'
-import { Test, TestingModule } from '@nestjs/testing'
-import { JwtAuthGuard } from '../../src/modules/auth/guards/jwt-auth.guard'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TasksController } from '../../src/modules/tasks/tasks.controller'
-import { TasksService } from '../../src/modules/tasks/tasks.service'
 
 describe('TasksController', () => {
   let controller: TasksController
-  let service: TasksService
-  let module: TestingModule
+  let service: {
+    create: vi.Mock
+    findAll: vi.Mock
+    findOne: vi.Mock
+    update: vi.Mock
+    remove: vi.Mock
+    moveTask: vi.Mock
+  }
 
-  beforeEach(async () => {
-    module = await Test.createTestingModule({
-      controllers: [TasksController],
-      providers: [
-        {
-          provide: TasksService,
-          useValue: {
-            create: vi.fn(),
-            findAll: vi.fn(),
-            findOne: vi.fn(),
-            update: vi.fn(),
-            remove: vi.fn(),
-            moveTask: vi.fn()
-          }
-        }
-      ]
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue(createMock<JwtAuthGuard>())
-      .compile()
+  beforeEach(() => {
+    service = {
+      create: vi.fn(),
+      findAll: vi.fn(),
+      findOne: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+      moveTask: vi.fn()
+    }
 
-    controller = module.get<TasksController>(TasksController)
-    service = module.get<TasksService>(TasksService)
+    // Manually instantiate TasksController with the mock TasksService
+    controller = new TasksController(service as any)
   })
 
   it('should be defined', () => {

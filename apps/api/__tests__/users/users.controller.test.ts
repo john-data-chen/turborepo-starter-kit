@@ -1,33 +1,19 @@
-import { createMock } from '@golevelup/ts-jest'
-import { Test, TestingModule } from '@nestjs/testing'
-import { JwtAuthGuard } from '../../src/modules/auth/guards/jwt-auth.guard'
+import { vi } from 'vitest'
 import { UserController } from '../../src/modules/users/users.controller'
 import { UserService } from '../../src/modules/users/users.service'
 
 describe('UserController', () => {
   let controller: UserController
-  let service: UserService
-  let module: TestingModule
+  let service: { findAll: vi.Mock; searchByName: vi.Mock }
 
-  beforeEach(async () => {
-    module = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [
-        {
-          provide: UserService,
-          useValue: {
-            findAll: vi.fn(),
-            searchByName: vi.fn()
-          }
-        }
-      ]
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue(createMock<JwtAuthGuard>())
-      .compile()
+  beforeEach(() => {
+    service = {
+      findAll: vi.fn(),
+      searchByName: vi.fn()
+    }
 
-    controller = module.get<UserController>(UserController)
-    service = module.get<UserService>(UserService)
+    // Manually instantiate UserController with the mock UserService
+    controller = new UserController(service as any)
   })
 
   it('should be defined', () => {
@@ -37,7 +23,7 @@ describe('UserController', () => {
   describe('findAll', () => {
     it('should return an array of users', async () => {
       const result = []
-      vi.spyOn(service, 'findAll').mockResolvedValue(result as any)
+      service.findAll.mockResolvedValue(result as any)
       expect(await controller.findAll()).toEqual({ users: result })
     })
   })
@@ -45,7 +31,7 @@ describe('UserController', () => {
   describe('search', () => {
     it('should return an array of users', async () => {
       const result = []
-      vi.spyOn(service, 'searchByName').mockResolvedValue(result as any)
+      service.searchByName.mockResolvedValue(result as any)
       expect(await controller.search('test')).toEqual({ users: result })
     })
   })

@@ -1,35 +1,22 @@
-import { createMock } from '@golevelup/ts-jest'
-import { Test, TestingModule } from '@nestjs/testing'
-import { JwtAuthGuard } from '../../src/modules/auth/guards/jwt-auth.guard'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ProjectsController } from '../../src/modules/projects/projects.controller'
+// oxlint-disable-next-line no-unused-vars
 import { ProjectsService } from '../../src/modules/projects/projects.service'
 
 describe('ProjectsController', () => {
   let controller: ProjectsController
-  let service: ProjectsService
-  let module: TestingModule
+  let service: { create: vi.Mock; findByBoardId: vi.Mock; update: vi.Mock; remove: vi.Mock }
 
-  beforeEach(async () => {
-    module = await Test.createTestingModule({
-      controllers: [ProjectsController],
-      providers: [
-        {
-          provide: ProjectsService,
-          useValue: {
-            create: vi.fn(),
-            findByBoardId: vi.fn(),
-            update: vi.fn(),
-            remove: vi.fn()
-          }
-        }
-      ]
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue(createMock<JwtAuthGuard>())
-      .compile()
+  beforeEach(() => {
+    service = {
+      create: vi.fn(),
+      findByBoardId: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn()
+    }
 
-    controller = module.get<ProjectsController>(ProjectsController)
-    service = module.get<ProjectsService>(ProjectsService)
+    // Manually instantiate ProjectsController with the mock ProjectsService
+    controller = new ProjectsController(service as any)
   })
 
   it('should be defined', () => {

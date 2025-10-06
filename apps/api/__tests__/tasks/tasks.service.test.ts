@@ -1,6 +1,6 @@
 import { getModelToken } from '@nestjs/mongoose'
 import { Test, TestingModule } from '@nestjs/testing'
-import { vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ProjectsService } from '../../src/modules/projects/projects.service'
 import { Task } from '../../src/modules/tasks/schemas/tasks.schema'
 import { TasksService } from '../../src/modules/tasks/tasks.service'
@@ -20,13 +20,11 @@ describe('TasksService', () => {
               save: vi.fn().mockResolvedValue({}),
               populate: vi.fn().mockReturnThis()
             })),
-            find: vi
-              .fn()
-              .mockReturnValue({
-                sort: vi.fn().mockReturnThis(),
-                populate: vi.fn().mockReturnThis(),
-                exec: vi.fn().mockResolvedValue([])
-              }),
+            find: vi.fn().mockReturnValue({
+              sort: vi.fn().mockReturnThis(),
+              populate: vi.fn().mockReturnThis(),
+              exec: vi.fn().mockResolvedValue([])
+            }),
             findOne: vi.fn(),
             findById: vi
               .fn()

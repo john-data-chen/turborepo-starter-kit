@@ -1,35 +1,29 @@
+import { Logger } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuthController } from '../../src/modules/auth/auth.controller'
 import { AuthService } from '../../src/modules/auth/auth.service'
-import { EmailAuthGuard } from '../../src/modules/auth/guards/email-auth.guard'
-import { JwtAuthGuard } from '../../src/modules/auth/guards/jwt-auth.guard'
+import { User } from '../../src/modules/users/schemas/users.schema'
 
 describe('AuthController', () => {
   let controller: AuthController
-  let authService: AuthService
-  let module: TestingModule
+  let authService: { login: vi.Mock }
+  let logger: { log: vi.Mock; error: vi.Mock; warn: vi.Mock; debug: vi.Mock }
 
-  beforeEach(async () => {
-    module = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: {
-            login: vi.fn()
-          }
-        }
-      ]
-    })
-      .overrideGuard(EmailAuthGuard)
-      .useValue({ canActivate: vi.fn(() => true) })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: vi.fn(() => true) })
-      .compile()
+  beforeEach(() => {
+    authService = {
+      login: vi.fn()
+    }
+    logger = {
+      log: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      debug: vi.fn()
+    }
 
-    controller = module.get<AuthController>(AuthController)
-    authService = module.get<AuthService>(AuthService)
+    // Manually instantiate AuthController with the mock AuthService and Logger
+    controller = new AuthController(authService as any)
+    ;(controller as any).logger = logger // Manually inject logger
   })
 
   it('should be defined', () => {
@@ -38,7 +32,7 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should return user and access_token', async () => {
-      const user = { _id: '1', email: 'test@test.com', name: 'Test User' }
+      const user = { _id: '1', email: 'test@test.com', name: 'Test User', createdAt: new Date(), updatedAt: new Date() }
       const result = { user, access_token: 'token' }
       const req = {
         user,
@@ -52,7 +46,7 @@ describe('AuthController', () => {
         getHeaders: vi.fn().mockReturnValue({})
       }
 
-      vi.spyOn(authService, 'login').mockResolvedValue(result)
+      authService.login.mockResolvedValue(result as any)
 
       expect(await controller.login(req, res)).toEqual(result)
       expect(res.cookie).toHaveBeenCalledTimes(2)
