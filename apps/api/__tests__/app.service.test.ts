@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-// oxlint-disable-next-line no-unused-vars
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { AppService } from '../src/app.service'
 
 describe('AppService', () => {

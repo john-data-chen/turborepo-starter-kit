@@ -1,14 +1,10 @@
-import { Logger } from '@nestjs/common'
-import { Test, TestingModule } from '@nestjs/testing'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { AuthController } from '../../src/modules/auth/auth.controller'
-import { AuthService } from '../../src/modules/auth/auth.service'
-import { User } from '../../src/modules/users/schemas/users.schema'
 
 describe('AuthController', () => {
   let controller: AuthController
-  let authService: { login: vi.Mock }
-  let logger: { log: vi.Mock; error: vi.Mock; warn: vi.Mock; debug: vi.Mock }
+  let authService: { login: Mock }
+  let logger: { log: Mock; error: Mock; warn: Mock; debug: Mock }
 
   beforeEach(() => {
     authService = {

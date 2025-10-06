@@ -1,9 +1,9 @@
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { AppController } from '../src/app.controller'
-import { AppService } from '../src/app.service'
 
 describe('AppController', () => {
   let appController: AppController
-  let appService: { getHello: vi.Mock }
+  let appService: { getHello: Mock }
 
   beforeEach(() => {
     appService = {

@@ -1,6 +1,5 @@
-import { vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UserController } from '../../src/modules/users/users.controller'
-import { UserService } from '../../src/modules/users/users.service'
 
 describe('UserController', () => {
   let controller: UserController

@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { BoardController } from '../../src/modules/boards/boards.controller'
-import { BoardService } from '../../src/modules/boards/boards.service'
 
 describe('BoardController', () => {
   let controller: BoardController

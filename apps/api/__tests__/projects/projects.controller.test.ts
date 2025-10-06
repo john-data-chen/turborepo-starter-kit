@@ -1,7 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ProjectsController } from '../../src/modules/projects/projects.controller'
-// oxlint-disable-next-line no-unused-vars
-import { ProjectsService } from '../../src/modules/projects/projects.service'
 
 describe('ProjectsController', () => {
   let controller: ProjectsController

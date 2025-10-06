@@ -29,7 +29,6 @@ describe('BoardService', () => {
   let service: BoardService
   let boardModel: Model<Board>
   let projectsService: ProjectsService
-  let tasksService: TasksService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -58,7 +57,6 @@ describe('BoardService', () => {
     service = module.get<BoardService>(BoardService)
     boardModel = module.get<typeof MockBoardModel & Model<Board>>(getModelToken(Board.name))
     projectsService = module.get<ProjectsService>(ProjectsService)
-    tasksService = module.get<TasksService>(TasksService)
   })
 
   it('should be defined', () => {
