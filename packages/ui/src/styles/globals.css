@@ -123,19 +123,25 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-width: 255px;
   }
 
   .dark {
-    --background: 180 35% 6%;
+    --background: 180 35% 5%;
     --foreground: 180 20% 99%;
     --muted: 180 30% 12%;
     --muted-foreground: 180 25% 80%;
     --popover: 180 35% 6%;
     --popover-foreground: 180 20% 99%;
+
+    /* Board overview visual parity: make cards blend with page */
     --card: 180 35% 6%;
     --card-foreground: 180 20% 99%;
-    --border: 180 20% 18%;
-    --input: 180 20% 18%;
+
+    /* Subtle borders/inputs like reference (less contrast on dark) */
+    --border: 180 12% 8%;
+    --input: 180 12% 9%;
+
     --primary: 180 75% 45%;
     --primary-foreground: 180 10% 98%;
     --secondary: 180 20% 16%;
@@ -145,13 +151,15 @@
     --destructive: 0 85% 60%;
     --destructive-foreground: 0 10% 98%;
     --ring: 180 75% 45%;
-    --sidebar-background: 240 5.9% 10%;
+
+    /* Sidebar lines toned down to reduce visible outlines */
+    --sidebar-background: 240 6% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-border: 240 3.7% 12%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -207,3 +215,159 @@
   border-radius: var(--toast-border-radius) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
+
+/* Boards Overview visual parity with reference */
+/* Scope: keep shadcn-ui components untouched; tweak surface/border via data-slot targets */
+@layer components {
+  /* Flatter cards like reference: same surface as page, no drop shadow, subtle border */
+  [data-slot='card'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important; /* neutralize shadow-sm utility */
+    border-color: hsl(var(--border)) !important;
+  }
+
+  /* Slightly bolder card titles for readability parity */
+  [data-slot='card-title'] {
+    font-weight: 600;
+  }
+}
+@layer components {
+  /* Keep faint border but allow hover highlight to primary (user preference) */
+  [data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important; /* override earlier base border-color */
+  }
+}
+/* file: [css.@layer components](packages/ui/src/styles/globals.css:1) */
+@layer components {
+  /* Ensure faint but visible border on cards (global, matches user preference) */
+  [data-slot='card'] {
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+  }
+}
+@layer components {
+  /* Boards Overview controls sizing and borders to match reference */
+  [data-slot='input'] {
+    height: 2.25rem !important; /* 36px */
+    padding-top: 0.375rem !important; /* 6px */
+    padding-bottom: 0.375rem !important; /* 6px */
+    padding-left: 2rem !important; /* keep space for search icon */
+    padding-right: 0.75rem !important; /* 12px */
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    background-color: transparent !important;
+  }
+  [data-slot='input']::placeholder {
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.8 !important;
+  }
+
+  [data-slot='select-trigger'][data-size='default'],
+  [data-slot='select-trigger'][data-size='sm'] {
+    height: 2.25rem !important; /* 36px for visual parity */
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    background-color: transparent !important;
+  }
+}
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+@layer utilities {
+  /* Force parity: make cards flat (no shadow) and same surface as page; utilities layer ensures final override */
+  [data-slot='card'],
+  [data-slot='card'].bg-card,
+  [data-slot='card'][class*='shadow'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important;
+  }
+}
+/* Boards Overview – final overrides appended for precedence */
+@layer utilities {
+  /* Cards: same surface as page + no shadow */
+  [data-slot='card'],
+  [data-slot='card'].bg-card,
+  [data-slot='card'][class*='shadow'] {
+    background-color: hsl(var(--background)) !important;
+    box-shadow: none !important;
+  }
+
+  /* Inputs/Select: transparent surface, faint border */
+  input[data-slot='input'],
+  [data-slot='select-trigger'] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: hsl(var(--border)) !important;
+  }
+}
+
+/* Trace: appended for highest precedence in build order */
+/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) | block [css.@layer()](packages/ui/src/styles/globals.css:1) */
+@layer utilities {
+  /* Stronger specificity to override Tailwind utilities compiled later */
+  [data-slot='card'][data-slot='card'] {
+    /* Visual parity: faint border, flat surface, tighter radius and vertical padding */
+    box-shadow: none !important;
+    background-color: hsl(var(--background)) !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important; /* override rounded-xl */
+    padding-block: 1rem !important; /* override py-6 -> 16px like reference */
+  }
+
+  /* Keep hover affordance as requested */
+  [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+}
+/* file: [css.@layer utilities()](packages/ui/src/styles/globals.css:1) */
+/* Boards Overview – specificity bump to lock final look matching reference and your preference */
+@layer utilities {
+  /* Card: keep faint border + hover highlight, remove shadow, keep subtle card surface (not same as page) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* use --card, not page bg */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    box-shadow: none !important; /* kill shadow-sm/md */
+    border-radius: 8px !important; /* tighter than rounded-xl */
+    padding-block: 1rem !important; /* override py-6 -> 16px */
+    /* Tailwind v4 shadow variables guard */
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='card'][data-slot='card']:hover,
+  .dark [data-slot='card'][data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Controls: transparent surface, faint border (no elevation), 36px tall */
+  :root input[data-slot='input'][data-slot='input'],
+  .dark input[data-slot='input'][data-slot='input'] {
+    background-color: transparent !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    height: 2.25rem !important; /* 36px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+  :root [data-slot='select-trigger'][data-slot='select-trigger'],
+  .dark [data-slot='select-trigger'][data-slot='select-trigger'] {
+    background-color: transparent !important;
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    height: 2.25rem !important; /* 36px */
+    box-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+  }
+}
+/* trace: [css.globals](packages/ui/src/styles/globals.css:1) */

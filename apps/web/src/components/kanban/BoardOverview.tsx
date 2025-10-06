@@ -237,11 +237,11 @@ export function BoardOverview() {
                   {filteredMyBoards?.map((board) => (
                     <Card
                       key={board._id}
-                      className="hover:border-primary cursor-pointer transition-colors"
+                      className="hover:border-primary cursor-pointer rounded-lg py-4 shadow-md transition-colors"
                       onClick={() => handleBoardClick(board._id)}
                     >
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle>{board.title}</CardTitle>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
+                        <CardTitle className="text-lg font-semibold">{board.title}</CardTitle>
                         <BoardActions
                           board={board}
                           asChild
@@ -267,13 +267,13 @@ export function BoardOverview() {
                           </Button>
                         </BoardActions>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground text-sm">{board.description || t('noDescription')}</p>
-                        <p className="mt-2 text-sm">
+                      <CardContent className="px-4 pt-2">
+                        <p className="text-muted-foreground mb-2 text-sm">{board.description || t('noDescription')}</p>
+                        <p className="mb-1 text-sm">
                           {t('projects')}:{' '}
                           {board.projects.length > 0 ? board.projects.map((p) => p.title).join(' / ') : '0'}
                         </p>
-                        <p className="mt-2 text-sm">
+                        <p className="text-sm">
                           {t('members')}: {board.members.map((m) => m.name).join(', ')}
                         </p>
                       </CardContent>
@@ -301,24 +301,24 @@ export function BoardOverview() {
                   {filteredTeamBoards?.map((board) => (
                     <Card
                       key={board._id}
-                      className="hover:border-primary cursor-pointer transition-colors"
+                      className="hover:border-primary cursor-pointer rounded-lg py-4 shadow-md transition-colors"
                       onClick={() => handleBoardClick(board._id)}
                     >
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle>{board.title}</CardTitle>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
+                        <CardTitle className="text-lg font-semibold">{board.title}</CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground text-sm">{board.description || t('noDescription')}</p>
-                        <div className="mt-2 space-y-1">
-                          <p className="text-sm">
+                      <CardContent className="px-4 pt-2">
+                        <p className="text-muted-foreground mb-2 text-sm">{board.description || t('noDescription')}</p>
+                        <div className="space-y-1 text-sm">
+                          <p>
                             {t('owner')}:{' '}
                             {typeof board.owner === 'string' ? board.owner : board.owner?.name || 'Unknown'}
                           </p>
-                          <p className="text-sm">
+                          <p>
                             {t('projects')}:{' '}
                             {board.projects.length > 0 ? board.projects.map((p) => p.title).join(' / ') : '0'}
                           </p>
-                          <p className="text-sm">
+                          <p>
                             {t('members')}: {board.members.map((m) => m.name).join(', ')}
                           </p>
                         </div>
