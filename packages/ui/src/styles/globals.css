@@ -601,7 +601,13 @@
     z-index: 0 !important; /* keep popovers/menus above */
   }
 }
-
+/* trace: alignment fixes | file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+/* THIRD PASS — per feedback:
+   - Sidebar spans full height
+   - Card bg differs from page
+   - Select/menus not covered (solid surface + max z-index)
+   - Top bar buttons spacing; menus from header never covered
+*/
 @layer utilities {
   /* Sidebar: full height pane, consistent bg top-to-bottom */
   [data-slot='sidebar'],
@@ -616,5 +622,162 @@
   }
   [data-slot='sidebar-container'] {
     border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Card: use a surface different from page (reference shows subtle contrast) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* DIFFERENT from page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* Menus/Select/Popover: ensure solid surface and stay above everything */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [role='menu'],
+  [role='listbox'],
+  [data-radix-popper-content-wrapper] {
+    z-index: 2147483647 !important;
+    background-color: hsl(var(--popover)) !important; /* SOLID bg */
+    color: hsl(var(--popover-foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+    overflow: visible !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* Top bar buttons: add consistent horizontal breathing room */
+  header [data-slot='button'] {
+    padding-inline: 0.5rem !important;
+    margin-inline: 0.25rem !important;
+  }
+  header {
+    position: relative !important;
+    z-index: 10010 !important; /* header sits above sticky bar */
+    padding-right: 0.5rem !important;
+  }
+
+  /* Overview sticky bar: keep below header so header/menu never covered */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important;
+  }
+}
+/* eof block — see file [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
+/* FOURTH PASS — address remaining gaps from feedback:
+   - Sidebar background spans ENTIRE left column (all inner parts)
+   - Card background different from page (kept)
+   - Menus (user menu / select list) never covered
+   - Top bar buttons spacing improved (padding/margin), menus from top bar not covered
+*/
+@layer utilities {
+  /* Sidebar full-height + every sidebar part shares same background */
+  [data-sidebar],
+  [data-slot='sidebar-wrapper'],
+  [data-slot='sidebar'],
+  [data-slot='sidebar-gap'],
+  [data-slot='sidebar-container'],
+  [data-slot='sidebar-inner'],
+  [data-slot='sidebar-header'],
+  [data-slot='sidebar-content'],
+  [data-slot='sidebar-footer'],
+  [data-slot='sidebar-group'],
+  [data-slot='sidebar-separator'],
+  [data-slot='sidebar-rail'] {
+    background-color: hsl(var(--sidebar-background)) !important;
+  }
+  [data-slot='sidebar'] {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+  [data-slot='sidebar-container'] {
+    border-right: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Keep card surface different from page (subtle contrast) */
+  :root [data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important; /* different from page */
+    border-color: hsl(var(--border)) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  /* Raise overlay layers so text is never covered by inputs/sticky bars */
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='popover-content'],
+  [data-radix-popper-content-wrapper],
+  [role='listbox'],
+  [role='menu'] {
+    z-index: 2147483647 !important;
+    background-color: hsl(var(--popover)) !important;
+    color: hsl(var(--popover-foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Top bar: add breathing space for buttons; ensure its menus are on top */
+  header {
+    position: relative !important;
+    z-index: 10010 !important;
+    padding-right: 0.75rem !important;
+  }
+  header [data-slot='button'] {
+    padding-inline: 0.5rem !important;
+    margin-inline: 0.25rem !important;
+  }
+  header [data-slot='dropdown-menu-content'],
+  header [data-slot='popover-content'],
+  header [data-slot='tooltip-content'] {
+    z-index: 2147483647 !important;
+  }
+
+  /* Ensure the sticky controls bar sits below header to avoid covering menus */
+  .sticky:has([data-testid='new-board-trigger']) {
+    top: 72px !important;
+    z-index: 0 !important;
+    overflow: visible !important;
+  }
+}
+/* refs:
+   - [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css)
+   - [css.@layer utilities()](packages/ui/src/styles/globals.css:1)
+*/
+
+/* ========================================
+   FINAL FIX - Card BG, Wider Sidebar, Active Page Highlight
+   ======================================== */
+
+@layer utilities {
+  /* 1. Wider Sidebar - from ~255px to 288px (18rem) */
+  [data-slot='sidebar-wrapper'] {
+    --sidebar-width: 18rem !important;
+  }
+
+  /* 2. Active/Current Page Highlight in Sidebar */
+  [data-slot='sidebar-menu-button'][data-active='true'],
+  [data-slot='sidebar-menu-button'][aria-current='page'] {
+    background-color: hsl(var(--sidebar-accent)) !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
+  }
+
+  /* 3. Card Background MUST be different from page - use --card */
+  [data-slot='card'] {
+    background-color: hsl(var(--card)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* Keep hover effect */
+  [data-slot='card']:hover {
+    border-color: hsl(var(--primary)) !important;
   }
 }
