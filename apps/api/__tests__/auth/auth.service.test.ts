@@ -1,12 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { Types } from 'mongoose'
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { AuthService } from '../../src/modules/auth/auth.service'
 import { User } from '../../src/modules/users/schemas/users.schema'
 
 describe('AuthService', () => {
   let service: AuthService
-  let userService: { findByEmail: vi.Mock }
-  let jwtService: { sign: vi.Mock }
-  let logger: { log: vi.Mock; error: vi.Mock; warn: vi.Mock; debug: vi.Mock }
+  let userService: { findByEmail: Mock }
+  let jwtService: { sign: Mock }
+  let logger: { log: Mock; error: Mock; warn: Mock; debug: Mock }
 
   beforeEach(() => {
     userService = {
@@ -48,7 +49,13 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return access_token and user', async () => {
-      const user = { _id: '1', email: 'test@test.com' } as User
+      const user = {
+        _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
+        email: 'test@test.com',
+        name: 'Test User',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as User
       const token = 'token'
       jwtService.sign.mockReturnValue(token)
 

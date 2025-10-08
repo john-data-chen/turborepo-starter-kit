@@ -14,9 +14,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "types": ["vitest/globals"],
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "exclude": ["dist", "**/*spec.ts", "database/mongodb/**/*"]
+  "exclude": ["dist", "**/*spec.ts", "database/mongodb/**/*", "__tests__"]
 }
