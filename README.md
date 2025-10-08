@@ -178,7 +178,7 @@ pnpm build
 
 ## 📖 Detailed Technical Documentation
 
-### Project Structure (it is on development, so it is not complete and may change any time)
+### Project Structure
 
 ```text
 .github/ # GitHub Actions workflows
@@ -229,8 +229,8 @@ apps/
 packages/
 ├── global-tsconfig # global tsconfig
 ├── linter-config # linter config
-├── ui # Shadcn ui components
-└── └────── styles/ # Global styles
+└── ui # Shadcn ui components
+    └────── styles/ # Global styles
 ```
 
 ---
@@ -324,7 +324,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 ## To-Do
 
 - [ ] Increase test coverage of Apps folder to above 80%
-- [ ] Add github actions for CI
+- [ ] Add CI/CD
 
 ---
 
