@@ -1,12 +1,36 @@
 import { defineConfig } from 'vitest/config'
-import rootConfig from '../../vitest.config'
 
 export default defineConfig({
-  ...rootConfig,
   test: {
-    ...rootConfig.test,
+    globals: true,
+    environment: 'node',
     include: ['__tests__/**/*.test.{ts,tsx}'],
+    exclude: ['**/node_modules/**', 'apps/web/__tests__/e2e/**', 'apps/api/database/**', 'packages'],
     setupFiles: ['../../vitest.setup.ts'],
-    environment: 'node'
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/node_modules/**',
+        '**/database/**',
+        '**/__tests__/**',
+        '**/dist/**',
+        '**/.turbo/**',
+        '**/.next/**',
+        '**/coverage/**',
+        '**/packages/**',
+        'src/**/*.d.ts',
+        'src/main.ts',
+        'src/app.module.ts'
+      ],
+      all: true
+    }
+  },
+  resolve: {
+    alias: {
+      '@api': 'apps/api/src',
+      '@web': 'apps/web/src'
+    }
   }
 })
