@@ -4,11 +4,6 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is a test project, a playground for me to test and import new tools into my stack.
-It has many issues and problems, and might not be fixed quickly, when it is ready, I will update README.md.
-
----
-
 ## ✨ Why Choose This Template:
 
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
@@ -190,8 +185,7 @@ pnpm build
 .husky/ # Husky configuration
 apps/
 ├── api/ # NestJS API server
-│   ├── __tests__/
-│   │   └── unit/ # Unit tests (by Vitest)
+│   ├── __tests__/ # Unit tests (by Vitest)
 │   ├── database/ # MongoDB docker-compose and initialization
 │   ├── src/
 │   │   ├── common/ # Nest pipe
@@ -209,35 +203,34 @@ apps/
 │   ├── messages/ # i18n translations
 │   ├── public/ # Static files such as images
 │   ├── src/
-│   │   ├── app/ # Next.js App routes
-│   │   │   └── [locale] # i18n locale routers
-│   │        ├── page.tsx # Root page
-│   │        ├── layout.tsx # Layout component
-│   │        ├── not-found.tsx # 404 page
-│   │        ├── (auth)/ # Authentication routes
-│   │             └── login/ # Login page
-│   │        └── (workspace)/ # Workspace routes
-│   │             └── boards/ # Kanban Overview routes
-│   │                 └── [boardId]/ # Board
-│   ├── components/ # Reusable React components
-│   │   └── ui/ # Shadcn UI components
-│   ├── constants/ # Application-wide constants
-│   ├── hooks/ # Custom React hooks
-│   ├── i18n/ # i18n configs
-│   ├── lib/
-│   │   ├── db/ # Database functions
-│   │   ├── auth.ts # Authentication functions
-│   │   ├── store.ts # State management functions
-│   │   └── utils.ts # tailwindcss utils
-│   ├── middleware.ts
-│   ├── models/ # Database models
-│   ├── styles/ # Global styles
-│   ├── types/ # Type definitions
-    └── env.example # Environment variables example
+│   │   └── app/ # Next.js App routes
+│   │       ├── [locale] # i18n locale routers
+│   │       ├── page.tsx # Root page
+│   │       ├── layout.tsx # Layout component
+│   │       ├── not-found.tsx # 404 page
+│   │       ├── (auth)/ # Authentication routes
+│   │            └── login/ # Login page
+│   │       └── (workspace)/ # Workspace routes
+│   │            └── boards/ # Kanban Overview routes
+│   │                └── [boardId]/ # Board
+│   ├────── components/ # Custom React components
+│   ├────── constants/ # Application-wide constants
+│   ├────── hooks/ # Custom React hooks
+│   ├────── i18n/ # i18n configs
+│   ├────── lib/
+│   │       ├── db/ # Database functions
+│   │       ├── auth.ts # Authentication functions
+│   │       ├── store.ts # State management functions
+│   │       └── utils.ts # tailwindcss utils
+│   ├────── middleware.ts
+│   ├────── models/ # Database models
+│   ├────── types/ # Type definitions
+│   └────── env.example # Environment variables example
 packages/
 ├── global-tsconfig # global tsconfig
 ├── linter-config # linter config
-├── style-formatter-config # prettier config
+├── ui # Shadcn ui components
+└── └────── styles/ # Global styles
 ```
 
 ---
@@ -253,7 +246,7 @@ packages/
 
 ## AI Tools
 
-I am using AI tools to help our team to improve the quality of code and the efficiency of development, this project is one of playgrounds of AI tools.
+I am using AI tools to help our team improve the quality of code and the efficiency of development. This project is one of the playgrounds for AI tools.
 
 ### Editor with AI
 
@@ -274,7 +267,7 @@ I am using AI tools to help our team to improve the quality of code and the effi
 - [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - [context7](https://github.com/upstash/context7)
 
-### Github Action (code review, PR summary)
+### GitHub Action (code review, PR summary)
 
 - [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist)
 
@@ -330,7 +323,7 @@ I am using AI tools to help our team to improve the quality of code and the effi
 
 ## To-Do
 
-- [ ] Fix the UI issues of new shadcn components
+- [ ] Increase test coverage of Apps folder to above 80%
 - [ ] Add github actions for CI
 
 ---
