@@ -8,7 +8,6 @@ import { SidebarInset, SidebarProvider } from '@repo/ui/components/sidebar'
 import { Toaster } from 'sonner'
 
 export default function RootWrapper({ children }: { children: React.ReactNode }) {
-  console.log('[RootWrapper] Rendering with open=true')
   return (
     <>
       <SidebarProvider>
