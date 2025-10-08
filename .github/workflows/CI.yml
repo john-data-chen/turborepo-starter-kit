@@ -1,5 +1,11 @@
 name: CI
 
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -37,12 +43,6 @@ jobs:
           # Add any other environment variables needed specifically for tests
         run: pnpm test
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: john-data-chen/next-dnd-starter-kit
-
       - name: Official SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
@@ -54,7 +54,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_SECRET: ${{ secrets.JWT_SECRET }}
         run: pnpm playwright
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

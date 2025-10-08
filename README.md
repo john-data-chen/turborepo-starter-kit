@@ -8,7 +8,7 @@
 
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
 
-The **Enterprise-grade Turborepo template** with 80%+ test coverage, drag & drop functionality, and WAI-ARIA accessibility. It is designed for saving time while adhering to best practices and including:
+The **Enterprise-grade Turborepo template** with drag & drop functionality, and WAI-ARIA accessibility. It is designed for saving time while adhering to best practices and including:
 
 - 🚀 Production-Ready: Enterprise-level architecture with full TypeScript support
 - 💪 Professional Setup: CI/CD, Testing, Code Quality tools pre-configured and pass the SonarQube Quality Check
@@ -238,7 +238,6 @@ packages/
 ### 📊 Testing Strategy
 
 - Unit Tests: Focused on critical store logic, complex form validations, and isolated component behaviors, ensuring granular code reliability.
-- Test Coverage: Maintained above 80%+ (verified via npx vitest run --coverage), reflecting a commitment to robust code coverage without sacrificing test quality.
 - E2E Tests: Critical user flows, such as the Login page, are validated end-to-end using Playwright, simulating real user interactions to guarantee system integrity.
 - Cross-browser Testing Strategy: Ensures consistent functionality and user experience across a carefully selected range of desktop and mobile browsers based on market share, mitigating compatibility issues.
 
@@ -323,8 +322,8 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ## To-Do
 
-- [ ] Increase test coverage of Apps folder to above 80%
 - [ ] Add CI/CD
+- [ ] Increase test coverage of Apps folder to above 80%
 
 ---
 
