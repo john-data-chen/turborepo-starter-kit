@@ -50,17 +50,17 @@ export class TasksService {
   private async toTaskResponse(task: TaskDocument): Promise<TaskResponseDto> {
     try {
       // First populate the user fields with detailed error handling
-      let populatedTask
-      try {
-        populatedTask = await task.populate([
-          { path: 'creator', select: 'name email' },
-          { path: 'assignee', select: 'name email' },
-          { path: 'lastModifier', select: 'name email' }
-        ])
-      } catch (populateError) {
-        console.error('Error during population:', populateError)
-        // If population fails, use the original task
-        populatedTask = task
+      let populatedTask = task
+      if (typeof task.populate === 'function') {
+        try {
+          populatedTask = await task.populate([
+            { path: 'creator', select: 'name email' },
+            { path: 'assignee', select: 'name email' },
+            { path: 'lastModifier', select: 'name email' }
+          ])
+        } catch (populateError) {
+          console.error('Error during population:', populateError)
+        }
       }
 
       // Build the response object
