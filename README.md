@@ -322,7 +322,8 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ## To-Do
 
-- [ ] Add CI/CD
+- [x] Add CI/CD
+- [ ] Fix the issues of CRUD in project and tasks
 - [ ] Increase test coverage of Apps folder to above 80%
 
 ---

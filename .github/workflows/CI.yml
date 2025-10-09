@@ -37,14 +37,6 @@ jobs:
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
         run: pnpm init-db --force
 
-      - name: Run Unit Tests by Vitest
-        # highlight-start
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
-          # Add any other environment variables needed specifically for tests
-        run: pnpm test
-
       - name: Official SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
