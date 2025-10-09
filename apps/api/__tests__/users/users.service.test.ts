@@ -38,6 +38,26 @@ describe('UserService', () => {
 
       expect(userModel.findOne).toHaveBeenCalledWith({ email: 'test@test.com' })
     })
+
+    it('should return null if no email is provided', async () => {
+      const user = await service.findByEmail(null)
+      expect(user).toBeNull()
+    })
+
+    it('should return null if user is not found', async () => {
+      const userModel = module.get(getModelToken(User.name))
+      userModel.findOne.mockReturnValue({ exec: vi.fn().mockResolvedValue(null) })
+      const user = await service.findByEmail('test@test.com')
+      expect(user).toBeNull()
+    })
+
+    it('should throw an error if database throws an error', async () => {
+      const userModel = module.get(getModelToken(User.name))
+      userModel.findOne.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error('DB Error')) })
+      await expect(service.findByEmail('test@test.com')).rejects.toThrow(
+        'An error occurred while processing your request'
+      )
+    })
   })
 
   describe('findAll', () => {
@@ -49,6 +69,12 @@ describe('UserService', () => {
 
       expect(userModel.find).toHaveBeenCalled()
     })
+
+    it('should throw an error if database throws an error', async () => {
+      const userModel = module.get(getModelToken(User.name))
+      userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error('DB Error')) })
+      await expect(service.findAll()).rejects.toThrow('DB Error')
+    })
   })
 
   describe('searchByName', () => {
@@ -59,6 +85,21 @@ describe('UserService', () => {
       await service.searchByName('test')
 
       expect(userModel.find).toHaveBeenCalledWith({ name: { $regex: 'test', $options: 'i' } })
+    })
+
+    it('should search with empty query if no name is provided', async () => {
+      const userModel = module.get(getModelToken(User.name))
+      userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) })
+
+      await service.searchByName(null)
+
+      expect(userModel.find).toHaveBeenCalledWith({})
+    })
+
+    it('should throw an error if database throws an error', async () => {
+      const userModel = module.get(getModelToken(User.name))
+      userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error('DB Error')) })
+      await expect(service.searchByName('test')).rejects.toThrow('DB Error')
     })
   })
 })

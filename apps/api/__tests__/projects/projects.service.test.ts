@@ -195,4 +195,107 @@ describe('ProjectsService', () => {
       )
     })
   })
+
+  describe('findByBoardId', () => {
+    it('should throw not found exception for invalid board id', async () => {
+      const boardId = 'invalid-id'
+      await expect(service.findByBoardId(boardId)).rejects.toThrow('Invalid board ID')
+    })
+  })
+
+  describe('update', () => {
+    it('should throw bad request for invalid project id', async () => {
+      const projectId = 'invalid-id'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      const updateProjectDto = { title: 'Test Project Updated' }
+      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow('Invalid project ID')
+    })
+
+    it('should throw bad request for invalid user id', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = 'invalid-id'
+      const updateProjectDto = { title: 'Test Project Updated' }
+      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow('Invalid user ID')
+    })
+
+    it('should throw not found for non-existing project', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      const updateProjectDto = { title: 'Test Project Updated' }
+      const projectModel = module.get(getModelToken(Project.name))
+      projectModel.findById = vi.fn().mockResolvedValue(null)
+      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow('Project not found')
+    })
+
+    it('should throw bad request if user is not owner and updates more than orderInBoard', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b6' // Valid ObjectId, different from owner
+      const updateProjectDto = { title: 'Test Project Updated' }
+      const project = { _id: projectId, owner: '60f6e1b3b3f3b3b3b3f3b3b3', board: '60f6e1b3b3f3b3b3b3f3b3b4' }
+      const projectModel = module.get(getModelToken(Project.name))
+      projectModel.findById = vi.fn().mockResolvedValue(project)
+      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
+        'You do not have permission to update this project'
+      )
+    })
+  })
+
+  describe('remove', () => {
+    it('should throw bad request for invalid project id', async () => {
+      const projectId = 'invalid-id'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      await expect(service.remove(projectId, userId)).rejects.toThrow('Invalid project ID')
+    })
+
+    it('should throw bad request for invalid user id', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = 'invalid-id'
+      await expect(service.remove(projectId, userId)).rejects.toThrow('Invalid user ID')
+    })
+
+    it('should throw not found for non-existing project', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      const projectModel = module.get(getModelToken(Project.name))
+      projectModel.findById = vi.fn().mockResolvedValue(null)
+      await expect(service.remove(projectId, userId)).rejects.toThrow('Project not found')
+    })
+
+    it('should throw bad request if user is not owner', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b6' // Valid ObjectId, different from owner
+      const project = { _id: projectId, owner: '60f6e1b3b3f3b3b3b3f3b3b3' }
+      const projectModel = module.get(getModelToken(Project.name))
+      projectModel.findById = vi.fn().mockResolvedValue(project)
+      await expect(service.remove(projectId, userId)).rejects.toThrow(
+        'You do not have permission to delete this project'
+      )
+    })
+  })
+
+  describe('addMemberIfNotExists', () => {
+    it('should not add member if user is already a member', async () => {
+      const projectId = '60f6e1b3b3f3b3b3b3f3b3b5'
+      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      const projectModel = module.get(getModelToken(Project.name))
+      projectModel.exists = vi.fn().mockResolvedValue({ _id: projectId })
+      projectModel.updateOne = vi.fn()
+
+      await service.addMemberIfNotExists(projectId, userId)
+
+      expect(projectModel.updateOne).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('create', () => {
+    it('should throw bad request for invalid board id', async () => {
+      const createProjectDto = { boardId: 'invalid-id', owner: '60f6e1b3b3f3b3b3b3f3b3b3' }
+      await expect(service.create(createProjectDto as any)).rejects.toThrow('Invalid board ID')
+    })
+
+    it('should throw bad request for invalid owner', async () => {
+      const createProjectDto = { boardId: '60f6e1b3b3f3b3b3b3f3b3b4', owner: 'invalid-id' }
+      await expect(service.create(createProjectDto as any)).rejects.toThrow('Invalid owner ID')
+    })
+  })
 })

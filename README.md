@@ -324,8 +324,9 @@ I am using AI tools to help our team improve the quality of code and the efficie
 ## To-Do
 
 - [x] Add CI/CD
+- [ ] Add tests in apps/api to make overall coverage over 80%
 - [ ] Fix the issues of CRUD in project and tasks
-- [ ] Increase test coverage of Apps folder to above 80%
+- [ ] Add tests in apps/wev to make overall coverage over 80%
 
 ---
 
