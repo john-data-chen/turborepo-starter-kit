@@ -793,4 +793,22 @@
   [data-slot='card']:hover {
     border-color: hsl(var(--primary)) !important;
   }
+
+  /* Dialog components MUST maintain fixed positioning and high z-index */
+  [data-slot='dialog-overlay'],
+  [data-slot='dialog-content'] {
+    position: fixed !important;
+  }
+
+  [data-slot='dialog-overlay'] {
+    z-index: 50 !important;
+    inset: 0 !important;
+  }
+
+  [data-slot='dialog-content'] {
+    z-index: 50 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
 }

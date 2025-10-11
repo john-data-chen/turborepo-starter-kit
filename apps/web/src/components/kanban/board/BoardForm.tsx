@@ -34,16 +34,17 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('boardTitleLabel')}</FormLabel>
+            <FormItem className="space-y-1.5">
+              <FormLabel className="text-sm font-medium">{t('boardTitleLabel')}</FormLabel>
               <FormControl>
                 <Input
                   placeholder={t('boardTitlePlaceholder')}
+                  className="h-9"
                   {...field}
                   onClick={(e) => e.stopPropagation()}
                   onMouseDown={(e) => e.stopPropagation()}
@@ -57,12 +58,12 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('descriptionLabel')}</FormLabel>
+            <FormItem className="space-y-1.5">
+              <FormLabel className="text-sm font-medium">{t('descriptionLabel')}</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder={t('descriptionPlaceholder')}
-                  className="resize-none"
+                  className="min-h-16 resize-none"
                   {...field}
                   onClick={(e) => e.stopPropagation()}
                   onMouseDown={(e) => e.stopPropagation()}
