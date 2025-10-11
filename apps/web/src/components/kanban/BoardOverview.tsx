@@ -132,7 +132,6 @@ export function BoardOverview() {
   // Ensure boards data is fetched when user is authenticated
   useEffect(() => {
     const { userId } = useWorkspaceStore.getState()
-    console.log('[BoardOverview] Checking if boards need to be fetched, userId:', userId)
 
     // If user is authenticated but we don't have boards data, fetch it
     if (userId && !boardsLoading && !myBoards?.length && !teamBoards?.length) {

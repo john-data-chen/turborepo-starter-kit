@@ -100,12 +100,6 @@ export class AuthService {
       mode: 'cors'
     })
 
-    console.log(`[${requestId}] [AuthService] Profile response status:`, response.status)
-    console.log(
-      `[${requestId}] [AuthService] Profile response headers:`,
-      Object.fromEntries(response.headers.entries())
-    )
-
     if (!response.ok) {
       const errorText = await response.text().catch(() => 'Failed to fetch profile')
       console.error(`[${requestId}] [AuthService] Profile fetch error:`, {
@@ -123,7 +117,6 @@ export class AuthService {
     }
 
     const user = await response.json()
-    console.log(`[${requestId}] [AuthService] Profile response data:`, user)
 
     // Ensure we have required fields
     if (!user || !user.email) {

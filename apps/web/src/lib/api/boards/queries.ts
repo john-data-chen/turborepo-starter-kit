@@ -6,7 +6,6 @@ export const useBoards = () => {
   return useQuery({
     queryKey: BOARD_KEYS.list(),
     queryFn: () => {
-      console.log('[useBoards] Fetching boards from API...')
       return boardApi.getBoards()
     },
     retry: 3,
