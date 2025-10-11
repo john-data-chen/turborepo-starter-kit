@@ -547,6 +547,28 @@
 /* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
 
 /* ========================================
+   HEADER BUTTONS - Fix icon button sizes
+   ======================================== */
+
+@layer utilities {
+  /* Header icon buttons must be 36px × 36px to match reference */
+  header button[data-slot='dropdown-menu-trigger'] {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+  }
+
+  /* Override bg-background with proper semi-transparent dark mode background */
+  header button[data-slot='dropdown-menu-trigger'].dark\:bg-input\/30 {
+    background-color: transparent !important;
+  }
+
+  .dark header button[data-slot='dropdown-menu-trigger'] {
+    background-color: hsl(var(--input) / 0.3) !important;
+  }
+}
+
+/* ========================================
    DIALOG STYLING - Match Reference Design
    ======================================== */
 
