@@ -1108,3 +1108,33 @@
     transform: translate(-50%, -50%) !important;
   }
 }
+
+/* ========================================
+   SELECT ITEM FIX - Ensure checkmark is always visible
+   ======================================== */
+
+@layer utilities {
+  /* Fix select items to prevent content from covering checkmark */
+  [data-slot='select-item'] {
+    display: flex !important;
+    align-items: center !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Ensure ItemText takes available space but leaves room for checkmark */
+  [data-slot='select-item'] > span[class*='SelectItemText'] {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    min-width: 0 !important;
+  }
+
+  /* Ensure checkmark indicator has proper spacing */
+  [data-slot='select-item'] > span:first-child {
+    position: relative !important;
+    right: auto !important;
+    margin-left: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+}
