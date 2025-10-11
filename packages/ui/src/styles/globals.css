@@ -551,78 +551,42 @@
    ======================================== */
 
 @layer utilities {
-  /* Dialog overlay - maintain backdrop */
+  /* Dialog overlay - darker backdrop like reference */
   [data-slot='dialog-overlay'] {
-    background-color: rgba(0, 0, 0, 0.75) !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
   }
 
-  /* Dialog content - dark background, centered, proper sizing */
+  /* Dialog content - match reference dimensions and style */
   [data-slot='dialog-content'] {
-    background-color: hsl(var(--card)) !important;
-    border: 1px solid hsl(var(--border)) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-    max-width: 500px !important;
-    width: calc(100% - 2rem) !important;
-  }
-
-  /* Dialog close button - move to TOP-LEFT corner */
-  [data-slot='dialog-close'] {
-    left: 1rem !important;
-    right: auto !important;
-    top: 1rem !important;
-  }
-
-  /* Dialog header - center-align title and description */
-  [data-slot='dialog-header'] {
-    text-align: center !important;
-    padding-top: 0.5rem !important;
-  }
-
-  /* Dialog title - centered, bold */
-  [data-slot='dialog-title'] {
-    text-align: center !important;
-    font-size: 1.25rem !important;
-    font-weight: 700 !important;
-  }
-
-  /* Dialog description - centered, muted */
-  [data-slot='dialog-description'] {
-    text-align: center !important;
-    color: hsl(var(--muted-foreground)) !important;
-  }
-
-  /* Dialog footer - right-align buttons */
-  [data-slot='dialog-footer'] {
-    display: flex !important;
-    justify-content: flex-end !important;
-    gap: 0.75rem !important;
-    margin-top: 1.5rem !important;
-  }
-
-  /* Dialog inputs - prominent borders, teal focus state */
-  [data-slot='dialog-content'] input,
-  [data-slot='dialog-content'] textarea {
-    background-color: transparent !important;
-    border: 1px solid hsl(var(--border)) !important;
     border-radius: 8px !important;
-    padding: 0.625rem 0.875rem !important;
-    transition: border-color 0.2s ease !important;
+    max-width: 512px !important;
+    padding: 24px !important; /* p-6 not applying from component */
+    border: 1px solid hsl(var(--border)) !important; /* border class not applying */
   }
 
-  [data-slot='dialog-content'] input:focus,
-  [data-slot='dialog-content'] textarea:focus {
-    border-color: hsl(var(--primary)) !important;
-    outline: none !important;
-    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
+  /* Dialog header - left-align on all screen sizes */
+  [data-slot='dialog-header'] {
+    text-align: left !important; /* override text-center/sm:text-left from component */
   }
 
-  /* Dialog labels - left-aligned, proper spacing */
-  [data-slot='dialog-content'] label {
-    display: block !important;
+  /* Dialog title - match reference font size and weight */
+  [data-slot='dialog-title'] {
+    text-align: left !important; /* ensure left alignment */
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+
+  /* Dialog description - left-aligned */
+  [data-slot='dialog-description'] {
     text-align: left !important;
-    margin-bottom: 0.5rem !important;
-    font-weight: 500 !important;
+  }
+
+  /* Dialog close button - ensure proper positioning */
+  [data-slot='dialog-close'] {
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+    left: auto !important;
   }
 }
 /* eof: dialog styling */
