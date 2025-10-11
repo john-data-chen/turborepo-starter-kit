@@ -546,6 +546,87 @@
 /* eof: hard final alignment for Board Overview */
 /* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
 
+/* ========================================
+   DIALOG STYLING - Match Reference Design
+   ======================================== */
+
+@layer utilities {
+  /* Dialog overlay - maintain backdrop */
+  [data-slot='dialog-overlay'] {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+  }
+
+  /* Dialog content - dark background, centered, proper sizing */
+  [data-slot='dialog-content'] {
+    background-color: hsl(var(--card)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    max-width: 500px !important;
+    width: calc(100% - 2rem) !important;
+  }
+
+  /* Dialog close button - move to TOP-LEFT corner */
+  [data-slot='dialog-close'] {
+    left: 1rem !important;
+    right: auto !important;
+    top: 1rem !important;
+  }
+
+  /* Dialog header - center-align title and description */
+  [data-slot='dialog-header'] {
+    text-align: center !important;
+    padding-top: 0.5rem !important;
+  }
+
+  /* Dialog title - centered, bold */
+  [data-slot='dialog-title'] {
+    text-align: center !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+  }
+
+  /* Dialog description - centered, muted */
+  [data-slot='dialog-description'] {
+    text-align: center !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Dialog footer - right-align buttons */
+  [data-slot='dialog-footer'] {
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.75rem !important;
+    margin-top: 1.5rem !important;
+  }
+
+  /* Dialog inputs - prominent borders, teal focus state */
+  [data-slot='dialog-content'] input,
+  [data-slot='dialog-content'] textarea {
+    background-color: transparent !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    padding: 0.625rem 0.875rem !important;
+    transition: border-color 0.2s ease !important;
+  }
+
+  [data-slot='dialog-content'] input:focus,
+  [data-slot='dialog-content'] textarea:focus {
+    border-color: hsl(var(--primary)) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
+  }
+
+  /* Dialog labels - left-aligned, proper spacing */
+  [data-slot='dialog-content'] label {
+    display: block !important;
+    text-align: left !important;
+    margin-bottom: 0.5rem !important;
+    font-weight: 500 !important;
+  }
+}
+/* eof: dialog styling */
+
 /* FINAL ROUND — address: 1) full-height sidebar, 2) card different bg, 3) menus covered, 4) topbar spacing */
 @layer utilities {
   /* 1) Sidebar must be a full-height pane (top to bottom), not only inner area */
