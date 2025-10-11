@@ -664,6 +664,11 @@
     border-collapse: collapse !important;
   }
 
+  .rdp-weekdays {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
   .rdp-weekday {
     width: var(--rdp-cell-size) !important;
     font-size: 0.75rem !important;
@@ -671,6 +676,7 @@
     text-align: center !important;
     color: hsl(var(--muted-foreground)) !important;
     padding: 0.5rem 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .rdp-weeks {
@@ -678,7 +684,8 @@
   }
 
   .rdp-week {
-    display: table-row !important;
+    display: flex !important;
+    justify-content: space-between !important;
   }
 
   .rdp-day {
@@ -686,6 +693,8 @@
     height: var(--rdp-cell-size) !important;
     text-align: center !important;
     padding: 0 !important;
+    display: block !important;
+    flex-shrink: 0 !important;
   }
 
   .rdp-day_button {
