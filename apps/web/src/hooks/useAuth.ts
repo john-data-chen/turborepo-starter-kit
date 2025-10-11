@@ -74,6 +74,13 @@ export function useAuth() {
   // Check for existing session on mount if we have auth indicators
   useEffect(() => {
     const initAuth = async () => {
+      // Skip session check on auth pages where user is expected to not be authenticated
+      const isOnAuthPage = window.location.pathname.includes('/login')
+      if (isOnAuthPage) {
+        setIsCheckingAuth(false)
+        return
+      }
+
       // Check for authentication cookie (could be jwt= or isAuthenticated=)
       const hasAuthCookie = document.cookie.split(';').some((item) => {
         const trimmed = item.trim()
@@ -88,6 +95,8 @@ export function useAuth() {
           await checkSession()
         } catch (error) {
           console.error('Failed to check session on mount:', error)
+          // Don't throw here - just log the error and continue
+          // The session will remain null, indicating user is not authenticated
         }
       } else {
         // No authentication indicators, set loading to false immediately
