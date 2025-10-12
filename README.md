@@ -31,10 +31,11 @@ Every star motivates me to deliver more high-quality templates. 🚀
 
 **Key Accomplishments**:
 
-- Responsive Design: Ensures optimal user experience across all devices, reflecting a product-centric development approach.
-- Reliable User Experience: Validated the critical login flow across all major browsers (Chrome, Safari, Edge) on both desktop and mobile using Playwright E2E tests.
-- Live Demo Deployment (Vercel): Provides immediate access to a functional application, showcasing practical deployment skills.
-- Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ across Performance, Accessibility, Best Practices, and SEO in Google Lighthouse, ensuring a top-tier user experience and technical excellence.
+- Strategic Backend Decoupling & Refactoring: Architected the separation of a full-stack Next.js application into a decoupled frontend and a robust backend. Rebuilt the entire backend with Nest.js, establishing a scalable, modular, and maintainable microservices-oriented architecture. This strategic move significantly improved development velocity and system scalability.
+- Enhanced API & Data Integrity: Leveraged Nest.js's powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
+- Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ in Performance, Accessibility, Best Practices, and SEO. The backend separation allowed the Next.js frontend to focus on optimized static site generation (SSG) and server-side rendering (SSR), leading to superior load times and a top-tier user experience.
+- Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login and registration, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
+- CI/CD & Live Deployment on Vercel: Deployed the Next.js frontend to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
@@ -60,7 +61,7 @@ Every star motivates me to deliver more high-quality templates. 🚀
 - **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/): modern database with strong type safety and performance
 - **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/): modern authentication with strong type safety and performance
 - **Testing**: [Vitest](https://vitest.dev/): modern testing with strong type safety and performance
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions): modern CI/CD with strong type safety and performance
+  [GitHub Actions](https://github.com/features/actions), [Vercel](https://vercel.com/home), [SonarQube](https://sonarcloud.io/) - they are the 3rd quality gate: every pull request triggers a comprehensive pipeline, enforcing code quality gates and ensuring production-readiness through automated testing and deployment
 
 ---
 
@@ -327,7 +328,8 @@ I am using AI tools to help our team improve the quality of code and the efficie
 ## To-Do
 
 - [x] Add CI/CD
-- [ ] Add or fix missing styles after refactored Shadcn UI into packages/ui
+- [x] Add or fix missing styles after refactored Shadcn UI into packages/ui
+- [ ] Fix the issues of edit or delete boards / projects / tasks
 - [ ] Add tests in apps/api to make overall coverage over 80%
 - [ ] Add tests in apps/wev to make overall coverage over 80%
 
