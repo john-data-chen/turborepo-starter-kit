@@ -134,11 +134,11 @@
     --popover-foreground: 180 20% 99%;
 
     /* Board overview visual parity: make cards blend with page */
-    --card: 180 37% 12%;
+    --card: 180 37% 8%;
     --card-foreground: 180 20% 99%;
 
     /* Subtle borders/inputs like reference (less contrast on dark) */
-    --border: 180 12% 8%;
+    --border: 180 20% 18%;
     --input: 180 12% 9%;
 
     --primary: 180 75% 45%;
@@ -218,13 +218,6 @@
 /* Boards Overview visual parity with reference */
 /* Scope: keep shadcn-ui components untouched; tweak surface/border via data-slot targets */
 @layer components {
-  /* Flatter cards like reference: same surface as page, no drop shadow, subtle border */
-  [data-slot='card'] {
-    background-color: hsl(var(--background)) !important;
-    box-shadow: none !important; /* neutralize shadow-sm utility */
-    border-color: hsl(var(--border)) !important;
-  }
-
   /* Slightly bolder card titles for readability parity */
   [data-slot='card-title'] {
     font-weight: 600;
@@ -272,55 +265,6 @@
     border-color: hsl(var(--border)) !important;
     border-radius: 8px !important;
     background-color: transparent !important;
-  }
-}
-/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
-@layer utilities {
-  /* Force parity: make cards flat (no shadow) and same surface as page; utilities layer ensures final override */
-  [data-slot='card'],
-  [data-slot='card'].bg-card,
-  [data-slot='card'][class*='shadow'] {
-    background-color: hsl(var(--background)) !important;
-    box-shadow: none !important;
-  }
-}
-/* Boards Overview – final overrides appended for precedence */
-@layer utilities {
-  /* Cards: same surface as page + no shadow */
-  [data-slot='card'],
-  [data-slot='card'].bg-card,
-  [data-slot='card'][class*='shadow'] {
-    background-color: hsl(var(--background)) !important;
-    box-shadow: none !important;
-  }
-
-  /* Inputs/Select: transparent surface, faint border */
-  input[data-slot='input'],
-  [data-slot='select-trigger'] {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    border-color: hsl(var(--border)) !important;
-  }
-}
-
-/* Trace: appended for highest precedence in build order */
-/* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) | block [css.@layer()](packages/ui/src/styles/globals.css:1) */
-@layer utilities {
-  /* Stronger specificity to override Tailwind utilities compiled later */
-  [data-slot='card'][data-slot='card'] {
-    /* Visual parity: faint border, flat surface, tighter radius and vertical padding */
-    box-shadow: none !important;
-    background-color: hsl(var(--background)) !important;
-    border-color: hsl(var(--border)) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-radius: 8px !important; /* override rounded-xl */
-    padding-block: 1rem !important; /* override py-6 -> 16px like reference */
-  }
-
-  /* Keep hover affordance as requested */
-  [data-slot='card'][data-slot='card']:hover {
-    border-color: hsl(var(--primary)) !important;
   }
 }
 /* file: [css.@layer utilities()](packages/ui/src/styles/globals.css:1) */
@@ -438,24 +382,6 @@
     background-color: hsl(var(--background)) !important;
   }
 
-  /* 3) Card background same as page, faint border, tighter radius, reduced padding */
-  :root [data-slot='card'][data-slot='card'],
-  .dark [data-slot='card'][data-slot='card'] {
-    background-color: hsl(var(--background)) !important; /* same as page */
-    border-color: hsl(var(--border)) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-radius: 8px !important;
-    padding-block: 1rem !important; /* 16px like reference */
-    box-shadow: none !important;
-    --tw-shadow: 0 0 #0000 !important;
-    --tw-ring-shadow: 0 0 #0000 !important;
-  }
-  :root [data-slot='card'][data-slot='card']:hover,
-  .dark [data-slot='card'][data-slot='card']:hover {
-    border-color: hsl(var(--primary)) !important;
-  }
-
   /* 4) Select/Filter popups covered — raise z-index and avoid clipping */
   [data-slot='select-content'],
   [data-slot='dropdown-menu-content'],
@@ -500,24 +426,6 @@
   /* Main working surface */
   [data-slot='sidebar-inset'] {
     background-color: hsl(var(--background)) !important;
-  }
-
-  /* Cards: same surface as page (reference), faint border, tighter radius, no shadow */
-  :root [data-slot='card'][data-slot='card'],
-  .dark [data-slot='card'][data-slot='card'] {
-    background-color: hsl(var(--background)) !important; /* override any var(--card) rules */
-    border-color: hsl(var(--border)) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-radius: 8px !important;
-    padding-block: 1rem !important; /* 16px */
-    box-shadow: none !important;
-    --tw-shadow: 0 0 #0000 !important;
-    --tw-ring-shadow: 0 0 #0000 !important;
-  }
-  :root [data-slot='card'][data-slot='card']:hover,
-  .dark [data-slot='card'][data-slot='card']:hover {
-    border-color: hsl(var(--primary)) !important;
   }
 
   /* Sticky overview bar must sit below global header and not cover top-right buttons */
@@ -1194,5 +1102,13 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* FINAL CARD BACKGROUND FIX - Maximum specificity to override all previous rules */
+@layer utilities {
+  html.dark [data-slot='card'][data-slot='card'][data-slot='card'],
+  .dark [data-slot='card'][data-slot='card'][data-slot='card'] {
+    background-color: hsl(var(--card)) !important;
   }
 }
