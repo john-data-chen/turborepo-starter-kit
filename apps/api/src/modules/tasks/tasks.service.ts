@@ -60,6 +60,7 @@ export class TasksService {
           ])
         } catch (populateError) {
           console.error('Error during population:', populateError)
+          throw populateError
         }
       }
 

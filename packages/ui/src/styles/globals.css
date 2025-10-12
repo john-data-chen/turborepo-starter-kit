@@ -546,6 +546,302 @@
 /* eof: hard final alignment for Board Overview */
 /* file: [packages/ui/src/styles/globals.css](packages/ui/src/styles/globals.css) */
 
+/* ========================================
+   HEADER BUTTONS - Fix icon button sizes
+   ======================================== */
+
+@layer utilities {
+  /* Header icon buttons must be 36px × 36px to match reference */
+  header button[data-slot='dropdown-menu-trigger'] {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+  }
+
+  /* Override bg-background with proper semi-transparent dark mode background */
+  header button[data-slot='dropdown-menu-trigger'].dark\:bg-input\/30 {
+    background-color: transparent !important;
+  }
+
+  .dark header button[data-slot='dropdown-menu-trigger'] {
+    background-color: hsl(var(--input) / 0.3) !important;
+  }
+}
+
+/* ========================================
+   DIALOG STYLING - Match Reference Design
+   ======================================== */
+
+@layer utilities {
+  /* Dialog overlay - darker backdrop like reference */
+  [data-slot='dialog-overlay'] {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Dialog content - match reference dimensions and style */
+  [data-slot='dialog-content'] {
+    border-radius: 8px !important;
+    max-width: 512px !important;
+    padding: 24px !important; /* p-6 not applying from component */
+    border: 1px solid hsl(var(--border)) !important; /* border class not applying */
+  }
+
+  /* Dialog header - left-align on all screen sizes */
+  [data-slot='dialog-header'] {
+    text-align: left !important; /* override text-center/sm:text-left from component */
+  }
+
+  /* Dialog title - match reference font size and weight */
+  [data-slot='dialog-title'] {
+    text-align: left !important; /* ensure left alignment */
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+
+  /* Dialog description - left-aligned */
+  [data-slot='dialog-description'] {
+    text-align: left !important;
+  }
+
+  /* Dialog close button - ensure proper positioning */
+  [data-slot='dialog-close'] {
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+    left: auto !important;
+  }
+}
+/* eof: dialog styling */
+
+/* ========================================
+   CALENDAR & FORM COMPONENTS - Fix react-day-picker and form styles
+   ======================================== */
+
+@layer utilities {
+  /* Calendar (react-day-picker v9) - Grid layout and styling */
+  .rdp-root {
+    --rdp-cell-size: 32px !important;
+    --rdp-accent-color: hsl(var(--primary)) !important;
+    --rdp-accent-background-color: hsl(var(--primary) / 0.1) !important;
+  }
+
+  .rdp-months {
+    display: flex !important;
+    gap: 1rem !important;
+  }
+
+  .rdp-month {
+    width: 100% !important;
+  }
+
+  .rdp-month_caption {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: var(--rdp-cell-size) !important;
+    padding: 0 var(--rdp-cell-size) !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .rdp-caption_label {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
+
+  .rdp-nav {
+    display: flex !important;
+    gap: 0.25rem !important;
+  }
+
+  .rdp-button_previous,
+  .rdp-button_next {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    padding: 0 !important;
+    border-radius: 0.375rem !important;
+    border: none !important;
+    background-color: transparent !important;
+    color: hsl(var(--foreground)) !important;
+    cursor: pointer !important;
+    opacity: 0.7 !important;
+  }
+
+  .rdp-button_previous:hover,
+  .rdp-button_next:hover {
+    opacity: 1 !important;
+    background-color: hsl(var(--accent)) !important;
+  }
+
+  .rdp-button_previous:disabled,
+  .rdp-button_next:disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+  }
+
+  .rdp-month_grid {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .rdp-weekdays {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  .rdp-weekday {
+    width: var(--rdp-cell-size) !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    color: hsl(var(--muted-foreground)) !important;
+    padding: 0.5rem 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .rdp-weeks {
+    border: 0 !important;
+  }
+
+  .rdp-week {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  .rdp-day {
+    width: var(--rdp-cell-size) !important;
+    height: var(--rdp-cell-size) !important;
+    text-align: center !important;
+    padding: 0 !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+  }
+
+  .rdp-day_button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: var(--rdp-cell-size) !important;
+    height: var(--rdp-cell-size) !important;
+    border-radius: 0.375rem !important;
+    border: none !important;
+    background-color: transparent !important;
+    font-size: 0.875rem !important;
+    color: hsl(var(--foreground)) !important;
+    cursor: pointer !important;
+  }
+
+  .rdp-day_button:hover:not(:disabled) {
+    background-color: hsl(var(--accent)) !important;
+  }
+
+  .rdp-day_button:disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+  }
+
+  .rdp-today .rdp-day_button {
+    font-weight: 600 !important;
+    background-color: hsl(var(--accent)) !important;
+  }
+
+  .rdp-selected .rdp-day_button {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    font-weight: 600 !important;
+  }
+
+  .rdp-selected .rdp-day_button:hover {
+    background-color: hsl(var(--primary)) !important;
+    opacity: 0.9 !important;
+  }
+
+  .rdp-outside {
+    opacity: 0.5 !important;
+  }
+
+  .rdp-disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+  }
+
+  /* Radio Group - Proper radio button styling */
+  button[role='radio'] {
+    width: 1rem !important;
+    height: 1rem !important;
+    border-radius: 9999px !important;
+    border: 2px solid hsl(var(--primary)) !important;
+    background-color: transparent !important;
+    position: relative !important;
+    cursor: pointer !important;
+  }
+
+  button[role='radio'][data-state='checked']::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 0.5rem !important;
+    height: 0.5rem !important;
+    border-radius: 9999px !important;
+    background-color: hsl(var(--primary)) !important;
+  }
+
+  button[role='radio']:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+  }
+
+  /* Form spacing and layout */
+  form[class*='space-y'] > * + * {
+    margin-top: 2rem !important;
+  }
+
+  /* Form items */
+  [class*='flex'][class*='flex-col'] > label {
+    margin-bottom: 0.5rem !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+  }
+
+  /* Form labels */
+  label[class*='font-normal'] {
+    font-weight: 400 !important;
+  }
+
+  /* Space between radio items */
+  [role='radiogroup'][class*='flex-col'] > * + * {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Flex items with space-x */
+  [class*='flex'][class*='space-x'] > * + * {
+    margin-left: 0.75rem !important;
+  }
+
+  [class*='space-x-3'] > * + * {
+    margin-left: 0.75rem !important;
+  }
+
+  [class*='space-x-4'] > * + * {
+    margin-left: 1rem !important;
+  }
+
+  /* Space-y-0 override */
+  [class*='space-y-0'] > * + * {
+    margin-top: 0 !important;
+  }
+
+  /* Popover content positioning and z-index */
+  [data-radix-popper-content-wrapper] {
+    z-index: 60 !important;
+  }
+}
+/* eof: calendar and form components */
+
 /* FINAL ROUND — address: 1) full-height sidebar, 2) card different bg, 3) menus covered, 4) topbar spacing */
 @layer utilities {
   /* 1) Sidebar must be a full-height pane (top to bottom), not only inner area */
@@ -792,5 +1088,111 @@
   /* Keep hover effect */
   [data-slot='card']:hover {
     border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Dialog components MUST maintain fixed positioning and high z-index */
+  [data-slot='dialog-overlay'],
+  [data-slot='dialog-content'] {
+    position: fixed !important;
+  }
+
+  [data-slot='dialog-overlay'] {
+    z-index: 50 !important;
+    inset: 0 !important;
+  }
+
+  [data-slot='dialog-content'] {
+    z-index: 50 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
+/* ========================================
+   SELECT ITEM FIX - Ensure checkmark is always visible
+   ======================================== */
+
+@layer utilities {
+  /* Fix select items to prevent content from covering checkmark */
+  [data-slot='select-item'] {
+    display: flex !important;
+    align-items: center !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Ensure ItemText takes available space but leaves room for checkmark */
+  [data-slot='select-item'] > span[class*='SelectItemText'] {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    min-width: 0 !important;
+  }
+
+  /* Ensure checkmark indicator has proper spacing */
+  [data-slot='select-item'] > span:first-child {
+    position: relative !important;
+    right: auto !important;
+    margin-left: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/*
+  ---break---
+*/
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+/*
+  ---break---
+*/
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+/*
+  ---break---
+*/
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  ---break---
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

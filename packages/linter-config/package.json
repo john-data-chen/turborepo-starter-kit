@@ -4,11 +4,10 @@
   "private": true,
   "main": ".oxlintrc.json",
   "devDependencies": {
-    "oxlint": "*",
+    "oxlint": "^1.22.0",
     "oxlint-tsgolint": "^0.2.0"
   },
   "engines": {
     "node": ">=22.11.0"
-  },
-  "packageManager": "pnpm@10.18.0"
+  }
 }

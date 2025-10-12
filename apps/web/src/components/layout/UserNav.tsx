@@ -19,7 +19,7 @@ export function UserNav() {
 
   // While loading, show a placeholder to prevent flicker
   if (isLoading) {
-    return <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
+    return <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200" />
   }
 
   // If the user is logged in, show the avatar and dropdown menu
@@ -27,8 +27,8 @@ export function UserNav() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
+          <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+            <Avatar className="h-9 w-9">
               {/* The new backend doesn't provide an image, so we use a fallback */}
               <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
             </Avatar>
