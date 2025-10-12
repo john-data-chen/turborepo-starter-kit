@@ -52,7 +52,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 - Enhanced API & Data Integrity: Leveraged Nest.js's powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
 - Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ in Performance, Accessibility, Best Practices, and SEO. The backend separation allowed the Next.js frontend to focus on optimized static site generation (SSG) and server-side rendering (SSR), leading to superior load times and a top-tier user experience.
 - Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login and registration, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
-- CI/CD & Live Deployment on Vercel: Deployed the Next.js frontend to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
+- CI/CD & Live Deployment on Vercel: Deployed to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
@@ -73,11 +73,11 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 
 ### Backend
 
-- **Framework**: [NestJS](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/): modern server-side application framework with strong type safety and performance
-- **Build**: [Rspack](https://rspack.dev/): high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
-- **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/): modern database with strong type safety and performance
-- **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/): modern authentication with strong type safety and performance
-- **Testing**: [Vitest](https://vitest.dev/): modern testing with strong type safety and performance
+- **Framework**: [NestJS](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/) modern server-side application framework with strong type safety and performance
+- **Build**: [Rspack](https://rspack.dev/) high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
+- **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/) modern database with strong type safety and performance
+- **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/) modern authentication with strong type safety and performance
+- **Testing**: [Vitest](https://vitest.dev/) modern testing with strong type safety and performance
 - **CI/CD**: [GitHub Actions](https://github.com/features/actions), [Vercel](https://vercel.com/home), [SonarQube](https://sonarcloud.io/): they are the 3rd quality gate: every pull request triggers a comprehensive pipeline, enforcing code quality gates and ensuring production-readiness through automated testing and deployment
 
 ---
