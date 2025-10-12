@@ -42,7 +42,7 @@ By combining a professional setup (CI/CD, Testing, SonarQube) with a cutting-edg
 **Love this template?**
 If you like original template (Frontend and Backend are both built by Next.js), don't forget to [give it a star](https://github.com/john-data-chen/next-dnd-starter-kit) today!
 
-Every star motivates me to deliver more high-quality templates.
+Every ⭐️ motivates me to deliver more high-quality templates.
 
 ---
 
