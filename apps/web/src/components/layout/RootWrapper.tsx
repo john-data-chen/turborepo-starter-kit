@@ -10,7 +10,7 @@ import { Toaster } from 'sonner'
 export default function RootWrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={true}>
         <AppSidebar />
         <SidebarInset>
           <Header />
