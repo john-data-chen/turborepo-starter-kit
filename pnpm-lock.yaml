@@ -286,7 +286,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-hook-form:
-        specifier: ^7.65.0
+        specifier: ^7.64.0
         version: 7.65.0(react@19.2.0)
       sonner:
         specifier: ^2.0.7
