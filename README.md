@@ -13,12 +13,12 @@ This is a test project, a playground for me to test and import new tools into my
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
 
 This is not just another template; it's a production-ready, enterprise-grade foundation for modern full-stack development.
-Originally a full-stack Next.js application [next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit), it has been strategically re-architected into a decoupled frontend/backend system managed within a high-performance Turborepo monorepo.
+Originally a full-stack Next.js application [next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit), it has been strategically re-architected into a decoupled frontend/backend system managed within a high-performance Monorepo.
 
 This architecture offers several key advantages:
 
 - 🤝 Scalability & Team Agility: The decoupled structure, with a Next.js frontend and a Nest.js backend, allows teams to develop, test, and deploy independently, accelerating development cycles.
-- 🚀 Optimized Developer Experience: Powered by Rspack for blazing-fast builds and leveraging Turborepo for intelligent caching and task orchestration, your development workflow will be faster than ever.
+- 🚀 Optimized Developer Experience: Powered by Turbopack and Rspack for blazing-fast builds and leveraging Turborepo for intelligent caching and task orchestration, your development workflow will be faster than ever.
 - 📦 Maximum Code Reusability: A centralized Shadcn UI component library is shared across the monorepo, ensuring design consistency and reducing redundant code.
 
 ### Core Features Included
@@ -52,7 +52,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 - Enhanced API & Data Integrity: Leveraged Nest.js's powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
 - Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ in Performance, Accessibility, Best Practices, and SEO. The backend separation allowed the Next.js frontend to focus on optimized static site generation (SSG) and server-side rendering (SSR), leading to superior load times and a top-tier user experience.
 - Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login and registration, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
-- CI/CD & Live Deployment on Vercel: Deployed to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
+- CI/CD & Live Deployment: Deployed to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
@@ -78,7 +78,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 - **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/) modern database with strong type safety and performance
 - **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/) modern authentication with strong type safety and performance
 - **Testing**: [Vitest](https://vitest.dev/) modern testing with strong type safety and performance
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions), [Vercel](https://vercel.com/home), [SonarQube](https://sonarcloud.io/): they are the 3rd quality gate: every pull request triggers a comprehensive pipeline, enforcing code quality gates and ensuring production-readiness through automated testing and deployment
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions), [SonarQube](https://sonarcloud.io/), they are the 3rd quality gate: every pull request triggers a comprehensive pipeline, enforcing code quality gates and ensuring production-readiness through automated testing and deployment
 
 ---
 
