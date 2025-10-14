@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/node": "^22.18.10",
     "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.1",
+    "@types/react-dom": "19.2.2",
     "global-tsconfig": "workspace:*",
     "linter-config": "workspace:*",
     "typescript": "^5.9.3"
