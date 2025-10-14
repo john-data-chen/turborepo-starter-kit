@@ -22,7 +22,6 @@
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "lint": "npx oxlint --config ../linter-config/.oxlintrc.json",
     "format": "prettier --write . --ignore-path ../../.prettierignore --write --no-error-on-unmatched-pattern --config ../../prettier.config.js"
   },
   "engines": {
