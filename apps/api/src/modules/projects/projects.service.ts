@@ -82,10 +82,13 @@ export class ProjectsService {
     console.log('Found project:', project)
     console.log('Checking permissions...')
 
+    // Convert userId to string to ensure consistent comparison
+    const userIdString = userId.toString()
+
     // Permission model:
     // - Owner can update any field
     // - Board members (owner or members) can update orderInBoard only
-    const isOwner = project.owner.toString() === userId
+    const isOwner = project.owner.toString() === userIdString
     const isOrderOnly =
       updateProjectDto.orderInBoard !== undefined &&
       updateProjectDto.title === undefined &&
@@ -177,7 +180,7 @@ export class ProjectsService {
     }
   }
 
-  async remove(id: string, userId: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<{ message: string }> {
     console.log('Delete request received:', { id, userId })
 
     if (!Types.ObjectId.isValid(id)) {
@@ -200,8 +203,11 @@ export class ProjectsService {
       throw new NotFoundException(error)
     }
 
+    // Convert userId to string to ensure consistent comparison
+    const userIdString = userId.toString()
+
     // Check if the user is the owner of the project
-    if (project.owner.toString() !== userId) {
+    if (project.owner.toString() !== userIdString) {
       const error = 'You do not have permission to delete this project'
       console.error(error, { userId, projectId: id })
       throw new BadRequestException(error)
@@ -252,6 +258,7 @@ export class ProjectsService {
     }
 
     console.log('Project, associated tasks, and project order updated successfully')
+    return { message: 'Project deleted successfully' }
   }
 
   /**

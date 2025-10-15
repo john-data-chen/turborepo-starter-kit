@@ -66,49 +66,6 @@ async function bootstrap() {
     ]
   })
 
-  // Enhanced CORS middleware with detailed logging
-  const corsMiddleware = (req: any, res: any, next: any) => {
-    const origin = req.headers.origin
-    const requestMethod = req.method
-
-    // Handle preflight requests
-    if (requestMethod === 'OPTIONS') {
-      res.header('Access-Control-Allow-Origin', origin)
-      res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS')
-      res.header(
-        'Access-Control-Allow-Headers',
-        ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With', 'X-XSRF-TOKEN', 'Cookie'].join(',')
-      )
-      res.header('Access-Control-Allow-Credentials', 'true')
-      res.header('Access-Control-Max-Age', '86400') // 24 hours
-
-      return res.status(204).end()
-    }
-
-    // Handle regular requests
-    if (origin) {
-      const isAllowed = allowedOrigins.some((o) => (typeof o === 'string' ? o === origin : o.test(origin)))
-
-      if (isAllowed) {
-        res.header('Access-Control-Allow-Origin', origin)
-        res.header('Access-Control-Allow-Credentials', 'true')
-      }
-    }
-
-    next()
-  }
-
-  // Apply CORS middleware
-  app.use(corsMiddleware)
-
-  // Apply CORS middleware before other middleware
-  app.use((req, res, next) => {
-    next()
-  })
-
-  // Apply CORS middleware
-  app.use(corsMiddleware)
-
   // Enable global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
