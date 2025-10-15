@@ -340,6 +340,9 @@ export class BoardService {
   }
 
   async update(id: string, updateBoardDto: UpdateBoardDto, userId: string): Promise<Board> {
+    // Convert userId to string to ensure consistent comparison
+    const userIdString = userId.toString()
+
     // First, verify the board exists and the user has permission
     const board = await this.boardModel.findById(id).exec()
 
@@ -348,37 +351,43 @@ export class BoardService {
     }
 
     // Check if the user is the owner or a member
-    const isOwner = board.owner.toString() === userId
-    const isMember = board.members.some((memberId) => memberId.toString() === userId)
+    const isOwner = board.owner.toString() === userIdString
+    const isMember = board.members.some((memberId) => memberId.toString() === userIdString)
+
+    console.log('[BoardService.update] Is owner:', isOwner)
+    console.log('[BoardService.update] Is member:', isMember)
 
     if (!isOwner && !isMember) {
+      console.error('[BoardService.update] User has no permission to update board')
       throw new NotFoundException(`Board with ID "${id}" not found or access denied`)
     }
 
     // Update the board
-    const updatedBoard = await this.boardModel.findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true }).exec()
+    console.log('[BoardService.update] Updating board...')
+    await this.boardModel.findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true }).exec()
 
-    if (!updatedBoard) {
-      // This should theoretically never happen since we already checked the board exists
-      throw new NotFoundException(`Failed to update board with ID "${id}"`)
-    }
-
-    return updatedBoard
+    // Return the fully populated board using the same approach as findOne()
+    console.log('[BoardService.update] Fetching updated board...')
+    return this.findOne(id, userId)
   }
 
-  async remove(id: string, userId: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<{ message: string }> {
+    // Convert userId to string to ensure consistent comparison
+    const userIdString = userId.toString()
+
     // First, check if the board exists and the user has permission
     const board = await this.boardModel.findById(id).exec()
 
     if (!board) {
-      console.error(`[BoardService] Board with ID "${id}" not found`)
       throw new NotFoundException(`Board with ID "${id}" not found`)
     }
 
     // Check if the user is the owner
-    if (!board.owner.equals(userId)) {
+    const isOwner = board.owner.toString() === userIdString
+
+    if (!isOwner) {
       console.error(
-        `[BoardService] User ${userId.toString()} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
+        `[BoardService] User ${userIdString} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
       )
       throw new NotFoundException(`Board with ID "${id}" not found`)
     }
@@ -413,6 +422,7 @@ export class BoardService {
       }
 
       console.log(`Successfully deleted board ${id} and all associated data`)
+      return { message: 'Board deleted successfully' }
     } catch (error) {
       console.error(`Error during board deletion for board ${id}:`, error)
       throw error // Re-throw to be handled by the controller
