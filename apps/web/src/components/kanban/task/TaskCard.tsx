@@ -166,16 +166,18 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
     <Card
       ref={setNodeRef}
       style={cardStyle}
-      className={cn(
-        'mb-3 transition-shadow hover:shadow-md',
-        isDragEnabled ? 'cursor-grab active:cursor-grabbing' : 'cursor-default',
-        cardVariants({ dragging: dragState })
-      )}
+      className={cn('mb-3 transition-shadow hover:shadow-md', cardVariants({ dragging: dragState }))}
       data-testid="task-card"
-      {...(isDragEnabled ? { ...attributes, ...listeners } : {})}
+      {...(isDragEnabled ? attributes : {})}
     >
       <CardHeader className="flex flex-row border-b-2 px-3 pb-2">
-        <div className="text-muted-foreground/30 flex h-8 w-8 flex-shrink-0 items-center justify-center">
+        <div
+          className={cn(
+            'text-muted-foreground/30 flex h-8 w-8 flex-shrink-0 items-center justify-center',
+            isDragEnabled && 'cursor-grab active:cursor-grabbing'
+          )}
+          {...(isDragEnabled ? listeners : {})}
+        >
           {isDragEnabled && (
             <div title={t('moveTask')}>
               <PointerIcon className="h-4 w-4" aria-label={t('moveTask')} />
