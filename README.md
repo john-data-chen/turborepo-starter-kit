@@ -344,9 +344,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ## To-Do
 
-- [x] Add CI/CD
-- [x] Add or fix missing styles after refactored Shadcn UI into packages/ui
-- [ ] Fix the issues of edit or delete boards / projects / tasks
+- [ ] Task can't be edited or deleted
 - [ ] Add tests in apps/api to make overall coverage over 80%
 - [ ] Add tests in apps/wev to make overall coverage over 80%
 
