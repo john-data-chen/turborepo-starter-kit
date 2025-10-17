@@ -6,13 +6,11 @@
 [![CI](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml/badge.svg)](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is a test project, a playground for me to test and import new tools into my stack. It has many issues and problems, and might not be fixed quickly, when it is ready, I will update README.md.
-
 ## ✨ Why Choose This Template:
 
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
 
-This is not just another template; it's a production-ready, enterprise-grade foundation for modern full-stack development.
+This is not just another template; it's a production-ready, enterprise-grade foundation with 80%+ test coverage for modern full-stack development.
 Originally a full-stack Next.js application [next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit), it has been strategically re-architected into a decoupled frontend/backend system managed within a high-performance Monorepo.
 
 This architecture offers several key advantages:
@@ -260,6 +258,7 @@ packages/
 ### 📊 Testing Strategy
 
 - Unit Tests: Focused on critical store logic, complex form validations, and isolated component behaviors, ensuring granular code reliability.
+- Test Coverage: Maintained above 80%+ (verified via npx vitest run --coverage), reflecting a commitment to robust code coverage without sacrificing test quality.
 - E2E Tests: Critical user flows, such as the Login page, are validated end-to-end using Playwright, simulating real user interactions to guarantee system integrity.
 - Cross-browser Testing Strategy: Ensures consistent functionality and user experience across a carefully selected range of desktop and mobile browsers based on market share, mitigating compatibility issues.
 
