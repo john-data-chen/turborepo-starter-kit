@@ -188,31 +188,45 @@ export class TasksService {
   }
 
   private async checkTaskPermission(taskId: string, userId: string, requireCreator = false): Promise<TaskDocument> {
-    console.log('checkTaskPermission called:')
-    console.log('  taskId:', taskId)
-    console.log('  userId:', userId)
+    console.log('=== checkTaskPermission Debug ===')
+    console.log('  taskId:', taskId, typeof taskId)
+    console.log('  userId:', userId, typeof userId)
+
     const task = await this.taskModel.findById(taskId)
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`)
     }
-    console.log('  Found task.creator:', task.creator)
-    console.log('  Found task.assignee:', task.assignee)
 
-    const userIdObj = new Types.ObjectId(userId)
-    console.log('  userIdObj:', userIdObj)
-    const isCreator = task.creator && task.creator.equals(userIdObj)
-    const isAssignee = task.assignee && task.assignee.equals(userIdObj)
-    console.log('  isCreator:', isCreator)
-    console.log('  isAssignee:', isAssignee)
+    console.log('  Found task.creator:', task.creator, typeof task.creator)
+    console.log('  Found task.assignee:', task.assignee, typeof task.assignee)
+    console.log('  task.creator.toString():', task.creator?.toString())
+    console.log('  task.assignee.toString():', task.assignee?.toString())
+
+    // Convert all IDs to strings for consistent comparison
+    // Handle both ObjectId and string inputs
+    const userIdString = userId?.toString()
+    const creatorIdString = task.creator?.toString()
+    const assigneeIdString = task.assignee?.toString()
+
+    console.log('  userIdString:', userIdString)
+
+    const isCreator = creatorIdString === userIdString
+    const isAssignee = assigneeIdString === userIdString
+
+    console.log('  String comparison - isCreator:', isCreator)
+    console.log('  String comparison - isAssignee:', isAssignee)
 
     if (requireCreator && !isCreator) {
+      console.log('  ❌ Permission denied: User is not the creator')
       throw new ForbiddenException('Only the task creator can perform this action')
     }
 
     if (!isCreator && !isAssignee) {
+      console.log('  ❌ Permission denied: User is neither creator nor assignee')
       throw new ForbiddenException('You do not have permission to modify this task')
     }
 
+    console.log('  ✅ Permission granted')
     return task
   }
 

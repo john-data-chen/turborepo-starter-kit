@@ -87,7 +87,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req
   ): Promise<TaskResponseDto> {
-    return this.tasksService.update(id, updateTaskDto, req.user.userId)
+    return this.tasksService.update(id, updateTaskDto, req.user._id)
   }
 
   @Delete(':id')
@@ -100,7 +100,7 @@ export class TasksController {
     description: 'Forbidden - Only the task creator can delete the task'
   })
   remove(@Param('id', ParseObjectIdPipe) id: string, @Req() req): Promise<void> {
-    return this.tasksService.remove(id, req.user.userId)
+    return this.tasksService.remove(id, req.user._id)
   }
 
   @Patch(':id/move')
