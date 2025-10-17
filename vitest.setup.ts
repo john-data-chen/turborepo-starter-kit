@@ -21,9 +21,6 @@ if (result.error) {
   console.log('DATABASE_URL loaded:', process.env.DATABASE_URL) // Optional: Check if variable is loaded
 }
 
-console.log('Current NODE_ENV:', process.env.NODE_ENV)
-console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL)
-
 // --- Add other global test setups below ---
 
 // Example: Mocking matchMedia for testing hooks like useIsMobile or other browser APIs
