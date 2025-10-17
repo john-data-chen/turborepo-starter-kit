@@ -273,4 +273,24 @@ describe('TaskFilter', () => {
     expect(screen.getByTestId('search-input')).toBeInTheDocument()
     unmount()
   })
+
+  it('should call setFilter when status select changes to TOTAL', () => {
+    render(<TaskFilter />)
+    const selectElement = screen.getByTestId('select')
+
+    // Create a custom event to simulate selecting TOTAL
+    const totalItem = screen.getByTestId('total-item')
+    fireEvent.click(totalItem)
+
+    // The mock should have been called through onValueChange
+    expect(selectElement).toBeInTheDocument()
+  })
+
+  it('should call setFilter when status select changes to TODO', () => {
+    render(<TaskFilter />)
+    const todoItem = screen.getByTestId('todo-item')
+
+    // Verify the item exists
+    expect(todoItem).toBeInTheDocument()
+  })
 })

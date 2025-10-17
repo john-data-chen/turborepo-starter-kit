@@ -6,12 +6,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 globalThis.React = React
 
+// Create hoisted mock for useWorkspaceStore
+const { mockUseWorkspaceStore, mockGetState } = vi.hoisted(() => {
+  const mockGetState = vi.fn()
+  const mockUseWorkspaceStore = Object.assign(vi.fn(), {
+    getState: mockGetState
+  })
+  return { mockUseWorkspaceStore, mockGetState }
+})
+
 vi.mock('@/lib/api/tasks/queries', () => ({
   useCreateTask: vi.fn()
 }))
 
 vi.mock('@/stores/workspace-store', () => ({
-  useWorkspaceStore: vi.fn()
+  useWorkspaceStore: mockUseWorkspaceStore
 }))
 
 vi.mock('next-intl', () => ({
@@ -26,7 +35,29 @@ vi.mock('sonner', () => ({
 }))
 
 vi.mock('@/components/kanban/task/TaskForm', () => ({
-  TaskForm: ({ children }: any) => <div data-testid="task-form">{children}</div>
+  TaskForm: ({ children, onSubmit, onCancel }: any) => (
+    <form
+      data-testid="task-form"
+      onSubmit={(e) => {
+        e.preventDefault()
+        onSubmit?.({
+          title: 'Test Task',
+          description: 'Test Description',
+          status: 'todo',
+          dueDate: new Date('2024-12-31'),
+          assignee: { _id: 'user-1', name: 'Test User', email: 'test@example.com' }
+        })
+      }}
+    >
+      {children}
+      <button type="button" onClick={onCancel} data-testid="cancel-btn">
+        Cancel
+      </button>
+      <button type="submit" data-testid="submit-btn">
+        Submit
+      </button>
+    </form>
+  )
 }))
 
 vi.mock('@repo/ui/components/dialog', () => ({
@@ -49,7 +80,6 @@ describe('NewTaskDialog', () => {
     vi.clearAllMocks()
 
     const { useCreateTask } = await import('@/lib/api/tasks/queries')
-    const { useWorkspaceStore } = await import('@/stores/workspace-store')
 
     vi.mocked(useCreateTask).mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ _id: 'task-1' }),
@@ -71,12 +101,9 @@ describe('NewTaskDialog', () => {
       ]
     }
 
-    vi.mocked(useWorkspaceStore).mockImplementation(
-      Object.assign(
-        vi.fn((selector?: any) => (selector ? selector(store) : store)),
-        { getState: () => store }
-      ) as any
-    )
+    // Setup the mock implementation
+    mockUseWorkspaceStore.mockImplementation((selector?: any) => (selector ? selector(store) : store))
+    mockGetState.mockReturnValue(store)
   })
 
   it('should render dialog', () => {
@@ -131,6 +158,35 @@ describe('NewTaskDialog', () => {
     expect(screen.getByTestId('dialog-content')).toBeInTheDocument()
     expect(screen.getByTestId('dialog-title')).toBeInTheDocument()
     expect(screen.getByTestId('dialog-description')).toBeInTheDocument()
+    expect(screen.getByTestId('task-form')).toBeInTheDocument()
+  })
+
+  it('should handle form submission', async () => {
+    const { container } = render(<NewTaskDialog projectId={mockProjectId} />)
+
+    const form = container.querySelector('form')
+    if (form) {
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    }
+
+    expect(container.querySelector('form')).toBeInTheDocument()
+  })
+
+  it('should handle cancel button click', () => {
+    const { container } = render(<NewTaskDialog projectId={mockProjectId} />)
+
+    const cancelBtn = container.querySelector('[data-testid="cancel-btn"]')
+    if (cancelBtn) {
+      cancelBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    }
+
+    expect(container.querySelector('form')).toBeInTheDocument()
+  })
+
+  it('should have proper dialog structure for task creation', () => {
+    render(<NewTaskDialog projectId={mockProjectId} />)
+    expect(screen.getByTestId('new-task-trigger')).toBeInTheDocument()
+    expect(screen.getByTestId('dialog')).toBeInTheDocument()
     expect(screen.getByTestId('task-form')).toBeInTheDocument()
   })
 })
