@@ -1,13 +1,13 @@
 import { UnauthorizedException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { JwtStrategy } from '../../../../src/modules/auth/strategies/jwt.strategy'
 import { UserService } from '../../../../src/modules/users/users.service'
 
 describe('JwtStrategy', () => {
   let jwtStrategy: JwtStrategy
   let userService: {
-    findByEmail: vi.fn
+    findByEmail: Mock
   }
 
   const mockUser = {
@@ -16,6 +16,9 @@ describe('JwtStrategy', () => {
   }
 
   beforeEach(async () => {
+    // Mock JWT_SECRET environment variable
+    process.env.JWT_SECRET = 'test-secret-key'
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
