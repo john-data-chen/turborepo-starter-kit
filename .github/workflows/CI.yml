@@ -37,11 +37,6 @@ jobs:
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
         run: pnpm init-db --force
 
-      - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
       - name: Run Unit Tests by Vitest
         # highlight-start
         env:
@@ -70,3 +65,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
