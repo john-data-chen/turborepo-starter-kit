@@ -76,7 +76,7 @@ describe('Breadcrumbs', () => {
     })
 
     const { container } = render(<Breadcrumbs />)
-    expect(container.querySelector('[role="navigation"]')).toBeTruthy()
+    expect(container.querySelector('nav')).toBeTruthy()
   })
 
   it('should render multiple breadcrumb items', async () => {
@@ -109,7 +109,7 @@ describe('Breadcrumbs', () => {
 
   it('should render component structure', () => {
     const { container } = render(<Breadcrumbs />)
-    expect(container.querySelector('[role="navigation"]')).toBeTruthy()
+    expect(container.querySelector('nav')).toBeTruthy()
   })
 
   it('should handle component lifecycle', () => {
