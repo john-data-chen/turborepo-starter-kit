@@ -87,7 +87,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req
   ): Promise<TaskResponseDto> {
-    return this.tasksService.update(id, updateTaskDto, req.user.userId)
+    return this.tasksService.update(id, updateTaskDto, req.user._id)
   }
 
   @Delete(':id')
@@ -100,7 +100,7 @@ export class TasksController {
     description: 'Forbidden - Only the task creator can delete the task'
   })
   remove(@Param('id', ParseObjectIdPipe) id: string, @Req() req): Promise<void> {
-    return this.tasksService.remove(id, req.user.userId)
+    return this.tasksService.remove(id, req.user._id)
   }
 
   @Patch(':id/move')
@@ -118,7 +118,6 @@ export class TasksController {
     @Body() moveData: { projectId: string; orderInProject: number },
     @Req() req
   ): Promise<TaskResponseDto> {
-    console.log('Move task - User from request:', req.user) // Debug log
     if (!req.user || !req.user._id) {
       throw new UnauthorizedException('User not authenticated')
     }

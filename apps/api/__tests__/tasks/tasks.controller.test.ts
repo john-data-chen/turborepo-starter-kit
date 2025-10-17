@@ -68,7 +68,7 @@ describe('TasksController', () => {
   describe('update', () => {
     it('should update a task', async () => {
       const updateTaskDto = { title: 'Test Task Updated' }
-      const req = { user: { userId: '1' } }
+      const req = { user: { _id: '1' } }
       const result = { _id: '1', title: 'Test Task Updated' }
 
       vi.spyOn(service, 'update').mockResolvedValue(result as any)
@@ -80,7 +80,7 @@ describe('TasksController', () => {
 
   describe('remove', () => {
     it('should remove a task', async () => {
-      const req = { user: { userId: '1' } }
+      const req = { user: { _id: '1' } }
 
       vi.spyOn(service, 'remove').mockResolvedValue(undefined)
 

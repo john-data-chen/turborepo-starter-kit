@@ -98,7 +98,7 @@ describe('ProjectsService', () => {
       })
       projectModel.findById = vi.fn().mockReturnValue({
         populate: vi.fn().mockReturnThis(),
-        lean: vi.fn().mockResolvedValue({ ...createProjectDto, _id: '1' })
+        exec: vi.fn().mockResolvedValue({ ...createProjectDto, _id: '1' })
       })
 
       // oxlint-disable-next-line no-unused-vars
@@ -124,9 +124,10 @@ describe('ProjectsService', () => {
     it('should find projects by board id', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const projectModel = module.get(getModelToken(Project.name))
-      projectModel.find = vi
-        .fn()
-        .mockReturnValue({ populate: vi.fn().mockReturnThis(), lean: vi.fn().mockResolvedValue([]) })
+      projectModel.find = vi.fn().mockReturnValue({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockResolvedValue([])
+      })
 
       await service.findByBoardId(boardId)
 
@@ -144,7 +145,7 @@ describe('ProjectsService', () => {
       projectModel.findById = vi.fn().mockResolvedValue(project)
       projectModel.findByIdAndUpdate = vi.fn().mockReturnValue({
         populate: vi.fn().mockReturnThis(),
-        lean: vi.fn().mockResolvedValue(project)
+        exec: vi.fn().mockResolvedValue(project)
       })
 
       await service.update(projectId, updateProjectDto as any, userId)

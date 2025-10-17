@@ -125,7 +125,11 @@ describe('BoardService', () => {
     it('should remove a board', async () => {
       const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const board = { _id: boardId, owner: { equals: () => true }, members: [] }
+      const board = {
+        _id: boardId,
+        owner: { toString: () => userId },
+        members: []
+      }
 
       ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
       ;(boardModel.deleteOne as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })

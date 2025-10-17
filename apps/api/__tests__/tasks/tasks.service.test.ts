@@ -250,7 +250,7 @@ describe('TasksService', () => {
         status: 'TODO',
         project: '60f6e1b3b3f3b3b3b3f3b3b4',
         board: '60f6e1b3b3f3b3b3b3f3b3b5',
-        creator: { _id: new Types.ObjectId(userId), equals: () => true },
+        creator: new Types.ObjectId(userId),
         assignee: null,
         lastModifier: { _id: userId, name: 'Test User', email: 'test@example.com' },
         createdAt: new Date(),
@@ -274,7 +274,7 @@ describe('TasksService', () => {
     it('should remove a task', async () => {
       const taskId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const task = { _id: taskId, creator: { equals: () => true }, project: '1', orderInProject: 0 }
+      const task = { _id: taskId, creator: new Types.ObjectId(userId), project: '1', orderInProject: 0 }
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(task)
       taskModel.deleteOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
@@ -298,7 +298,8 @@ describe('TasksService', () => {
     it('should throw forbidden exception when removing a task without being the creator', async () => {
       const taskId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const task = { _id: taskId, creator: { equals: () => false }, project: '1', orderInProject: 0 }
+      const differentUserId = '60f6e1b3b3f3b3b3b3f3b3b4'
+      const task = { _id: taskId, creator: new Types.ObjectId(differentUserId), project: '1', orderInProject: 0 }
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(task)
 
@@ -404,8 +405,9 @@ describe('TasksService', () => {
     it('should throw forbidden exception when updating a task without permission', async () => {
       const taskId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+      const differentUserId = '60f6e1b3b3f3b3b3b3f3b3b4'
       const updateTaskDto = { title: 'Test Task Updated' }
-      const task = { _id: taskId, creator: { equals: () => false }, assignee: { equals: () => false } }
+      const task = { _id: taskId, creator: new Types.ObjectId(differentUserId), assignee: null }
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(task)
 

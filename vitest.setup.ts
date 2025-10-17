@@ -21,9 +21,6 @@ if (result.error) {
   console.log('DATABASE_URL loaded:', process.env.DATABASE_URL) // Optional: Check if variable is loaded
 }
 
-console.log('Current NODE_ENV:', process.env.NODE_ENV)
-console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL)
-
 // --- Add other global test setups below ---
 
 // Example: Mocking matchMedia for testing hooks like useIsMobile or other browser APIs
@@ -48,6 +45,51 @@ if (typeof window !== 'undefined') {
 }
 
 // You can add other global mocks or configurations here
+
+// Mock @repo/ui components (note: @repo/ui/components/* exports from /src/components/ui/*)
+vi.mock('@repo/ui/components/button', () => ({
+  Button: ({ children, className, onClick, ...props }: any) => {
+    const React = require('react')
+    return React.createElement('button', { className, onClick, ...props }, children)
+  }
+}))
+
+vi.mock('@repo/ui/components/card', () => {
+  const React = require('react')
+  return {
+    Card: ({ children, className, onClick }: any) => React.createElement('div', { className, onClick }, children),
+    CardHeader: ({ children }: any) => React.createElement('div', null, children),
+    CardTitle: ({ children }: any) => React.createElement('h3', null, children),
+    CardContent: ({ children }: any) => React.createElement('div', null, children)
+  }
+})
+
+vi.mock('@repo/ui/components/input', () => ({
+  Input: (props: any) => {
+    const React = require('react')
+    return React.createElement('input', props)
+  }
+}))
+
+vi.mock('@repo/ui/components/select', () => {
+  const React = require('react')
+  return {
+    Select: ({ children, value, onValueChange }: any) =>
+      React.createElement('div', { 'data-value': value, onClick: () => onValueChange?.('test') }, children),
+    SelectTrigger: ({ children, ...props }: any) => React.createElement('div', props, children),
+    SelectValue: ({ placeholder }: any) => React.createElement('span', null, placeholder),
+    SelectContent: ({ children }: any) => React.createElement('div', null, children),
+    SelectItem: ({ children, value, ...props }: any) =>
+      React.createElement('div', { ...props, 'data-value': value }, children)
+  }
+})
+
+vi.mock('@repo/ui/components/skeleton', () => ({
+  Skeleton: ({ className }: any) => {
+    const React = require('react')
+    return React.createElement('div', { className, 'data-testid': 'skeleton' })
+  }
+}))
 
 vi.mock('next/navigation', () => {
   const actual = vi.importActual('next/navigation')

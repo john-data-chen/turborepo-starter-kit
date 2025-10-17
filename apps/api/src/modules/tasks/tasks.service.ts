@@ -30,14 +30,11 @@ export class TasksService {
         project: new Types.ObjectId(projectId)
       })
       .exec()
-
-    console.log(`Deleted ${result.deletedCount} tasks for project ${projectId}`)
     return { deletedCount: result.deletedCount || 0 }
   }
 
   private toUserResponse(user: any) {
     if (!user) {
-      console.log('User is null or undefined')
       return null
     }
     return {
@@ -84,7 +81,6 @@ export class TasksService {
         response.lastModifier = this.toUserResponse(populatedTask.lastModifier)
       } else if (task.lastModifier) {
         // If population failed but we have the ID, create a minimal user object
-        console.log('Using fallback for lastModifier with ID:', task.lastModifier)
         response.lastModifier = {
           _id: task.lastModifier.toString(),
           name: 'Unknown',
@@ -92,7 +88,6 @@ export class TasksService {
         }
       } else {
         // If no lastModifier at all, use creator as fallback
-        console.log('No lastModifier found, falling back to creator')
         response.lastModifier = response.creator
       }
 
@@ -188,22 +183,19 @@ export class TasksService {
   }
 
   private async checkTaskPermission(taskId: string, userId: string, requireCreator = false): Promise<TaskDocument> {
-    console.log('checkTaskPermission called:')
-    console.log('  taskId:', taskId)
-    console.log('  userId:', userId)
     const task = await this.taskModel.findById(taskId)
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`)
     }
-    console.log('  Found task.creator:', task.creator)
-    console.log('  Found task.assignee:', task.assignee)
 
-    const userIdObj = new Types.ObjectId(userId)
-    console.log('  userIdObj:', userIdObj)
-    const isCreator = task.creator && task.creator.equals(userIdObj)
-    const isAssignee = task.assignee && task.assignee.equals(userIdObj)
-    console.log('  isCreator:', isCreator)
-    console.log('  isAssignee:', isAssignee)
+    // Convert all IDs to strings for consistent comparison
+    // Handle both ObjectId and string inputs
+    const userIdString = userId?.toString()
+    const creatorIdString = task.creator?.toString()
+    const assigneeIdString = task.assignee?.toString()
+
+    const isCreator = creatorIdString === userIdString
+    const isAssignee = assigneeIdString === userIdString
 
     if (requireCreator && !isCreator) {
       throw new ForbiddenException('Only the task creator can perform this action')
@@ -286,11 +278,6 @@ export class TasksService {
   ): Promise<TaskResponseDto> {
     // Check if user has permission to edit this task
     await this.checkTaskPermission(taskId, userId)
-    console.log('=== moveTask called ===')
-    console.log('Task ID:', taskId)
-    console.log('New Project ID:', newProjectId)
-    console.log('New Order:', newOrderInProject)
-    console.log('User ID:', userId)
 
     // Validate inputs
     if (!Types.ObjectId.isValid(taskId)) {
@@ -311,14 +298,8 @@ export class TasksService {
 
     const oldProjectId = task.project.toString()
     const oldOrderInProject = task.orderInProject ?? 0
-
-    console.log('Old Project ID:', oldProjectId)
-    console.log('Old Order:', oldOrderInProject)
-
     // If moving to the same project, just update the order
     if (oldProjectId === newProjectId) {
-      console.log('Moving within the same project')
-
       // Update the task's order
       task.project = new Types.ObjectId(newProjectId)
       task.orderInProject = newOrderInProject
@@ -358,8 +339,6 @@ export class TasksService {
         }
       }
     } else {
-      console.log('Moving to a different project')
-
       // Update the task's project and order
       task.project = new Types.ObjectId(newProjectId)
       task.orderInProject = newOrderInProject
@@ -400,7 +379,6 @@ export class TasksService {
       throw new NotFoundException('Task not found after update')
     }
 
-    console.log('Task moved successfully')
     return await this.toTaskResponse(updatedTask)
   }
 }

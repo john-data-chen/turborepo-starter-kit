@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Task, TaskStatus } from '@/types/dbInterface'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -49,31 +48,12 @@ function getLastField(task: Task): string {
 export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = false }: TaskCardProps) {
   const t = useTranslations('kanban.task')
 
-  // Debug log for component props
-  console.log(`[TaskCard] Rendering task: ${task._id}`, {
-    taskId: task._id,
-    title: task.title,
-    isOverlay,
-    isDragEnabled,
-    timestamp: new Date().toISOString()
-  })
-
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
-    console.log(`[TaskCard] Skipping deleted task: ${task?._id || 'undefined'}`)
     return null
   }
 
-  // Log before useSortable
-  console.log(`[TaskCard] useSortable config for task: ${task._id}`, {
-    taskId: task._id,
-    isOverlay,
-    isDragEnabled,
-    dragDisabled: isOverlay || !isDragEnabled,
-    timestamp: new Date().toISOString()
-  })
-
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging, active, over } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: task._id,
     data: {
       type: 'Task',
@@ -88,20 +68,6 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
       'data-draggable': String(isDragEnabled && !isOverlay)
     }
   })
-
-  // Log after useSortable
-  useEffect(() => {
-    console.log(`[TaskCard] useSortable state for task: ${task._id}`, {
-      taskId: task._id,
-      isDragging,
-      active: active?.id,
-      over: over?.id,
-      transform: transform ? 'has-transform' : 'no-transform',
-      isDragEnabled,
-      isOverlay,
-      timestamp: new Date().toISOString()
-    })
-  }, [isDragging, active, over, transform, task._id, isDragEnabled, isOverlay])
 
   const cardStyle: React.CSSProperties = {
     transition,
@@ -119,27 +85,6 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
 
   type DragState = 'over' | 'overlay' | undefined
   const dragState: DragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
-
-  // Log drag state changes
-  useEffect(() => {
-    if (isDragging) {
-      console.log(`[TaskCard] Drag started for task: ${task._id}`, {
-        taskId: task._id,
-        isOverlay,
-        isDragEnabled,
-        timestamp: new Date().toISOString()
-      })
-    }
-
-    return () => {
-      if (isDragging) {
-        console.log(`[TaskCard] Drag ended for task: ${task._id}`, {
-          taskId: task._id,
-          timestamp: new Date().toISOString()
-        })
-      }
-    }
-  }, [isDragging, task._id, isOverlay, isDragEnabled])
 
   const statusConfig: Record<
     TaskStatus,
@@ -171,21 +116,20 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
       {...(isDragEnabled ? attributes : {})}
     >
       <CardHeader className="flex flex-row border-b-2 px-3 pb-2">
-        <div
-          className={cn(
-            'text-muted-foreground/30 flex h-8 w-8 flex-shrink-0 items-center justify-center',
-            isDragEnabled && 'cursor-grab active:cursor-grabbing'
-          )}
-          {...(isDragEnabled ? listeners : {})}
-        >
-          {isDragEnabled && (
-            <div title={t('moveTask')}>
-              <PointerIcon className="h-4 w-4" aria-label={t('moveTask')} />
-            </div>
-          )}
-        </div>
+        {isDragEnabled ? (
+          <div
+            {...attributes}
+            {...listeners}
+            className="flex h-8 w-16 cursor-grab items-center justify-center rounded-md text-primary/50 transition-colors hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+          >
+            <span className="sr-only">drag task: {task.title}</span>
+            <PointerIcon className="h-4 w-4" />
+          </div>
+        ) : (
+          <div className="h-8 w-16" />
+        )}
         <div className="mx-2 flex flex-1 flex-col items-start gap-2">
-          {task.title && <h3 className="text-lg font-medium leading-none tracking-tight">{task.title}</h3>}
+          {task.title && <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>}
           <Badge variant="secondary" className={cn('text-white', task.status && statusConfig[task.status]?.className)}>
             {task.status ? statusConfig[task.status]?.label : t('noStatus')}
           </Badge>
@@ -206,7 +150,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.creator && (
           <div className={getLastField(task) !== 'creator' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('createdBy', { name: task.creator.name })}</span>
               </div>
@@ -216,7 +160,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.lastModifier && (
           <div className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('lastModifiedBy', { name: task.lastModifier.name })}</span>
               </div>
@@ -226,7 +170,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.assignee && (
           <div className={getLastField(task) !== 'assignee' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('assignee', { name: task.assignee.name })}</span>
               </div>
@@ -236,7 +180,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.dueDate && (
           <div className={getLastField(task) !== 'dueDate' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar1Icon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>
                   {t('dueDate')}: {task.dueDate ? format(new Date(task.dueDate), 'yyyy/MM/dd') : ''}
@@ -249,8 +193,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
           <div>
             <CardContent className="px-3 py-2">
               <div className="flex items-start gap-2">
-                <FileTextIcon className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
-                <p className="text-muted-foreground text-sm leading-relaxed" data-testid="task-card-description">
+                <FileTextIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                <p className="text-sm leading-relaxed text-muted-foreground" data-testid="task-card-description">
                   {task.description}
                 </p>
               </div>

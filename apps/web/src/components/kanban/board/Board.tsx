@@ -311,7 +311,6 @@ export function Board() {
                   lastModifier: userId // This is required by the UpdateTaskInput type
                 }
 
-                console.log('Updating task:', task._id, 'with data:', updateData)
                 await taskApi.updateTask(task._id, updateData)
               } catch (error) {
                 console.error(`Failed to update task ${task._id}:`, error)
@@ -398,12 +397,8 @@ export function Board() {
 
         // Only update if the order actually changed
         if (oldIndex !== newIndex) {
-          console.log(`Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`)
-
           // Import projectApi dynamically to avoid circular dependency
           const { projectApi } = await import('@/lib/api/projectApi')
-
-          console.log(`Updating project ${project._id} orderInBoard from ${oldIndex} to ${newIndex}`)
 
           // Ensure orderInBoard is a number
           const order = typeof newIndex === 'number' ? newIndex : Number(newIndex)
@@ -415,13 +410,6 @@ export function Board() {
           const updateData = {
             orderInBoard: order
           }
-
-          console.log('Updating project with data:', {
-            projectId: project._id,
-            updateData,
-            newIndexType: typeof newIndex,
-            orderType: typeof order
-          })
 
           return projectApi.updateProject(project._id, updateData)
         }
@@ -574,7 +562,7 @@ export function Board() {
         </div>
         <BoardContainer>
           {isLoadingProjects ? (
-            <Skeleton className="bg-secondary flex h-[75vh] max-h-[75vh] w-full shrink-0 snap-center flex-col md:w-[380px]" />
+            <Skeleton className="flex h-[75vh] max-h-[75vh] w-full shrink-0 snap-center flex-col bg-secondary md:w-[380px]" />
           ) : (
             <SortableContext items={projectsId}>
               {projects?.map((project: Project) => (

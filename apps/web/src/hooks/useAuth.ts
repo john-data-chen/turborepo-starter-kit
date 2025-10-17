@@ -223,9 +223,6 @@ export function useAuthForm() {
       const redirectPath = getLocalePath('/boards', locale)
       const redirectUrl = `${redirectPath}?${URL_PARAMS.LOGIN_SUCCESS}`
 
-      // Navigate to boards page with login success parameter
-      console.log('[useAuthForm] Navigating to:', redirectUrl)
-
       // Add a small delay to ensure the cookie is properly set before redirect
       setTimeout(() => {
         window.location.href = redirectUrl

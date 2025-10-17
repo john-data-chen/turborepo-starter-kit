@@ -102,7 +102,6 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     const loadAssigneeData = async () => {
       // If we already have assignee data in the expected format, use it directly
       if (defaultValues?.assignee && typeof defaultValues.assignee === 'object' && '_id' in defaultValues.assignee) {
-        console.log('Using provided assignee data:', defaultValues.assignee)
         return
       }
 
@@ -134,7 +133,6 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
         try {
           const userData = await userApi.getUserById(assigneeId)
           if (userData) {
-            console.log('Fetched user data:', userData)
             setUsers((prev) => [...prev, userData])
             form.setValue('assignee', {
               _id: userData._id,

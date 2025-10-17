@@ -32,8 +32,6 @@ export class ProjectsService {
         board: new Types.ObjectId(boardId)
       })
       .exec()
-
-    console.log(`Deleted ${result.deletedCount} projects for board ${boardId}`)
     return { deletedCount: result.deletedCount || 0 }
   }
 
@@ -47,18 +45,16 @@ export class ProjectsService {
       .populate('board', 'title')
       .populate('owner', 'name email') // Populate owner with name and email
       .populate('members', 'name email') // Populate members with name and email
-      .lean()
+      .exec()
 
     if (!projects || projects.length === 0) {
       return []
     }
 
-    return projects as ProjectDocument[]
+    return projects
   }
 
   async update(id: string, updateProjectDto: UpdateProjectDto, userId: string): Promise<ProjectDocument> {
-    console.log('Update request received:', { id, updateProjectDto, userId })
-
     if (!Types.ObjectId.isValid(id)) {
       const error = 'Invalid project ID'
       console.error(error, { id })
@@ -71,16 +67,12 @@ export class ProjectsService {
       throw new BadRequestException(error)
     }
 
-    console.log('Finding project with ID:', id)
     const project = await this.projectModel.findById(id)
     if (!project) {
       const error = 'Project not found'
       console.error(error, { id })
       throw new NotFoundException(error)
     }
-
-    console.log('Found project:', project)
-    console.log('Checking permissions...')
 
     // Convert userId to string to ensure consistent comparison
     const userIdString = userId.toString()
@@ -125,8 +117,6 @@ export class ProjectsService {
       }
     }
 
-    console.log('Updating project with data:', updateProjectDto)
-
     // Prepare update data
     const updateData: Partial<Project> = {}
 
@@ -155,22 +145,18 @@ export class ProjectsService {
       updateData.orderInBoard = updateProjectDto.orderInBoard
     }
 
-    console.log('Updating project with data:', updateData)
-
     try {
       const updatedProject = await this.projectModel
         .findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
         .populate('owner', 'name email')
         .populate('members', 'name email')
         .populate('assignee', 'name email')
-        .lean()
+        .exec()
 
       if (!updatedProject) {
         throw new NotFoundException('Project not found after update')
       }
-
-      console.log('Project updated successfully:', updatedProject)
-      return updatedProject as ProjectDocument
+      return updatedProject
     } catch (error) {
       console.error('Error updating project:', error)
       if (error instanceof Error && error.name === 'ValidationError') {
@@ -181,8 +167,6 @@ export class ProjectsService {
   }
 
   async remove(id: string, userId: string): Promise<{ message: string }> {
-    console.log('Delete request received:', { id, userId })
-
     if (!Types.ObjectId.isValid(id)) {
       const error = 'Invalid project ID'
       console.error(error, { id })
@@ -195,7 +179,6 @@ export class ProjectsService {
       throw new BadRequestException(error)
     }
 
-    console.log('Finding project with ID:', id)
     const project = await this.projectModel.findById(id)
     if (!project) {
       const error = 'Project not found'
@@ -216,12 +199,9 @@ export class ProjectsService {
     // Store project info before deletion for reordering
     const { board: boardId, orderInBoard: deletedOrder } = project
 
-    console.log('Deleting project and associated tasks...')
-
     // First delete all tasks associated with this project
     try {
-      const deleteResult = await this.tasksService.deleteTasksByProjectId(id)
-      console.log(`Deleted ${deleteResult.deletedCount} tasks for project ${id}`)
+      await this.tasksService.deleteTasksByProjectId(id)
     } catch (error) {
       console.error('Error deleting tasks for project:', error)
       // We'll continue with project deletion even if task deletion fails
@@ -240,9 +220,7 @@ export class ProjectsService {
     // Reorder remaining projects in the same board
     // Decrease orderInBoard by 1 for all projects with order greater than deleted project
     if (deletedOrder !== undefined) {
-      console.log(`Reordering projects in board ${boardId} after deleting project with order ${deletedOrder}`)
-
-      const reorderResult = await this.projectModel
+      await this.projectModel
         .updateMany(
           {
             board: boardId,
@@ -253,11 +231,7 @@ export class ProjectsService {
           }
         )
         .exec()
-
-      console.log(`Reordered ${reorderResult.modifiedCount} projects in board ${boardId}`)
     }
-
-    console.log('Project, associated tasks, and project order updated successfully')
     return { message: 'Project deleted successfully' }
   }
 
@@ -290,19 +264,7 @@ export class ProjectsService {
 
   async create(createProjectDto: CreateProjectDto & { owner: string }): Promise<ProjectDocument> {
     try {
-      console.log('Raw createProjectDto received in service:', JSON.stringify(createProjectDto, null, 2))
-
       const { title, description, boardId, owner } = createProjectDto
-
-      console.log('Processed fields in service:', {
-        title,
-        description,
-        boardId,
-        owner,
-        isBoardIdValid: Types.ObjectId.isValid(boardId),
-        isOwnerValid: Types.ObjectId.isValid(owner),
-        ownerType: typeof owner
-      })
 
       if (!Types.ObjectId.isValid(boardId)) {
         console.error('Invalid board ID:', boardId)
@@ -339,22 +301,6 @@ export class ProjectsService {
 
       const project = new this.projectModel(projectData)
 
-      console.log(
-        'Saving project with data:',
-        JSON.stringify(
-          {
-            title: projectData.title,
-            description: projectData.description,
-            board: projectData.board,
-            owner: projectData.owner,
-            members: projectData.members,
-            orderInBoard: projectData.orderInBoard
-          },
-          null,
-          2
-        )
-      )
-
       const savedProject = await project.save()
 
       // Populate the owner and members before returning
@@ -362,24 +308,13 @@ export class ProjectsService {
         .findById(savedProject._id)
         .populate('owner', 'name email')
         .populate('members', 'name email')
-        .lean()
+        .exec()
 
-      console.log(
-        'Successfully created and populated project:',
-        JSON.stringify(
-          {
-            _id: populatedProject._id,
-            title: populatedProject.title,
-            owner: populatedProject.owner,
-            members: populatedProject.members,
-            board: populatedProject.board
-          },
-          null,
-          2
-        )
-      )
+      if (!populatedProject) {
+        throw new NotFoundException('Project not found after creation')
+      }
 
-      return populatedProject as ProjectDocument
+      return populatedProject
     } catch (error) {
       console.error('Error creating project:', error)
       throw error // Re-throw the error to be handled by the controller
