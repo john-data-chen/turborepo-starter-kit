@@ -32,6 +32,8 @@ export default defineConfig({
     alias: {
       ...rootConfig.resolve?.alias,
       '@': path.resolve(__dirname, './src'),
+      '@repo/ui/components': path.resolve(__dirname, '../../packages/ui/src/components/ui'),
+      '@repo/ui/lib': path.resolve(__dirname, '../../packages/ui/src/lib'),
       '@repo/ui': path.resolve(__dirname, '../../packages/ui/src')
     }
   }

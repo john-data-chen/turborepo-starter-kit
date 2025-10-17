@@ -85,8 +85,13 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
+  // Note: Playwright tests require both web and API servers to be running.
+  // The web server will start automatically, but you must manually start:
+  // 1. MongoDB (docker compose up -d or local instance)
+  // 2. API server (pnpm --filter=turborepo-starter-kit-api dev)
+  // before running these tests locally. In CI, these are started as part of the workflow.
   webServer: {
-    command: 'pnpm dev',
+    command: 'pnpm --filter=turborepo-starter-kit-web dev',
     url: baseURL, // Use the resolved baseURL
     reuseExistingServer: !process.env.CI,
     // Pass the resolved environment variables to the web server process
