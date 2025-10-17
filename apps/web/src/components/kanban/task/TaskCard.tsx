@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
 import { Task, TaskStatus } from '@/types/dbInterface'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Badge } from '@repo/ui/components/badge'
-import { Button } from '@repo/ui/components/button'
 import { Card, CardContent, CardHeader } from '@repo/ui/components/card'
 import { cn } from '@repo/ui/lib/utils'
 import { cva } from 'class-variance-authority'
@@ -50,31 +48,12 @@ function getLastField(task: Task): string {
 export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = false }: TaskCardProps) {
   const t = useTranslations('kanban.task')
 
-  // Debug log for component props
-  console.log(`[TaskCard] Rendering task: ${task._id}`, {
-    taskId: task._id,
-    title: task.title,
-    isOverlay,
-    isDragEnabled,
-    timestamp: new Date().toISOString()
-  })
-
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
-    console.log(`[TaskCard] Skipping deleted task: ${task?._id || 'undefined'}`)
     return null
   }
 
-  // Log before useSortable
-  console.log(`[TaskCard] useSortable config for task: ${task._id}`, {
-    taskId: task._id,
-    isOverlay,
-    isDragEnabled,
-    dragDisabled: isOverlay || !isDragEnabled,
-    timestamp: new Date().toISOString()
-  })
-
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging, active, over } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: task._id,
     data: {
       type: 'Task',
@@ -89,20 +68,6 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
       'data-draggable': String(isDragEnabled && !isOverlay)
     }
   })
-
-  // Log after useSortable
-  useEffect(() => {
-    console.log(`[TaskCard] useSortable state for task: ${task._id}`, {
-      taskId: task._id,
-      isDragging,
-      active: active?.id,
-      over: over?.id,
-      transform: transform ? 'has-transform' : 'no-transform',
-      isDragEnabled,
-      isOverlay,
-      timestamp: new Date().toISOString()
-    })
-  }, [isDragging, active, over, transform, task._id, isDragEnabled, isOverlay])
 
   const cardStyle: React.CSSProperties = {
     transition,
@@ -120,27 +85,6 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
 
   type DragState = 'over' | 'overlay' | undefined
   const dragState: DragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
-
-  // Log drag state changes
-  useEffect(() => {
-    if (isDragging) {
-      console.log(`[TaskCard] Drag started for task: ${task._id}`, {
-        taskId: task._id,
-        isOverlay,
-        isDragEnabled,
-        timestamp: new Date().toISOString()
-      })
-    }
-
-    return () => {
-      if (isDragging) {
-        console.log(`[TaskCard] Drag ended for task: ${task._id}`, {
-          taskId: task._id,
-          timestamp: new Date().toISOString()
-        })
-      }
-    }
-  }, [isDragging, task._id, isOverlay, isDragEnabled])
 
   const statusConfig: Record<
     TaskStatus,

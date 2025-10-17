@@ -118,7 +118,6 @@ export class TasksController {
     @Body() moveData: { projectId: string; orderInProject: number },
     @Req() req
   ): Promise<TaskResponseDto> {
-    console.log('Move task - User from request:', req.user) // Debug log
     if (!req.user || !req.user._id) {
       throw new UnauthorizedException('User not authenticated')
     }

@@ -19,12 +19,6 @@ export class AuthService {
         body: JSON.stringify({ email })
       })
 
-      console.log(`[${requestId}] [AuthService] Login response status:`, response.status)
-      console.log(
-        `[${requestId}] [AuthService] Login response headers:`,
-        Object.fromEntries(response.headers.entries())
-      )
-
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Login failed')
         console.error(`[${requestId}] [AuthService] Login error:`, {
@@ -37,25 +31,10 @@ export class AuthService {
 
       // Get the response data
       const data = await response.json()
-      console.log(`[${requestId}] [AuthService] Login successful, response data:`, data)
-
-      // Check if cookies were set
-      console.log(`[${requestId}] [AuthService] Cookies after login:`, document.cookie)
-
-      // Check for specific cookies
-      const jwtCookie = document.cookie.split(';').find((c) => c.trim().startsWith('jwt='))
-      const authCookie = document.cookie.split(';').find((c) => c.trim().startsWith('isAuthenticated='))
-      console.log(
-        `[${requestId}] [AuthService] JWT cookie in document.cookie:`,
-        !!jwtCookie,
-        '(should be false for httpOnly cookies)'
-      )
-      console.log(`[${requestId}] [AuthService] Auth cookie found:`, !!authCookie)
 
       // Store the token for Authorization header
       if (data.access_token) {
         localStorage.setItem('auth_token', data.access_token)
-        console.log(`[${requestId}] [AuthService] Token stored in localStorage`)
       }
 
       return {
@@ -70,13 +49,6 @@ export class AuthService {
 
   static async getProfile(): Promise<UserInfo> {
     const requestId = Math.random().toString(36).substring(2, 8)
-
-    // Check for specific cookies
-    // Note: JWT cookie is httpOnly, so it won't appear in document.cookie - this is expected!
-    const jwtCookie = document.cookie.split(';').find((c) => c.trim().startsWith('jwt='))
-    if (jwtCookie) {
-      console.log(`[${requestId}] [AuthService] JWT cookie length:`, jwtCookie.length)
-    }
 
     // Try to get token from localStorage for Authorization header
     const token = localStorage.getItem('auth_token')
@@ -133,8 +105,6 @@ export class AuthService {
 
   static async getSession(): Promise<Session | null> {
     try {
-      console.log('Getting session...')
-
       // First try to get the profile using the HTTP-only cookie
       const user = await this.getProfile()
 
@@ -142,12 +112,6 @@ export class AuthService {
         console.log('No user found in session')
         return null
       }
-
-      console.log('Session user found:', {
-        id: user._id,
-        email: user.email,
-        name: user.name
-      })
 
       return {
         user: {
@@ -168,7 +132,6 @@ export class AuthService {
     if (typeof window !== 'undefined') {
       Cookies.remove('jwt', { path: '/' })
       localStorage.removeItem('auth_token')
-      console.log('[AuthService] Cleared cookies and localStorage token')
     }
   }
 }

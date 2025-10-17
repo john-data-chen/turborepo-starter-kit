@@ -222,8 +222,6 @@ export const useWorkspaceStore = create<State>()(
 
           const orderInBoard = maxOrder + 1
 
-          console.log('Creating project with orderInBoard:', orderInBoard)
-
           const newProject = await createProject({
             title,
             description,
@@ -334,8 +332,6 @@ export const useWorkspaceStore = create<State>()(
             calculatedOrderInProject = 0 // Default value if no order is provided
           }
           calculatedOrderInProject = currentTasks.length
-
-          console.log('Using orderInProject:', calculatedOrderInProject)
 
           const taskInput: CreateTaskInput = {
             title,

@@ -64,13 +64,7 @@ export class ProjectsController {
     @CurrentUser() user: { _id: string }
   ) {
     try {
-      console.log('Update endpoint called with:', {
-        id,
-        updateProjectDto,
-        userId: user._id
-      })
       const updatedProject = await this.projectsService.update(id, updateProjectDto, user._id)
-      console.log('Update successful, returning:', updatedProject)
       return updatedProject
     } catch (error) {
       console.error('Error in update endpoint:', error)
@@ -90,12 +84,7 @@ export class ProjectsController {
   @ApiResponse({ status: 404, description: 'Project not found' })
   async remove(@Param('id') id: string, @CurrentUser() user: { _id: string }) {
     try {
-      console.log('Delete endpoint called for project:', {
-        id,
-        userId: user._id
-      })
       await this.projectsService.remove(id, user._id)
-      console.log('Project deleted successfully:', { id })
       return { success: true, message: 'Project deleted successfully' }
     } catch (error) {
       console.error('Error in delete endpoint:', error)

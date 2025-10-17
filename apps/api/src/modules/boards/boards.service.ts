@@ -354,20 +354,15 @@ export class BoardService {
     const isOwner = board.owner.toString() === userIdString
     const isMember = board.members.some((memberId) => memberId.toString() === userIdString)
 
-    console.log('[BoardService.update] Is owner:', isOwner)
-    console.log('[BoardService.update] Is member:', isMember)
-
     if (!isOwner && !isMember) {
       console.error('[BoardService.update] User has no permission to update board')
       throw new NotFoundException(`Board with ID "${id}" not found or access denied`)
     }
 
     // Update the board
-    console.log('[BoardService.update] Updating board...')
     await this.boardModel.findByIdAndUpdate(id, { $set: updateBoardDto }, { new: true }).exec()
 
     // Return the fully populated board using the same approach as findOne()
-    console.log('[BoardService.update] Fetching updated board...')
     return this.findOne(id, userId)
   }
 
@@ -395,13 +390,11 @@ export class BoardService {
     try {
       // First, find all projects associated with this board
       const projects = await this.projectsService.findByBoardId(id)
-      console.log(`Found ${projects.length} projects to delete for board ${id}`)
 
       // Delete all tasks for each project
       for (const project of projects) {
         try {
-          const deleteResult = await this.tasksService.deleteTasksByProjectId(project._id.toString())
-          console.log(`Deleted ${deleteResult.deletedCount} tasks for project ${project._id}`)
+          await this.tasksService.deleteTasksByProjectId(project._id.toString())
         } catch (error) {
           console.error(`Error deleting tasks for project ${project._id}:`, error)
           // Continue with next project even if one fails
@@ -409,8 +402,7 @@ export class BoardService {
       }
 
       // Delete all projects for this board
-      const deleteProjectsResult = await this.projectsService.deleteByBoardId(id)
-      console.log(`Deleted ${deleteProjectsResult.deletedCount} projects for board ${id}`)
+      await this.projectsService.deleteByBoardId(id)
 
       // Finally, delete the board itself
       const result = await this.boardModel.deleteOne({ _id: id }).exec()
@@ -420,8 +412,6 @@ export class BoardService {
         console.error(`[BoardService] Failed to delete board ${id} for unknown reason`)
         throw new NotFoundException(`Failed to delete board with ID "${id}"`)
       }
-
-      console.log(`Successfully deleted board ${id} and all associated data`)
       return { message: 'Board deleted successfully' }
     } catch (error) {
       console.error(`Error during board deletion for board ${id}:`, error)
