@@ -41,3 +41,33 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+      - name: Run Unit Tests by Vitest
+        # highlight-start
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
+          # Add any other environment variables needed specifically for tests
+        run: pnpm test
+
+        - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v5
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            slug: john-data-chen/turborepo-starter-kit
+
+        - name: Install Playwright Browsers
+          run: pnpm exec playwright install --with-deps
+        - name: Run Playwright tests
+          env:
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          run: pnpm playwright
+          - uses: actions/upload-artifact@v4
+          if: ${{ !cancelled() }}
+          with:
+            name: playwright-report
+            path: playwright-report/
+            retention-days: 30
