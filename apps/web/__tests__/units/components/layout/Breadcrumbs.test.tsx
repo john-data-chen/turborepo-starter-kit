@@ -14,7 +14,11 @@ vi.mock('@/hooks/useBreadcrumbs', () => ({
 
 // Mock Breadcrumb components
 vi.mock('@repo/ui/components/breadcrumb', () => ({
-  Breadcrumb: ({ children }: any) => <nav data-testid="breadcrumb">{children}</nav>,
+  Breadcrumb: ({ children }: any) => (
+    <nav aria-label="breadcrumb" data-testid="breadcrumb">
+      {children}
+    </nav>
+  ),
   BreadcrumbList: ({ children }: any) => <ol data-testid="breadcrumb-list">{children}</ol>,
   BreadcrumbItem: ({ children }: any) => <li data-testid="breadcrumb-item">{children}</li>,
   BreadcrumbLink: ({ children, href }: any) => (
