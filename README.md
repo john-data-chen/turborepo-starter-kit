@@ -342,14 +342,6 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ---
 
-## To-Do
-
-- [ ] Task can't be edited or deleted
-- [ ] Add tests in apps/api to make overall coverage over 80%
-- [ ] Add tests in apps/wev to make overall coverage over 80%
-
----
-
 ## Known Issues & Limitations
 
 ### The errors / code smells of Oxlint and Type-Aware plug-in
