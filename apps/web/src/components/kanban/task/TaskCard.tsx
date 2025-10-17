@@ -3,6 +3,7 @@ import { Task, TaskStatus } from '@/types/dbInterface'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Badge } from '@repo/ui/components/badge'
+import { Button } from '@repo/ui/components/button'
 import { Card, CardContent, CardHeader } from '@repo/ui/components/card'
 import { cn } from '@repo/ui/lib/utils'
 import { cva } from 'class-variance-authority'
@@ -171,21 +172,20 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
       {...(isDragEnabled ? attributes : {})}
     >
       <CardHeader className="flex flex-row border-b-2 px-3 pb-2">
-        <div
-          className={cn(
-            'text-muted-foreground/30 flex h-8 w-8 flex-shrink-0 items-center justify-center',
-            isDragEnabled && 'cursor-grab active:cursor-grabbing'
-          )}
-          {...(isDragEnabled ? listeners : {})}
-        >
-          {isDragEnabled && (
-            <div title={t('moveTask')}>
-              <PointerIcon className="h-4 w-4" aria-label={t('moveTask')} />
-            </div>
-          )}
-        </div>
+        {isDragEnabled ? (
+          <div
+            {...attributes}
+            {...listeners}
+            className="flex h-8 w-16 cursor-grab items-center justify-center rounded-md text-primary/50 transition-colors hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+          >
+            <span className="sr-only">drag task: {task.title}</span>
+            <PointerIcon className="h-4 w-4" />
+          </div>
+        ) : (
+          <div className="h-8 w-16" />
+        )}
         <div className="mx-2 flex flex-1 flex-col items-start gap-2">
-          {task.title && <h3 className="text-lg font-medium leading-none tracking-tight">{task.title}</h3>}
+          {task.title && <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>}
           <Badge variant="secondary" className={cn('text-white', task.status && statusConfig[task.status]?.className)}>
             {task.status ? statusConfig[task.status]?.label : t('noStatus')}
           </Badge>
@@ -206,7 +206,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.creator && (
           <div className={getLastField(task) !== 'creator' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('createdBy', { name: task.creator.name })}</span>
               </div>
@@ -216,7 +216,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.lastModifier && (
           <div className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('lastModifiedBy', { name: task.lastModifier.name })}</span>
               </div>
@@ -226,7 +226,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.assignee && (
           <div className={getLastField(task) !== 'assignee' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{t('assignee', { name: task.assignee.name })}</span>
               </div>
@@ -236,7 +236,7 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
         {task.dueDate && (
           <div className={getLastField(task) !== 'dueDate' ? 'border-b' : ''}>
             <CardContent className="px-3 py-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar1Icon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>
                   {t('dueDate')}: {task.dueDate ? format(new Date(task.dueDate), 'yyyy/MM/dd') : ''}
@@ -249,8 +249,8 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
           <div>
             <CardContent className="px-3 py-2">
               <div className="flex items-start gap-2">
-                <FileTextIcon className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
-                <p className="text-muted-foreground text-sm leading-relaxed" data-testid="task-card-description">
+                <FileTextIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                <p className="text-sm leading-relaxed text-muted-foreground" data-testid="task-card-description">
                   {task.description}
                 </p>
               </div>
