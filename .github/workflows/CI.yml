@@ -42,6 +42,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           # Add any other environment variables needed specifically for tests
         run: pnpm test
 
@@ -52,13 +53,13 @@ jobs:
           slug: john-data-chen/turborepo-starter-kit
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter=turborepo-starter-kit-web exec playwright install --with-deps
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        run: pnpm playwright
+        run: pnpm --filter=turborepo-starter-kit-web playwright
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
