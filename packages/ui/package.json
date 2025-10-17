@@ -32,7 +32,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.18.10",
+    "@types/node": "^22.18.11",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "global-tsconfig": "workspace:*",
@@ -48,7 +48,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "lucide-react": "^0.545.0",
+    "lucide-react": "^0.546.0",
     "radix-ui": "latest",
     "react-day-picker": "^9.11.1",
     "react-hook-form": "^7.65.0",
