@@ -61,7 +61,7 @@ export function TaskFilter() {
         placeholder={t('searchPlaceholder')}
         value={filter.search}
         onChange={handleSearchChange}
-        className="bg-background w-full md:w-[300px]"
+        className="w-full bg-background md:w-[300px]"
         data-testid="search-input"
       />
       <Select value={filter.status || 'TOTAL'} onValueChange={handleFilterChange}>

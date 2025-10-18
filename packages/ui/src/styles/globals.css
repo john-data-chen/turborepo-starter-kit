@@ -2,8 +2,8 @@
 @import 'tw-animate-css';
 
 /* Tailwind CSS 4.x: Explicitly tell Tailwind where to scan for classes in monorepo */
-@source "../components"; /* Scan UI package components */
-@source "../../../apps/web/src"; /* Scan web app files */
+@source '../components'; /* Scan UI package components */
+@source '../../../apps/web/src'; /* Scan web app files */
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -166,7 +166,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground box-border;
+    @apply box-border bg-background text-foreground;
   }
 }
 

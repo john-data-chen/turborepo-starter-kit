@@ -366,7 +366,7 @@ export function TaskActions({
           <DropdownMenuItem
             onSelect={() => canEdit && setIsEditDialogOpen(true)}
             disabled={!canEdit}
-            className={!canEdit ? 'text-muted-foreground cursor-not-allowed line-through' : ''}
+            className={!canEdit ? 'cursor-not-allowed text-muted-foreground line-through' : ''}
           >
             {t('edit')}
           </DropdownMenuItem>
@@ -378,8 +378,8 @@ export function TaskActions({
             disabled={!canDelete}
             className={
               !canDelete
-                ? 'text-muted-foreground cursor-not-allowed line-through'
-                : 'hover:!bg-destructive/10 text-red-600 hover:!text-red-600'
+                ? 'cursor-not-allowed text-muted-foreground line-through'
+                : 'text-red-600 hover:!bg-destructive/10 hover:!text-red-600'
             }
           >
             {t('delete')}

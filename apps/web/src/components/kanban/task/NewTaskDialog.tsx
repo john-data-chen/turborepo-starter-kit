@@ -59,7 +59,7 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
           variant="default"
           size="lg"
           data-testid="new-task-trigger"
-          className="bg-foreground text-background hover:bg-foreground/90 my-4 w-full"
+          className="my-4 w-full bg-foreground text-background hover:bg-foreground/90"
         >
           {t('addNewTask')}
         </Button>

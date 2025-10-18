@@ -186,7 +186,7 @@ function BoardProjectComponent({
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-2 p-4">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" {...attributes} {...listeners} className="text-primary/50 h-8 w-16 cursor-grab p-0">
+          <Button variant="ghost" {...attributes} {...listeners} className="h-8 w-16 cursor-grab p-0 text-primary/50">
             <span className="sr-only">drag project: {project.title}</span>
             <PointerIcon className="h-4 w-4" />
           </Button>
