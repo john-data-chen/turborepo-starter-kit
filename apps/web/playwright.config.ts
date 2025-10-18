@@ -86,20 +86,40 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   // Note: Playwright tests require both web and API servers to be running.
-  // The web server will start automatically, but you must manually start:
-  // 1. MongoDB (docker compose up -d or local instance)
-  // 2. API server (pnpm --filter=turborepo-starter-kit-api dev)
-  // before running these tests locally. In CI, these are started as part of the workflow.
-  webServer: {
-    command: 'pnpm --filter=turborepo-starter-kit-web dev',
-    url: baseURL, // Use the resolved baseURL
-    reuseExistingServer: !process.env.CI,
-    // Pass the resolved environment variables to the web server process
-    env: {
-      ...process.env, // Pass all resolved environment variables
-      NODE_ENV: process.env.NODE_ENV || 'test' // Ensure NODE_ENV is set, defaulting to 'test'
+  // The web server and API server will start automatically.
+  // You must ensure MongoDB is running:
+  // - Locally: docker compose up -d (in apps/api/database/)
+  // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
+  webServer: [
+    {
+      command: 'pnpm --filter=turborepo-starter-kit-api dev',
+      url: 'http://localhost:3001/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      // Pass the resolved environment variables to the API server process
+      env: {
+        ...process.env, // Pass all resolved environment variables
+        NODE_ENV: process.env.NODE_ENV || 'test',
+        DATABASE_URL: process.env.DATABASE_URL,
+        JWT_SECRET: process.env.JWT_SECRET
+      },
+      stdout: 'pipe',
+      stderr: 'pipe'
     },
-    stdout: 'pipe',
-    stderr: 'pipe'
-  }
+    {
+      command: 'pnpm --filter=turborepo-starter-kit-web dev',
+      url: baseURL, // Use the resolved baseURL
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      // Pass the resolved environment variables to the web server process
+      env: {
+        ...process.env, // Pass all resolved environment variables
+        NODE_ENV: process.env.NODE_ENV || 'test',
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL || baseURL
+      },
+      stdout: 'pipe',
+      stderr: 'pipe'
+    }
+  ]
 })
