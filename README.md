@@ -120,14 +120,22 @@ NEXTAUTH_SECRET=[your_secret]
 # - password: User's password (default: 123456)
 # - host: Database host (localhost for development)
 # - port: MongoDB port (default: 27017)
-# - database: Database name (default: next-project-manager)
+# - database: Database name (REQUIRED: next-project-manager)
 # - options: Additional connection parameters (default: authSource=admin)
-# Example: DATABASE_URL="mongodb://root:123456@localhost:27017/next-project-manager?authSource=admin"
+#
+# ⚠️  IMPORTANT: The database name MUST be included in the URL
+# If omitted, MongoDB will default to "test" database
+#
+# Local MongoDB example:
+# DATABASE_URL="mongodb://root:123456@localhost:27017/next-project-manager?authSource=admin"
+#
+# MongoDB Atlas (Cloud) example:
+# DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/next-project-manager?retryWrites=true&w=majority"
 ```
 
 Production and CI:
 
-Create environment variables in Vercel or GitHub project settings.
+Create environment variables in Vercel or GitHub project settings. **Ensure the database name is included in the DATABASE_URL** (e.g., `/next-project-manager` in the connection string).
 
 ### Useful Commands
 
