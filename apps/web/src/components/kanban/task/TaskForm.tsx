@@ -163,7 +163,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                                 className="flex flex-col items-start"
                               >
                                 <span>{user.name || user.email}</span>
-                                {user.name && <span className="text-muted-foreground text-xs">{user.email}</span>}
+                                {user.name && <span className="text-xs text-muted-foreground">{user.email}</span>}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -188,19 +188,19 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                   defaultValue={field.value}
                   className="mt-4 flex flex-col space-y-1"
                 >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormItem className="flex items-center space-y-0 space-x-3">
                     <FormControl>
                       <RadioGroupItem value="TODO" />
                     </FormControl>
                     <FormLabel className="font-normal">{t('statusTodo')}</FormLabel>
                   </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormItem className="flex items-center space-y-0 space-x-3">
                     <FormControl>
                       <RadioGroupItem value="IN_PROGRESS" />
                     </FormControl>
                     <FormLabel className="font-normal">{t('statusInProgress')}</FormLabel>
                   </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormItem className="flex items-center space-y-0 space-x-3">
                     <FormControl>
                       <RadioGroupItem value="DONE" />
                     </FormControl>
