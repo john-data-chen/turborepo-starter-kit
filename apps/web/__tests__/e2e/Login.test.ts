@@ -18,7 +18,16 @@ test.describe('SignInPage', () => {
   test('should sign in with valid credentials', async ({ page }) => {
     await page.goto('/login')
     await page.fill('input[name="email"]', defaultEmail)
+
+    // Start waiting for navigation before clicking submit
+    const navigationPromise = page.waitForURL(/\/boards/, { timeout: 15000 })
+
     await page.click('button[type="submit"]')
+
+    // Wait for navigation to complete (includes login API call + 500ms delay in useAuth.ts)
+    await navigationPromise
+
+    // Verify the final URL matches the expected pattern
     await expect(page).toHaveURL(/^http:\/\/localhost:3000\/en\/boards(\?login_success=true)?$/)
   })
 })

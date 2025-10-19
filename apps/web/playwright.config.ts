@@ -17,7 +17,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env.test'), override: true }) //
 // 1. System Env (CI)
 // 2. .env.test
 // 3. .env
-const baseURL = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+const baseURL = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000/en'
+const apiURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -37,12 +38,12 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:3000/en/',
+    baseURL: baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    // headless mode
+    // headless mode - use true for CI, false for local debugging
     headless: true
   },
 
@@ -86,40 +87,23 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   // Note: Playwright tests require both web and API servers to be running.
-  // The web server and API server will start automatically.
+  // Using `pnpm dev` from the root to start both servers with Turborepo.
   // You must ensure MongoDB is running:
   // - Locally: docker compose up -d (in apps/api/database/)
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
-  webServer: [
-    {
-      command: 'pnpm --filter=turborepo-starter-kit-api dev',
-      url: 'http://localhost:3001/health',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
-      // Pass the resolved environment variables to the API server process
-      env: {
-        ...process.env, // Pass all resolved environment variables
-        NODE_ENV: process.env.NODE_ENV || 'test',
-        DATABASE_URL: process.env.DATABASE_URL,
-        JWT_SECRET: process.env.JWT_SECRET
-      },
-      stdout: 'pipe',
-      stderr: 'pipe'
+  webServer: {
+    command: 'pnpm dev',
+    url: baseURL,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+    // Pass the resolved environment variables to the dev servers
+    env: {
+      ...process.env,
+      NODE_ENV: process.env.NODE_ENV || 'test',
+      NEXT_PUBLIC_API_URL: apiURL,
+      NEXT_PUBLIC_WEB_URL: baseURL
     },
-    {
-      command: 'pnpm --filter=turborepo-starter-kit-web dev',
-      url: baseURL, // Use the resolved baseURL
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
-      // Pass the resolved environment variables to the web server process
-      env: {
-        ...process.env, // Pass all resolved environment variables
-        NODE_ENV: process.env.NODE_ENV || 'test',
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL || baseURL
-      },
-      stdout: 'pipe',
-      stderr: 'pipe'
-    }
-  ]
+    stdout: 'pipe',
+    stderr: 'pipe'
+  }
 })
