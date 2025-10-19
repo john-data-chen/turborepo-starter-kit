@@ -33,6 +33,10 @@ jobs:
 
       - name: init db
         env:
+          # DATABASE_URL must include the database name in the connection string
+          # Format: mongodb://user:password@host:port/database-name?authSource=admin
+          # Example: mongodb+srv://user:pass@cluster.mongodb.net/next-project-manager?retryWrites=true&w=majority
+          # If the database name is omitted, MongoDB will default to "test"
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
         run: pnpm init-db --force

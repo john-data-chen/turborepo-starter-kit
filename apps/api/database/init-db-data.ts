@@ -42,10 +42,39 @@ if (missingEnvVars.length > 0) {
   process.exit(1)
 }
 
+// Extract and validate database name from DATABASE_URL
+function getDatabaseNameFromUrl(url: string): string | null {
+  try {
+    // MongoDB URL format: mongodb://[username:password@]host[:port]/[database][?options]
+    // Extract database name from the URL
+    const match = url.match(/\/\/[^/]+\/([^?]+)/)
+    return match && match[1] ? match[1] : null
+  } catch (error) {
+    return null
+  }
+}
+
+const databaseUrl = process.env.DATABASE_URL!
+const dbName = getDatabaseNameFromUrl(databaseUrl)
+const expectedDbName = 'next-project-manager'
+
 console.log('Environment:', {
   NODE_ENV: process.env.NODE_ENV || 'development',
-  DATABASE_URL: process.env.DATABASE_URL ? '***' + process.env.DATABASE_URL.split('@').pop() : 'Not set'
+  DATABASE_URL: databaseUrl ? '***' + databaseUrl.split('@').pop() : 'Not set',
+  Database_Name: dbName || 'test (default)'
 })
+
+// Warn if database name is missing or incorrect
+if (!dbName || dbName === 'test') {
+  console.warn('\n\x1b[33m⚠️  WARNING: No database name specified in DATABASE_URL!\x1b[0m')
+  console.warn('\x1b[33mMongoDB will use the default "test" database.\x1b[0m')
+  console.warn('\x1b[33m\nExpected format:\x1b[0m')
+  console.warn(`\x1b[36mmongodb://user:password@host:port/${expectedDbName}?authSource=admin\x1b[0m`)
+  console.warn('\n\x1b[33mPlease update your DATABASE_URL to include the database name.\x1b[0m\n')
+} else if (dbName !== expectedDbName) {
+  console.warn(`\n\x1b[33m⚠️  WARNING: Database name is "${dbName}" but expected "${expectedDbName}"\x1b[0m`)
+  console.warn('\x1b[33mProceeding with the specified database name...\x1b[0m\n')
+}
 
 async function main() {
   // Non-interactive check for CI/Vercel or --force flag
