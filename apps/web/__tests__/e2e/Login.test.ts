@@ -21,12 +21,8 @@ test.describe('SignInPage', () => {
 
     // Start waiting for navigation to /boards (with or without query params)
     // The regex now correctly matches URLs with query parameters like ?login_success=true
-    const navigationPromise = page.waitForURL(/\/boards(\?.*)?$/, { timeout: 30000 })
 
     await page.click('button[type="submit"]')
-
-    // Wait for navigation to complete (includes login API call + 500ms delay in useAuth.ts)
-    await navigationPromise
 
     // Verify the final URL matches the expected pattern (with or without query params)
     await expect(page).toHaveURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/)
