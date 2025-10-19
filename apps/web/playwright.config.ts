@@ -96,6 +96,7 @@ export default defineConfig({
     url: `${apiURL}/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    cwd: '../../',
     env: {
       ...process.env,
       NODE_ENV: process.env.NODE_ENV || 'test',
