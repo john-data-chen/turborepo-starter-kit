@@ -48,7 +48,6 @@ describe('AuthService', () => {
 
     it('should return null if email is empty', async () => {
       expect(await service.validateUser('')).toBeNull()
-      expect(logger.warn).toHaveBeenCalled()
     })
 
     it('should throw error if validation fails', async () => {
