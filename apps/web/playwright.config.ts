@@ -7,10 +7,10 @@ import dotenv from 'dotenv'
 // dotenv will not override existing environment variables (e.g., from CI)
 dotenv.config({ path: path.resolve(__dirname, '.env') })
 
-// Load environment variables from .env.test file
-// Variables in .env.test will override those in .env if they exist
-// Existing environment variables (e.g., from CI) will still take precedence
-dotenv.config({ path: path.resolve(__dirname, '.env.test'), override: true }) // Use override: true here to ensure .env.test takes precedence over .env
+// Load environment variables from .env.test file (as fallback only)
+// This will NOT override existing environment variables (e.g., from CI)
+// Priority: 1. CI env vars, 2. .env.test, 3. .env
+dotenv.config({ path: path.resolve(__dirname, '.env.test') })
 
 // Ensure environment variables are set or use default values
 // process.env will now contain variables loaded according to the priority:
