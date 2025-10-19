@@ -93,7 +93,8 @@ export default defineConfig({
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
   webServer: {
     command: 'pnpm dev',
-    url: baseURL,
+    // Wait for both Next.js (port 3000) and API server (port 3001) to be ready
+    url: `${apiURL}/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     // Pass the resolved environment variables to the dev servers

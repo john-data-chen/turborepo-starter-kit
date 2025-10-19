@@ -81,7 +81,6 @@ export class AuthService {
       })
 
       if (response.status === 401) {
-        console.log(`[${requestId}] [AuthService] Authentication failed, clearing session`)
         this.logout()
       }
 
@@ -109,7 +108,6 @@ export class AuthService {
       const user = await this.getProfile()
 
       if (!user) {
-        console.log('No user found in session')
         return null
       }
 
