@@ -103,7 +103,7 @@ export default defineConfig({
       NEXT_PUBLIC_API_URL: apiURL,
       NEXT_PUBLIC_WEB_URL: baseURL
     },
-    stdout: process.env.CI ? 'ignore' : 'pipe',
-    stderr: process.env.CI ? 'ignore' : 'pipe'
+    stdout: 'pipe',
+    stderr: 'pipe'
   }
 })
