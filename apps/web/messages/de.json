@@ -11,7 +11,8 @@
     "emailPlaceholder": "Geben Sie Ihre E-Mail-Adresse ein...",
     "continueButton": "Weiter mit Email",
     "success": "Anmeldung erfolgreich!",
-    "authSuccessRedirect": "Authentifizierung erfolgreich! Weiterleitung..."
+    "authSuccessRedirect": "Authentifizierung erfolgreich! Weiterleitung...",
+    "invalidEmail": "Die Anmelde-E-Mail ist falsch, bitte korrigieren Sie sie"
   },
   "sidebar": {
     "title": "Next Projektmanager",

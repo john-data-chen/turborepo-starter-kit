@@ -168,8 +168,6 @@ export function TaskActions({
             // Call parent component callback
             if (onUpdate) {
               onUpdate()
-            } else {
-              console.warn('No onUpdate callback provided')
             }
 
             // Force re-render

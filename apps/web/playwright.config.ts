@@ -93,10 +93,10 @@ export default defineConfig({
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
   webServer: {
     command: 'pnpm dev',
-    url: baseURL,
+    url: `${apiURL}/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
-    // Pass the resolved environment variables to the dev servers
+    cwd: '../../',
     env: {
       ...process.env,
       NODE_ENV: process.env.NODE_ENV || 'test',

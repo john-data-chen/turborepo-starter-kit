@@ -12,14 +12,6 @@ export class AuthController {
   @UseGuards(EmailAuthGuard)
   async login(@Request() req, @Res({ passthrough: true }) res) {
     const requestId = Math.random().toString(36).substring(2, 8)
-    this.logger.log(`[${requestId}] [AuthController] Login endpoint called`)
-    this.logger.log(`[${requestId}] [AuthController] Request method: ${req.method}`)
-    this.logger.log(`[${requestId}] [AuthController] Request origin: ${req.headers.origin}`)
-    this.logger.log(`[${requestId}] [AuthController] Request host: ${req.headers.host}`)
-    this.logger.log(`[${requestId}] [AuthController] User-Agent: ${req.headers['user-agent']}`)
-    this.logger.log(`[${requestId}] [AuthController] Existing cookies: ${JSON.stringify(req.cookies)}`)
-    this.logger.debug(`[${requestId}] [AuthController] Full request headers: ${JSON.stringify(req.headers, null, 2)}`)
-    this.logger.debug(`[${requestId}] [AuthController] Request body: ${JSON.stringify(req.body, null, 2)}`)
 
     if (!req.user) {
       const errorMsg = 'No user object found in request after authentication'
@@ -27,33 +19,13 @@ export class AuthController {
       throw new UnauthorizedException(errorMsg)
     }
 
-    this.logger.log(`[${requestId}] [AuthController] Processing login for user: ${req.user.email}`)
-    this.logger.log(
-      `[${requestId}] [AuthController] User object: ${JSON.stringify(
-        {
-          _id: req.user._id?.toString(),
-          email: req.user.email,
-          name: req.user.name
-        },
-        null,
-        2
-      )}`
-    )
-
     try {
       // Generate JWT token
       const result = await this.authService.login(req.user)
-      this.logger.log(`[${requestId}] [AuthController] JWT token generated successfully`)
-
-      this.logger.log(`[${requestId}] [AuthController] Login successful for user: ${req.user.email}`)
 
       // Set secure cookie settings
       const isProduction = process.env.NODE_ENV === 'production'
       const isVercel = process.env.VERCEL === '1'
-
-      this.logger.log(
-        `[${requestId}] [AuthController] Environment check - isProduction: ${isProduction}, isVercel: ${isVercel}`
-      )
 
       // Cookie settings that match frontend
       const cookieOptions = {
@@ -64,34 +36,13 @@ export class AuthController {
         path: '/'
       }
 
-      this.logger.log(`[${requestId}] [AuthController] Cookie options prepared:`, {
-        secure: cookieOptions.secure,
-        sameSite: cookieOptions.sameSite,
-        domain: 'not set (browser default)',
-        httpOnly: cookieOptions.httpOnly,
-        maxAge: cookieOptions.maxAge,
-        path: cookieOptions.path,
-        cookieDomainEnv: process.env.COOKIE_DOMAIN || 'not set',
-        requestOrigin: req.headers.origin,
-        requestHost: req.headers.host
-      })
-
       // Set the JWT cookie (keep for local development)
       res.cookie('jwt', result.access_token, cookieOptions)
-      this.logger.log(`[${requestId}] [AuthController] JWT cookie set with value length: ${result.access_token.length}`)
 
       // Also set a non-httpOnly cookie for client-side access if needed
       res.cookie('isAuthenticated', 'true', {
         ...cookieOptions,
         httpOnly: false // Allow client-side access
-      })
-      this.logger.log(`[${requestId}] [AuthController] isAuthenticated cookie set`)
-
-      // Log response headers that will be sent
-      this.logger.log(`[${requestId}] [AuthController] Response headers being sent:`, {
-        'set-cookie': res.getHeaders()['set-cookie'],
-        'access-control-allow-credentials': res.getHeaders()['access-control-allow-credentials'],
-        'access-control-allow-origin': res.getHeaders()['access-control-allow-origin']
       })
 
       // Return user data AND token for Authorization header fallback
@@ -110,14 +61,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    const requestId = Math.random().toString(36).substring(2, 8)
-    this.logger.log(`[${requestId}] [AuthController] Profile endpoint called`)
-    this.logger.log(`[${requestId}] [AuthController] Request origin: ${req.headers.origin}`)
-    this.logger.log(`[${requestId}] [AuthController] Request host: ${req.headers.host}`)
-    this.logger.log(`[${requestId}] [AuthController] Cookies received: ${JSON.stringify(req.cookies)}`)
-    this.logger.log(`[${requestId}] [AuthController] Authorization header: ${req.headers.authorization || 'missing'}`)
-    this.logger.log(`[${requestId}] [AuthController] User from JWT: ${JSON.stringify(req.user)}`)
-
     return req.user
   }
 

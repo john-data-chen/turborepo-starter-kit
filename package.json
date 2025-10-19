@@ -55,7 +55,8 @@
     "prettier-plugin-tailwindcss": "^0.7.0",
     "turbo": "^2.5.8",
     "unplugin-swc": "^1.5.7",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "wait-on": "^9.0.1"
   },
   "pnpm": {
     "overrides": {

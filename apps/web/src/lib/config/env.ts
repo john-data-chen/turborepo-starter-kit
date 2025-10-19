@@ -11,7 +11,6 @@ if (typeof process !== 'undefined' && !process.env.VERCEL) {
 
       // Load environment variables from .env file in the project root
       const envPath = path.resolve(process.cwd(), '.env')
-      console.log('Loading .env from:', envPath)
 
       const result = dotenv.config({ path: envPath })
       if (result.error) {

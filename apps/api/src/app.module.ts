@@ -31,26 +31,7 @@ export class AppModule implements NestModule {
   private readonly logger = new Logger('AppModule')
 
   configure(consumer: MiddlewareConsumer) {
-    // Apply middleware for all routes
-    consumer
-      .apply((req, res, next) => {
-        // Log all incoming requests
-        const { method, originalUrl, body } = req
-        this.logger.log(`[${new Date().toISOString()}] ${method} ${originalUrl}`)
-
-        if (Object.keys(body || {}).length > 0) {
-          this.logger.debug('Request body:', JSON.stringify(body, null, 2))
-        }
-
-        // Log response when it's finished
-        const start = Date.now()
-        res.on('finish', () => {
-          const duration = Date.now() - start
-          this.logger.log(`[${new Date().toISOString()}] ${method} ${originalUrl} ${res.statusCode} - ${duration}ms`)
-        })
-
-        next()
-      })
-      .forRoutes({ path: '*', method: RequestMethod.ALL })
+    // HTTP request/response logging removed to reduce log verbosity
+    // Error logging is preserved in individual services
   }
 }
