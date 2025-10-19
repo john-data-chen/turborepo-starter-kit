@@ -17,6 +17,19 @@ export default function UserAuthForm() {
   const { handleSubmit, isLoading, error, isNavigating } = useAuthForm()
   const t = useTranslations('login')
 
+  // Map backend error messages to i18n keys
+  const getErrorMessage = (error: string | null): string | null => {
+    if (!error) {
+      return null
+    }
+    if (error.includes('The login email is incorrect')) {
+      return t('invalidEmail')
+    }
+    return error
+  }
+
+  const displayError = getErrorMessage(error)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,9 +70,9 @@ export default function UserAuthForm() {
           )}
         />
 
-        {error && (
+        {displayError && (
           <div className="mt-2 text-sm text-red-600" data-testid="error-message">
-            {error}
+            {displayError}
           </div>
         )}
 

@@ -11,7 +11,8 @@
     "emailPlaceholder": "Enter your email...",
     "continueButton": "Continue With Email",
     "success": "Login successful!",
-    "authSuccessRedirect": "Authentication successful! Redirecting..."
+    "authSuccessRedirect": "Authentication successful! Redirecting...",
+    "invalidEmail": "The login email is incorrect, please correct it"
   },
   "sidebar": {
     "title": "Next Project Manager",
