@@ -43,13 +43,26 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         const _logger = new Logger('MongoDB')
         const uri = configService.get<string>('DATABASE_URL')
 
+        // Diagnostic: Log environment and DB connection info
+        const nodeEnv = configService.get('NODE_ENV')
+        const isCI = configService.get('CI')
+
+        _logger.log(`[Diagnostic] MongoDB Connection Attempt`)
+        _logger.log(`[Diagnostic] NODE_ENV: ${nodeEnv}`)
+        _logger.log(`[Diagnostic] CI: ${isCI}`)
+
         if (!uri) {
+          _logger.error('[Diagnostic] ✗ DATABASE_URL is not defined!')
           throw new Error('MongoDB connection string (DATABASE_URL) is not defined')
         }
 
-        const isProduction = configService.get('NODE_ENV') === 'production'
+        // Log masked connection string for debugging
+        const maskedUri = uri.replace(/:\/\/([^:]+):([^@]+)@/, '://***:***@')
+        _logger.log(`[Diagnostic] DATABASE_URL: ${maskedUri}`)
 
-        return {
+        const isProduction = nodeEnv === 'production'
+
+        const options: MongooseModuleOptions = {
           uri,
           serverSelectionTimeoutMS: 10000, // 10 seconds
           socketTimeoutMS: 45000, // 45 seconds
@@ -60,8 +73,32 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
           retryReads: true,
           retryAttempts: 3,
           ssl: isProduction,
-          autoIndex: !isProduction
+          autoIndex: !isProduction,
+          // Add connection event handlers for diagnostic
+          connectionFactory: (connection) => {
+            connection.on('connected', () => {
+              _logger.log('[Diagnostic] ✓ MongoDB connected successfully')
+            })
+            connection.on('error', (error) => {
+              _logger.error(`[Diagnostic] ✗ MongoDB connection error: ${error.message}`)
+            })
+            connection.on('disconnected', () => {
+              _logger.warn('[Diagnostic] MongoDB disconnected')
+            })
+            return connection
+          }
         }
+
+        _logger.log(
+          `[Diagnostic] MongoDB connection options: ${JSON.stringify({
+            serverSelectionTimeoutMS: options.serverSelectionTimeoutMS,
+            connectTimeoutMS: options.connectTimeoutMS,
+            ssl: options.ssl,
+            retryAttempts: options.retryAttempts
+          })}`
+        )
+
+        return options
       },
       inject: [ConfigService]
     })

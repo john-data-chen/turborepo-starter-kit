@@ -45,7 +45,7 @@ async function waitForAPI(url: string, timeout = 30000): Promise<void> {
 
 test.describe('SignInPage', () => {
   // Diagnostic: Wait for API to be ready before all tests
-  // NOTE: This is a soft check - tests will continue even if API is not ready
+  // NOTE: This is a soft check with shorter timeout - tests will continue even if API is not ready
   test.beforeAll(async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
     console.log('[Diagnostic] Environment:', {
@@ -55,16 +55,24 @@ test.describe('SignInPage', () => {
       NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL
     })
 
-    try {
-      // Try to ping the API server
-      await waitForAPI(`${apiUrl}/health`, 30000)
-    } catch (error) {
-      // Soft failure - only warn, don't block tests
-      console.warn('[Diagnostic] ⚠️ API health check failed:', error)
+    // Use Promise.race to prevent timeout
+    const healthCheckPromise = waitForAPI(`${apiUrl}/health`, 20000).then(
+      () => {
+        console.log('[Diagnostic] ✓ API health check passed')
+        return true
+      },
+      (error) => {
+        console.warn('[Diagnostic] ⚠️ API health check failed:', error)
+        return false
+      }
+    )
+
+    // Always resolve, never throw
+    await healthCheckPromise.catch(() => {
       console.warn('[Diagnostic] ⚠️ Tests will continue, but login may fail if API is not ready')
       console.warn('[Diagnostic] ⚠️ This is expected in CI if API takes longer to start than Next.js')
-      // Don't throw - let tests run and fail naturally if API is actually down
-    }
+      return false
+    })
   })
 
   test('should load the sign-in page', async ({ page }) => {

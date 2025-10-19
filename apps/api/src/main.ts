@@ -8,12 +8,22 @@ import { API_PORT } from './constants/api'
 declare const module: any
 
 async function bootstrap() {
+  console.log('[Diagnostic] API Server Bootstrap Starting...')
+  console.log('[Diagnostic] Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    CI: process.env.CI,
+    PORT: process.env.PORT || API_PORT,
+    DATABASE_URL: process.env.DATABASE_URL ? 'SET (masked)' : 'NOT SET',
+    JWT_SECRET: process.env.JWT_SECRET ? 'SET (masked)' : 'NOT SET'
+  })
+
   const app = await NestFactory.create(AppModule, {
     bodyParser: true,
     logger: ['error', 'warn', 'log', 'debug', 'verbose']
   })
 
   const port = process.env.PORT || API_PORT
+  console.log(`[Diagnostic] NestJS app created, will listen on port ${port}`)
 
   // Parse cookies before CORS middleware
   app.use(cookieParser())
@@ -109,7 +119,9 @@ async function bootstrap() {
   }
 
   // For local development
+  console.log(`[Diagnostic] Starting server on port ${port}...`)
   await app.listen(port)
+  console.log(`[Diagnostic] ✓ API Server listening on http://localhost:${port}`)
 
   // Enable hot module replacement for development
   if (module.hot) {
