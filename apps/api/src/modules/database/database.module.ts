@@ -13,16 +13,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
-    this.connection.on('connected', () => {
-      this.logger.log('Successfully connected to MongoDB')
-    })
-
     this.connection.on('error', (error: Error) => {
       this.logger.error(`MongoDB connection error: ${error.message}`, error.stack)
-    })
-
-    this.connection.on('disconnected', () => {
-      this.logger.warn('MongoDB disconnected')
     })
 
     process.on('SIGINT', this.gracefulShutdown.bind(this))
@@ -35,7 +27,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private async gracefulShutdown() {
     try {
       await this.connection.close()
-      this.logger.log('MongoDB connection closed through app termination')
       process.exit(0)
     } catch (error) {
       this.logger.error('Error closing MongoDB connection', error)

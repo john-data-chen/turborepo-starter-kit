@@ -37,7 +37,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload) {
     const logger = new Logger('JwtStrategy')
-    logger.log(`Validating JWT payload for user: ${payload.email} (${payload.sub})`)
 
     try {
       // First try to find user by email since we don't have a direct ID lookup
@@ -48,7 +47,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         throw new UnauthorizedException('User not found')
       }
 
-      logger.log(`User authenticated: ${user.email} (ID: ${user._id})`)
       return {
         _id: user._id,
         email: user.email
