@@ -93,18 +93,16 @@ export default defineConfig({
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
   webServer: {
     command: 'pnpm dev',
-    // Wait for both Next.js (port 3000) and API server (port 3001) to be ready
     url: `${apiURL}/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
-    // Pass the resolved environment variables to the dev servers
     env: {
       ...process.env,
       NODE_ENV: process.env.NODE_ENV || 'test',
       NEXT_PUBLIC_API_URL: apiURL,
       NEXT_PUBLIC_WEB_URL: baseURL
     },
-    stdout: 'pipe',
-    stderr: 'pipe'
+    stdout: process.env.CI ? 'ignore' : 'pipe',
+    stderr: process.env.CI ? 'ignore' : 'pipe'
   }
 })
