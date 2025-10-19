@@ -226,7 +226,7 @@ export function useAuthForm() {
       // Add a small delay to ensure the cookie is properly set before redirect
       setTimeout(() => {
         window.location.href = redirectUrl
-      }, 100)
+      }, 500)
     } catch (err) {
       // Error is already handled by useAuth hook
       console.error('Login failed:', err)

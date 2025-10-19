@@ -63,6 +63,9 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_WEB_URL: ${{ vars.NEXT_PUBLIC_WEB_URL }}
         run: pnpm --filter=turborepo-starter-kit-web playwright
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

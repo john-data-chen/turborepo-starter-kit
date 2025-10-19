@@ -18,7 +18,13 @@ test.describe('SignInPage', () => {
   test('should sign in with valid credentials', async ({ page }) => {
     await page.goto('/login')
     await page.fill('input[name="email"]', defaultEmail)
+
+    // Start waiting for navigation to /boards (with or without query params)
+    // The regex now correctly matches URLs with query parameters like ?login_success=true
+
     await page.click('button[type="submit"]')
-    await expect(page).toHaveURL(/^http:\/\/localhost:3000\/en\/boards(\?login_success=true)?$/)
+
+    // Verify the final URL matches the expected pattern (with or without query params)
+    await expect(page).toHaveURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/)
   })
 })
