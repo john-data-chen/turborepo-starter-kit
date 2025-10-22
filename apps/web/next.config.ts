@@ -16,9 +16,9 @@ const nextConfig: NextConfig = {
       eagerEsModules: false
     }
   },
+  // enable react compiler will increase build time 30~40%
+  reactCompiler: false,
   experimental: {
-    // enable react compiler will increase build time 30~40%
-    reactCompiler: false,
     // Enable server actions
     serverActions: {
       bodySizeLimit: '2mb',
