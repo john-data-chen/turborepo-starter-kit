@@ -1,5 +1,5 @@
 import { routing } from '@/i18n/routing'
-import middleware, { config } from '@/middleware'
+import middleware, { config } from '@/proxy'
 import { describe, expect, it, vi } from 'vitest'
 
 // Mock next-intl/middleware
