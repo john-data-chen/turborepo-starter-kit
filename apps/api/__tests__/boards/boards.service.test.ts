@@ -8,22 +8,25 @@ import { ProjectsService } from '../../src/modules/projects/projects.service'
 import { TasksService } from '../../src/modules/tasks/tasks.service'
 
 // Define a mock constructor for the BoardModel
-const MockBoardModel = vi.fn().mockImplementation((data) => ({
-  ...data,
-  save: vi.fn().mockResolvedValue(data),
-  populate: vi.fn().mockReturnThis(),
-  exec: vi.fn().mockResolvedValue(data)
-})) as any
+class MockBoardModel {
+  constructor(data: any) {
+    return {
+      ...data,
+      save: vi.fn().mockResolvedValue(data),
+      populate: vi.fn().mockReturnThis(),
+      exec: vi.fn().mockResolvedValue(data)
+    }
+  }
 
-// Add static methods to the mock constructor
-MockBoardModel.find = vi.fn().mockReturnThis()
-MockBoardModel.findOne = vi.fn().mockReturnThis()
-MockBoardModel.findById = vi.fn().mockReturnThis()
-MockBoardModel.create = vi.fn()
-MockBoardModel.findByIdAndUpdate = vi.fn().mockReturnThis()
-MockBoardModel.deleteOne = vi.fn().mockReturnThis()
-MockBoardModel.findOneAndUpdate = vi.fn().mockReturnThis()
-MockBoardModel.aggregate = vi.fn().mockReturnThis()
+  static find = vi.fn().mockReturnThis()
+  static findOne = vi.fn().mockReturnThis()
+  static findById = vi.fn().mockReturnThis()
+  static create = vi.fn()
+  static findByIdAndUpdate = vi.fn().mockReturnThis()
+  static deleteOne = vi.fn().mockReturnThis()
+  static findOneAndUpdate = vi.fn().mockReturnThis()
+  static aggregate = vi.fn().mockReturnThis()
+}
 
 describe('BoardService', () => {
   let service: BoardService
