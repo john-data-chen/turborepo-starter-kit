@@ -1,3 +1,4 @@
+/* eslint-disable typescript-eslint/no-require-imports -- Config file requires CommonJS modules */
 const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 

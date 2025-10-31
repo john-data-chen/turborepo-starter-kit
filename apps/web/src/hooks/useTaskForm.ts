@@ -59,7 +59,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     }
   })
 
-  const searchUsersLocal = async (search: string = ''): Promise<User[]> => {
+  const searchUsersLocal = async (search = ''): Promise<User[]> => {
     try {
       return await userApi.searchUsers(search)
     } catch (error) {

@@ -49,7 +49,7 @@ function getDatabaseNameFromUrl(url: string): string | null {
     // Extract database name from the URL
     const match = url.match(/\/\/[^/]+\/([^?]+)/)
     return match && match[1] ? match[1] : null
-  } catch (error) {
+  } catch {
     return null
   }
 }

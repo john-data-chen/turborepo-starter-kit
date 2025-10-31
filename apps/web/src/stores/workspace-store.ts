@@ -1,3 +1,4 @@
+/* eslint-disable eslint/max-lines -- Comprehensive workspace state management with multiple features */
 import { boardApi } from '@/lib/api/boardApi'
 import { projectApi } from '@/lib/api/projectApi'
 import { taskApi } from '@/lib/api/taskApi'

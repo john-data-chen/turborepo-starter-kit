@@ -77,7 +77,7 @@ function transformUserData(users: ApiUser | ApiUser[]): User | User[] {
  */
 export const userApi = {
   // Search users by username or email
-  async searchUsers(search: string = ''): Promise<User[]> {
+  async searchUsers(search = ''): Promise<User[]> {
     const response = await fetchWithAuth<{ users: ApiUser[] }>(
       `${USERS_ENDPOINT}/search?username=${encodeURIComponent(search)}`
     )

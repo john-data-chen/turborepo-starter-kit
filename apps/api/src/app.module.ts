@@ -1,4 +1,4 @@
-import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -30,7 +30,7 @@ import { UsersModule } from './modules/users/users.module'
 export class AppModule implements NestModule {
   private readonly logger = new Logger('AppModule')
 
-  configure(consumer: MiddlewareConsumer) {
+  configure(_consumer: MiddlewareConsumer) {
     // HTTP request/response logging removed to reduce log verbosity
     // Error logging is preserved in individual services
   }
