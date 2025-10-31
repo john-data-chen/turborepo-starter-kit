@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import { API_PORT } from './constants/api'
 
+// eslint-disable-next-line eslint-plugin-next/no-assign-module-variable -- Required for NestJS webpack HMR
 declare const module: any
 
 async function bootstrap() {

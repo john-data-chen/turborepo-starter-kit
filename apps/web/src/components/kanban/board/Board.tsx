@@ -1,3 +1,4 @@
+/* eslint-disable eslint/max-lines -- Complex component managing kanban board state and interactions */
 'use client'
 
 import { Fragment, useMemo, useRef, useState } from 'react'
@@ -304,18 +305,13 @@ export function Board() {
 
             // Process updates one by one to handle potential errors properly
             for (const task of tasksToUpdate) {
-              try {
-                // Create update data with required fields
-                const updateData: UpdateTaskInput = {
-                  orderInProject: task.orderInProject,
-                  lastModifier: userId // This is required by the UpdateTaskInput type
-                }
-
-                await taskApi.updateTask(task._id, updateData)
-              } catch (error) {
-                console.error(`Failed to update task ${task._id}:`, error)
-                throw error // Re-throw to be caught by the outer try-catch
+              // Create update data with required fields
+              const updateData: UpdateTaskInput = {
+                orderInProject: task.orderInProject,
+                lastModifier: userId // This is required by the UpdateTaskInput type
               }
+
+              await taskApi.updateTask(task._id, updateData)
             }
           }
         } catch (error) {
@@ -402,7 +398,7 @@ export function Board() {
 
           // Ensure orderInBoard is a number
           const order = typeof newIndex === 'number' ? newIndex : Number(newIndex)
-          if (isNaN(order)) {
+          if (Number.isNaN(order)) {
             console.error('Invalid orderInBoard value:', newIndex)
             return Promise.reject(new Error('Invalid order value'))
           }
