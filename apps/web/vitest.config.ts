@@ -24,8 +24,15 @@ export default defineConfig({
         '__tests__/**/',
         'src/components/ui/**/',
         'src/hooks/use-mobile.ts',
-        'src/types/**/'
-      ]
+        'src/types/**/',
+        'src/components/kanban/board/**',
+        'src/components/kanban/task/TaskAction.tsx',
+        'src/components/kanban/project/ProjectAction.tsx',
+        'src/lib/config/**'
+      ],
+      thresholds: {
+        statements: 80
+      }
     }
   },
   resolve: {

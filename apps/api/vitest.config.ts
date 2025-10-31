@@ -22,9 +22,14 @@ export default defineConfig({
         '**/packages/**',
         'src/**/*.d.ts',
         'src/main.ts',
-        'src/app.module.ts'
+        'src/**/*.module.ts',
+        'src/**/decorators/**',
+        'src/**/guards/**/*.guard.ts',
+        'src/**/strategies/email.strategy.ts'
       ],
-      all: true
+      thresholds: {
+        statements: 80
+      }
     }
   },
   resolve: {

@@ -63,5 +63,12 @@ describe('JwtStrategy', () => {
 
       await expect(jwtStrategy.validate(payload)).rejects.toThrow(UnauthorizedException)
     })
+
+    it('should handle unknown error types', async () => {
+      const payload = { sub: mockUser._id, email: mockUser.email }
+      userService.findByEmail.mockRejectedValue('Unknown error string')
+
+      await expect(jwtStrategy.validate(payload)).rejects.toThrow(UnauthorizedException)
+    })
   })
 })
