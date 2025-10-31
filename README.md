@@ -330,6 +330,13 @@ I am using AI tools to help our team improve the quality of code and the efficie
 - benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
 - [introduction](https://nextjs.org/docs/app/api-reference/turbopack)
 
+#### Turbopack File System Caching (beta)
+
+- location: apps/web (Next.js)
+- status: enabled
+- benefit: Turbopack now supports filesystem caching in development, storing compiler artifacts on disk between runs for significantly faster compile times across restarts, especially in large projects.
+- [introduction](https://nextjs.org/blog/next-16#turbopack-file-system-caching-beta)
+
 ### Rspack
 
 - location: apps/api
