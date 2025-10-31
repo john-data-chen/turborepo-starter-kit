@@ -48,7 +48,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 **Key Accomplishments**:
 
 - Strategic Backend Decoupling & Refactoring: Architected the separation of a full-stack Next.js application into a decoupled frontend and a robust backend. Rebuilt the entire backend with Nest.js, establishing a scalable, modular, and maintainable microservices-oriented architecture. This strategic move significantly improved development velocity and system scalability.
-- Enhanced API & Data Integrity: Leveraged Nest.js's powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
+- Enhanced API & Data Integrity: Leveraged Nest.js powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
 - Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ in Performance, Accessibility, Best Practices, and SEO. The backend separation allowed the Next.js frontend to focus on optimized static site generation (SSG) and server-side rendering (SSR), leading to superior load times and a top-tier user experience.
 - Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login and registration, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
 - CI/CD & Live Deployment: Deployed to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
@@ -61,7 +61,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 
 ### Frontend
 
-- **Framework**: [Next](https://nextjs.org/docs/app/getting-started), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/) - modern UI with strong type safety and server-side rendering (using SSG in login page for better performance, SSR in workspace pages for dynamic content)
+- **Framework**: [Next.js](https://nextjs.org/docs/app/getting-started), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/) - modern UI with strong type safety and server-side rendering (using SSG in login page for better performance, SSR in workspace pages for dynamic content)
 - **Build**: [Oxlint](https://oxc.rs/docs/guide/usage/linter), [Prettier](https://prettier.io/), [Commitizen](https://commitizen.github.io/cz-cli/), [Lint Staged](https://github.com/okonet/lint-staged), [Husky](https://github.com/typicode/husky) - they are the 1st quality gate: automated code quality checks and style formatting during commit, preventing problems into codebase and make consistent code style in team work
 - **UI**: [Tailwind CSS](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/) - consistent, responsive, and scalable styling, enabling rapid and maintainable UI development
 - **Testing**: [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) - they are the 2nd quality gate: easier to setup and faster execution than Jest and Cypress, chosen for their efficiency and comprehensive testing capabilities
@@ -72,7 +72,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 
 ### Backend
 
-- **Framework**: [NestJS](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/) modern server-side application framework with strong type safety and performance
+- **Framework**: [Nest.js](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/) modern server-side application framework with strong type safety and performance
 - **Build**: [Rspack](https://rspack.dev/) high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 - **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/) modern database with strong type safety and performance
 - **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/) modern authentication with strong type safety and performance
@@ -111,7 +111,7 @@ NODE_ENV=development
 # Required: A secure random string for JWT token encryption
 # Generate: openssl rand -base64 32
 # Warning: Keep this value private and unique per environment
-NEXTAUTH_SECRET=[your_secret]
+JWT_SECRET=[your_secret]
 
 # Database Connection
 # Format: mongodb://[username]:[password]@[host]:[port]/[database]?[options]
@@ -213,7 +213,7 @@ pnpm build
 .github/ # GitHub Actions workflows
 .husky/ # Husky configuration
 apps/
-├── api/ # NestJS API server
+├── api/ # Nest.js API server
 │   ├── __tests__/ # Unit tests (by Vitest)
 │   ├── database/ # MongoDB docker-compose and initialization
 │   ├── src/
@@ -222,7 +222,7 @@ apps/
 │   │   ├── controllers/ # Nest controllers
 │   │   └── modules/ # Nest modules
 │   └── env.example # Environment variables example
-├── web/ # NextJS Web app
+├── web/ # Next.js Web app
 │   ├── __tests__/
 │   │   ├── e2e/ # End-to-end tests (by Playwright)
 │   │   └── unit/ # Unit tests (by Vitest)
@@ -295,6 +295,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 - [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - [context7](https://github.com/upstash/context7)
+- [Next.js](https://nextjs.org/docs/app/guides/mcp)
 
 ### GitHub Action (code review, PR summary)
 
@@ -311,10 +312,11 @@ I am using AI tools to help our team improve the quality of code and the efficie
 - status: enabled
 - benefit:
   - 50~100 times faster than ESLint (it can lint this small project in 1.5 seconds, it has more potential in big projects with thousands of files)
-  - easier to setup
+  - easier to setup (compared to ESLint 9+)
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
-- note: Oxlint is in a stable version, and I have used it in production for a long time. But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production, and it is a experimental in this project.
+- note: Oxlint is in a stable version, and many companies have used it in production for a long time.
+  But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production, and it is a experimental in this project
 
 #### Introductions
 
@@ -323,14 +325,14 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ### Turbopack
 
-- location: apps/web (NextJS)
-- status: enabled (dev and build mode)
+- location: apps/web (Next.js)
+- enabled in default (Next.js 16)
 - benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
 - [introduction](https://nextjs.org/docs/app/api-reference/turbopack)
 
 ### Rspack
 
-- location: apps/api (NestJS)
+- location: apps/api
 - status: enabled
 - benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
 - [introduction](https://rspack.rs/guide/start/introduction)
@@ -343,7 +345,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 ### React Compiler
 
-- location: apps/web (NextJS)
+- location: apps/web (Next.js)
 - status: disabled (enable it will increase build time 30~40%, so I disable it)
 - benefit: It can increase the performance score in lighthouse test 5~10% (not significant)
 - [introduction](https://react.dev/learn/react-compiler)
@@ -368,7 +370,7 @@ This is a demo project, and I know little of German, so errors of translations m
   - Issue: Sometimes Server response is slow, such as you can't search user when you add a task then find the assigner, especially for users are not in Asia (in local dev server, I tested it works fine)
   - Reason:
     - The resource of free tier is limited.
-    - In this monorepo project, the backend is separated from the original NextJS App into NestJS app, the response between two services is longer.
+    - In this monorepo project, the backend is separated from the original Next.js App into Nest.js app, the response between two services is longer.
   - Solution: I don't have plan for a demo project to upgrade paid tier or CDN, so it won't be fixed in the near future.
 
 ---
