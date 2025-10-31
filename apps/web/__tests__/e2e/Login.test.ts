@@ -43,7 +43,7 @@ async function waitForAPI(url: string, timeout = 30000): Promise<void> {
   throw new Error(`API server not ready after ${timeout}ms. Last error: ${lastError?.message || 'Unknown'}`)
 }
 
-test.describe('SignInPage', () => {
+test.describe.serial('SignInPage', () => {
   // Diagnostic: Wait for API to be ready before all tests
   // NOTE: This is a soft check with shorter timeout - tests will continue even if API is not ready
   test.beforeAll(async () => {
@@ -78,7 +78,8 @@ test.describe('SignInPage', () => {
   test('should load the sign-in page', async ({ page }) => {
     // clear cookies
     await page.context().clearCookies()
-    await page.goto('/login')
+    // Use domcontentloaded instead of load for dev mode compatibility
+    await page.goto('/login', { waitUntil: 'domcontentloaded' })
     const h1 = await page.locator('h1').textContent()
     expect(h1).toBe(enMessages.login.description)
   })
@@ -122,23 +123,27 @@ test.describe('SignInPage', () => {
 
     // Navigate to login page
     console.log('[Diagnostic] Navigating to /login')
-    await page.goto('/login')
+    // Use domcontentloaded instead of load for dev mode compatibility
+    await page.goto('/login', { waitUntil: 'domcontentloaded' })
 
     // Fill in email
     console.log(`[Diagnostic] Filling email: ${defaultEmail}`)
     await page.fill('input[name="email"]', defaultEmail)
 
-    // Click submit button
+    // Click submit button and wait for navigation
     console.log('[Diagnostic] Clicking submit button')
     const submitStart = Date.now()
-    await page.click('button[type="submit"]')
 
-    // Wait for navigation with increased timeout
-    console.log('[Diagnostic] Waiting for navigation to /boards...')
     try {
-      await expect(page).toHaveURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/, {
-        timeout: 30000 // Increased from default 5000ms to 30000ms
-      })
+      // Wait for navigation to complete after clicking submit
+      await Promise.all([
+        page.waitForURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/, {
+          timeout: 30000,
+          waitUntil: 'domcontentloaded'
+        }),
+        page.click('button[type="submit"]')
+      ])
+
       const submitDuration = Date.now() - submitStart
       console.log(`[Diagnostic] ✓ Navigation successful after ${submitDuration}ms`)
     } catch (error) {
