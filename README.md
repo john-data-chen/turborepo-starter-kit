@@ -50,7 +50,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 - Strategic Backend Decoupling & Refactoring: Architected the separation of a full-stack Next.js application into a decoupled frontend and a robust backend. Rebuilt the entire backend with Nest.js, establishing a scalable, modular, and maintainable microservices-oriented architecture. This strategic move significantly improved development velocity and system scalability.
 - Enhanced API & Data Integrity: Leveraged Nest.js powerful features, including dependency injection and a modular structure, to create a highly organized and testable API layer. This improved data validation and error handling, leading to a more resilient system.
 - Elite Web Performance & Quality (Lighthouse 90+): Achieved scores of 90+ in Performance, Accessibility, Best Practices, and SEO. The backend separation allowed the Next.js frontend to focus on optimized static site generation (SSG) and server-side rendering (SSR), leading to superior load times and a top-tier user experience.
-- Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login and registration, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
+- Comprehensive E2E Testing with Playwright: Implemented end-to-end tests for critical user flows, such as login, ensuring cross-browser (Chrome, Safari, Edge) and cross-platform reliability. This practice guarantees a consistent and dependable user experience.
 - CI/CD & Live Deployment: Deployed to Vercel, providing a live, interactive demo. This showcases practical skills in modern deployment pipelines and delivering functional applications.
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
@@ -58,6 +58,14 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 ---
 
 ## 🛠️ Technical Decision
+
+### Monorepo
+
+[Turborepo](https://turborepo.org/) - A high-performance build system for JavaScript and TypeScript codebases. It was chosen to manage this monorepo for several key reasons:
+
+- Faster, Smarter Builds: Turborepo dramatically speeds up development and CI/CD pipelines through advanced caching. It caches the output of tasks, ensuring code is never re-built or re-tested unnecessarily. This leads to near-instantaneous builds for unchanged code, a critical advantage for both developer productivity and deployment frequency.
+- Simplified Monorepo Management: It provides a streamlined developer experience for managing shared packages (/packages), configurations (ESLint, TypeScript), and scripts from a single repository. This simplifies dependency management, promotes code reuse, and ensures consistency across the entire application stack (frontend and backend).
+- Intelligent Task Scheduling: With its understanding of the dependency graph, Turborepo optimizes task execution by running them in the correct order and parallelizing where possible. This efficient scheduling minimizes idle time and further accelerates the entire build process.
 
 ### Frontend
 
