@@ -14,7 +14,18 @@
 This is not just another template; it's a production-ready, enterprise-grade foundation with 80%+ test coverage for modern full-stack development.
 Originally a full-stack Next.js application [next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit), it has been strategically re-architected into a decoupled frontend/backend system managed within a high-performance Monorepo.
 
-This architecture offers several key advantages:
+Here's a quick comparison of the architectural evolution:
+
+| Feature               | Old Architecture (Monolithic Next.js)      | **New Architecture (Decoupled Monorepo)**                                 | **Business & Team Impact**                                                                 |
+| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Team Structure**    | Full-stack developers required             | **Specialized Frontend & Backend Teams**                                  | Allows hiring specialized talent; teams can work in parallel, increasing overall velocity. |
+| **Development Cycle** | Tightly coupled; one change can impact all | **Independent development cycles**                                        | Reduces cross-team dependencies; frontend can iterate on UI without waiting for backend.   |
+| **Deployment**        | Single, monolithic deployment              | **Independent Frontend/Backend deployment**                               | Faster, lower-risk deployments; a backend bug doesn't block a frontend release.            |
+| **Scalability**       | Vertical scaling of the entire app         | **Targeted horizontal scaling** (e.g., scale only the API service)        | More cost-effective resource allocation; better performance under specific loads.          |
+| **Technology Stack**  | Locked into Next.js for backend            | **Flexible backend choice (Nest.js)**; can add more services (Go, Python) | Future-proofs the architecture; enables using the best tool for each specific job.         |
+| **Code Reusability**  | Limited to the Next.js app                 | **Centralized `ui` & `config` packages**                                  | Enforces design consistency and DRY principles across multiple potential applications.     |
+
+This new architecture offers several key advantages:
 
 - 🤝 Scalability & Team Agility: The decoupled structure, with a Next.js frontend and a Nest.js backend, allows teams to develop, test, and deploy independently, accelerating development cycles.
 - 🚀 Optimized Developer Experience: Powered by Turbopack and Rspack for blazing-fast builds and leveraging Turborepo for intelligent caching and task orchestration, your development workflow will be faster than ever.
