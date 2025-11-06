@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
-    "format": "prettier --write . --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern --config ../../prettier.config.js",
+    "format": "oxfmt --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern --config ../../.oxfmtrc.json",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch",

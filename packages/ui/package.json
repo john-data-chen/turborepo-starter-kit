@@ -21,8 +21,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc --noEmit",
-    "format": "prettier --write . --ignore-path ../../.prettierignore --write --no-error-on-unmatched-pattern --config ../../prettier.config.js"
+    "build": "tsc --noEmit"
   },
   "peerDependencies": {
     "react": "^19.2.0",
