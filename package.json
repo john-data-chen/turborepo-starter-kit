@@ -43,19 +43,19 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
-    "@vitejs/plugin-react-swc": "^4.2.0",
-    "@vitest/coverage-v8": "^4.0.6",
+    "@vitejs/plugin-react-swc": "^4.2.1",
+    "@vitest/coverage-v8": "^4.0.7",
     "commitizen": "^4.3.1",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7",
     "jsdom": "^27.1.0",
     "lint-staged": "^16.2.6",
-    "oxlint": "^1.25.0",
+    "oxlint": "^1.26.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "turbo": "^2.6.0",
     "unplugin-swc": "^1.5.8",
-    "vitest": "^4.0.6"
+    "vitest": "^4.0.7"
   },
   "pnpm": {
     "overrides": {
@@ -67,12 +67,12 @@
       "tailwindcss": "^4.1.16",
       "@types/react": "19.2.2",
       "@types/react-dom": "19.2.2",
-      "@types/node": "^24.9.2",
+      "@types/node": "^24.10.0",
       "lucide-react": "^0.552.0",
-      "oxlint": "^1.25.0",
+      "oxlint": "^1.26.0",
       "jsdom": "^27.1.0",
-      "vitest": "^4.0.6",
-      "@vitest/coverage-v8": "^4.0.6",
+      "vitest": "^4.0.7",
+      "@vitest/coverage-v8": "^4.0.7",
       "typescript": "^5.9.3"
     },
     "onlyBuiltDependencies": [
