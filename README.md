@@ -345,7 +345,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 ### Oxfmt
 
 - status: enabled
-- benefit: Significantly faster (about 45~50 times) than Prettier, with near-instant cold startup times.(it can format this small project in 531ms, it has more potential in big projects with thousands of files) Aims for ~99.99% compatibility with Prettier to make migration easy.
+- benefit: Significantly faster (about 50 times) than Prettier, with near-instant cold startup times.(it can format this small project in 13ms, it has more potential in big projects with thousands of files). It is not recommended to use it in production, still in preview version.
 - [introduction](https://oxc.rs/docs/guide/usage/formatter)
 
 ### Turbopack
