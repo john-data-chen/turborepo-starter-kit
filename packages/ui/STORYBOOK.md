@@ -1,79 +1,79 @@
-# Storybook 文檔
+# Storybook Documentation
 
-## 概述
+## Overview
 
-本 UI 套件已成功整合 Storybook，用於組件開發、測試和文檔化。
+This UI kit is integrated with Storybook for component development, testing, and documentation.
 
-## 快速開始
+## Quick Start
 
-### 開發模式
+### Development Mode
 ```bash
-# 方法 1: 直接在 UI 套件中執行
+# Method 1: Run directly in the UI package
 cd packages/ui
 pnpm run storybook
 
-# 方法 2: 通過 turborepo 全局執行（推薦）
+# Method 2: Run via Turborepo globally (recommended)
 npm run storybook
 ```
-Storybook 將在 http://localhost:6006 啟動
+Storybook will start at http://localhost:6006.
 
-### 建構靜態文件
+### Build Static Files
 ```bash
-# 方法 1: 直接在 UI 套件中執行
+# Method 1: Run directly in the UI package
 cd packages/ui
 pnpm run build-storybook
 
-# 方法 2: 通過 turborepo 全局執行（推薦）
+# Method 2: Run via Turborepo globally (recommended)
 npm run build:storybook
 ```
-靜態文件將輸出到 `storybook-static` 目錄
+Static files will be output to the `storybook-static` directory.
 
-### 測試 Storybook
+### Test Storybook
 ```bash
-# 方法 1: 直接在 UI 套件中執行
+# Method 1: Run directly in the UI package
 cd packages/ui
 pnpm run test-storybook
 
-# 方法 2: 通過 turborepo 全局執行（推薦）
+# Method 2: Run via Turborepo globally (recommended)
 npm run test:storybook
 ```
 
-## 可用組件
+## Component Coverage
 
-### 已建立 Story 的組件
-- **Button** - 各種樣式和尺寸的按鈕
-- **Card** - 卡片容器組件
+### Components with Stories
+- **Alert Dialog**
+- **Avatar**
+- **Badge**
+- **Breadcrumb**
+- **Button**
+- **Card**
+- **Checkbox**
+- **Collapsible**
+- **Command**
+- **Dialog**
+- **Dropdown Menu**
+- **Input**
+- **Label**
+- **Popover**
+- **Radio Group**
+- **Scroll Area**
+- **Select**
+- **Sheet**
+- **Sidebar**
+- **Skeleton**
+- **Textarea**
+- **Tooltip**
 
-### 現有組件（待建立 Story）
-- Alert Dialog
-- Avatar
-- Badge
-- Breadcrumb
-- Calendar
-- Checkbox
-- Collapsible
-- Command
-- Dialog
-- Dropdown Menu
-- Form
-- Input
-- Label
-- Popover
-- Radio Group
-- Scroll Area
-- Select
-- Separator
-- Sheet
-- Sidebar
-- Skeleton
-- Textarea
-- Tooltip
+### Components without Stories
+- **Calendar** (Story removed due to type conflicts with `react-day-picker`)
+- **Form** (Story removed due to external dependencies)
+- **Separator**
 
-## Story 開發指南
+## Story Development Guide
 
-### 創建新的 Story 文件
+### Creating a New Story File
 
-在對應組件目錄中創建 `*.stories.tsx` 文件：
+Create a `*.stories.tsx` file in the corresponding component directory:
 
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
@@ -87,7 +87,7 @@ const meta: Meta<typeof YourComponent> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    // 定義控制項
+    // Define controls
   },
 };
 
@@ -96,75 +96,40 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    // 預設參數
+    // Default arguments
   },
 };
 ```
 
-### Story 命名規範
-- 組件文件：`{ComponentName}.stories.tsx`
-- 標題格式：`UI/{ComponentName}`
-- 多個變體使用 `PascalCase`
+### Naming Conventions
+- Story file: `{ComponentName}.stories.tsx`
+- Title format: `UI/{ComponentName}`
+- Variants use `PascalCase`
 
-### 常用配置
+## Best Practices
 
-#### Layout 選項
-- `'centered'` - 居中顯示
-- `'fullscreen'` - 全螢幕顯示
-- `'padded'` - 內邊距顯示
-
-#### 變體展示
-```typescript
-export const AllVariants: Story = {
-  render: () => (
-    <div className="flex flex-wrap gap-4">
-      {/* 展示所有變體 */}
-    </div>
-  ),
-};
-```
-
-#### Dark Mode 測試
-Storybook 自動支援 dark/light theme 切換，確保組件在兩種模式下都正常顯示。
-
-#### Accessibility 測試
-使用內建的 Accessibility addon 檢查組件無障礙性。
-
-## Addons 說明
-
-### 已啟用的 Addons
-- **@storybook/addon-links** - 組件間連結
-- **@storybook/addon-themes** - 主題切換
-- **@storybook/addon-a11y** - 無障礙性檢查
-
-### 移除的 Addons
-- ~~@storybook/addon-essentials~~ - 因版本衝突暫時移除
-- ~~@storybook/addon-interactions~~ - 因版本衝突暫時移除
-
-## 最佳實踐
-
-### 1. 組件 Props 文檔
-使用 JSDoc 註釋為組件 props 添加說明：
+### 1. Document Component Props
+Use JSDoc comments to add descriptions for component props:
 
 ```typescript
 /**
- * 主要的按鈕組件
- * @param variant - 按鈕樣式
- * @param size - 按鈕大小
- * @param disabled - 是否禁用
+ * A primary button component.
+ * @param variant - The button style.
+ * @param size - The button size.
+ * @param disabled - Whether the button is disabled.
  */
 function Button({ variant, size, disabled, ...props }: ButtonProps) {
   // ...
 }
 ```
 
-### 2. Story 分類
-- 使用清晰的故事分類
-- 提供有意義的描述
-- 包含使用場景說明
+### 2. Story Organization
+- Use clear story categories.
+- Provide meaningful descriptions.
+- Include usage scenarios.
 
-### 3. 響應式測試
-在 Story 中測試不同螢幕尺寸：
+### 3. Responsive Testing
+Test different screen sizes in your stories:
 ```typescript
 export const Responsive: Story = {
   parameters: {
@@ -175,76 +140,61 @@ export const Responsive: Story = {
 };
 ```
 
-### 4. 狀態管理
-為有狀態的組件提供多個 Story：
+### 4. State Management
+Provide multiple stories for stateful components:
 - Default state
 - Loading state
 - Error state
 - Empty state
 
-## 故障排除
+## Troubleshooting
 
-### 常見問題
+### Common Issues
 
-#### 1. 版本衝突
-如果遇到版本衝突錯誤：
+#### 1. Version Conflicts
+If you encounter version conflict errors:
 ```bash
 pnpm dedupe
 ```
 
-#### 2. 構建錯誤
-檢查 TypeScript 配置：
+#### 2. Build Errors
+Check TypeScript configuration:
 ```bash
-# 檢查語法
+# Check for syntax errors
 pnpm run type-check
 ```
 
-#### 3. 樣式問題
-確保全局 CSS 正確載入：
+#### 3. Style Issues
+Ensure global CSS is loaded correctly:
 ```typescript
 // .storybook/preview.ts
 import '../src/styles/globals.css';
 ```
 
-## Turborepo 整合
+## Turborepo Integration
 
-### 新增的全局腳本
-已在根層級 `package.json` 中新增以下腳本：
-- `npm run storybook` - 啟動 Storybook 開發服務器
-- `npm run build:storybook` - 建構 Storybook 靜態文件
-- `npm run test:storybook` - 執行 Storybook 測試
+### Global Scripts
+The following scripts have been added to the root `package.json`:
+- `npm run storybook` - Starts the Storybook development server.
+- `npm run build:storybook` - Builds the Storybook static files.
+- `npm run test:storybook` - Runs Storybook tests.
 
-### Turbo.json 配置
-已在 `turbo.json` 中配置以下任務：
-- `storybook` - 開發模式，支援緩存和依賴管理
-- `build-storybook` - 建構任務，輸出到 `storybook-static/`
-- `test-storybook` - 測試任務
+### Turbo.json Configuration
+The following tasks have been configured in `turbo.json`:
+- `storybook` - Development mode, with caching and dependency management.
+- `build-storybook` - Build task, outputting to `storybook-static/`.
+- `test-storybook` - Test task.
 
-### Git 配置
-- `storybook-static/` 目錄已加入 `.gitignore`
-- 這是 Storybook 的動態構建輸出，類似 Next.js 的 `.next/` 目錄
+## Future Plans
 
-### 緩存優化
-- Storybook 任務已整合 turborepo 緩存系統
-- 支援並行執行和依賴優化
-- 自動處理 UI 套件和其依賴的構建順序
+### Short-Term Goals
+- [x] Create stories for the remaining 20+ components.
+- [ ] Add interactive tests.
+- [ ] Set up Chromatic for visual regression testing.
 
-## 未來計劃
-
-### 短期目標
-- [ ] 為其餘 20+ 組件建立 Story
-- [ ] 加入互動式測試
-- [ ] 設置 Chromatic 進行視覺回歸測試
-
-### 長期目標
-- [x] 整合到 turborepo 架構
-- [ ] 整合到 CI/CD 流程
-- [ ] 建立組件使用指南
-- [ ] 添加設計令牌展示
-- [ ] 建立 Story 測試套件
-
-## 相關資源
-
-- [Storybook 官方文檔](https://storybook.js.org/)
-- [React Storybook 指南](https://storybook.js.org/docs/react/get-started/introduction)
-- [UI 組件設計模式](https://storybook.js.org/design-system/)
+### Long-Term Goals
+- [x] Integrate into the Turborepo architecture.
+- [ ] Integrate into the CI/CD pipeline.
+- [ ] Create a component usage guide.
+- [ ] Add a design token showcase.
+- [ ] Establish a Storybook test suite.
