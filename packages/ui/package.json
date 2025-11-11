@@ -24,7 +24,7 @@
     "build": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook --watch=false"
+    "test:storybook": "start-server-and-test storybook http://127.0.0.1:6006 \"pnpm exec test-storybook\""
   },
   "peerDependencies": {
     "react": "^19.2.0",
@@ -36,6 +36,7 @@
     "@storybook/addon-themes": "^10.0.6",
     "@storybook/react": "^10.0.6",
     "@storybook/react-vite": "^10.0.6",
+    "@storybook/test-runner": "^0.24.1",
     "@types/node": "^24.10.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",

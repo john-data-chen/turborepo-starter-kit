@@ -57,6 +57,7 @@
     "oxlint": "^1.28.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
+    "start-server-and-test": "^2.0.4",
     "turbo": "^2.6.0",
     "unplugin-swc": "^1.5.8",
     "vitest": "^4.0.8"
