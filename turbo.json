@@ -20,9 +20,57 @@
         "dist/**"
       ]
     },
+    "storybook": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        ".storybook/**/*"
+      ]
+    },
+    "build-storybook": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "storybook-static/**"
+      ]
+    },
+    "test-storybook": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ]
+    },
     "@repo/ui#build": {
       "dependsOn": [],
       "outputs": []
+    },
+    "@repo/ui#storybook": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [],
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        ".storybook/**/*"
+      ]
+    },
+    "@repo/ui#build-storybook": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "storybook-static/**"
+      ]
+    },
+    "@repo/ui#test-storybook": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ]
     },
     "web#build": {
       "dependsOn": [

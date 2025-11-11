@@ -8,22 +8,34 @@
 
 ### 開發模式
 ```bash
+# 方法 1: 直接在 UI 套件中執行
 cd packages/ui
 pnpm run storybook
+
+# 方法 2: 通過 turborepo 全局執行（推薦）
+npm run storybook
 ```
 Storybook 將在 http://localhost:6006 啟動
 
 ### 建構靜態文件
 ```bash
+# 方法 1: 直接在 UI 套件中執行
 cd packages/ui
 pnpm run build-storybook
+
+# 方法 2: 通過 turborepo 全局執行（推薦）
+npm run build:storybook
 ```
 靜態文件將輸出到 `storybook-static` 目錄
 
 ### 測試 Storybook
 ```bash
+# 方法 1: 直接在 UI 套件中執行
 cd packages/ui
 pnpm run test-storybook
+
+# 方法 2: 通過 turborepo 全局執行（推薦）
+npm run test:storybook
 ```
 
 ## 可用組件
@@ -194,6 +206,29 @@ pnpm run type-check
 import '../src/styles/globals.css';
 ```
 
+## Turborepo 整合
+
+### 新增的全局腳本
+已在根層級 `package.json` 中新增以下腳本：
+- `npm run storybook` - 啟動 Storybook 開發服務器
+- `npm run build:storybook` - 建構 Storybook 靜態文件
+- `npm run test:storybook` - 執行 Storybook 測試
+
+### Turbo.json 配置
+已在 `turbo.json` 中配置以下任務：
+- `storybook` - 開發模式，支援緩存和依賴管理
+- `build-storybook` - 建構任務，輸出到 `storybook-static/`
+- `test-storybook` - 測試任務
+
+### Git 配置
+- `storybook-static/` 目錄已加入 `.gitignore`
+- 這是 Storybook 的動態構建輸出，類似 Next.js 的 `.next/` 目錄
+
+### 緩存優化
+- Storybook 任務已整合 turborepo 緩存系統
+- 支援並行執行和依賴優化
+- 自動處理 UI 套件和其依賴的構建順序
+
 ## 未來計劃
 
 ### 短期目標
@@ -202,6 +237,7 @@ import '../src/styles/globals.css';
 - [ ] 設置 Chromatic 進行視覺回歸測試
 
 ### 長期目標
+- [x] 整合到 turborepo 架構
 - [ ] 整合到 CI/CD 流程
 - [ ] 建立組件使用指南
 - [ ] 添加設計令牌展示
