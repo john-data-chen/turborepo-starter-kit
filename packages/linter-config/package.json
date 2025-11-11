@@ -4,7 +4,7 @@
   "private": true,
   "main": ".oxlintrc.json",
   "devDependencies": {
-    "oxlint": "^1.26.0",
+    "oxlint": "^1.28.0",
     "oxlint-tsgolint": "^0.5.1"
   }
 }
