@@ -29,6 +29,9 @@ apps/web/next-env.d.ts
 **/build/
 **/dist/
 
+# Storybook
+**/storybook-static/
+
 # Testing
 **/coverage/
 **/test-results/
