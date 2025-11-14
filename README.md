@@ -297,6 +297,12 @@ packages/
 
 ---
 
+## To-do list
+
+- add more docs and tests in storybook of shared Shadcn UI component library
+
+---
+
 ## AI Tools
 
 I am using AI tools to help our team improve the quality of code and the efficiency of development. This project is one of the playgrounds for AI tools.
