@@ -5,6 +5,6 @@
   "main": ".oxlintrc.json",
   "devDependencies": {
     "oxlint": "^1.28.0",
-    "oxlint-tsgolint": "^0.5.1"
+    "oxlint-tsgolint": "^0.6.0"
   }
 }
