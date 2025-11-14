@@ -30,8 +30,9 @@ This new architecture offers several key advantages:
 - 🤝 Scalability & Team Agility: The decoupled structure, with a Next.js frontend and a Nest.js backend, allows teams to develop, test, and deploy independently, accelerating development cycles.
 - 🚀 Optimized Developer Experience: Powered by Turbopack and Rspack for blazing-fast builds and leveraging Turborepo for intelligent caching and task orchestration, your development workflow will be faster than ever.
 - 📦 Maximum Code Reusability: A centralized Shadcn UI component library is shared across the monorepo, ensuring design consistency and reducing redundant code.
+- ⭐️ (New) Sync Custom Projects Sorting: Adjust project order and sync to other devices, you can pick up your task anywhere like you use the same device.
 
-### Core Features Included
+### Core Features From Original Next.js Template
 
 - 📝 Full-Featured Kanban System
   - Intuitive drag & drop task management.
@@ -83,6 +84,7 @@ Every ⭐️ motivates me to deliver more high-quality templates.
 - **Framework**: [Next.js](https://nextjs.org/docs/app/getting-started), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/) - modern UI with strong type safety and server-side rendering (using SSG in login page for better performance, SSR in workspace pages for dynamic content)
 - **Build**: [Oxlint](https://oxc.rs/docs/guide/usage/linter), [Prettier](https://prettier.io/), [Commitizen](https://commitizen.github.io/cz-cli/), [Lint Staged](https://github.com/okonet/lint-staged), [Husky](https://github.com/typicode/husky) - they are the 1st quality gate: automated code quality checks and style formatting during commit, preventing problems into codebase and make consistent code style in team work
 - **UI**: [Tailwind CSS](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/) - consistent, responsive, and scalable styling, enabling rapid and maintainable UI development
+- **Design System Workshop**: [Storybook](https://storybook.js.org/) - Integrated into the shared Shadcn UI component library via Turborepo. It serves as the Single Source of Truth (SSOT) for all UI components, ensuring design-to-code consistency. I utilized the Storybook Test Runner for interaction testing, establishing a pre-commit visual quality gate that significantly reduces UI bugs before they reach the E2E stage.
 - **Testing**: [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) - they are the 2nd quality gate: easier to setup and faster execution than Jest and Cypress, chosen for their efficiency and comprehensive testing capabilities
 - **Internationalization(i18n)**: [Next-intl](https://next-intl.dev/) - internationalization (i18n) support for Next.js applications
 - **State Management**: [Zustand](https://zustand-demo.pmnd.rs/) - minimal and testable global state management, 40% code reduction compared to Redux
@@ -190,6 +192,9 @@ pnpm format
 
 # Build
 pnpm build
+
+# Storybook
+pnpm storybook
 ```
 
 ---
