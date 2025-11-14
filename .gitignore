@@ -8,6 +8,7 @@
 **/yarn-debug.log*
 **/yarn-error.log*
 **/.pnpm-debug.log*
+**/debug-storybook.log*
 
 # OS & Editor Generated Files
 **/.DS_Store
@@ -28,6 +29,9 @@ apps/web/next-env.d.ts
 # General Build Artifacts
 **/build/
 **/dist/
+
+# Storybook
+**/storybook-static/
 
 # Testing
 **/coverage/
