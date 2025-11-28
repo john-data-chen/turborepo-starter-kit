@@ -307,7 +307,7 @@ packages/
 
 I am using AI tools to help our team improve the quality of code and the efficiency of development. This project is one of the playgrounds for AI tools.
 
-### Editor with AI
+### IDE
 
 - [Windsurf](https://windsurf.com/)
 - [Zed](https://zed.dev/)
@@ -326,6 +326,9 @@ I am using AI tools to help our team improve the quality of code and the efficie
 - [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - [context7](https://github.com/upstash/context7)
 - [Next.js](https://nextjs.org/docs/app/guides/mcp)
+- [sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking)
+- [playwright](https://github.com/microsoft/playwright-mcp)
+- [tavily](https://github.com/tavily-ai/tavily-mcp)
 
 ### GitHub Action (code review, PR summary)
 
@@ -341,12 +344,12 @@ I am using AI tools to help our team improve the quality of code and the efficie
 
 - status: enabled
 - benefit:
-  - 50~100 times faster than ESLint (it can lint this small project in 1.5 seconds, it has more potential in big projects with thousands of files)
+  - 50~100 times faster than ESLint (it can lint this small project in 2 seconds, it has more potential in big projects with thousands of files)
   - easier to setup (compared to ESLint 9+)
   - clearer instructions showing how to fix each issue
   - many ESLint packages can be removed (in my case 10 packages)
 - note: Oxlint is in a stable version, and many companies have used it in production for a long time.
-  But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production, and it is a experimental in this project
+  But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production.
 
 #### Introductions
 
@@ -356,7 +359,7 @@ I am using AI tools to help our team improve the quality of code and the efficie
 ### Oxfmt
 
 - status: enabled
-- benefit: Significantly faster (about 50 times) than Prettier, with near-instant cold startup times.(it can format this small project in 13ms, it has more potential in big projects with thousands of files). It is not recommended to use it in production, still in preview version.
+- benefit: Significantly faster (about 50 times) than Prettier, with near-instant cold startup times.(it can format this small project in 1.5 second, it has more potential in big projects with thousands of files). It is not recommended to use it in production, still in preview version.
 - [introduction](https://oxc.rs/docs/guide/usage/formatter)
 
 ### Turbopack
