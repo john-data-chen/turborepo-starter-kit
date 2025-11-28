@@ -80,7 +80,6 @@ describe('ProjectSchema', () => {
       schema: ProjectSchema,
       $isValid: vi.fn().mockReturnValue(true)
     }
-    const next = vi.fn()
 
     // Get the pre-save hook (the first hook is our custom hook)
     const hooks = (ProjectSchema as any).s.hooks._pres.get('save')
@@ -90,11 +89,10 @@ describe('ProjectSchema', () => {
     // Find and call our custom hook (not the timestamps hook)
     const customHook = hooks.find((hook: any) => hook.fn.toString().includes('this.updatedAt'))
     expect(customHook).toBeDefined()
-    customHook.fn.call(mockDocument, next)
+    await customHook.fn.call(mockDocument)
 
     // Verify updatedAt was updated
     expect(mockDocument.updatedAt.getTime()).toBeGreaterThan(oldDate.getTime())
-    expect(next).toHaveBeenCalled()
   })
 
   it('should create Project class instance', () => {

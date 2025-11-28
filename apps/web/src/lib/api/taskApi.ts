@@ -47,11 +47,24 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
   })
 
   if (!response.ok) {
-    const error = await response.text().catch(() => 'Request failed')
+    let errorMessage = 'Request failed'
+    try {
+      // Try to parse as JSON first
+      const errorData = await response.json()
+      errorMessage = errorData.message || JSON.stringify(errorData)
+    } catch {
+      // If JSON parsing fails, try to get text
+      try {
+        errorMessage = await response.text()
+      } catch {
+        errorMessage = `Request failed with status ${response.status}`
+      }
+    }
+
     if (typeof window !== 'undefined' && response.status === 401) {
       // Handle unauthorized (e.g., redirect to login)
     }
-    throw new Error(error || 'Request failed')
+    throw new Error(errorMessage)
   }
 
   // Handle 204 No Content or empty responses
