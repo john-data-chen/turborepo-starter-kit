@@ -49,8 +49,8 @@
     "@nestjs/cli": "^11.0.12",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.9",
-    "@rspack/cli": "^1.6.4",
-    "@rspack/core": "^1.6.4",
+    "@rspack/cli": "^1.6.5",
+    "@rspack/core": "^1.6.5",
     "@swc/cli": "^0.7.9",
     "@swc/core": "^1.15.3",
     "@testing-library/jest-dom": "^6.9.1",
@@ -61,7 +61,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@vitejs/plugin-react-swc": "^4.2.2",
-    "@vitest/coverage-v8": "^4.0.13",
+    "@vitest/coverage-v8": "^4.0.14",
     "cross-env": "^10.1.0",
     "globals": "^16.5.0",
     "jsdom": "^27.2.0",
@@ -71,6 +71,6 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.14"
   }
 }
