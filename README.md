@@ -303,7 +303,7 @@ This project showcases enterprise-grade Storybook implementation with comprehens
 
 ### Core Storybook Features
 
-- **📖 MDX Documentation**: Rich, interactive component guides with usage examples and best practices
+- **📖 MDX Documentation**: Rich, interactive component guides with usage examples and best practices (use `badge`, `button`, `card`, and `input` for demonstration)
 - **🧪 Interaction Testing**: Automated component behavior testing using play functions and Testing Library
 - **♿ Accessibility Testing**: Built-in a11y validation with @storybook/addon-a11y for WCAG compliance
 - **🎨 Theme Testing**: Dark/Light mode support via addon-themes for design system consistency
@@ -347,10 +347,10 @@ export const ClickInteraction: Story = {
 pnpm storybook
 
 # Build Storybook for production
-pnpm build-storybook
+pnpm storybook:build
 
 # Run Storybook interaction tests
-pnpm test:storybook
+pnpm storybook:test
 ```
 
 ### Why This Matters for Production
@@ -369,14 +369,6 @@ pnpm test:storybook
 - ✅ Accessibility annotations and WCAG compliance checks
 - ✅ Real-world usage examples and composition patterns
 - ✅ Semantic HTML and ARIA best practices
-
----
-
-## To-do list
-
-- Expand Storybook interaction tests to cover remaining components
-- Add visual regression testing with Chromatic integration
-- Implement Storybook test runner in CI/CD pipeline
 
 ---
 
