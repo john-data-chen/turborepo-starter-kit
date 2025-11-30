@@ -1,0 +1,313 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/blocks';
+import * as CardStories from './card.stories';
+
+<Meta of={CardStories} />
+
+<Title />
+
+<Description>
+  A flexible container component for grouping related content with consistent styling.
+  Perfect for dashboards, product listings, user profiles, and content cards.
+</Description>
+
+## Overview
+
+The Card component is a versatile container that provides structure and visual hierarchy to your content.
+It consists of multiple sub-components that can be composed to create various card layouts.
+
+### Component Structure
+
+```
+Card (container)
+├── CardHeader (optional)
+│   ├── CardTitle
+│   ├── CardDescription
+│   └── CardAction (optional)
+├── CardContent (main content)
+└── CardFooter (optional)
+```
+
+### Key Features
+
+- **Composable Architecture**: Mix and match sub-components as needed
+- **Flexible Layouts**: Supports various content arrangements
+- **Semantic HTML**: Uses proper heading hierarchy and landmarks
+- **Responsive Design**: Adapts to different screen sizes
+- **Accessible**: Screen reader friendly with proper ARIA attributes
+
+## Usage
+
+```tsx
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  CardAction
+} from '@repo/ui/components/card'
+import { Button } from '@repo/ui/components/button'
+
+export function ProductCard() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Premium Plan</CardTitle>
+        <CardDescription>Perfect for growing teams</CardDescription>
+        <CardAction>
+          <Button variant="ghost" size="sm">Edit</Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        <p className="text-3xl font-bold">$29/month</p>
+        <ul className="mt-4 space-y-2">
+          <li>✓ Unlimited projects</li>
+          <li>✓ Priority support</li>
+          <li>✓ Advanced analytics</li>
+        </ul>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">Subscribe</Button>
+      </CardFooter>
+    </Card>
+  )
+}
+```
+
+## Basic Examples
+
+### Simple Card
+
+<Canvas of={CardStories.Simple} />
+
+The simplest form - just a Card with CardContent.
+
+### Standard Card
+
+<Canvas of={CardStories.Basic} />
+
+Most common pattern with header, content, and footer.
+
+### Card with Actions
+
+<Canvas of={CardStories.WithActions} />
+
+Includes action buttons in the header using CardAction component.
+
+## Real-World Examples
+
+### Profile Card
+
+<Canvas of={CardStories.ProfileCard} />
+
+A user profile card demonstrating how to display user information.
+
+### Product Card
+
+<Canvas of={CardStories.ProductCard} />
+
+E-commerce product card with image, description, and price.
+
+## Composition Patterns
+
+### Information Card
+
+```tsx
+<Card className="w-full max-w-md">
+  <CardHeader>
+    <CardTitle>API Status</CardTitle>
+    <CardDescription>System health overview</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-2">
+      <div className="flex justify-between">
+        <span>Uptime</span>
+        <Badge variant="default">99.9%</Badge>
+      </div>
+      <div className="flex justify-between">
+        <span>Response Time</span>
+        <span className="font-medium">45ms</span>
+      </div>
+    </div>
+  </CardContent>
+</Card>
+```
+
+### Stats Card
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardDescription>Total Revenue</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="text-2xl font-bold">$45,231.89</div>
+    <p className="text-xs text-muted-foreground">
+      +20.1% from last month
+    </p>
+  </CardContent>
+</Card>
+```
+
+### Form Card
+
+```tsx
+<Card className="w-full max-w-sm">
+  <CardHeader>
+    <CardTitle>Create Account</CardTitle>
+    <CardDescription>
+      Enter your details to get started
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    <div className="space-y-2">
+      <Label htmlFor="name">Name</Label>
+      <Input id="name" placeholder="John Doe" />
+    </div>
+    <div className="space-y-2">
+      <Label htmlFor="email">Email</Label>
+      <Input id="email" type="email" placeholder="john@example.com" />
+    </div>
+  </CardContent>
+  <CardFooter className="flex gap-2">
+    <Button className="w-full">Sign Up</Button>
+    <Button variant="outline" className="w-full">Cancel</Button>
+  </CardFooter>
+</Card>
+```
+
+### Dashboard Card with Chart
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Monthly Sales</CardTitle>
+    <CardDescription>January - June 2024</CardDescription>
+    <CardAction>
+      <Button variant="ghost" size="sm">
+        <Download className="h-4 w-4" />
+      </Button>
+    </CardAction>
+  </CardHeader>
+  <CardContent>
+    {/* Chart component goes here */}
+    <div className="h-[200px] flex items-center justify-center bg-muted rounded">
+      Chart Area
+    </div>
+  </CardContent>
+  <CardFooter className="text-sm text-muted-foreground">
+    Updated 2 hours ago
+  </CardFooter>
+</Card>
+```
+
+## Accessibility
+
+The Card component follows semantic HTML and accessibility best practices:
+
+- ✅ **Semantic Structure**: Uses proper HTML5 elements
+- ✅ **Heading Hierarchy**: CardTitle uses appropriate heading levels
+- ✅ **Keyboard Navigation**: All interactive elements within cards are keyboard accessible
+- ✅ **Screen Reader Support**: Properly structured content for screen readers
+- ✅ **Color Contrast**: Sufficient contrast ratios for text
+
+### Best Practices
+
+1. **Use CardTitle for main heading**: Provides semantic structure
+2. **Keep CardDescription concise**: 1-2 sentences maximum
+3. **Limit footer actions**: Maximum 2-3 buttons to avoid clutter
+4. **Maintain consistent width**: Use className="w-[350px]" or similar for consistency
+5. **Add interactive feedback**: Include hover states for clickable cards
+
+### Making Cards Interactive
+
+```tsx
+// Clickable card example
+<Card
+  className="cursor-pointer transition-colors hover:bg-accent"
+  onClick={() => navigate('/details')}
+>
+  <CardHeader>
+    <CardTitle>View Details</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>Click to learn more</p>
+  </CardContent>
+</Card>
+
+// For better accessibility, consider wrapping in a link:
+<a href="/details" className="block">
+  <Card className="transition-colors hover:bg-accent">
+    {/* Card content */}
+  </Card>
+</a>
+```
+
+## Layout Patterns
+
+### Card Grid
+
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <Card>
+    {/* Card 1 */}
+  </Card>
+  <Card>
+    {/* Card 2 */}
+  </Card>
+  <Card>
+    {/* Card 3 */}
+  </Card>
+</div>
+```
+
+### Card Stack
+
+```tsx
+<div className="space-y-4 max-w-md">
+  <Card>
+    {/* Card 1 */}
+  </Card>
+  <Card>
+    {/* Card 2 */}
+  </Card>
+</div>
+```
+
+## Styling Variants
+
+Cards can be customized with Tailwind classes:
+
+```tsx
+// Elevated card
+<Card className="shadow-lg">
+
+// Bordered card
+<Card className="border-2 border-primary">
+
+// Full-width card
+<Card className="w-full">
+
+// Colored background
+<Card className="bg-primary/10">
+```
+
+## Component API
+
+### Card Props
+
+The Card component accepts all standard div props plus className.
+
+### Sub-Components
+
+- **CardHeader**: Container for title, description, and actions
+- **CardTitle**: Main heading (renders as h3 by default)
+- **CardDescription**: Subtitle or supplementary text
+- **CardContent**: Main content area with default padding
+- **CardFooter**: Bottom section, typically for actions
+- **CardAction**: Top-right action area within the header
+
+## All Stories
+
+<Stories />

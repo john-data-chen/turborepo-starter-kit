@@ -1,0 +1,324 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/blocks';
+import * as BadgeStories from './badge.stories';
+
+<Meta of={BadgeStories} />
+
+<Title />
+
+<Description>
+  A compact component for displaying status, categories, or labels.
+  Perfect for tags, notifications, and metadata indicators.
+</Description>
+
+## Overview
+
+The Badge component is a small, inline element that highlights or labels content.
+It's designed to draw attention to specific information without overwhelming the UI.
+
+### Key Features
+
+- **Visual Variants**: 4 style options (default, secondary, destructive, outline)
+- **Compact Design**: Takes minimal space while remaining readable
+- **Flexible Usage**: Works inline with text or as standalone elements
+- **Semantic Meaning**: Colors convey status and importance
+- **Accessible**: Proper ARIA attributes and color contrast
+
+## Usage
+
+```tsx
+import { Badge } from '@repo/ui/components/badge'
+
+export function StatusIndicator() {
+  return (
+    <div className="flex items-center gap-2">
+      <span>Status:</span>
+      <Badge>Active</Badge>
+    </div>
+  )
+}
+```
+
+## Variants
+
+<Canvas of={BadgeStories.AllVariants} />
+
+### When to Use Each Variant
+
+- **Default**: Primary status, main categories, highlighted tags
+- **Secondary**: Alternative status, less prominent labels
+- **Destructive**: Errors, warnings, critical status, removal actions
+- **Outline**: Subtle labels, optional tags, tertiary information
+
+## Interactive Example
+
+<Canvas of={BadgeStories.Default} />
+
+<Controls of={BadgeStories.Default} />
+
+## Common Use Cases
+
+### Status Indicators
+
+```tsx
+import { Badge } from '@repo/ui/components/badge'
+
+function UserStatus({ status }) {
+  const statusConfig = {
+    active: { variant: 'default', label: 'Active' },
+    pending: { variant: 'secondary', label: 'Pending' },
+    blocked: { variant: 'destructive', label: 'Blocked' }
+  }
+
+  const config = statusConfig[status]
+
+  return <Badge variant={config.variant}>{config.label}</Badge>
+}
+```
+
+### Tag Lists
+
+```tsx
+<div className="flex flex-wrap gap-2">
+  <Badge variant="outline">React</Badge>
+  <Badge variant="outline">TypeScript</Badge>
+  <Badge variant="outline">Next.js</Badge>
+  <Badge variant="outline">Tailwind CSS</Badge>
+</div>
+```
+
+### Notification Counts
+
+```tsx
+import { Bell } from 'lucide-react'
+
+<Button variant="ghost" size="icon" className="relative">
+  <Bell className="h-5 w-5" />
+  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+    3
+  </Badge>
+</Button>
+```
+
+### Table Cell Status
+
+```tsx
+<Table>
+  <TableBody>
+    <TableRow>
+      <TableCell>Order #1234</TableCell>
+      <TableCell>
+        <Badge>Shipped</Badge>
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Order #1235</TableCell>
+      <TableCell>
+        <Badge variant="secondary">Processing</Badge>
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Order #1236</TableCell>
+      <TableCell>
+        <Badge variant="destructive">Cancelled</Badge>
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+### Category Labels
+
+```tsx
+<Card>
+  <CardHeader>
+    <div className="flex items-center justify-between">
+      <CardTitle>Blog Post Title</CardTitle>
+      <Badge variant="secondary">Technology</Badge>
+    </div>
+    <CardDescription>
+      Posted on January 15, 2024
+    </CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Article preview text...</p>
+  </CardContent>
+</Card>
+```
+
+### Priority Indicators
+
+```tsx
+function TaskPriority({ priority }) {
+  const priorityMap = {
+    high: { variant: 'destructive', label: 'High Priority', icon: '🔥' },
+    medium: { variant: 'default', label: 'Medium', icon: '⚡' },
+    low: { variant: 'secondary', label: 'Low', icon: '📌' }
+  }
+
+  const config = priorityMap[priority]
+
+  return (
+    <Badge variant={config.variant}>
+      <span className="mr-1">{config.icon}</span>
+      {config.label}
+    </Badge>
+  )
+}
+```
+
+### Feature Flags
+
+```tsx
+<div className="space-y-2">
+  <div className="flex items-center justify-between">
+    <span>Dark Mode</span>
+    <Badge>Enabled</Badge>
+  </div>
+  <div className="flex items-center justify-between">
+    <span>Beta Features</span>
+    <Badge variant="destructive">Disabled</Badge>
+  </div>
+  <div className="flex items-center justify-between">
+    <span>Analytics</span>
+    <Badge variant="outline">Optional</Badge>
+  </div>
+</div>
+```
+
+## Advanced Patterns
+
+### Badge with Icons
+
+```tsx
+import { Check, X, Clock } from 'lucide-react'
+
+<div className="flex gap-2">
+  <Badge>
+    <Check className="mr-1 h-3 w-3" />
+    Completed
+  </Badge>
+  <Badge variant="destructive">
+    <X className="mr-1 h-3 w-3" />
+    Failed
+  </Badge>
+  <Badge variant="secondary">
+    <Clock className="mr-1 h-3 w-3" />
+    Pending
+  </Badge>
+</div>
+```
+
+### Interactive Badges (Removable Tags)
+
+```tsx
+import { X } from 'lucide-react'
+
+function RemovableTag({ label, onRemove }) {
+  return (
+    <Badge variant="outline" className="gap-1">
+      {label}
+      <button
+        onClick={onRemove}
+        className="ml-1 rounded-full hover:bg-muted"
+        aria-label={`Remove ${label}`}
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </Badge>
+  )
+}
+```
+
+### Count Badges
+
+```tsx
+<div className="space-y-2">
+  <div className="flex items-center justify-between">
+    <span>Unread Messages</span>
+    <Badge className="rounded-full">12</Badge>
+  </div>
+  <div className="flex items-center justify-between">
+    <span>New Notifications</span>
+    <Badge variant="destructive" className="rounded-full">3</Badge>
+  </div>
+</div>
+```
+
+### Inline with Text
+
+```tsx
+<p className="text-sm text-muted-foreground">
+  This feature is <Badge variant="secondary">Beta</Badge> and may change.
+</p>
+```
+
+## Accessibility
+
+The Badge component is designed with accessibility in mind:
+
+- ✅ **Sufficient Contrast**: All variants meet WCAG AA contrast requirements
+- ✅ **Semantic HTML**: Uses span element by default
+- ✅ **Screen Reader Friendly**: Text content is announced properly
+- ✅ **Color Independence**: Meaning isn't conveyed by color alone
+
+### Best Practices
+
+1. **Don't rely solely on color**: Include text or icons to convey meaning
+2. **Keep text concise**: 1-3 words maximum for readability
+3. **Use consistent variants**: Establish meaning for each variant across your app
+4. **Provide context**: When badges are standalone, ensure surrounding context is clear
+5. **Consider screen readers**: Badge content should make sense when read aloud
+
+### Adding ARIA Labels
+
+For icon-only or ambiguous badges:
+
+```tsx
+<Badge aria-label="3 unread notifications">3</Badge>
+
+// Or use visually hidden text
+<Badge>
+  3 <span className="sr-only">unread notifications</span>
+</Badge>
+```
+
+## Color Semantics
+
+Establish consistent meaning for badge variants across your application:
+
+| Variant | Meaning | Example Use Cases |
+|---------|---------|-------------------|
+| **Default** | Active, Primary, Success | "Live", "Active", "Published" |
+| **Secondary** | Neutral, Info, Alternative | "Draft", "Pending", "Archived" |
+| **Destructive** | Error, Warning, Critical | "Error", "Failed", "Cancelled" |
+| **Outline** | Subtle, Optional, Tags | "Optional", "Beta", Category tags |
+
+## Styling Customization
+
+Badges can be customized with additional Tailwind classes:
+
+```tsx
+// Rounded pill badge
+<Badge className="rounded-full">New</Badge>
+
+// Larger badge
+<Badge className="px-3 py-1 text-sm">Featured</Badge>
+
+// Badge with custom background
+<Badge className="bg-gradient-to-r from-purple-500 to-pink-500 border-0">
+  Premium
+</Badge>
+
+// Bordered badge
+<Badge variant="outline" className="border-2">
+  Draft
+</Badge>
+```
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

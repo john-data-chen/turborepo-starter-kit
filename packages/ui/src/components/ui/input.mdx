@@ -1,0 +1,209 @@
+import { Canvas, Meta, Controls, Primary, Stories, Title, Description } from '@storybook/blocks';
+import * as InputStories from './input.stories';
+
+<Meta of={InputStories} />
+
+<Title />
+
+<Description>
+  A flexible input component supporting multiple input types with built-in accessibility features.
+  Designed for forms, search bars, and data entry interfaces.
+</Description>
+
+## Overview
+
+The Input component is a foundational form element that handles text, email, password, number, and other HTML5 input types.
+It's styled for consistency and accessibility across your application.
+
+### Key Features
+
+- **Multiple Input Types**: text, email, password, number, tel, url, search
+- **Accessible by Default**: Proper ARIA attributes and focus management
+- **Responsive Styling**: Adapts to container width with consistent padding
+- **Error States**: Visual feedback for validation errors
+- **Disabled States**: Clear indication when input is not interactive
+
+## Usage
+
+```tsx
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
+
+export function LoginForm() {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="email">Email</Label>
+      <Input
+        id="email"
+        type="email"
+        placeholder="name@example.com"
+        required
+      />
+    </div>
+  )
+}
+```
+
+## Input Types
+
+<Canvas of={InputStories.AllVariants} />
+
+### When to Use Each Type
+
+- **text**: General text input (default)
+- **email**: Email addresses with browser validation
+- **password**: Sensitive data with masked input
+- **number**: Numeric values with increment/decrement controls
+- **search**: Search queries with optimized keyboard on mobile
+- **tel**: Phone numbers with numeric keyboard on mobile
+- **url**: Web addresses with URL validation
+
+## Interactive Example
+
+<Canvas of={InputStories.Default} />
+
+<Controls of={InputStories.Default} />
+
+## Accessibility
+
+The Input component follows WCAG 2.1 Level AA guidelines and implements proper form accessibility:
+
+- ✅ **Keyboard Navigation**: Full keyboard support (Tab, Shift+Tab, Arrow keys for number inputs)
+- ✅ **Screen Reader Support**: Compatible with NVDA, JAWS, VoiceOver
+- ✅ **Focus Indicators**: Clear visual focus ring for keyboard users
+- ✅ **Label Association**: Always use with `<Label>` component for proper association
+- ✅ **Error Announcements**: Descriptive error messages announced to screen readers
+- ✅ **Autocomplete Support**: Honors autocomplete attributes for better UX
+
+### Accessibility Best Practices
+
+1. **Always provide labels**: Use the Label component and associate it with `htmlFor`
+2. **Use appropriate input types**: Let browsers provide optimized keyboards and validation
+3. **Provide helpful placeholders**: But don't rely on them as labels
+4. **Indicate required fields**: Use `required` attribute and visual indicators
+5. **Give clear error messages**: Place errors near the input and announce them
+
+```tsx
+// Good example
+<div className="space-y-2">
+  <Label htmlFor="username">
+    Username <span className="text-destructive">*</span>
+  </Label>
+  <Input
+    id="username"
+    type="text"
+    placeholder="johndoe"
+    required
+    aria-describedby="username-error"
+  />
+  <span id="username-error" className="text-sm text-destructive">
+    Username must be at least 3 characters
+  </span>
+</div>
+```
+
+## Common Patterns
+
+### Input with Label
+
+<Canvas of={InputStories.WithLabel} />
+
+### Disabled Input
+
+<Canvas of={InputStories.Disabled} />
+
+```tsx
+<Input disabled placeholder="This field is not editable" />
+```
+
+### Input with Icon
+
+```tsx
+import { Search } from 'lucide-react'
+
+<div className="relative">
+  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+  <Input placeholder="Search..." className="pl-8" />
+</div>
+```
+
+### Input with Validation
+
+```tsx
+import { useState } from 'react'
+
+function ValidatedInput() {
+  const [error, setError] = useState('')
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="email">Email</Label>
+      <Input
+        id="email"
+        type="email"
+        aria-invalid={!!error}
+        aria-describedby="email-error"
+        onChange={(e) => {
+          if (!e.target.validity.valid) {
+            setError('Please enter a valid email')
+          } else {
+            setError('')
+          }
+        }}
+      />
+      {error && (
+        <span id="email-error" className="text-sm text-destructive">
+          {error}
+        </span>
+      )}
+    </div>
+  )
+}
+```
+
+## Form Integration
+
+The Input component works seamlessly with React Hook Form and other form libraries:
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const formSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters')
+})
+
+function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema)
+  })
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          {...form.register('email')}
+        />
+        {form.formState.errors.email && (
+          <span className="text-sm text-destructive">
+            {form.formState.errors.email.message}
+          </span>
+        )}
+      </div>
+    </form>
+  )
+}
+```
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />
