@@ -104,8 +104,8 @@ export const TextInputInteraction: Story = {
     type: 'text',
     placeholder: 'Enter your name'
   },
-  play: async ({ args, canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/enter your name/i)
+  play: async ({ args, canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/enter your name/i)
 
     await step('Verify input renders and is accessible', async () => {
       await expect(input).toBeInTheDocument()
@@ -133,8 +133,8 @@ export const EmailInputValidation: Story = {
     placeholder: 'email@example.com',
     required: true
   },
-  play: async ({ canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/email@example.com/i)
+  play: async ({ canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/email@example.com/i)
 
     await step('Verify email input type', async () => {
       await expect(input).toHaveAttribute('type', 'email')
@@ -160,8 +160,8 @@ export const PasswordInputInteraction: Story = {
     type: 'password',
     placeholder: 'Enter password'
   },
-  play: async ({ args, canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/enter password/i)
+  play: async ({ args, canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/enter password/i)
 
     await step('Verify password type attribute', async () => {
       await expect(input).toHaveAttribute('type', 'password')
@@ -182,8 +182,8 @@ export const FocusBlurInteraction: Story = {
     type: 'text',
     placeholder: 'Focus me'
   },
-  play: async ({ args, canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/focus me/i)
+  play: async ({ args, canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/focus me/i)
 
     await step('Focus input with Tab key', async () => {
       await userEvent.tab()
@@ -212,8 +212,8 @@ export const DisabledInputInteraction: Story = {
     disabled: true,
     placeholder: 'Disabled input'
   },
-  play: async ({ args, canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/disabled input/i)
+  play: async ({ args, canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/disabled input/i)
 
     await step('Verify disabled state', async () => {
       await expect(input).toBeDisabled()
@@ -234,8 +234,8 @@ export const NumberInputInteraction: Story = {
     type: 'number',
     placeholder: '0'
   },
-  play: async ({ args, canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText('0')
+  play: async ({ args, canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText('0')
 
     await step('Verify number input type', async () => {
       await expect(input).toHaveAttribute('type', 'number')
@@ -262,8 +262,8 @@ export const KeyboardNavigationInteraction: Story = {
     placeholder: 'Test keyboard shortcuts',
     defaultValue: 'Select this text'
   },
-  play: async ({ canvas, step }) => {
-    const input = within(canvas).getByPlaceholderText(/test keyboard shortcuts/i)
+  play: async ({ canvasElement, step }) => {
+    const input = within(canvasElement).getByPlaceholderText(/test keyboard shortcuts/i)
 
     await step('Focus input', async () => {
       await userEvent.click(input)

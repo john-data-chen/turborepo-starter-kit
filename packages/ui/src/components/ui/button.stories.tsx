@@ -168,8 +168,8 @@ export const ClickInteraction: Story = {
     variant: 'default',
     children: 'Click Me'
   },
-  play: async ({ args, canvas, step }) => {
-    const button = within(canvas).getByRole('button', { name: /click me/i })
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button', { name: /click me/i })
 
     await step('Verify button renders correctly', async () => {
       await expect(button).toBeInTheDocument()
@@ -194,8 +194,8 @@ export const KeyboardInteraction: Story = {
     variant: 'secondary',
     children: 'Press Enter or Space'
   },
-  play: async ({ args, canvas, step }) => {
-    const button = within(canvas).getByRole('button')
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button')
 
     await step('Focus button with Tab key', async () => {
       await userEvent.tab()
@@ -221,8 +221,8 @@ export const DisabledInteraction: Story = {
     disabled: true,
     children: 'Disabled Button'
   },
-  play: async ({ args, canvas, step }) => {
-    const button = within(canvas).getByRole('button')
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button')
 
     await step('Verify disabled state', async () => {
       await expect(button).toBeDisabled()
@@ -245,8 +245,8 @@ export const VariantsAccessibility: Story = {
       <Button variant="outline">Cancel</Button>
     </div>
   ),
-  play: async ({ canvas, step }) => {
-    const buttons = within(canvas).getAllByRole('button')
+  play: async ({ canvasElement, step }) => {
+    const buttons = within(canvasElement).getAllByRole('button')
 
     await step('Verify all buttons are accessible', async () => {
       expect(buttons).toHaveLength(4)
