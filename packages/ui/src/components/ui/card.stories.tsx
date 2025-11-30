@@ -8,7 +8,6 @@ const meta: Meta<typeof Card> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
   argTypes: {
     className: {
       control: 'text'

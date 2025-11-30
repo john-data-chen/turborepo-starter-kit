@@ -31,7 +31,7 @@
         ".storybook/**/*"
       ]
     },
-    "build-storybook": {
+    "storybook:build": {
       "dependsOn": [
         "^build"
       ],
@@ -39,7 +39,7 @@
         "storybook-static/**"
       ]
     },
-    "test-storybook": {
+    "storybook:test": {
       "cache": false,
       "dependsOn": [
         "^build"

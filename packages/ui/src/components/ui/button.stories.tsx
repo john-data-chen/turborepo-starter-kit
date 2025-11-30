@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { expect, fn, userEvent, within } from 'storybook/test'
 import { Button } from './button'
 
 const meta: Meta<typeof Button> = {
@@ -7,7 +8,6 @@ const meta: Meta<typeof Button> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
@@ -22,7 +22,8 @@ const meta: Meta<typeof Button> = {
     }
   },
   args: {
-    children: 'Button'
+    children: 'Button',
+    onClick: fn()
   }
 }
 
@@ -153,4 +154,119 @@ export const AllSizes: Story = {
       </Button>
     </div>
   )
+}
+
+/**
+ * Interaction Testing Stories
+ * These stories demonstrate component behavior through automated interaction tests
+ */
+
+// Test: Button click interaction
+export const ClickInteraction: Story = {
+  args: {
+    variant: 'default',
+    children: 'Click Me'
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button', { name: /click me/i })
+
+    await step('Verify button renders correctly', async () => {
+      await expect(button).toBeInTheDocument()
+      await expect(button).toBeEnabled()
+    })
+
+    await step('Click button and verify callback', async () => {
+      await userEvent.click(button)
+      await expect(args.onClick).toHaveBeenCalledTimes(1)
+    })
+
+    await step('Double click verification', async () => {
+      await userEvent.click(button)
+      await expect(args.onClick).toHaveBeenCalledTimes(2)
+    })
+  }
+}
+
+// Test: Keyboard navigation
+export const KeyboardInteraction: Story = {
+  args: {
+    variant: 'secondary',
+    children: 'Press Enter or Space'
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button')
+
+    await step('Focus button with Tab key', async () => {
+      await userEvent.tab()
+      await expect(button).toHaveFocus()
+    })
+
+    await step('Trigger with Enter key', async () => {
+      await userEvent.keyboard('{Enter}')
+      await expect(args.onClick).toHaveBeenCalledTimes(1)
+    })
+
+    await step('Trigger with Space key', async () => {
+      await userEvent.keyboard(' ')
+      await expect(args.onClick).toHaveBeenCalledTimes(2)
+    })
+  }
+}
+
+// Test: Disabled state prevents interaction
+export const DisabledInteraction: Story = {
+  args: {
+    variant: 'default',
+    disabled: true,
+    children: 'Disabled Button'
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button')
+
+    await step('Verify disabled state', async () => {
+      await expect(button).toBeDisabled()
+    })
+
+    await step('Attempt click on disabled button', async () => {
+      await userEvent.click(button)
+      await expect(args.onClick).not.toHaveBeenCalled()
+    })
+  }
+}
+
+// Test: Multiple button variants accessibility
+export const VariantsAccessibility: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-4" role="group" aria-label="Button variants">
+      <Button variant="default">Primary Action</Button>
+      <Button variant="secondary">Secondary Action</Button>
+      <Button variant="destructive">Delete</Button>
+      <Button variant="outline">Cancel</Button>
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const buttons = within(canvasElement).getAllByRole('button')
+
+    await step('Verify all buttons are accessible', async () => {
+      expect(buttons).toHaveLength(4)
+      buttons.forEach((button) => {
+        expect(button).toBeVisible()
+        expect(button).toBeEnabled()
+      })
+    })
+
+    await step('Verify keyboard navigation through buttons', async () => {
+      await userEvent.tab()
+      await expect(buttons[0]).toHaveFocus()
+
+      await userEvent.tab()
+      await expect(buttons[1]).toHaveFocus()
+
+      await userEvent.tab()
+      await expect(buttons[2]).toHaveFocus()
+
+      await userEvent.tab()
+      await expect(buttons[3]).toHaveFocus()
+    })
+  }
 }

@@ -1,0 +1,116 @@
+import { Canvas, Meta, Controls, Primary, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './button.stories';
+
+<Meta of={ButtonStories} />
+
+<Title />
+
+<Description>
+  A versatile button component built with Radix UI and styled with Tailwind CSS.
+  Supports multiple variants, sizes, and states for comprehensive UI coverage.
+</Description>
+
+## Overview
+
+The Button component is a fundamental UI element that triggers actions when clicked.
+It's built on top of Radix UI's Slot primitive for composition and follows WAI-ARIA button patterns.
+
+### Key Features
+
+- **Accessibility First**: Full keyboard navigation and screen reader support
+- **Flexible Variants**: 6 visual styles (default, secondary, destructive, outline, ghost, link)
+- **Multiple Sizes**: 4 size options (sm, default, lg, icon)
+- **Composition Ready**: Works with `asChild` prop for custom rendering
+- **Loading States**: Supports disabled state for async operations
+
+## Usage
+
+```tsx
+import { Button } from '@repo/ui/components/button'
+
+export function MyComponent() {
+  return (
+    <Button variant="default" size="lg" onClick={() => console.log('clicked')}>
+      Click Me
+    </Button>
+  )
+}
+```
+
+## Variants
+
+<Canvas of={ButtonStories.AllVariants} />
+
+### When to Use Each Variant
+
+- **Default**: Primary actions, main CTAs
+- **Secondary**: Secondary actions, less prominent CTAs
+- **Destructive**: Delete, remove, or other destructive actions
+- **Outline**: Bordered buttons for less emphasis
+- **Ghost**: Minimal style, often used in toolbars
+- **Link**: Text-only buttons that look like links
+
+## Sizes
+
+<Canvas of={ButtonStories.AllSizes} />
+
+## Interactive Example
+
+<Canvas of={ButtonStories.Default} />
+
+<Controls of={ButtonStories.Default} />
+
+## Accessibility
+
+The Button component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ Minimum touch target size of 44x44px for all sizes except icon
+- ✅ Sufficient color contrast ratios (4.5:1 for normal text)
+- ✅ Keyboard accessible (Enter and Space key support)
+- ✅ Focus indicators visible and clear
+- ✅ Disabled state properly communicated to screen readers
+
+### Best Practices
+
+1. **Always provide meaningful text**: Even for icon buttons, use `aria-label`
+2. **Indicate loading states**: Use `disabled` prop during async operations
+3. **Use appropriate variant**: Match the visual hierarchy to the action's importance
+4. **Avoid button overload**: Limit to 1-2 primary actions per view
+
+## Common Patterns
+
+### Button with Icon
+
+```tsx
+import { Button } from '@repo/ui/components/button'
+import { Check } from 'lucide-react'
+
+<Button>
+  <Check className="mr-2 h-4 w-4" />
+  Confirm
+</Button>
+```
+
+### Icon-only Button
+
+```tsx
+<Button size="icon" aria-label="Close dialog">
+  <X className="h-4 w-4" />
+</Button>
+```
+
+### Button as Link
+
+```tsx
+<Button asChild>
+  <a href="/dashboard">Go to Dashboard</a>
+</Button>
+```
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />
