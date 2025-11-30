@@ -23,8 +23,8 @@
   "scripts": {
     "build": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test:storybook": "start-server-and-test storybook http://127.0.0.1:6006 \"pnpm exec test-storybook\""
+    "storybook:build": "storybook build",
+    "storybook:test": "start-server-and-test storybook http://127.0.0.1:6006 \"pnpm exec test-storybook\""
   },
   "peerDependencies": {
     "react": "^19.2.0",

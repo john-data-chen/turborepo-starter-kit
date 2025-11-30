@@ -17,8 +17,8 @@
     "init-db": "turbo run init-db",
     "init-db:force": "turbo run init-db:force",
     "storybook": "turbo run storybook --filter=@repo/ui",
-    "build:storybook": "turbo run build-storybook --filter=@repo/ui",
-    "test:storybook": "turbo run test-storybook --filter=@repo/ui",
+    "storybook:build": "turbo run storybook:build --filter=@repo/ui",
+    "storybook:test": "turbo run storybook:test --filter=@repo/ui",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "commit": "git-cz"
   },
