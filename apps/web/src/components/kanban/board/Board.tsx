@@ -58,7 +58,8 @@ export function Board() {
     }
 
     // Check if current user is the owner of the board
-    const ownerId = typeof currentBoard.owner === 'string' ? currentBoard.owner : currentBoard.owner?._id
+    const ownerId =
+      typeof currentBoard.owner === 'string' ? currentBoard.owner : currentBoard.owner?._id
 
     return ownerId === currentUserId
   }, [currentBoardId, currentUserId, myBoards, isAuthenticated])
@@ -120,7 +121,9 @@ export function Board() {
         project: null
       }
     }
-    const tasksInProject = project.tasks.filter((task: Task) => task.project.toString() === projectId)
+    const tasksInProject = project.tasks.filter(
+      (task: Task) => task.project.toString() === projectId
+    )
     const taskPosition = tasksInProject.findIndex((task: { _id: string }) => task._id === taskId)
     return {
       tasksInProject,
@@ -162,7 +165,9 @@ export function Board() {
     }
 
     const activeTask = active.data.current!.task
-    const activeProject = updatedProjects.find((project: Project) => project._id === activeTask.project)
+    const activeProject = updatedProjects.find(
+      (project: Project) => project._id === activeTask.project
+    )
 
     if (!activeProject) {
       console.error('Active project not found')
@@ -173,7 +178,9 @@ export function Board() {
 
     // Handle task dragged over a project
     if (over.data.current!.type === 'Project') {
-      const overProject = updatedProjects.find((project: Project) => project._id === over.data.current!.project._id)
+      const overProject = updatedProjects.find(
+        (project: Project) => project._id === over.data.current!.project._id
+      )
 
       if (!overProject) {
         console.error('Target project not found')
@@ -204,7 +211,9 @@ export function Board() {
         toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`)
       } catch (error) {
         console.error('Failed to move task:', error)
-        toast.error(`Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`)
+        toast.error(
+          `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+        )
         // Revert local state on error
         setProjects([...projects])
       }
@@ -214,7 +223,9 @@ export function Board() {
     // Handle task dragged over another task
     if (over.data.current!.type === 'Task') {
       const overTask = over.data.current!.task
-      const overProject = updatedProjects.find((project: Project) => project._id === overTask.project)
+      const overProject = updatedProjects.find(
+        (project: Project) => project._id === overTask.project
+      )
 
       if (!overProject) {
         console.error('Target project not found')
@@ -253,7 +264,9 @@ export function Board() {
           toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`)
         } catch (error) {
           console.error('Failed to move task:', error)
-          toast.error(`Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`)
+          toast.error(
+            `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+          )
           setProjects([...projects])
         }
       }
@@ -292,7 +305,9 @@ export function Board() {
         try {
           // Find tasks that actually changed position
           const tasksToUpdate = updatedTasks.filter((task, newIndex) => {
-            const oldTask = previousProjects.flatMap((p: Project) => p.tasks).find((t: Task) => t._id === task._id)
+            const oldTask = previousProjects
+              .flatMap((p: Project) => p.tasks)
+              .find((t: Task) => t._id === task._id)
             return !oldTask || oldTask.orderInProject !== newIndex
           })
 

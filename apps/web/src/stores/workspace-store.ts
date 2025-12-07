@@ -219,7 +219,9 @@ export const useWorkspaceStore = create<State>()(
           })
 
           const maxOrder =
-            currentBoardProjects.length > 0 ? Math.max(...currentBoardProjects.map((p) => p.orderInBoard ?? 0), -1) : -1
+            currentBoardProjects.length > 0
+              ? Math.max(...currentBoardProjects.map((p) => p.orderInBoard ?? 0), -1)
+              : -1
 
           const orderInBoard = maxOrder + 1
 
@@ -515,8 +517,12 @@ export const useWorkspaceStore = create<State>()(
 
           // Optimistic update
           set((state) => ({
-            myBoards: state.myBoards.map((board) => (board._id === id ? { ...board, ...data } : board)),
-            teamBoards: state.teamBoards.map((board) => (board._id === id ? { ...board, ...data } : board))
+            myBoards: state.myBoards.map((board) =>
+              board._id === id ? { ...board, ...data } : board
+            ),
+            teamBoards: state.teamBoards.map((board) =>
+              board._id === id ? { ...board, ...data } : board
+            )
           }))
         } catch (error) {
           console.error('Error updating board:', error)

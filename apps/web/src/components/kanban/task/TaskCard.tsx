@@ -45,7 +45,12 @@ function getLastField(task: Task): string {
   return visibleFields[visibleFields.length - 1] || ''
 }
 
-export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = false }: TaskCardProps) {
+export function TaskCard({
+  task,
+  isOverlay = false,
+  onUpdate,
+  isDragEnabled = false
+}: TaskCardProps) {
   const t = useTranslations('kanban.task')
 
   // Return null if task is undefined or marked as deleted
@@ -111,7 +116,10 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
     <Card
       ref={setNodeRef}
       style={cardStyle}
-      className={cn('mb-3 transition-shadow hover:shadow-md', cardVariants({ dragging: dragState }))}
+      className={cn(
+        'mb-3 transition-shadow hover:shadow-md',
+        cardVariants({ dragging: dragState })
+      )}
       data-testid="task-card"
       {...(isDragEnabled ? attributes : {})}
     >
@@ -129,8 +137,13 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
           <div className="h-8 w-16" />
         )}
         <div className="mx-2 flex flex-1 flex-col items-start gap-2">
-          {task.title && <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>}
-          <Badge variant="secondary" className={cn('text-white', task.status && statusConfig[task.status]?.className)}>
+          {task.title && (
+            <h3 className="text-lg leading-none font-medium tracking-tight">{task.title}</h3>
+          )}
+          <Badge
+            variant="secondary"
+            className={cn('text-white', task.status && statusConfig[task.status]?.className)}
+          >
             {task.status ? statusConfig[task.status]?.label : t('noStatus')}
           </Badge>
         </div>
@@ -194,7 +207,10 @@ export function TaskCard({ task, isOverlay = false, onUpdate, isDragEnabled = fa
             <CardContent className="px-3 py-2">
               <div className="flex items-start gap-2">
                 <FileTextIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                <p className="text-sm leading-relaxed text-muted-foreground" data-testid="task-card-description">
+                <p
+                  className="text-sm leading-relaxed text-muted-foreground"
+                  data-testid="task-card-description"
+                >
                   {task.description}
                 </p>
               </div>

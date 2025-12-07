@@ -1,5 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { CreateProjectDto } from './dto/create-project.dto'
@@ -24,7 +31,10 @@ export class ProjectsController {
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async create(@Body() createProjectDto: CreateProjectDto, @CurrentUser() user: { _id: string; email: string }) {
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+    @CurrentUser() user: { _id: string; email: string }
+  ) {
     const projectData = {
       ...createProjectDto,
       owner: user._id
@@ -42,7 +52,10 @@ export class ProjectsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid board ID' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProjectsByBoard(@Query('boardId') boardId: string, @CurrentUser() _user: { _id: string }) {
+  async getProjectsByBoard(
+    @Query('boardId') boardId: string,
+    @CurrentUser() _user: { _id: string }
+  ) {
     return this.projectsService.findByBoardId(boardId)
   }
 

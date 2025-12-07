@@ -23,7 +23,9 @@ export default function LanguageSwitcher() {
     // locale and sometimes not. To ensure we always have a clean base path,
     // we derive it from the reliable `params.locale`.
     const currentLocale = params.locale as string
-    const basePath = pathname.startsWith(`/${currentLocale}`) ? pathname.substring(currentLocale.length + 1) : pathname
+    const basePath = pathname.startsWith(`/${currentLocale}`)
+      ? pathname.substring(currentLocale.length + 1)
+      : pathname
 
     startTransition(() => {
       router.replace(basePath || '/', { locale: nextLocale })

@@ -26,7 +26,9 @@ export class BoardService {
       ...createBoardDto,
       owner: ownerId,
       // Add owner to members if not already present
-      members: [...new Set([ownerId, ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))])]
+      members: [
+        ...new Set([ownerId, ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))])
+      ]
     })
 
     return createdBoard.save()
@@ -422,7 +424,11 @@ export class BoardService {
   // Additional methods for board management
   async addMember(boardId: string, userId: string, memberId: string): Promise<Board> {
     const board = await this.boardModel
-      .findOneAndUpdate({ _id: boardId, owner: userId }, { $addToSet: { members: memberId } }, { new: true })
+      .findOneAndUpdate(
+        { _id: boardId, owner: userId },
+        { $addToSet: { members: memberId } },
+        { new: true }
+      )
       .exec()
 
     if (!board) {
@@ -434,7 +440,11 @@ export class BoardService {
 
   async removeMember(boardId: string, userId: string, memberId: string): Promise<Board> {
     const board = await this.boardModel
-      .findOneAndUpdate({ _id: boardId, owner: userId }, { $pull: { members: memberId } }, { new: true })
+      .findOneAndUpdate(
+        { _id: boardId, owner: userId },
+        { $pull: { members: memberId } },
+        { new: true }
+      )
       .exec()
 
     if (!board) {

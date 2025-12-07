@@ -79,7 +79,9 @@ describe('BoardOverview', () => {
       title: 'My Board 1',
       description: 'Description 1',
       owner: 'user-1',
-      members: [{ _id: 'user-1', name: 'John Doe', email: 'john@example.com', createdAt: new Date() }],
+      members: [
+        { _id: 'user-1', name: 'John Doe', email: 'john@example.com', createdAt: new Date() }
+      ],
       projects: [{ _id: 'proj-1', title: 'Project 1' } as any],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -101,7 +103,12 @@ describe('BoardOverview', () => {
       _id: 'board-3',
       title: 'Team Board 1',
       description: 'Team Description',
-      owner: { _id: 'user-2', name: 'Jane Doe', email: 'jane@example.com', createdAt: new Date() } as any,
+      owner: {
+        _id: 'user-2',
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        createdAt: new Date()
+      } as any,
       members: [],
       projects: [],
       createdAt: new Date().toISOString(),
@@ -240,7 +247,10 @@ describe('BoardOverview', () => {
 
     const mockRefresh = vi.fn()
 
-    vi.mocked(useSearchParams).mockReturnValue({ ...mockSearchParams, get: vi.fn(() => 'true') } as any)
+    vi.mocked(useSearchParams).mockReturnValue({
+      ...mockSearchParams,
+      get: vi.fn(() => 'true')
+    } as any)
     vi.mocked(AuthService.getSession).mockResolvedValue({
       user: {
         _id: 'user-123',
@@ -271,7 +281,10 @@ describe('BoardOverview', () => {
     const { AuthService } = await import('@/lib/auth/authService')
     const { toast } = await import('sonner')
 
-    vi.mocked(useSearchParams).mockReturnValue({ ...mockSearchParams, get: vi.fn(() => 'true') } as any)
+    vi.mocked(useSearchParams).mockReturnValue({
+      ...mockSearchParams,
+      get: vi.fn(() => 'true')
+    } as any)
     vi.mocked(AuthService.getSession).mockRejectedValue(new Error('Session error'))
 
     render(<BoardOverview />)

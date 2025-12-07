@@ -47,7 +47,10 @@ describe('projectApi', () => {
 
       expect(result).toHaveLength(1)
       expect(result[0]._id).toBe('project-1')
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/projects?boardId=board-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/projects?boardId=board-1'),
+        expect.any(Object)
+      )
     })
 
     it('should include auth token when available', async () => {
@@ -81,7 +84,10 @@ describe('projectApi', () => {
       const result = await projectApi.getProjectById('project-1')
 
       expect(result._id).toBe('project-1')
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/projects/project-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/projects/project-1'),
+        expect.any(Object)
+      )
     })
 
     it('should handle not found error', async () => {

@@ -66,7 +66,9 @@ vi.mock('@/components/kanban/project/NewProjectDialog', () => ({
 
 vi.mock('@/components/kanban/project/Project', () => ({
   BoardContainer: ({ children }: any) => <div data-testid="board-container">{children}</div>,
-  BoardProject: ({ project }: any) => <div data-testid={`project-${project._id}`}>{project.title}</div>
+  BoardProject: ({ project }: any) => (
+    <div data-testid={`project-${project._id}`}>{project.title}</div>
+  )
 }))
 
 vi.mock('@/components/kanban/task/TaskFilter', () => ({
@@ -304,7 +306,9 @@ describe('Board', () => {
         title: 'Team Board',
         description: '',
         owner: 'user-2',
-        members: [{ _id: 'user-1', name: 'John', email: 'john@example.com', createdAt: new Date() }],
+        members: [
+          { _id: 'user-1', name: 'John', email: 'john@example.com', createdAt: new Date() }
+        ],
         projects: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

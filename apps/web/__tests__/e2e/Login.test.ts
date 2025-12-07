@@ -40,7 +40,9 @@ async function waitForAPI(url: string, timeout = 30000): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 500))
   }
 
-  throw new Error(`API server not ready after ${timeout}ms. Last error: ${lastError?.message || 'Unknown'}`)
+  throw new Error(
+    `API server not ready after ${timeout}ms. Last error: ${lastError?.message || 'Unknown'}`
+  )
 }
 
 test.describe.serial('SignInPage', () => {
@@ -70,7 +72,9 @@ test.describe.serial('SignInPage', () => {
     // Always resolve, never throw
     await healthCheckPromise.catch(() => {
       console.warn('[Diagnostic] ⚠️ Tests will continue, but login may fail if API is not ready')
-      console.warn('[Diagnostic] ⚠️ This is expected in CI if API takes longer to start than Next.js')
+      console.warn(
+        '[Diagnostic] ⚠️ This is expected in CI if API takes longer to start than Next.js'
+      )
       return false
     })
   })
@@ -150,10 +154,14 @@ test.describe.serial('SignInPage', () => {
       const currentUrl = page.url()
       console.error('[Diagnostic] ✗ Navigation failed')
       console.error(`[Diagnostic]   Current URL: ${currentUrl}`)
-      console.error(`[Diagnostic]   Expected URL pattern: /^http:\\/\\/localhost:3000\\/en\\/boards(\\?.*)?$/`)
+      console.error(
+        `[Diagnostic]   Expected URL pattern: /^http:\\/\\/localhost:3000\\/en\\/boards(\\?.*)?$/`
+      )
       console.error('[Diagnostic]   Network requests:')
       requests.forEach((req) => {
-        console.error(`[Diagnostic]     ${req.method} ${req.url} - ${req.status} (${req.duration}ms)`)
+        console.error(
+          `[Diagnostic]     ${req.method} ${req.url} - ${req.status} (${req.duration}ms)`
+        )
       })
 
       // Take a screenshot for debugging

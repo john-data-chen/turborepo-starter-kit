@@ -18,7 +18,13 @@ import {
   AlertDialogTitle
 } from '@repo/ui/components/alert-dialog'
 import { Button } from '@repo/ui/components/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -355,7 +361,12 @@ export function TaskActions({
       {/* Actions Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 p-0" data-testid="task-actions-trigger">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 p-0"
+            data-testid="task-actions-trigger"
+          >
             <span className="sr-only">{t('actions')}</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
@@ -390,7 +401,9 @@ export function TaskActions({
         <AlertDialogContent data-testid="delete-task-dialog">
           <AlertDialogHeader>
             <AlertDialogTitle>{t('confirmDeleteTitle', { title })}</AlertDialogTitle>
-            <AlertDialogDescription>{t('confirmDeleteDescription', { title })}</AlertDialogDescription>
+            <AlertDialogDescription>
+              {t('confirmDeleteDescription', { title })}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel data-testid="cancel-delete-button">{t('cancel')}</AlertDialogCancel>

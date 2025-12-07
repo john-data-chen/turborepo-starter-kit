@@ -53,7 +53,9 @@ describe('AuthService', () => {
     it('should throw error if validation fails', async () => {
       userService.findByEmail.mockRejectedValue(new Error('Database error'))
 
-      await expect(service.validateUser('test@test.com')).rejects.toThrow('Authentication failed. Please try again.')
+      await expect(service.validateUser('test@test.com')).rejects.toThrow(
+        'Authentication failed. Please try again.'
+      )
       expect(logger.error).toHaveBeenCalled()
     })
   })

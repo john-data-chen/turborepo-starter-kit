@@ -90,7 +90,10 @@ describe('boardApi', () => {
       const result = await boardApi.getBoardById('board-1')
 
       expect(result._id).toBe('board-1')
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/boards/board-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/boards/board-1'),
+        expect.any(Object)
+      )
     })
 
     it('should handle not found error', async () => {

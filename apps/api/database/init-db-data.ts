@@ -34,10 +34,14 @@ const requiredEnvVars = ['DATABASE_URL']
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar])
 
 if (missingEnvVars.length > 0) {
-  console.error('\x1b[31mError: The following environment variables are required but missing:\x1b[0m')
+  console.error(
+    '\x1b[31mError: The following environment variables are required but missing:\x1b[0m'
+  )
   missingEnvVars.forEach((envVar) => console.error(`- ${envVar}`))
   if (!isProduction) {
-    console.error('\nFor local development, please create a .env file in the project root with the required variables.')
+    console.error(
+      '\nFor local development, please create a .env file in the project root with the required variables.'
+    )
   }
   process.exit(1)
 }
@@ -69,10 +73,14 @@ if (!dbName || dbName === 'test') {
   console.warn('\n\x1b[33m⚠️  WARNING: No database name specified in DATABASE_URL!\x1b[0m')
   console.warn('\x1b[33mMongoDB will use the default "test" database.\x1b[0m')
   console.warn('\x1b[33m\nExpected format:\x1b[0m')
-  console.warn(`\x1b[36mmongodb://user:password@host:port/${expectedDbName}?authSource=admin\x1b[0m`)
+  console.warn(
+    `\x1b[36mmongodb://user:password@host:port/${expectedDbName}?authSource=admin\x1b[0m`
+  )
   console.warn('\n\x1b[33mPlease update your DATABASE_URL to include the database name.\x1b[0m\n')
 } else if (dbName !== expectedDbName) {
-  console.warn(`\n\x1b[33m⚠️  WARNING: Database name is "${dbName}" but expected "${expectedDbName}"\x1b[0m`)
+  console.warn(
+    `\n\x1b[33m⚠️  WARNING: Database name is "${dbName}" but expected "${expectedDbName}"\x1b[0m`
+  )
   console.warn('\x1b[33mProceeding with the specified database name...\x1b[0m\n')
 }
 
@@ -82,7 +90,9 @@ async function main() {
   const isCI = process.env.CI === 'true' || process.env.VERCEL === 'true'
 
   if (!isForced && !isCI) {
-    console.log('\x1b[33mThis script will reset the database. To run it, use the --force flag.\x1b[0m')
+    console.log(
+      '\x1b[33mThis script will reset the database. To run it, use the --force flag.\x1b[0m'
+    )
     process.exit(0)
   }
 

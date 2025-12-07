@@ -46,7 +46,10 @@ describe('ProjectForm', () => {
 
   it('should render with default values', () => {
     render(
-      <ProjectForm defaultValues={{ title: 'Test Project', description: 'Test Description' }} onSubmit={mockOnSubmit} />
+      <ProjectForm
+        defaultValues={{ title: 'Test Project', description: 'Test Description' }}
+        onSubmit={mockOnSubmit}
+      />
     )
     expect(screen.getByTestId('form')).toBeInTheDocument()
   })

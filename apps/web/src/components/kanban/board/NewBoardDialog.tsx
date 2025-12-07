@@ -56,7 +56,12 @@ export default function NewBoardDialog({ children }: NewBoardDialogProps) {
         </DialogHeader>
         <BoardForm onSubmit={handleSubmit}>
           <DialogFooter>
-            <Button type="button" variant="outline" data-testid="cancel-button" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              data-testid="cancel-button"
+              onClick={() => setOpen(false)}
+            >
               {t('cancel')}
             </Button>
             <Button type="submit" data-testid="create-button">

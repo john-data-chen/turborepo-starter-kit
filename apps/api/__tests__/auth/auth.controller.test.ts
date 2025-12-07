@@ -28,7 +28,13 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should return user and access_token', async () => {
-      const user = { _id: '1', email: 'test@test.com', name: 'Test User', createdAt: new Date(), updatedAt: new Date() }
+      const user = {
+        _id: '1',
+        email: 'test@test.com',
+        name: 'Test User',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
       const result = { user, access_token: 'token' }
       const req = {
         user,

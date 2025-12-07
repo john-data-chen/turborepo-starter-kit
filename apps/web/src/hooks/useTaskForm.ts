@@ -101,7 +101,11 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
   useEffect(() => {
     const loadAssigneeData = async () => {
       // If we already have assignee data in the expected format, use it directly
-      if (defaultValues?.assignee && typeof defaultValues.assignee === 'object' && '_id' in defaultValues.assignee) {
+      if (
+        defaultValues?.assignee &&
+        typeof defaultValues.assignee === 'object' &&
+        '_id' in defaultValues.assignee
+      ) {
         return
       }
 
@@ -157,7 +161,9 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
       // Transform the data before submission
       const submitData = {
         ...values,
-        assignee: values.assignee ? { _id: values.assignee._id, name: values.assignee.name } : undefined
+        assignee: values.assignee
+          ? { _id: values.assignee._id, name: values.assignee.name }
+          : undefined
       }
       await onSubmit(submitData)
     } catch (error) {

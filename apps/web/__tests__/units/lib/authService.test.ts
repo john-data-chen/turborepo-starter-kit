@@ -220,7 +220,9 @@ describe('AuthService', () => {
         status: 200
       })
 
-      await expect(AuthService.getProfile()).rejects.toThrow('Invalid user data received from server')
+      await expect(AuthService.getProfile()).rejects.toThrow(
+        'Invalid user data received from server'
+      )
     })
 
     it('should throw error on null user data', async () => {
@@ -230,7 +232,9 @@ describe('AuthService', () => {
         status: 200
       })
 
-      await expect(AuthService.getProfile()).rejects.toThrow('Invalid user data received from server')
+      await expect(AuthService.getProfile()).rejects.toThrow(
+        'Invalid user data received from server'
+      )
     })
 
     it('should handle text parsing errors in profile fetch', async () => {

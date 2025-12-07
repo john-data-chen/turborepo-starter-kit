@@ -191,7 +191,12 @@ describe('BoardActions', () => {
   it('should handle board with owner as object', () => {
     const boardWithObjectOwner = {
       ...mockBoard,
-      owner: { _id: 'user-1', name: 'John', email: 'john@example.com', createdAt: new Date() } as any
+      owner: {
+        _id: 'user-1',
+        name: 'John',
+        email: 'john@example.com',
+        createdAt: new Date()
+      } as any
     }
     render(<BoardActions board={boardWithObjectOwner} />)
     expect(screen.getByTestId('board-option-button')).toBeInTheDocument()

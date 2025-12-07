@@ -61,7 +61,9 @@ describe('Project Query Hooks', () => {
       const mockProjects = [{ _id: '1', title: 'Project 1', board: 'board1' }]
       ;(projectApi.getProjects as Mock).mockResolvedValue(mockProjects)
 
-      const { result } = renderHook(() => useProjects({ _id: 'board1', title: 'Board 1' }), { wrapper })
+      const { result } = renderHook(() => useProjects({ _id: 'board1', title: 'Board 1' }), {
+        wrapper
+      })
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
@@ -193,13 +195,22 @@ describe('Project Query Hooks', () => {
     })
 
     it('should update project with title and description', async () => {
-      const updatedProject = { _id: '1', title: 'Updated Project', description: 'New description', board: 'board1' }
+      const updatedProject = {
+        _id: '1',
+        title: 'Updated Project',
+        description: 'New description',
+        board: 'board1'
+      }
       ;(projectApi.updateProject as Mock).mockResolvedValue(updatedProject)
 
       const { result } = renderHook(() => useUpdateProject(), { wrapper })
 
       await act(async () => {
-        await result.current.mutateAsync({ id: '1', title: 'Updated Project', description: 'New description' })
+        await result.current.mutateAsync({
+          id: '1',
+          title: 'Updated Project',
+          description: 'New description'
+        })
       })
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true))

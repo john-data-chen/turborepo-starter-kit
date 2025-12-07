@@ -1,4 +1,10 @@
-import { ForbiddenException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { ProjectsService } from '../projects/projects.service'
@@ -182,7 +188,11 @@ export class TasksService {
     return this.toTaskResponse(task)
   }
 
-  private async checkTaskPermission(taskId: string, userId: string, requireCreator = false): Promise<TaskDocument> {
+  private async checkTaskPermission(
+    taskId: string,
+    userId: string,
+    requireCreator = false
+  ): Promise<TaskDocument> {
     const task = await this.taskModel.findById(taskId)
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`)
@@ -219,7 +229,9 @@ export class TasksService {
     }
 
     // Remove any undefined values to prevent overwriting with undefined
-    Object.keys(updateData).forEach((key) => updateData[key] === undefined && delete updateData[key])
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
+    )
 
     // Handle assigneeId if present - convert to ObjectId or set to null
     if ('assigneeId' in updateData) {

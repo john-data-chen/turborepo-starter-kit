@@ -11,7 +11,14 @@ import {
   UnauthorizedException,
   UseGuards
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath
+} from '@nestjs/swagger'
 import { Request } from 'express'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BoardService } from './boards.service'
@@ -122,7 +129,11 @@ export class BoardController {
     description: 'Unauthorized.'
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto, @Req() req: RequestWithUser) {
+  update(
+    @Param('id') id: string,
+    @Body() updateBoardDto: UpdateBoardDto,
+    @Req() req: RequestWithUser
+  ) {
     if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated')
     }
@@ -170,7 +181,11 @@ export class BoardController {
     description: 'Unauthorized.'
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  addMember(@Param('id') id: string, @Param('memberId') memberId: string, @Req() req: RequestWithUser) {
+  addMember(
+    @Param('id') id: string,
+    @Param('memberId') memberId: string,
+    @Req() req: RequestWithUser
+  ) {
     if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated')
     }
@@ -198,7 +213,11 @@ export class BoardController {
     description: 'Unauthorized.'
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  removeMember(@Param('id') id: string, @Param('memberId') memberId: string, @Req() req: RequestWithUser) {
+  removeMember(
+    @Param('id') id: string,
+    @Param('memberId') memberId: string,
+    @Req() req: RequestWithUser
+  ) {
     if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated')
     }

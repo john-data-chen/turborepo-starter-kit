@@ -10,7 +10,13 @@ import { DotsHorizontalIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { Button } from '@repo/ui/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components/card'
 import { Input } from '@repo/ui/components/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/components/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@repo/ui/components/select'
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
@@ -164,9 +170,13 @@ export function BoardOverview() {
     )
   }
 
-  const filteredMyBoards = myBoards?.filter((board) => board.title.toLowerCase().includes(search.toLowerCase()))
+  const filteredMyBoards = myBoards?.filter((board) =>
+    board.title.toLowerCase().includes(search.toLowerCase())
+  )
 
-  const filteredTeamBoards = teamBoards?.filter((board) => board.title.toLowerCase().includes(search.toLowerCase()))
+  const filteredTeamBoards = teamBoards?.filter((board) =>
+    board.title.toLowerCase().includes(search.toLowerCase())
+  )
 
   const shouldShowMyBoards = filter === 'all' || filter === 'my'
   const shouldShowTeamBoards = filter === 'all' || filter === 'team'
@@ -265,10 +275,14 @@ export function BoardOverview() {
                         </BoardActions>
                       </CardHeader>
                       <CardContent className="px-4 pt-2">
-                        <p className="mb-2 text-sm text-muted-foreground">{board.description || t('noDescription')}</p>
+                        <p className="mb-2 text-sm text-muted-foreground">
+                          {board.description || t('noDescription')}
+                        </p>
                         <p className="mb-1 text-sm">
                           {t('projects')}:{' '}
-                          {board.projects.length > 0 ? board.projects.map((p) => p.title).join(' / ') : '0'}
+                          {board.projects.length > 0
+                            ? board.projects.map((p) => p.title).join(' / ')
+                            : '0'}
                         </p>
                         <p className="text-sm">
                           {t('members')}: {board.members.map((m) => m.name).join(', ')}
@@ -305,15 +319,21 @@ export function BoardOverview() {
                         <CardTitle className="text-lg font-semibold">{board.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="px-4 pt-2">
-                        <p className="mb-2 text-sm text-muted-foreground">{board.description || t('noDescription')}</p>
+                        <p className="mb-2 text-sm text-muted-foreground">
+                          {board.description || t('noDescription')}
+                        </p>
                         <div className="space-y-1 text-sm">
                           <p>
                             {t('owner')}:{' '}
-                            {typeof board.owner === 'string' ? board.owner : board.owner?.name || 'Unknown'}
+                            {typeof board.owner === 'string'
+                              ? board.owner
+                              : board.owner?.name || 'Unknown'}
                           </p>
                           <p>
                             {t('projects')}:{' '}
-                            {board.projects.length > 0 ? board.projects.map((p) => p.title).join(' / ') : '0'}
+                            {board.projects.length > 0
+                              ? board.projects.map((p) => p.title).join(' / ')
+                              : '0'}
                           </p>
                           <p>
                             {t('members')}: {board.members.map((m) => m.name).join(', ')}

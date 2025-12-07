@@ -1,5 +1,8 @@
 import { validate } from 'class-validator'
-import { ProjectStatus, UpdateProjectDto } from '../../../../src/modules/projects/dto/update-project.dto'
+import {
+  ProjectStatus,
+  UpdateProjectDto
+} from '../../../../src/modules/projects/dto/update-project.dto'
 
 describe('UpdateProjectDto', () => {
   it('should be valid with correct data', async () => {

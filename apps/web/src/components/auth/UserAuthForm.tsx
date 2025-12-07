@@ -4,7 +4,16 @@ import React from 'react'
 import { defaultEmail } from '@/constants/demoData'
 import { useAuthForm } from '@/hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@repo/ui'
+import {
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input
+} from '@repo/ui'
 import { useTranslations } from 'next-intl'
 import { ControllerRenderProps, useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -52,7 +61,11 @@ export default function UserAuthForm() {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }: { field: ControllerRenderProps<z.infer<typeof formSchema>, 'email'> }) => (
+          render={({
+            field
+          }: {
+            field: ControllerRenderProps<z.infer<typeof formSchema>, 'email'>
+          }) => (
             <FormItem>
               <FormLabel>{t('emailLabel')}</FormLabel>
               <FormControl>
@@ -76,8 +89,17 @@ export default function UserAuthForm() {
           </div>
         )}
 
-        <Button type="submit" className="w-full" disabled={isLoading || isNavigating} data-testid="submit-button">
-          {isLoading || isNavigating ? <div className="h-4 w-4 animate-spin" /> : t('continueButton')}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading || isNavigating}
+          data-testid="submit-button"
+        >
+          {isLoading || isNavigating ? (
+            <div className="h-4 w-4 animate-spin" />
+          ) : (
+            t('continueButton')
+          )}
         </Button>
       </form>
     </Form>
