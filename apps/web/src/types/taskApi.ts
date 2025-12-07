@@ -24,6 +24,12 @@ export interface UpdateTaskInput {
   orderInProject?: number // Order of the task within the project
 }
 
+export interface TaskPermissions {
+  canView: boolean
+  canEdit: boolean
+  canDelete: boolean
+}
+
 // Query and Mutation Keys
 export const TASK_KEYS = {
   all: ['tasks'] as const,

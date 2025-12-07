@@ -176,33 +176,15 @@ pnpm storybook
 
 ---
 
-## 🔐 Permission System
+## Permission Model
 
-### Core Concepts
-
-- Board can have multiple projects, it is the biggest container
-- Project can have multiple tasks, it is the smallest container
-- Each board has one owner and multiple members
-- Tasks can be assigned to any member
-- All modifications of a task are tracked with last modified user
-
-### User Roles & Permissions
-
-| Role         | Create Board | Delete Board | Edit All Projects | Delete Project (Cascade Tasks) | Create Project | Create Task | Edit All Tasks | Edit Own Task | Delete All Tasks | Delete Own Task | View All Projects & Tasks |
-| ------------ | ------------ | ------------ | ----------------- | ------------------------------ | -------------- | ----------- | -------------- | ------------- | ---------------- | --------------- | ------------------------- |
-| Board Owner  | ✔️           | ✔️           | ✔️                | ✔️                             | ✔️             | ✔️          | ✔️             | ✔️            | ✔️               | ✔️              | ✔️                        |
-| Board Member | ✖️           | ✖️           | ✖️                | ✖️                             | ✔️             | ✔️          | ✖️             | ✔️            | ✖️               | ✔️              | ✔️                        |
-
-> Note:
->
-> - Board Owner has all permissions, including creating, deleting, and editing all projects and tasks.
-> - Board Member can only create projects and tasks, and can only edit and delete their own projects and tasks, but can view all content.
-
-### Task Operations
-
-- Task creator and assignee can edit task
-- Only owner of board, owner of project and creator of task can delete tasks
-- Task status: To Do → In Progress → Done
+| Capability          | Owner | Member |
+| ------------------- | ----- | ------ |
+| Manage Board        | Yes   | No     |
+| Create Project/Task | Yes   | Yes    |
+| Edit All Content    | Yes   | No     |
+| Edit Own Content    | Yes   | Yes    |
+| View All Content    | Yes   | Yes    |
 
 ---
 
@@ -332,12 +314,6 @@ pnpm storybook:build
 pnpm storybook:test
 ```
 
-### Quality Gates Enabled
-
-- **Pre-commit**: Interaction tests run via Storybook Test Runner
-- **CI Pipeline**: Visual regression detection before merge
-- **Documentation**: Auto-synchronized with component changes
-
 ---
 
 ## AI-Assisted Development Workflow
@@ -389,63 +365,49 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 ---
 
-## Experimental Tools
+## Modern Tooling Adoption
 
-### Oxlint and Type-Aware plug-in
+Part of my engineering approach involves continuously evaluating emerging tools and making data-driven adoption decisions. This section documents tools I've integrated after hands-on evaluation, demonstrating measurable impact on developer productivity.
 
-- status: enabled
-- benefit:
-  - 50~100 times faster than ESLint (it can lint this small project in 1.5 seconds, it has more potential in big projects with thousands of files)
-  - easier to setup (compared to ESLint 9+)
-  - clearer instructions showing how to fix each issue
-  - many ESLint packages can be removed (in my case 10 packages)
-- note: Oxlint is in a stable version, and many companies have used it in production for a long time.
-  But Type-Aware plug-in is still in a preview version. It is not recommended to use it in production.
+### Oxlint (Rust-based Linter)
 
-#### Introductions
+| Aspect           | Details                                               |
+| ---------------- | ----------------------------------------------------- |
+| Status           | **Production** - core linting enabled                 |
+| Performance      | 50-100x faster than ESLint (2s for full project lint) |
+| DX Improvement   | Clearer error messages, simpler config than ESLint 9+ |
+| Migration Impact | Removed 10 ESLint packages from dependency tree       |
 
-- [Oxlint](https://oxc.rs/blog/2025-06-10-oxlint-stable.html)
-- [Oxlint Type-Aware Preview](https://oxc.rs/blog/2025-08-17-oxlint-type-aware.html)
+Type-aware rules are available but kept in evaluation for this project. [Oxlint Docs](https://oxc.rs/blog/2025-06-10-oxlint-stable.html)
 
-### Oxfmt
+### Turbopack + Filesystem Caching
 
-- status: enabled
-- benefit: Significantly faster (about 50 times) than Prettier, with near-instant cold startup times.(it can format this small project in 800ms, it has more potential in big projects with thousands of files). It is not recommended to use it in production, still in preview version.
-- [introduction](https://oxc.rs/docs/guide/usage/formatter)
+| Aspect      | Details                                               |
+| ----------- | ----------------------------------------------------- |
+| Status      | **Production** - default in Next.js 16                |
+| Performance | Near-instant HMR, incremental compilation             |
+| Caching     | Filesystem caching persists artifacts across restarts |
 
-### Turbopack
+[Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/blog/next-16#turbopack-file-system-caching-beta)
 
-- location: apps/web (Next.js)
-- enabled in default (Next.js 16)
-- benefit: the Rust-based successor of webpack by Vercel, offers near-instantaneous server startup and lightning-fast Hot Module Replacement (HMR). This is achieved through its incremental architecture, which caches function-level computations, ensuring we only build what's necessary.
-- [introduction](https://nextjs.org/docs/app/api-reference/turbopack)
+### Oxfmt (Rust-based Formatter)
 
-#### Turbopack File System Caching (beta)
+| Aspect      | Details                                           |
+| ----------- | ------------------------------------------------- |
+| Status      | **Evaluation** - enabled for local development    |
+| Performance | ~50x faster than Prettier with instant cold start |
 
-- location: apps/web (Next.js)
-- status: enabled
-- benefit: Turbopack now supports filesystem caching in development, storing compiler artifacts on disk between runs for significantly faster compile times across restarts, especially in large projects.
-- [introduction](https://nextjs.org/blog/next-16#turbopack-file-system-caching-beta)
-
-### Rspack
-
-- location: apps/api
-- status: enabled
-- benefit: Rspack is a high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
-- [introduction](https://rspack.rs/guide/start/introduction)
-
-### Prettier oxc plugin
-
-- status: disabled (it is conflict with vs code auto formatting, since this is a small project, the speed difference is not significant)
-- benefit: Increase Prettier formatting speed
-- [introduction](https://www.npmjs.com/package/@prettier/plugin-oxc)
+[Oxfmt Docs](https://oxc.rs/docs/guide/usage/formatter)
 
 ### React Compiler
 
-- location: apps/web (Next.js)
-- status: disabled (enable it will increase build time 30~40%, so I disable it)
-- benefit: It can increase the performance score in lighthouse test 5~10% (not significant)
-- [introduction](https://react.dev/learn/react-compiler)
+| Aspect    | Details                                                                    |
+| --------- | -------------------------------------------------------------------------- |
+| Status    | **Evaluated, deferred**                                                    |
+| Trade-off | +5-10% Lighthouse score vs +30-40% build time                              |
+| Decision  | Build time cost outweighs marginal performance gain for this project scope |
+
+[React Compiler Docs](https://react.dev/learn/react-compiler)
 
 ---
 
@@ -460,9 +422,3 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 | **Translations**   | EN complete, DE partial             | Professional localization service   |
 
 The demo deployment uses free-tier infrastructure to minimize costs. Production deployments should implement proper CDN and regional optimization.
-
----
-
-### 📃 License
-
-This project is licensed under the [MIT License](https://opensource.org/license/mit/).
