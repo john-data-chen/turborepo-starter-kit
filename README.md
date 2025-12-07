@@ -36,8 +36,6 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 - Responsive design (mobile → desktop)
 - i18n (English, German)
 
----
-
 ### Engineering Metrics
 
 | Metric         | Result                                                        |
@@ -50,16 +48,17 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
----
-
 ### Quality Assurance
 
-| Layer             | Tool       | Rationale                                    |
-| ----------------- | ---------- | -------------------------------------------- |
-| Unit/Integration  | Vitest     | Faster than Jest, native ESM, simpler config |
-| E2E               | Playwright | Cross-browser support, lighter than Cypress  |
-| Static Analysis   | SonarQube  | Enterprise-grade quality gates in CI         |
-| Coverage Tracking | Codecov    | Automated PR integration                     |
+| Layer             | Tool       | Rationale                                     |
+| ----------------- | ---------- | --------------------------------------------- |
+| Unit/Integration  | Vitest     | Faster than Jest, native ESM, simpler config  |
+| E2E               | Playwright | Cross-browser support, lighter than Cypress   |
+| Static Analysis   | SonarQube  | Enterprise-grade quality gates in CI          |
+| Coverage Tracking | Codecov    | Automated PR integration                      |
+| Documentation     | Storybook  | SSOT for UI components, auto-generated docs   |
+| Visual Testing    | Storybook  | Isolated component dev, dark/light mode check |
+| Accessibility     | a11y-addon | WCAG compliance checks during development     |
 
 **Testing Strategy:**
 
@@ -67,7 +66,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 - E2E tests validate critical flows (auth)
 - Every PR triggers the full pipeline before merge
 
-### Architecture
+### Frontend
 
 | Concern   | Choice                | Rationale                                        |
 | --------- | --------------------- | ------------------------------------------------ |
@@ -80,12 +79,24 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | i18n      | next-intl             | App Router native support                        |
 | UI        | Tailwind + shadcn/ui  | Consistent design system, rapid iteration        |
 
+### Backend
+
+| Concern    | Choice             | Rationale                                   |
+| ---------- | ------------------ | ------------------------------------------- |
+| Framework  | Nest.js (Express)  | Structured, scalable architecture for APIs  |
+| Language   | TypeScript         | Strict typing, shared types with frontend   |
+| Database   | MongoDB + Mongoose | Flexible schema, rich querying capabilities |
+| Validation | class-validator    | Decorator-based validation for DTOs         |
+| Auth       | Passport + JWT     | Standard, secure authentication strategies  |
+
 ### Developer Experience
 
 | Tool             | Purpose                                           |
 | ---------------- | ------------------------------------------------- |
+| Rspack           | Rust-based bundler for 5-10x faster builds        |
 | Turbopack        | Rust bundler with filesystem caching for fast HMR |
 | Oxlint           | 50-100x faster than ESLint, clearer diagnostics   |
+| Oxfmt            | 50-100x faster formatter than Prettier            |
 | Prettier + Husky | Pre-commit quality enforcement                    |
 | Commitizen       | Conventional commits for clean history            |
 
@@ -136,18 +147,13 @@ JWT_SECRET=[your_secret]
 # DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/next-project-manager?retryWrites=true&w=majority"
 ```
 
-Production and CI:
-
-Create environment variables in Vercel or GitHub project settings. **Ensure the database name is included in the DATABASE_URL** (e.g., `/next-project-manager` in the connection string).
-
-### Useful Commands
+### Setup
 
 ```bash
-# Install dependencies
 pnpm install
 
-# rename env.example in apps/api to .env
-mv apps/api/env.example apps/api/.env
+# Environment
+cp apps/api/env.example apps/api/.env
 
 # Generate Secret and replace NEXTAUTH_SECRET in .env
 openssl rand -base64 32
@@ -156,27 +162,15 @@ openssl rand -base64 32
 cd /apps/api/database
 docker-compose up -d
 
-# initialize mongodb
+# initialize mongodb in root folder
 pnpm init-db
 
-# stop mongodb (in database folder)
-cd /apps/api/database
-docker-compose down
-
-# Start development server
-pnpm dev
-
-# Lint fix
-pnpm lint
-
-# Format code
-pnpm format
-
-# Build
-pnpm build
-
-# Storybook
-pnpm storybook
+# Run
+pnpm dev           # Development
+pnpm test          # Unit tests
+pnpm playwright    # E2E tests
+pnpm storybook.    # Execute storybook
+pnpm build         # Production build
 ```
 
 ---
@@ -254,15 +248,6 @@ packages/
 
 ---
 
-### 📊 Testing Strategy
-
-- Unit Tests: Focused on critical store logic, complex form validations, and isolated component behaviors, ensuring granular code reliability.
-- Test Coverage: Maintained above 80%+ (verified via npx vitest run --coverage), reflecting a commitment to robust code coverage without sacrificing test quality.
-- E2E Tests: Critical user flows, such as the Login page, are validated end-to-end using Playwright, simulating real user interactions to guarantee system integrity.
-- Cross-browser Testing Strategy: Ensures consistent functionality and user experience across a carefully selected range of desktop and mobile browsers based on market share, mitigating compatibility issues.
-
----
-
 ## Storybook: Component Documentation & Visual Testing
 
 Storybook serves as the Single Source of Truth (SSOT) for UI components, providing living documentation that stays synchronized with the codebase.
@@ -321,52 +306,40 @@ pnpm storybook:test
 
 ---
 
-## AI-Assisted Development Workflow
+## 🤖 AI-Augmented Engineering Workflow
 
-This project integrates AI tools into a structured development workflow, focusing on measurable productivity gains while maintaining code quality. Each tool was evaluated based on context awareness, workflow integration, and production stability.
+This project demonstrates a "Human-in-the-Loop" architecture where AI agents are orchestrated to amplify engineering impact. The focus is not just on code generation, but on **architectural leverage, rigorous quality assurance, and accelerated velocity**.
 
-### Integrated Toolchain
+### 🚀 Orchestration & Agency
 
-**Development Environments**
+I utilize a suite of specialized AI agents, each assigned specific roles to mimic a high-performing engineering team structure.
 
-| Tool                                                     | Purpose                          | Integration Benefit                                   |
-| -------------------------------------------------------- | -------------------------------- | ----------------------------------------------------- |
-| [Claude Code](https://github.com/anthropics/claude-code) | AI-assisted coding and debugging | Deep codebase understanding with autonomous workflows |
-| [Windsurf](https://windsurf.com/)                        | AI-native IDE                    | Inline suggestions with full context awareness        |
-| [Zed](https://zed.dev/)                                  | High-performance editor          | Fast iteration with integrated AI assistance          |
-| [Kilo Code](https://github.com/Kilo-Org/kilocode)        | VS Code extension                | AI capabilities in familiar environment               |
+| Role                       | Tool                                                                    | Responsibility                      | Impact                                                                |
+| :------------------------- | :---------------------------------------------------------------------- | :---------------------------------- | :-------------------------------------------------------------------- |
+| **Architect**              | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness. |
+| **Refactoring Specialist** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code modernization & cleanup        | Systematically improves code health without feature regression.       |
+| **IDE Copilot**            | [Windsurf](https://windsurf.com/) / [Zed](https://zed.dev/)             | Inline implementation               | Provides instant, context-aware code completion for rapid iteration.  |
+| **QA Engineer**            | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs in CI/CD.          |
 
-**MCP (Model Context Protocol) Servers**
+### 🔌 MCP (Model Context Protocol) Integration
 
-MCP enables AI tools to interact directly with development infrastructure, eliminating context-switching overhead:
+I leverage **MCP** to give AI agents direct, secure access to development infrastructure, transforming them from passive chat bots into active engineering partners.
 
-| Server                                                                                                | Integration Point     | Workflow Enhancement                      |
-| ----------------------------------------------------------------------------------------------------- | --------------------- | ----------------------------------------- |
-| [chrome-devtools](https://github.com/anthropics/anthropic-quickstarts)                                | Browser state         | Debug without leaving the editor          |
-| [context7](https://github.com/upstash/context7)                                                       | Documentation         | Current library docs during development   |
-| [Next.js](https://nextjs.org/docs/app/guides/mcp)                                                     | Framework diagnostics | Direct access to build errors and routes  |
-| [sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking) | Problem decomposition | Structured approach for complex decisions |
-| [playwright](https://github.com/microsoft/playwright-mcp)                                             | E2E test automation   | Browser-aware test authoring              |
+| Server                  | Capability            | Engineering Value                                                                      |
+| :---------------------- | :-------------------- | :------------------------------------------------------------------------------------- |
+| **Chrome DevTools**     | Browser State Access  | Allows AI to see what I see, enabling "fix it for me" debugging of UI issues.          |
+| **Context7**            | Live Documentation    | Fetches up-to-date documentation, preventing hallucinations about library APIs.        |
+| **Next.js**             | Framework Diagnostics | Gives AI direct access to build errors and routing tables for instant troubleshooting. |
+| **Sequential Thinking** | Problem Decomposition | Forces AI to plan complex tasks step-by-step, reducing error rates in large refactors. |
 
-**CI/CD Integration**
+### 📈 Measurable Impact
 
-| Tool                                                                    | Stage     | Purpose                                |
-| ----------------------------------------------------------------------- | --------- | -------------------------------------- |
-| [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | PR Review | Automated code review and PR summaries |
+By treating AI as an integrated part of the stack, this project achieves:
 
-### Tool Selection Criteria
-
-1. **Context awareness**: Must understand project structure, not just individual files
-2. **Workflow integration**: Enhances existing practices without requiring process changes
-3. **Production stability**: Reliable for daily professional use
-4. **Security**: Appropriate handling of code and credentials
-
-### Productivity Patterns
-
-- **Debugging**: MCP-integrated browser tools provide real-time state inspection without context-switching
-- **Documentation**: Context7 serves current library documentation inline, reducing research time
-- **Code review**: AI-assisted PR analysis ensures consistent review coverage
-- **Refactoring**: Autonomous AI tools handle multi-file changes with dependency awareness
+- **Velocity**: 5-10x faster implementation of boilerplate and standard patterns.
+- **Quality**: Higher test coverage (80%+) through AI-generated test scaffolding.
+- **Learning**: Rapid mastery of new tools (Rspack, Oxlint) via AI-guided implementation.
+- **Focus**: Shifted engineering time from syntax to system architecture and user experience.
 
 ---
 
