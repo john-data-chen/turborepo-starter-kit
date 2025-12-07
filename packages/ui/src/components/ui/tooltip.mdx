@@ -1,0 +1,320 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+<Title />
+
+<Description>
+  A popup that displays information when hovering or focusing on an element.
+  Perfect for providing contextual help and additional details without cluttering the interface.
+</Description>
+
+## Overview
+
+The Tooltip component displays a small popup with additional information when users hover over,
+focus on, or tap an element. It's ideal for providing context without adding permanent UI elements.
+
+### Key Features
+
+- **Hover & Focus Support**: Appears on both mouse hover and keyboard focus
+- **Customizable Positioning**: Place on top, bottom, left, or right
+- **Accessible**: Proper ARIA attributes and keyboard support
+- **Delay Control**: Configurable delay before showing
+- **Arrow Support**: Visual arrow pointing to trigger element
+- **Portal Rendering**: Renders outside normal DOM flow to avoid z-index issues
+
+## Usage
+
+```tsx
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@repo/ui/components/tooltip'
+import { Button } from '@repo/ui/components/button'
+
+export function TooltipDemo() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline">Hover me</Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>This is a helpful tooltip</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={TooltipStories.Default} />
+
+<Controls of={TooltipStories.Default} />
+
+## Common Patterns
+
+### Basic Tooltip
+
+```tsx
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="outline">Hover</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>Add to library</p>
+  </TooltipContent>
+</Tooltip>
+```
+
+### Icon Button with Tooltip
+
+```tsx
+import { Info } from 'lucide-react'
+
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button size="icon" variant="ghost">
+      <Info className="h-4 w-4" />
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>More information</p>
+  </TooltipContent>
+</Tooltip>
+```
+
+### Tooltip with Custom Delay
+
+```tsx
+<TooltipProvider delayDuration={300}>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Delayed tooltip</Button>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>This appears after 300ms</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+### Different Positions
+
+```tsx
+<div className="flex gap-2">
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Top</Button>
+    </TooltipTrigger>
+    <TooltipContent side="top">
+      <p>Tooltip on top</p>
+    </TooltipContent>
+  </Tooltip>
+
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Right</Button>
+    </TooltipTrigger>
+    <TooltipContent side="right">
+      <p>Tooltip on right</p>
+    </TooltipContent>
+  </Tooltip>
+
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Bottom</Button>
+    </TooltipTrigger>
+    <TooltipContent side="bottom">
+      <p>Tooltip on bottom</p>
+    </TooltipContent>
+  </Tooltip>
+
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Left</Button>
+    </TooltipTrigger>
+    <TooltipContent side="left">
+      <p>Tooltip on left</p>
+    </TooltipContent>
+  </Tooltip>
+</div>
+```
+
+### Rich Content Tooltip
+
+```tsx
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="outline">Keyboard Shortcut</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <div className="flex flex-col gap-1">
+      <p className="font-semibold">Save Document</p>
+      <kbd className="px-2 py-1 text-xs bg-muted rounded">
+        Ctrl + S
+      </kbd>
+    </div>
+  </TooltipContent>
+</Tooltip>
+```
+
+### Tooltip on Disabled Button
+
+```tsx
+{/* Wrap disabled button in a span for tooltip to work */}
+<Tooltip>
+  <TooltipTrigger asChild>
+    <span tabIndex={0}>
+      <Button disabled>Disabled Button</Button>
+    </span>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>This action is currently unavailable</p>
+  </TooltipContent>
+</Tooltip>
+```
+
+### Form Field with Help Tooltip
+
+```tsx
+import { HelpCircle } from 'lucide-react'
+
+<div className="space-y-2">
+  <div className="flex items-center gap-2">
+    <Label htmlFor="username">Username</Label>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <p>Your username must be 3-20 characters and can only contain
+        letters, numbers, and underscores.</p>
+      </TooltipContent>
+    </Tooltip>
+  </div>
+  <Input id="username" placeholder="johndoe" />
+</div>
+```
+
+### Multiple Tooltips
+
+```tsx
+<TooltipProvider>
+  <div className="flex gap-2">
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button size="icon">
+          <Save className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Save</p>
+      </TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button size="icon">
+          <Copy className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Copy</p>
+      </TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button size="icon">
+          <Trash className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Delete</p>
+      </TooltipContent>
+    </Tooltip>
+  </div>
+</TooltipProvider>
+```
+
+## Accessibility
+
+The Tooltip component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Keyboard Support**: Appears on focus, dismissed with Escape
+- ✅ **Screen Reader Support**: Content announced to assistive technologies
+- ✅ **ARIA Attributes**: Proper role and aria-describedby linking
+- ✅ **Focus Management**: Doesn't trap focus
+- ✅ **Dismissible**: Can be dismissed with Escape key
+- ✅ **Non-Blocking**: Doesn't interfere with page interaction
+
+### Best Practices
+
+1. **Keep it short**: Tooltips should contain brief, supplementary information
+2. **Don't rely solely on tooltips**: Important information should be visible
+3. **Use for supplementary info**: Not for critical information
+4. **Avoid interactive content**: Tooltips should generally be read-only
+5. **Provide keyboard access**: Ensure tooltip appears on focus
+6. **Don't duplicate visible text**: Add value, don't repeat
+
+```tsx
+// Good: Provides additional context
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button size="icon">
+      <Trash className="h-4 w-4" />
+      <span className="sr-only">Delete</span>
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>Delete permanently</p>
+  </TooltipContent>
+</Tooltip>
+
+// Bad: Duplicates button text
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button>Save</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>Save</p> {/* Redundant */}
+  </TooltipContent>
+</Tooltip>
+```
+
+## When to Use Tooltips
+
+Use tooltips for:
+- **Icon buttons**: Explain what icon buttons do
+- **Truncated text**: Show full text when space is limited
+- **Additional context**: Provide helpful hints without cluttering UI
+- **Keyboard shortcuts**: Display available keyboard shortcuts
+
+Don't use tooltips for:
+- **Critical information**: Users might miss it
+- **Long content**: Use a popover or dialog instead
+- **Mobile-primary experiences**: Hard to trigger on touch devices
+- **Error messages**: Use inline validation instead
+
+## Component Structure
+
+The Tooltip is composed of multiple sub-components:
+
+- **TooltipProvider**: Manages shared state for multiple tooltips
+- **Tooltip**: Root component for individual tooltip
+- **TooltipTrigger**: Element that triggers the tooltip
+- **TooltipContent**: The tooltip popup content
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

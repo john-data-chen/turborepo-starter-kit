@@ -1,0 +1,279 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+<Title />
+
+<Description>
+  A control that allows users to toggle between checked and unchecked states.
+  Perfect for forms, settings, and multi-select interfaces.
+</Description>
+
+## Overview
+
+The Checkbox component allows users to select one or more options from a set.
+It provides clear visual feedback and supports indeterminate states for partial selections.
+
+### Key Features
+
+- **Accessible by Default**: Full keyboard navigation and ARIA support
+- **Three States**: Checked, unchecked, and indeterminate
+- **Customizable**: Easy to style with Tailwind classes
+- **Form Integration**: Works seamlessly with React Hook Form
+- **Validation States**: Built-in error and disabled states
+- **Touch Friendly**: Appropriate touch target sizes
+
+## Usage
+
+```tsx
+import { Checkbox } from '@repo/ui/components/checkbox'
+import { Label } from '@repo/ui/components/label'
+
+export function CheckboxDemo() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Checkbox id="terms" />
+      <Label htmlFor="terms">Accept terms and conditions</Label>
+    </div>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={CheckboxStories.Default} />
+
+<Controls of={CheckboxStories.Default} />
+
+## Common Patterns
+
+### Basic Checkbox with Label
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox id="newsletter" />
+  <Label htmlFor="newsletter">Subscribe to newsletter</Label>
+</div>
+```
+
+### Controlled Checkbox
+
+```tsx
+import { useState } from 'react'
+
+function ControlledCheckbox() {
+  const [checked, setChecked] = useState(false)
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="controlled"
+          checked={checked}
+          onCheckedChange={setChecked}
+        />
+        <Label htmlFor="controlled">Controlled checkbox</Label>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Status: {checked ? 'Checked' : 'Unchecked'}
+      </p>
+    </div>
+  )
+}
+```
+
+### Disabled Checkbox
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox id="disabled" disabled />
+  <Label htmlFor="disabled">Disabled checkbox</Label>
+</div>
+```
+
+### Checkbox with Description
+
+```tsx
+<div className="flex items-start space-x-2">
+  <Checkbox id="marketing" className="mt-0.5" />
+  <div className="grid gap-1.5">
+    <Label htmlFor="marketing">Marketing emails</Label>
+    <p className="text-sm text-muted-foreground">
+      Receive emails about new products, features, and more.
+    </p>
+  </div>
+</div>
+```
+
+### Checkbox Group
+
+```tsx
+import { useState } from 'react'
+
+function CheckboxGroup() {
+  const [selected, setSelected] = useState<string[]>([])
+
+  const options = [
+    { id: 'react', label: 'React' },
+    { id: 'vue', label: 'Vue' },
+    { id: 'svelte', label: 'Svelte' },
+  ]
+
+  const handleChange = (id: string, checked: boolean) => {
+    setSelected((prev) =>
+      checked ? [...prev, id] : prev.filter((item) => item !== id)
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <Label>Select frameworks</Label>
+      {options.map((option) => (
+        <div key={option.id} className="flex items-center space-x-2">
+          <Checkbox
+            id={option.id}
+            checked={selected.includes(option.id)}
+            onCheckedChange={(checked) =>
+              handleChange(option.id, checked as boolean)
+            }
+          />
+          <Label htmlFor={option.id}>{option.label}</Label>
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+### Form Integration with React Hook Form
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const formSchema = z.object({
+  terms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions',
+  }),
+})
+
+function CheckboxForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      terms: false,
+    },
+  })
+
+  return (
+    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="terms"
+            {...form.register('terms')}
+            aria-invalid={!!form.formState.errors.terms}
+          />
+          <Label htmlFor="terms">I accept the terms and conditions</Label>
+        </div>
+        {form.formState.errors.terms && (
+          <p className="text-sm text-destructive">
+            {form.formState.errors.terms.message}
+          </p>
+        )}
+      </div>
+      <Button type="submit" className="mt-4">
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+### Select All with Indeterminate State
+
+```tsx
+import { useState, useEffect } from 'react'
+
+function SelectAllCheckbox() {
+  const [items, setItems] = useState([
+    { id: '1', label: 'Item 1', checked: false },
+    { id: '2', label: 'Item 2', checked: false },
+    { id: '3', label: 'Item 3', checked: false },
+  ])
+
+  const allChecked = items.every((item) => item.checked)
+  const someChecked = items.some((item) => item.checked) && !allChecked
+
+  const handleSelectAll = (checked: boolean) => {
+    setItems((prev) => prev.map((item) => ({ ...item, checked })))
+  }
+
+  const handleItemChange = (id: string, checked: boolean) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, checked } : item))
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center space-x-2 border-b pb-2">
+        <Checkbox
+          id="select-all"
+          checked={allChecked}
+          ref={(element) => {
+            if (element) {
+              element.indeterminate = someChecked
+            }
+          }}
+          onCheckedChange={handleSelectAll}
+        />
+        <Label htmlFor="select-all" className="font-semibold">
+          Select All
+        </Label>
+      </div>
+      {items.map((item) => (
+        <div key={item.id} className="flex items-center space-x-2 pl-6">
+          <Checkbox
+            id={item.id}
+            checked={item.checked}
+            onCheckedChange={(checked) =>
+              handleItemChange(item.id, checked as boolean)
+            }
+          />
+          <Label htmlFor={item.id}>{item.label}</Label>
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+## Accessibility
+
+The Checkbox component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Keyboard Navigation**: Space to toggle, Tab to focus
+- ✅ **Screen Reader Support**: Proper ARIA states and labels
+- ✅ **Focus Indicators**: Clear visual focus ring
+- ✅ **Touch Targets**: Minimum 44x44px touch area
+- ✅ **Error States**: Visual and programmatic error indication
+- ✅ **Label Association**: Proper label linking
+
+### Best Practices
+
+1. **Always use with Label**: Associate checkbox with descriptive label
+2. **Group related checkboxes**: Use fieldset and legend for groups
+3. **Provide clear labels**: Make checkbox purpose obvious
+4. **Indicate required fields**: Show if selection is mandatory
+5. **Show validation errors**: Display clear error messages
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

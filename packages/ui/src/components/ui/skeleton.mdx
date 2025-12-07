@@ -1,0 +1,301 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as SkeletonStories from './skeleton.stories';
+
+<Meta of={SkeletonStories} />
+
+<Title />
+
+<Description>
+  A placeholder component that indicates content is loading.
+  Creates better perceived performance and reduces layout shift during data fetching.
+</Description>
+
+## Overview
+
+The Skeleton component displays a placeholder preview of content before the actual data loads.
+It improves perceived performance by showing users that content is on the way.
+
+### Key Features
+
+- **Loading States**: Visual feedback during data fetching
+- **Pulse Animation**: Subtle animation indicates loading
+- **Flexible Sizing**: Easily sized with Tailwind classes
+- **Reduce Layout Shift**: Maintains layout while loading
+- **Customizable**: Shape, size, and color can be adjusted
+- **Accessibility**: Properly communicated to screen readers
+
+## Usage
+
+```tsx
+import { Skeleton } from '@repo/ui/components/skeleton'
+
+export function SkeletonDemo() {
+  return (
+    <div className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={SkeletonStories.Default} />
+
+<Controls of={SkeletonStories.Default} />
+
+## Common Patterns
+
+### Card Skeleton
+
+```tsx
+<Card>
+  <CardHeader>
+    <Skeleton className="h-8 w-[200px]" />
+    <Skeleton className="h-4 w-[300px]" />
+  </CardHeader>
+  <CardContent>
+    <Skeleton className="h-[200px] w-full" />
+  </CardContent>
+</Card>
+```
+
+### Avatar with Text Skeleton
+
+```tsx
+<div className="flex items-center space-x-4">
+  <Skeleton className="h-12 w-12 rounded-full" />
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[250px]" />
+    <Skeleton className="h-4 w-[200px]" />
+  </div>
+</div>
+```
+
+### List Skeleton
+
+```tsx
+<div className="space-y-4">
+  {Array.from({ length: 5 }).map((_, i) => (
+    <div key={i} className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2 flex-1">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-4/5" />
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+### Table Skeleton
+
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead><Skeleton className="h-4 w-[100px]" /></TableHead>
+      <TableHead><Skeleton className="h-4 w-[150px]" /></TableHead>
+      <TableHead><Skeleton className="h-4 w-[120px]" /></TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {Array.from({ length: 5 }).map((_, i) => (
+      <TableRow key={i}>
+        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+```
+
+### Profile Skeleton
+
+```tsx
+<div className="space-y-6">
+  <div className="flex items-center space-x-4">
+    <Skeleton className="h-20 w-20 rounded-full" />
+    <div className="space-y-2">
+      <Skeleton className="h-6 w-[200px]" />
+      <Skeleton className="h-4 w-[150px]" />
+    </div>
+  </div>
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-3/4" />
+  </div>
+</div>
+```
+
+### Article Skeleton
+
+```tsx
+<article className="space-y-4">
+  <Skeleton className="h-8 w-3/4" />
+  <div className="flex items-center space-x-4">
+    <Skeleton className="h-8 w-8 rounded-full" />
+    <Skeleton className="h-4 w-[150px]" />
+  </div>
+  <Skeleton className="h-[400px] w-full" />
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-4/5" />
+  </div>
+</article>
+```
+
+### Grid Skeleton
+
+```tsx
+<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+  {Array.from({ length: 6 }).map((_, i) => (
+    <div key={i} className="space-y-2">
+      <Skeleton className="h-48 w-full" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  ))}
+</div>
+```
+
+### Form Skeleton
+
+```tsx
+<div className="space-y-4">
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[100px]" />
+    <Skeleton className="h-10 w-full" />
+  </div>
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[120px]" />
+    <Skeleton className="h-10 w-full" />
+  </div>
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[80px]" />
+    <Skeleton className="h-24 w-full" />
+  </div>
+  <Skeleton className="h-10 w-[120px]" />
+</div>
+```
+
+### Conditional Rendering with Data
+
+```tsx
+import { useState, useEffect } from 'react'
+
+function UserProfile({ userId }: { userId: string }) {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data)
+        setLoading(false)
+      })
+  }, [userId])
+
+  if (loading) {
+    return (
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center space-x-4">
+      <Avatar>
+        <AvatarImage src={user.avatar} alt={user.name} />
+        <AvatarFallback>{user.initials}</AvatarFallback>
+      </Avatar>
+      <div>
+        <p className="font-semibold">{user.name}</p>
+        <p className="text-sm text-muted-foreground">{user.email}</p>
+      </div>
+    </div>
+  )
+}
+```
+
+### Different Shapes
+
+```tsx
+<div className="space-y-4">
+  <Skeleton className="h-4 w-full" /> {/* Rectangle */}
+  <Skeleton className="h-12 w-12 rounded-full" /> {/* Circle */}
+  <Skeleton className="h-32 w-32 rounded-lg" /> {/* Rounded square */}
+  <Skeleton className="h-8 w-64 rounded-full" /> {/* Pill */}
+</div>
+```
+
+## Accessibility
+
+The Skeleton component should be used with accessibility in mind:
+
+- ✅ **ARIA Live Regions**: Consider using aria-live for dynamic content
+- ✅ **Loading Announcements**: Announce when content starts and finishes loading
+- ✅ **Skip to Content**: Provide way to skip skeleton loaders
+- ✅ **Prefers Reduced Motion**: Respect user's motion preferences
+
+### Best Practices
+
+1. **Match content layout**: Skeleton should mirror final content structure
+2. **Use consistent sizing**: Keep skeleton sizes close to actual content
+3. **Show realistic timing**: Don't show skeleton for instant loads
+4. **Limit animation**: Respect prefers-reduced-motion setting
+5. **Provide context**: Let users know content is loading
+
+```tsx
+// Good example with loading announcement
+<div aria-live="polite" aria-busy={loading}>
+  {loading ? (
+    <div>
+      <span className="sr-only">Loading content...</span>
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-3/4" />
+    </div>
+  ) : (
+    <div>
+      <p>{content.title}</p>
+      <p>{content.description}</p>
+    </div>
+  )}
+</div>
+```
+
+## When to Use Skeletons
+
+Use skeletons for:
+- **Expected wait times**: When data fetching takes noticeable time
+- **Progressive loading**: Show structure while content loads
+- **Perceived performance**: Make app feel faster
+- **Prevent layout shift**: Maintain layout during loading
+
+Don't use skeletons for:
+- **Instant loads**: Sub-100ms loads don't need skeletons
+- **Error states**: Show error messages instead
+- **Empty states**: Use empty state components instead
+- **Indefinite loading**: Add timeout and error handling
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

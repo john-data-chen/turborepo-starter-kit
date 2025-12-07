@@ -1,0 +1,263 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as LabelStories from './label.stories';
+
+<Meta of={LabelStories} />
+
+<Title />
+
+<Description>
+  A text label component for form elements that provides accessible associations.
+  Essential for form accessibility and user experience.
+</Description>
+
+## Overview
+
+The Label component renders accessible form labels that are properly associated with form controls.
+It's a fundamental building block for creating accessible forms.
+
+### Key Features
+
+- **Accessible Association**: Proper htmlFor linking to inputs
+- **Click-to-Focus**: Clicking label focuses associated input
+- **Disabled State Support**: Respects disabled state of associated controls
+- **Customizable**: Easy to style with Tailwind classes
+- **Screen Reader Friendly**: Announced properly by assistive technologies
+
+## Usage
+
+```tsx
+import { Label } from '@repo/ui/components/label'
+import { Input } from '@repo/ui/components/input'
+
+export function LabelDemo() {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="email">Email address</Label>
+      <Input id="email" type="email" placeholder="name@example.com" />
+    </div>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={LabelStories.Default} />
+
+<Controls of={LabelStories.Default} />
+
+## Common Patterns
+
+### Basic Label with Input
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="username">Username</Label>
+  <Input id="username" placeholder="johndoe" />
+</div>
+```
+
+### Required Field Indicator
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="password">
+    Password <span className="text-destructive">*</span>
+  </Label>
+  <Input id="password" type="password" required />
+</div>
+```
+
+### Label with Helper Text
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="bio">Bio</Label>
+  <Textarea id="bio" placeholder="Tell us about yourself..." />
+  <p className="text-sm text-muted-foreground">
+    This will be displayed on your public profile.
+  </p>
+</div>
+```
+
+### Label with Checkbox
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Accept terms and conditions</Label>
+</div>
+```
+
+### Label with Radio Group
+
+```tsx
+<div className="space-y-2">
+  <Label>Notification method</Label>
+  <RadioGroup defaultValue="email">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="email" id="email" />
+      <Label htmlFor="email">Email</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="sms" id="sms" />
+      <Label htmlFor="sms">SMS</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="push" id="push" />
+      <Label htmlFor="push">Push notification</Label>
+    </div>
+  </RadioGroup>
+</div>
+```
+
+### Label with Optional Indicator
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="nickname">
+    Nickname <span className="text-muted-foreground">(optional)</span>
+  </Label>
+  <Input id="nickname" placeholder="Your nickname" />
+</div>
+```
+
+### Label with Icon
+
+```tsx
+import { Mail } from 'lucide-react'
+
+<div className="grid gap-2">
+  <Label htmlFor="email" className="flex items-center gap-2">
+    <Mail className="h-4 w-4" />
+    Email
+  </Label>
+  <Input id="email" type="email" />
+</div>
+```
+
+### Inline Label (Horizontal Layout)
+
+```tsx
+<div className="flex items-center gap-4">
+  <Label htmlFor="inline" className="w-24">
+    Full Name
+  </Label>
+  <Input id="inline" className="flex-1" />
+</div>
+```
+
+### Label with Error State
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="error-input" className="text-destructive">
+    Email address
+  </Label>
+  <Input
+    id="error-input"
+    type="email"
+    aria-invalid="true"
+    aria-describedby="error-message"
+  />
+  <span id="error-message" className="text-sm text-destructive">
+    Please enter a valid email address
+  </span>
+</div>
+```
+
+### Disabled Label
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="disabled" className="opacity-50">
+    Disabled Field
+  </Label>
+  <Input id="disabled" disabled placeholder="Cannot edit" />
+</div>
+```
+
+### Label Group (Fieldset Pattern)
+
+```tsx
+<fieldset className="space-y-4 border rounded-lg p-4">
+  <legend className="text-sm font-medium px-2">
+    Personal Information
+  </legend>
+
+  <div className="grid gap-2">
+    <Label htmlFor="first-name">First Name</Label>
+    <Input id="first-name" />
+  </div>
+
+  <div className="grid gap-2">
+    <Label htmlFor="last-name">Last Name</Label>
+    <Input id="last-name" />
+  </div>
+</fieldset>
+```
+
+## Accessibility
+
+The Label component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Proper Association**: Links to form controls via htmlFor attribute
+- ✅ **Click-to-Focus**: Clicking label focuses the associated control
+- ✅ **Screen Reader Support**: Announced when control receives focus
+- ✅ **Required Indicators**: Visually and programmatically indicate required fields
+- ✅ **Error Identification**: Can be styled to indicate error states
+
+### Best Practices
+
+1. **Always associate labels**: Use htmlFor to link to input id
+2. **Make labels descriptive**: Clearly describe the input's purpose
+3. **Indicate required fields**: Show which fields are mandatory
+4. **Don't use placeholder as label**: Placeholders are not accessible labels
+5. **Keep labels visible**: Don't hide labels (use sr-only if needed)
+6. **Position consistently**: Keep label placement consistent across forms
+
+```tsx
+// Good example
+<div className="grid gap-2">
+  <Label htmlFor="email">
+    Email address <span className="text-destructive">*</span>
+  </Label>
+  <Input
+    id="email"
+    type="email"
+    placeholder="name@example.com"
+    required
+  />
+</div>
+
+// Bad example - placeholder as label
+<Input placeholder="Email address" /> {/* No label! */}
+
+// Good example - visually hidden label for icon-only inputs
+<div className="relative">
+  <Label htmlFor="search" className="sr-only">
+    Search
+  </Label>
+  <Input id="search" placeholder="Search..." />
+  <Search className="absolute right-3 top-3 h-4 w-4" />
+</div>
+```
+
+## When to Use Labels
+
+Use labels for:
+- **All form inputs**: Text, email, password, number, etc.
+- **Checkboxes and radios**: To make larger click targets
+- **Select menus**: To describe dropdown purpose
+- **Textareas**: For multi-line input fields
+
+Labels are not typically used for:
+- **Buttons**: Buttons are self-labeling
+- **Purely decorative elements**: No form association needed
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

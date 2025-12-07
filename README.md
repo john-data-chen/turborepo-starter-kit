@@ -6,6 +6,8 @@
 [![CI](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml/badge.svg)](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> A portfolio project demonstrating production-grade architecture, test-driven development, and data-driven tooling decisions. Built to showcase engineering practices and decision-making for senior full-stack roles.
+
 ## Architecture & Engineering Decisions
 
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
@@ -23,76 +25,90 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | **Technology Stack**  | Locked into Next.js for backend            | **Flexible backend choice (Nest.js)**; can add more services (Go, Python) | Future-proofs architecture; best tool for each job   |
 | **Code Reusability**  | Limited to the Next.js app                 | **Centralized `ui` & `config` packages**                                  | Enforces consistency; DRY across applications        |
 
-### Core Capabilities
+### Features
 
-- **Kanban System**: Drag & drop task management with multi-project support
-- **Permission System**: Role-based access control (Owner/Member)
-- **Internationalization**: Pre-configured i18n (EN & DE)
-- **Accessibility**: WAI-ARIA compliant components
+- Drag-and-drop Kanban with multi-project support
+- Custom sorting and synchronization for projects (new)
+- Role-based permissions (Owner / Member)
+- Task assignment with audit tracking
+- Search and filter
+- Theme switching (light/dark)
+- Responsive design (mobile → desktop)
+- i18n (English, German)
 
----
+### Engineering Metrics
 
-### Key Accomplishments
-
-| Area             | Achievement                                                                               |
-| ---------------- | ----------------------------------------------------------------------------------------- |
-| **Architecture** | Decoupled monolithic Next.js into separate frontend/backend, enabling independent scaling |
-| **API Design**   | Nest.js with dependency injection, modular structure, and comprehensive validation        |
-| **Performance**  | Lighthouse 90+ across all metrics through optimized SSG/SSR strategies                    |
-| **Testing**      | 80%+ coverage with Vitest; E2E flows validated across Chrome, Safari, Edge via Playwright |
-| **CI/CD**        | Automated pipeline with quality gates; live deployment on Vercel                          |
+| Metric         | Result                                                        |
+| -------------- | ------------------------------------------------------------- |
+| Test Coverage  | **80%+** via Vitest (unit + integration)                      |
+| Code Quality   | **SonarQube A** across Security, Reliability, Maintainability |
+| Performance    | **Lighthouse 90+** on all categories                          |
+| E2E Validation | Cross-browser (Chrome, Safari, Edge) via Playwright           |
+| CI/CD Pipeline | GitHub Actions → SonarQube + Codecov → Vercel                 |
 
 <img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
----
+### Quality Assurance
 
-## 🛠️ Technical Decision
+| Layer             | Tool       | Rationale                                     |
+| ----------------- | ---------- | --------------------------------------------- |
+| Unit/Integration  | Vitest     | Faster than Jest, native ESM, simpler config  |
+| E2E               | Playwright | Cross-browser support, lighter than Cypress   |
+| Static Analysis   | SonarQube  | Enterprise-grade quality gates in CI          |
+| Coverage Tracking | Codecov    | Automated PR integration                      |
+| Documentation     | Storybook  | SSOT for UI components, auto-generated docs   |
+| Visual Testing    | Storybook  | Isolated component dev, dark/light mode check |
+| Accessibility     | a11y-addon | WCAG compliance checks during development     |
 
-### Monorepo
+**Testing Strategy:**
 
-[Turborepo](https://turborepo.org/) - A high-performance build system for JavaScript and TypeScript codebases. It was chosen to manage this monorepo for several key reasons:
-
-- Faster, Smarter Builds: Turborepo dramatically speeds up development and CI/CD pipelines through advanced caching. It caches the output of tasks, ensuring code is never re-built or re-tested unnecessarily. This leads to near-instantaneous builds for unchanged code, a critical advantage for both developer productivity and deployment frequency.
-- Simplified Monorepo Management: It provides a streamlined developer experience for managing shared packages (/packages), configurations (ESLint, TypeScript), and scripts from a single repository. This simplifies dependency management, promotes code reuse, and ensures consistency across the entire application stack (frontend and backend).
-- Intelligent Task Scheduling: With its understanding of the dependency graph, Turborepo optimizes task execution by running them in the correct order and parallelizing where possible. This efficient scheduling minimizes idle time and further accelerates the entire build process.
+- Unit tests target store logic, validations, and isolated components
+- E2E tests validate critical flows (auth)
+- Every PR triggers the full pipeline before merge
 
 ### Frontend
 
-- **Framework**: [Next.js](https://nextjs.org/docs/app/getting-started), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/) - modern UI with strong type safety and server-side rendering (using SSG in login page for better performance, SSR in workspace pages for dynamic content)
-- **Build**: [Oxlint](https://oxc.rs/docs/guide/usage/linter), [Prettier](https://prettier.io/), [Commitizen](https://commitizen.github.io/cz-cli/), [Lint Staged](https://github.com/okonet/lint-staged), [Husky](https://github.com/typicode/husky) - they are the 1st quality gate: automated code quality checks and style formatting during commit, preventing problems into codebase and make consistent code style in team work
-- **UI**: [Tailwind CSS](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/) - consistent, responsive, and scalable styling, enabling rapid and maintainable UI development
-- **Design System Workshop**: [Storybook](https://storybook.js.org/) - Integrated into the shared Shadcn UI component library via Turborepo. It serves as the Single Source of Truth (SSOT) for all UI components, ensuring design-to-code consistency. I utilized the Storybook Test Runner for interaction testing, establishing a pre-commit visual quality gate that significantly reduces UI bugs before they reach the E2E stage.
-- **Testing**: [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) - they are the 2nd quality gate: easier to setup and faster execution than Jest and Cypress, chosen for their efficiency and comprehensive testing capabilities
-- **Internationalization(i18n)**: [Next-intl](https://next-intl.dev/) - internationalization (i18n) support for Next.js applications
-- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/) - minimal and testable global state management, 40% code reduction compared to Redux
-- **Forms**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/) - composable form logic and schema validation.
-- **Drag and Drop**: [dnd-kit](https://dndkit.com/) - A lightweight, performant, accessible and extensible drag & drop toolkit
+| Concern   | Choice                | Rationale                                        |
+| --------- | --------------------- | ------------------------------------------------ |
+| Framework | Next.js (App Router)  | SSG for static pages, SSR for dynamic content    |
+| State     | Zustand               | 40% less boilerplate than Redux, simpler testing |
+| Forms     | React Hook Form + Zod | Type-safe validation, composable schemas         |
+| Database  | MongoDB + Mongoose    | Document model fits board/project/task hierarchy |
+| Auth      | Auth.js               | Native Next.js integration, OAuth support        |
+| DnD       | dnd-kit               | Lightweight, accessible, extensible              |
+| i18n      | next-intl             | App Router native support                        |
+| UI        | Tailwind + shadcn/ui  | Consistent design system, rapid iteration        |
 
 ### Backend
 
-- **Framework**: [Nest.js](https://nestjs.com/), [TypeScript](https://www.typescriptlang.org/) modern server-side application framework with strong type safety and performance
-- **Build**: [Rspack](https://rspack.dev/) high-performance, Rust-based bundler designed for interoperability with the Webpack ecosystem. It delivers a 5-10x faster build speed compared to Webpack, dramatically reducing both development server startup and production build times.
-- **Database**: [MongoDB](https://www.mongodb.com/), [Mongoose](https://mongoosejs.com/) modern database with strong type safety and performance
-- **Authentication**: [Passport](https://www.passportjs.org/), [JWT](https://jwt.io/) modern authentication with strong type safety and performance
-- **Testing**: [Vitest](https://vitest.dev/) modern testing with strong type safety and performance
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions), [SonarQube](https://sonarcloud.io/), they are the 3rd quality gate: every pull request triggers a comprehensive pipeline, enforcing code quality gates and ensuring production-readiness through automated testing and deployment
+| Concern    | Choice             | Rationale                                   |
+| ---------- | ------------------ | ------------------------------------------- |
+| Framework  | Nest.js (Express)  | Structured, scalable architecture for APIs  |
+| Language   | TypeScript         | Strict typing, shared types with frontend   |
+| Database   | MongoDB + Mongoose | Flexible schema, rich querying capabilities |
+| Validation | class-validator    | Decorator-based validation for DTOs         |
+| Auth       | Passport + JWT     | Standard, secure authentication strategies  |
+
+### Developer Experience
+
+| Tool             | Purpose                                           |
+| ---------------- | ------------------------------------------------- |
+| Rspack           | Rust-based bundler for 5-10x faster builds        |
+| Turbopack        | Rust bundler with filesystem caching for fast HMR |
+| Oxlint           | 50-100x faster than ESLint, clearer diagnostics   |
+| Oxfmt            | 50-100x faster formatter than Prettier            |
+| Prettier + Husky | Pre-commit quality enforcement                    |
+| Commitizen       | Conventional commits for clean history            |
 
 ---
 
-## 🚀 Getting Started
-
-- Press **Use this template** to create a new repository.
-- Clone the repository to your local machine.
+## Quick Start
 
 ### Requirements
 
-- Node.JS version >= 24.11.0 (the newest version of 24.x LTS), please use [NVM](https://github.com/nvm-sh/nvm) or [FNM](https://github.com/Schniz/fnm) to install
-- [PNPM](https://pnpm.io/) 10.x
-
-### Database
-
-- In production and CI, I use [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database)
-- In local development, I use [Docker Compose](https://docs.docker.com/compose/) in folder **database**, you need to have [Docker](https://www.docker.com/) or [OrbStack](https://orbstack.dev/) installed.
+- Node.js >= 24.11.0 (LTS)
+- pnpm 10.x
+- Docker / OrbStack (for local MongoDB)
 
 ### Environment Configuration
 
@@ -131,18 +147,13 @@ JWT_SECRET=[your_secret]
 # DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/next-project-manager?retryWrites=true&w=majority"
 ```
 
-Production and CI:
-
-Create environment variables in Vercel or GitHub project settings. **Ensure the database name is included in the DATABASE_URL** (e.g., `/next-project-manager` in the connection string).
-
-### Useful Commands
+### Setup
 
 ```bash
-# Install dependencies
 pnpm install
 
-# rename env.example in apps/api to .env
-mv apps/api/env.example apps/api/.env
+# Environment
+cp apps/api/env.example apps/api/.env
 
 # Generate Secret and replace NEXTAUTH_SECRET in .env
 openssl rand -base64 32
@@ -151,27 +162,15 @@ openssl rand -base64 32
 cd /apps/api/database
 docker-compose up -d
 
-# initialize mongodb
+# initialize mongodb in root folder
 pnpm init-db
 
-# stop mongodb (in database folder)
-cd /apps/api/database
-docker-compose down
-
-# Start development server
-pnpm dev
-
-# Lint fix
-pnpm lint
-
-# Format code
-pnpm format
-
-# Build
-pnpm build
-
-# Storybook
-pnpm storybook
+# Run
+pnpm dev           # Development
+pnpm test          # Unit tests
+pnpm playwright    # E2E tests
+pnpm storybook.    # Execute storybook
+pnpm build         # Production build
 ```
 
 ---
@@ -249,15 +248,6 @@ packages/
 
 ---
 
-### 📊 Testing Strategy
-
-- Unit Tests: Focused on critical store logic, complex form validations, and isolated component behaviors, ensuring granular code reliability.
-- Test Coverage: Maintained above 80%+ (verified via npx vitest run --coverage), reflecting a commitment to robust code coverage without sacrificing test quality.
-- E2E Tests: Critical user flows, such as the Login page, are validated end-to-end using Playwright, simulating real user interactions to guarantee system integrity.
-- Cross-browser Testing Strategy: Ensures consistent functionality and user experience across a carefully selected range of desktop and mobile browsers based on market share, mitigating compatibility issues.
-
----
-
 ## Storybook: Component Documentation & Visual Testing
 
 Storybook serves as the Single Source of Truth (SSOT) for UI components, providing living documentation that stays synchronized with the codebase.
@@ -316,52 +306,40 @@ pnpm storybook:test
 
 ---
 
-## AI-Assisted Development Workflow
+## 🤖 AI-Augmented Engineering Workflow
 
-This project integrates AI tools into a structured development workflow, focusing on measurable productivity gains while maintaining code quality. Each tool was evaluated based on context awareness, workflow integration, and production stability.
+This project demonstrates a "Human-in-the-Loop" architecture where AI agents are orchestrated to amplify engineering impact. The focus is not just on code generation, but on **architectural leverage, rigorous quality assurance, and accelerated velocity**.
 
-### Integrated Toolchain
+### 🚀 Orchestration & Agency
 
-**Development Environments**
+I utilize a suite of specialized AI agents, each assigned specific roles to mimic a high-performing engineering team structure.
 
-| Tool                                                     | Purpose                          | Integration Benefit                                   |
-| -------------------------------------------------------- | -------------------------------- | ----------------------------------------------------- |
-| [Claude Code](https://github.com/anthropics/claude-code) | AI-assisted coding and debugging | Deep codebase understanding with autonomous workflows |
-| [Windsurf](https://windsurf.com/)                        | AI-native IDE                    | Inline suggestions with full context awareness        |
-| [Zed](https://zed.dev/)                                  | High-performance editor          | Fast iteration with integrated AI assistance          |
-| [Kilo Code](https://github.com/Kilo-Org/kilocode)        | VS Code extension                | AI capabilities in familiar environment               |
+| Role                       | Tool                                                                    | Responsibility                      | Impact                                                                |
+| :------------------------- | :---------------------------------------------------------------------- | :---------------------------------- | :-------------------------------------------------------------------- |
+| **Architect**              | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness. |
+| **Refactoring Specialist** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code modernization & cleanup        | Systematically improves code health without feature regression.       |
+| **IDE Copilot**            | [Windsurf](https://windsurf.com/) / [Zed](https://zed.dev/)             | Inline implementation               | Provides instant, context-aware code completion for rapid iteration.  |
+| **QA Engineer**            | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs in CI/CD.          |
 
-**MCP (Model Context Protocol) Servers**
+### 🔌 MCP (Model Context Protocol) Integration
 
-MCP enables AI tools to interact directly with development infrastructure, eliminating context-switching overhead:
+I leverage **MCP** to give AI agents direct, secure access to development infrastructure, transforming them from passive chat bots into active engineering partners.
 
-| Server                                                                                                | Integration Point     | Workflow Enhancement                      |
-| ----------------------------------------------------------------------------------------------------- | --------------------- | ----------------------------------------- |
-| [chrome-devtools](https://github.com/anthropics/anthropic-quickstarts)                                | Browser state         | Debug without leaving the editor          |
-| [context7](https://github.com/upstash/context7)                                                       | Documentation         | Current library docs during development   |
-| [Next.js](https://nextjs.org/docs/app/guides/mcp)                                                     | Framework diagnostics | Direct access to build errors and routes  |
-| [sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking) | Problem decomposition | Structured approach for complex decisions |
-| [playwright](https://github.com/microsoft/playwright-mcp)                                             | E2E test automation   | Browser-aware test authoring              |
+| Server                  | Capability            | Engineering Value                                                                      |
+| :---------------------- | :-------------------- | :------------------------------------------------------------------------------------- |
+| **Chrome DevTools**     | Browser State Access  | Allows AI to see what I see, enabling "fix it for me" debugging of UI issues.          |
+| **Context7**            | Live Documentation    | Fetches up-to-date documentation, preventing hallucinations about library APIs.        |
+| **Next.js**             | Framework Diagnostics | Gives AI direct access to build errors and routing tables for instant troubleshooting. |
+| **Sequential Thinking** | Problem Decomposition | Forces AI to plan complex tasks step-by-step, reducing error rates in large refactors. |
 
-**CI/CD Integration**
+### 📈 Measurable Impact
 
-| Tool                                                                    | Stage     | Purpose                                |
-| ----------------------------------------------------------------------- | --------- | -------------------------------------- |
-| [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | PR Review | Automated code review and PR summaries |
+By treating AI as an integrated part of the stack, this project achieves:
 
-### Tool Selection Criteria
-
-1. **Context awareness**: Must understand project structure, not just individual files
-2. **Workflow integration**: Enhances existing practices without requiring process changes
-3. **Production stability**: Reliable for daily professional use
-4. **Security**: Appropriate handling of code and credentials
-
-### Productivity Patterns
-
-- **Debugging**: MCP-integrated browser tools provide real-time state inspection without context-switching
-- **Documentation**: Context7 serves current library documentation inline, reducing research time
-- **Code review**: AI-assisted PR analysis ensures consistent review coverage
-- **Refactoring**: Autonomous AI tools handle multi-file changes with dependency awareness
+- **Velocity**: 5-10x faster implementation of boilerplate and standard patterns.
+- **Quality**: Higher test coverage (80%+) through AI-generated test scaffolding.
+- **Learning**: Rapid mastery of new tools (Rspack, Oxlint) via AI-guided implementation.
+- **Focus**: Shifted engineering time from syntax to system architecture and user experience.
 
 ---
 
@@ -389,6 +367,16 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Caching     | Filesystem caching persists artifacts across restarts |
 
 [Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/blog/next-16#turbopack-file-system-caching-beta)
+
+### Rspack (Nest.js Backend)
+
+| Aspect      | Details                                                 |
+| ----------- | ------------------------------------------------------- |
+| Status      | **Production** - replaced Webpack for Nest.js           |
+| Performance | 5-10x faster builds than Webpack                        |
+| Benefit     | Dramatic reduction in dev server startup and build time |
+
+[Rspack Docs](https://rspack.dev/guide/start/introduction)
 
 ### Oxfmt (Rust-based Formatter)
 

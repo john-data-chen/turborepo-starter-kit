@@ -1,0 +1,256 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as BreadcrumbStories from './breadcrumb.stories';
+
+<Meta of={BreadcrumbStories} />
+
+<Title />
+
+<Description>
+  Navigation component showing the current page's location within a site hierarchy.
+  Helps users understand where they are and navigate back through parent pages.
+</Description>
+
+## Overview
+
+The Breadcrumb component provides hierarchical navigation trails that show users their current location
+within a website's structure and allow them to navigate back to parent pages.
+
+### Key Features
+
+- **Accessible Navigation**: Proper ARIA labels and semantic HTML structure
+- **Responsive Design**: Adapts to mobile and desktop viewports
+- **Flexible Composition**: Multiple sub-components for customization
+- **Custom Separators**: Default chevron or custom separator elements
+- **Truncation Support**: Built-in ellipsis for long breadcrumb trails
+- **Router Integration**: Works with Next.js Link and other routing solutions
+
+## Usage
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@repo/ui/components/breadcrumb'
+
+export function PageBreadcrumb() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/products">Products</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Current Page</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={BreadcrumbStories.Default} />
+
+<Controls of={BreadcrumbStories.Default} />
+
+## Common Patterns
+
+### Basic Breadcrumb
+
+```tsx
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/docs">Documentation</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Components</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### With Next.js Link
+
+```tsx
+import Link from 'next/link'
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink asChild>
+        <Link href="/">Home</Link>
+      </BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink asChild>
+        <Link href="/products">Products</Link>
+      </BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current Product</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### With Ellipsis for Long Trails
+
+```tsx
+import { BreadcrumbEllipsis } from '@repo/ui/components/breadcrumb'
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbEllipsis />
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/products/category">Category</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current Item</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### Custom Separator
+
+```tsx
+import { Slash } from 'lucide-react'
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator>
+      <Slash />
+    </BreadcrumbSeparator>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator>
+      <Slash />
+    </BreadcrumbSeparator>
+    <BreadcrumbItem>
+      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### Dropdown for Collapsed Items
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@repo/ui/components/dropdown-menu'
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center gap-1">
+          <BreadcrumbEllipsis />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem>
+            <Link href="/docs">Documentation</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/components">Components</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Accessibility
+
+The Breadcrumb component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Semantic HTML**: Uses `<nav>` and `<ol>` for proper structure
+- ✅ **ARIA Labels**: Includes `aria-label="breadcrumb"` for screen readers
+- ✅ **Current Page**: Marked with `aria-current="page"`
+- ✅ **Keyboard Navigation**: Full keyboard support for links
+- ✅ **Screen Reader Support**: Separators hidden from screen readers
+
+### Best Practices
+
+1. **Always indicate current page**: Use `BreadcrumbPage` for the last item
+2. **Don't link current page**: Current page should not be clickable
+3. **Keep it short**: Limit to 3-5 levels when possible
+4. **Use ellipsis for long trails**: Collapse middle items on mobile
+5. **Provide meaningful labels**: Each link should clearly describe its destination
+
+```tsx
+// Good example
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current Page</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Component Structure
+
+The Breadcrumb is composed of multiple sub-components:
+
+- **Breadcrumb**: Root navigation container
+- **BreadcrumbList**: Ordered list wrapper
+- **BreadcrumbItem**: Individual breadcrumb item
+- **BreadcrumbLink**: Clickable link element
+- **BreadcrumbPage**: Current page indicator (not clickable)
+- **BreadcrumbSeparator**: Visual separator between items
+- **BreadcrumbEllipsis**: Indicator for collapsed items
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

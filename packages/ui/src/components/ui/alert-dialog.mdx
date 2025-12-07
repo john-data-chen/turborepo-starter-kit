@@ -1,0 +1,255 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as AlertDialogStories from './alert-dialog.stories';
+
+<Meta of={AlertDialogStories} />
+
+<Title />
+
+<Description>
+  A modal dialog that interrupts the user with important content and expects a response.
+  Perfect for confirmations, warnings, and critical decisions.
+</Description>
+
+## Overview
+
+The AlertDialog component is used to interrupt users with a critical message or decision.
+Unlike regular dialogs, alert dialogs demand immediate attention and typically require explicit user action.
+
+### Key Features
+
+- **Accessibility First**: Full ARIA support with proper focus management and screen reader announcements
+- **Composable Structure**: Multiple sub-components for flexible layouts (Trigger, Content, Header, Footer, etc.)
+- **Keyboard Navigation**: Escape key to close, Tab for focus navigation
+- **Focus Trap**: Keeps focus within the dialog when open
+- **Responsive Design**: Adapts to mobile and desktop viewports
+- **Animation Support**: Smooth entrance and exit animations
+
+## Usage
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@repo/ui/components/alert-dialog'
+
+export function DeleteConfirmation() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete Account</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your account
+            and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={AlertDialogStories.Default} />
+
+<Controls of={AlertDialogStories.Default} />
+
+## When to Use Alert Dialogs
+
+Use AlertDialog for:
+- **Destructive actions**: Confirming deletions, account closures
+- **Critical decisions**: Actions that can't be easily undone
+- **Important warnings**: Security alerts, data loss warnings
+- **Explicit consent**: Terms acceptance, permission requests
+
+Don't use AlertDialog for:
+- Non-critical information (use Dialog or Toast instead)
+- Multi-step workflows (use Dialog or Wizard)
+- Form submissions (use Dialog)
+- Simple notifications (use Toast or Alert)
+
+## Accessibility
+
+The AlertDialog component follows WCAG 2.1 Level AA guidelines and implements WAI-ARIA dialog pattern:
+
+- ✅ **Focus Management**: Focus moves to dialog on open, returns to trigger on close
+- ✅ **Keyboard Support**: Escape to close, Tab for navigation within dialog
+- ✅ **Screen Reader Support**: Proper ARIA roles and labels
+- ✅ **Focus Trap**: Tab navigation contained within the dialog
+- ✅ **Backdrop Click**: Optional close on overlay click
+- ✅ **Required Actions**: Forces user decision (can't accidentally dismiss)
+
+### Best Practices
+
+1. **Clear Title**: Use concise, action-oriented titles
+2. **Descriptive Content**: Explain consequences clearly
+3. **Button Labels**: Use specific labels ("Delete Account" vs "OK")
+4. **Action Hierarchy**: Primary action on right (or bottom on mobile)
+5. **Avoid Nested Dialogs**: Don't open dialogs from within dialogs
+
+## Common Patterns
+
+### Destructive Action Confirmation
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="destructive">Delete</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this item?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete this item.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Async Confirmation with Loading State
+
+```tsx
+import { useState } from 'react'
+
+function AsyncConfirmation() {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleConfirm = async () => {
+    setIsLoading(true)
+    try {
+      await deleteAccount()
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete Account</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete your account.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm} disabled={isLoading}>
+            {isLoading ? 'Deleting...' : 'Delete'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+### Warning with Icon
+
+```tsx
+import { AlertTriangle } from 'lucide-react'
+
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Proceed</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <div className="flex items-center gap-2">
+        <AlertTriangle className="h-5 w-5 text-destructive" />
+        <AlertDialogTitle>Warning: Unsaved Changes</AlertDialogTitle>
+      </div>
+      <AlertDialogDescription>
+        You have unsaved changes that will be lost if you continue.
+        Are you sure you want to leave this page?
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Stay</AlertDialogCancel>
+      <AlertDialogAction variant="destructive">Leave</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Controlled Dialog
+
+```tsx
+import { useState } from 'react'
+
+function ControlledAlertDialog() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button>Open</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Controlled Dialog</AlertDialogTitle>
+          <AlertDialogDescription>
+            This dialog's open state is controlled externally.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => {
+            // Perform action
+            setOpen(false)
+          }}>
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+## Component Structure
+
+The AlertDialog is composed of multiple sub-components:
+
+- **AlertDialog**: Root component that manages state
+- **AlertDialogTrigger**: Button or element that opens the dialog
+- **AlertDialogPortal**: Renders content in a portal (at document.body)
+- **AlertDialogOverlay**: Semi-transparent backdrop
+- **AlertDialogContent**: Container for dialog content
+- **AlertDialogHeader**: Top section, typically contains title and description
+- **AlertDialogFooter**: Bottom section for action buttons
+- **AlertDialogTitle**: Dialog title (required for accessibility)
+- **AlertDialogDescription**: Detailed explanation
+- **AlertDialogAction**: Primary action button
+- **AlertDialogCancel**: Cancel/dismiss button
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />
