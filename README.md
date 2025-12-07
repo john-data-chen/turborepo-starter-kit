@@ -319,18 +319,19 @@ pnpm storybook:test
 
 ## 🤖 AI-Augmented Engineering Workflow
 
-This project demonstrates a "Human-in-the-Loop" architecture where AI agents are orchestrated to amplify engineering impact. The focus is not just on code generation, but on **architectural leverage, rigorous quality assurance, and accelerated velocity**.
+This project demonstrates a "Human-in-the-Loop" architecture where AI tools are orchestrated to amplify engineering impact. The focus is not just on code generation, but on **architectural leverage, rigorous quality assurance, and accelerated velocity**.
 
 ### 🚀 Orchestration & Agency
 
-I utilize a suite of specialized AI agents, each assigned specific roles to mimic a high-performing engineering team structure.
+I utilize a suite of specialized AI tools, each assigned specific roles to mimic a high-performing engineering team structure.
 
-| Role                       | Tool                                                                    | Responsibility                      | Impact                                                                |
-| :------------------------- | :---------------------------------------------------------------------- | :---------------------------------- | :-------------------------------------------------------------------- |
-| **Architect**              | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness. |
-| **Refactoring Specialist** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code modernization & cleanup        | Systematically improves code health without feature regression.       |
-| **IDE Copilot**            | [Windsurf](https://windsurf.com/) / [Zed](https://zed.dev/)             | Inline implementation               | Provides instant, context-aware code completion for rapid iteration.  |
-| **QA Engineer**            | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs in CI/CD.          |
+| Role              | Tool                                                                    | Responsibility                      | Impact                                                                                               |
+| :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness.                                |
+| **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper model. |
+| **IDE Copilot**   | [Windsurf](https://windsurf.com/) / [Zed](https://zed.dev/)             | Inline implementation               | Provides instant, context-aware code completion for rapid iteration.                                 |
+| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Write automated tests at low or no cost                                                              |
+| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs in CI/CD.                                         |
 
 ### 🔌 MCP (Model Context Protocol) Integration
 
