@@ -97,7 +97,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | Turbopack  | Rust bundler with filesystem caching for fast HMR |
 | Oxlint     | 50-100x faster than ESLint, clearer diagnostics   |
 | Oxfmt      | 50-100x faster formatter than Prettier            |
-| Husky.     | Pre-commit quality enforcement                    |
+| Husky      | Pre-commit quality enforcement                    |
 | Commitizen | Conventional commits for clean history            |
 
 ---
@@ -329,9 +329,8 @@ I utilize a suite of specialized AI tools, each assigned specific roles to mimic
 | :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------- |
 | **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness.                                |
 | **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper model. |
-| **IDE Copilot**   | [Windsurf](https://windsurf.com/) / [Zed](https://zed.dev/)             | Inline implementation               | Provides instant, context-aware code completion for rapid iteration.                                 |
-| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Write automated tests at low or no cost                                                              |
-| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs in CI/CD.                                         |
+| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Write automated tests with low or without cost                                                       |
+| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer                             |
 
 ### 🔌 MCP (Model Context Protocol) Integration
 
