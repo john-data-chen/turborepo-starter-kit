@@ -24,7 +24,7 @@ export const taskApi = {
     const query = params.toString()
     const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT
 
-    return fetchWithAuth(url)
+    return fetchWithAuth(url, {}, true)
   },
 
   // Get a single task by ID
