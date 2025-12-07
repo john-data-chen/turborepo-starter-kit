@@ -66,7 +66,12 @@ export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="default" className="w-full md:w-[200px]" data-testid="new-project-trigger">
+        <Button
+          variant="secondary"
+          size="default"
+          className="w-full md:w-[200px]"
+          data-testid="new-project-trigger"
+        >
           {t('addNewProject')}
         </Button>
       </DialogTrigger>

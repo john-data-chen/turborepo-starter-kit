@@ -13,7 +13,14 @@ import {
   CommandItem,
   CommandList
 } from '@repo/ui/components/command'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@repo/ui/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@repo/ui/components/form'
 import { Input } from '@repo/ui/components/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/popover'
 import { RadioGroup, RadioGroupItem } from '@repo/ui/components/radio-group'
@@ -31,7 +38,12 @@ interface TaskFormProps {
   submitLabel?: string
 }
 
-export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Submit' }: TaskFormProps) {
+export function TaskForm({
+  defaultValues,
+  onSubmit,
+  onCancel,
+  submitLabel = 'Submit'
+}: TaskFormProps) {
   const {
     form,
     isSubmitting,
@@ -80,7 +92,10 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                   <Button
                     variant="outline"
                     aria-label="Select due date"
-                    className={cn('w-auto pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                    className={cn(
+                      'w-auto pl-3 text-left font-normal',
+                      !field.value && 'text-muted-foreground'
+                    )}
                     type="button"
                   >
                     {field.value ? (
@@ -117,7 +132,9 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
           name="assignee"
           render={({ field }) => {
             // Find the full user object from the users list
-            const selectedUser = field.value?._id ? users.find((u) => u._id === field.value?._id) : null
+            const selectedUser = field.value?._id
+              ? users.find((u) => u._id === field.value?._id)
+              : null
 
             return (
               <FormItem className="flex flex-col">
@@ -133,7 +150,10 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                         className="w-full justify-between"
                         data-testid="assignee-trigger"
                       >
-                        {selectedUser?.name || selectedUser?.email || field.value?._id || t('selectUser')}
+                        {selectedUser?.name ||
+                          selectedUser?.email ||
+                          field.value?._id ||
+                          t('selectUser')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent
@@ -150,7 +170,9 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                           onValueChange={setSearchQuery}
                         />
                         <CommandList>
-                          <CommandEmpty>{isSearching ? t('searching') : t('noUsersFound')}</CommandEmpty>
+                          <CommandEmpty>
+                            {isSearching ? t('searching') : t('noUsersFound')}
+                          </CommandEmpty>
                           <CommandGroup>
                             {users.map((user) => (
                               <CommandItem
@@ -163,7 +185,11 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
                                 className="flex flex-col items-start"
                               >
                                 <span>{user.name || user.email}</span>
-                                {user.name && <span className="text-xs text-muted-foreground">{user.email}</span>}
+                                {user.name && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {user.email}
+                                  </span>
+                                )}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -231,7 +257,12 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, submitLabel = 'Sub
         />
         <div className="flex justify-end space-x-4">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel} data-testid="cancel-task-button">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              data-testid="cancel-task-button"
+            >
               {t('cancel')}
             </Button>
           )}

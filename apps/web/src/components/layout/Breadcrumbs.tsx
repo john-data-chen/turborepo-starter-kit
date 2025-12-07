@@ -31,7 +31,9 @@ export function Breadcrumbs() {
             </BreadcrumbItem>
             <BreadcrumbSeparator className="md:hidden" />
             <BreadcrumbItem className="md:hidden">
-              <BreadcrumbLink href={items[items.length - 1].link}>{items[items.length - 1].title}</BreadcrumbLink>
+              <BreadcrumbLink href={items[items.length - 1].link}>
+                {items[items.length - 1].title}
+              </BreadcrumbLink>
             </BreadcrumbItem>
 
             {/* Desktop view */}
@@ -40,7 +42,9 @@ export function Breadcrumbs() {
                 <BreadcrumbItem className="hidden md:inline-flex">
                   <BreadcrumbLink href={item.link}>{item.title}</BreadcrumbLink>
                 </BreadcrumbItem>
-                {index < items.length - 1 && <BreadcrumbSeparator className="hidden md:inline-flex" />}
+                {index < items.length - 1 && (
+                  <BreadcrumbSeparator className="hidden md:inline-flex" />
+                )}
               </React.Fragment>
             ))}
           </>

@@ -31,7 +31,10 @@ export class UserService {
       return users
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      this.logger.error(`Error fetching all users: ${errorMessage}`, error instanceof Error ? error.stack : undefined)
+      this.logger.error(
+        `Error fetching all users: ${errorMessage}`,
+        error instanceof Error ? error.stack : undefined
+      )
       throw error
     }
   }

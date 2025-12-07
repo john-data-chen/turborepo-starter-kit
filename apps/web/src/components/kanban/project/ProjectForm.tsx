@@ -3,7 +3,14 @@
 import React from 'react'
 import { projectSchema } from '@/types/projectForm'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@repo/ui/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@repo/ui/components/form'
 import { Input } from '@repo/ui/components/input'
 import { Textarea } from '@repo/ui/components/textarea'
 import { useTranslations } from 'next-intl'
@@ -54,7 +61,11 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
             <FormItem>
               <FormLabel>{t('descriptionLabel')}</FormLabel>
               <FormControl>
-                <Textarea placeholder={t('descriptionPlaceholder')} className="resize-none" {...field} />
+                <Textarea
+                  placeholder={t('descriptionPlaceholder')}
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

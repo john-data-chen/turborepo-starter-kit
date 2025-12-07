@@ -102,7 +102,9 @@ describe('NewTaskDialog', () => {
     }
 
     // Setup the mock implementation
-    mockUseWorkspaceStore.mockImplementation((selector?: any) => (selector ? selector(store) : store))
+    mockUseWorkspaceStore.mockImplementation((selector?: any) =>
+      selector ? selector(store) : store
+    )
     mockGetState.mockReturnValue(store)
   })
 

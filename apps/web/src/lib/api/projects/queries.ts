@@ -39,7 +39,8 @@ export const useCreateProject = () => {
     mutationFn: projectApi.createProject,
     onSuccess: (newProject) => {
       // Invalidate the projects list for the specific board
-      const boardId = typeof newProject.board === 'string' ? newProject.board : newProject.board?._id
+      const boardId =
+        typeof newProject.board === 'string' ? newProject.board : newProject.board?._id
 
       if (boardId) {
         queryClient.invalidateQueries({
@@ -70,7 +71,8 @@ export const useUpdateProject = () => {
     },
     onSuccess: (updatedProject) => {
       // Invalidate both the list and the specific project
-      const boardId = typeof updatedProject.board === 'string' ? updatedProject.board : updatedProject.board?._id
+      const boardId =
+        typeof updatedProject.board === 'string' ? updatedProject.board : updatedProject.board?._id
 
       if (boardId) {
         queryClient.invalidateQueries({

@@ -50,7 +50,9 @@ class MockTaskModel {
           ...data,
           _id: new Types.ObjectId('60f6e1b3b3f3b3b3b3f3b3b7'),
           creator: { _id: data.creator, name: 'Test User', email: 'test@example.com' },
-          assignee: data.assignee ? { _id: data.assignee, name: 'Assignee', email: 'assignee@example.com' } : null,
+          assignee: data.assignee
+            ? { _id: data.assignee, name: 'Assignee', email: 'assignee@example.com' }
+            : null,
           lastModifier: { _id: data.creator, name: 'Test User', email: 'test@example.com' }
         })
       }),
@@ -70,7 +72,12 @@ class MockTaskModel {
   })
   static findOne = vi.fn()
   static findById = vi.fn().mockImplementation((id) => {
-    const mockTask = new MockTaskDocument(id.toString(), '60f6e1b3b3f3b3b3b3f3b3b3', '60f6e1b3b3f3b3b3b3f3b3b4', 0)
+    const mockTask = new MockTaskDocument(
+      id.toString(),
+      '60f6e1b3b3f3b3b3b3f3b3b3',
+      '60f6e1b3b3f3b3b3b3f3b3b4',
+      0
+    )
     const query = {
       populate: vi.fn().mockReturnThis(),
       exec: vi.fn().mockResolvedValue(mockTask),
@@ -86,8 +93,12 @@ class MockTaskModel {
   static create = vi.fn()
   static save = vi.fn()
   static exec = vi.fn()
-  static deleteMany = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
-  static deleteOne = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
+  static deleteMany = vi
+    .fn()
+    .mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
+  static deleteOne = vi
+    .fn()
+    .mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
   static updateMany = vi.fn().mockReturnValue({ exec: vi.fn() })
 }
 
@@ -140,7 +151,9 @@ describe('TasksService', () => {
         project: '60f6e1b3b3f3b3b3b3f3b3b4',
         board: '60f6e1b3b3f3b3b3b3f3b3b5'
       }
-      await expect(service.create(createTaskDto as any, null)).rejects.toThrow('User ID is required to create a task')
+      await expect(service.create(createTaskDto as any, null)).rejects.toThrow(
+        'User ID is required to create a task'
+      )
     })
   })
 
@@ -156,7 +169,9 @@ describe('TasksService', () => {
     })
 
     it('should throw an error if project id is invalid', async () => {
-      await expect(service.deleteTasksByProjectId('invalid-id')).rejects.toThrow('Invalid project ID')
+      await expect(service.deleteTasksByProjectId('invalid-id')).rejects.toThrow(
+        'Invalid project ID'
+      )
     })
   })
 
@@ -214,7 +229,11 @@ describe('TasksService', () => {
         board: '60f6e1b3b3f3b3b3b3f3b3b5',
         creator: { _id: '60f6e1b3b3f3b3b3b3f3b3b3', name: 'Test User', email: 'test@example.com' },
         assignee: null,
-        lastModifier: { _id: '60f6e1b3b3f3b3b3b3f3b3b3', name: 'Test User', email: 'test@example.com' },
+        lastModifier: {
+          _id: '60f6e1b3b3f3b3b3b3f3b3b3',
+          name: 'Test User',
+          email: 'test@example.com'
+        },
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -265,7 +284,12 @@ describe('TasksService', () => {
     it('should remove a task', async () => {
       const taskId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const task = { _id: taskId, creator: new Types.ObjectId(userId), project: '1', orderInProject: 0 }
+      const task = {
+        _id: taskId,
+        creator: new Types.ObjectId(userId),
+        project: '1',
+        orderInProject: 0
+      }
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(task)
       taskModel.deleteOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
@@ -283,25 +307,36 @@ describe('TasksService', () => {
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(null)
 
-      await expect(service.remove(taskId, userId)).rejects.toThrow('Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found')
+      await expect(service.remove(taskId, userId)).rejects.toThrow(
+        'Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found'
+      )
     })
 
     it('should throw forbidden exception when removing a task without being the creator', async () => {
       const taskId = '60f6e1b3b3f3b3b3b3f3b3b5'
       const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
       const differentUserId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const task = { _id: taskId, creator: new Types.ObjectId(differentUserId), project: '1', orderInProject: 0 }
+      const task = {
+        _id: taskId,
+        creator: new Types.ObjectId(differentUserId),
+        project: '1',
+        orderInProject: 0
+      }
       const taskModel = module.get(getModelToken(Task.name))
       taskModel.findById.mockResolvedValue(task)
 
-      await expect(service.remove(taskId, userId)).rejects.toThrow('Only the task creator can perform this action')
+      await expect(service.remove(taskId, userId)).rejects.toThrow(
+        'Only the task creator can perform this action'
+      )
     })
   })
 
   describe('deleteTasksByProjectId', () => {
     it('should throw an error for an invalid project ID', async () => {
       const invalidProjectId = 'invalid-id'
-      await expect(service.deleteTasksByProjectId(invalidProjectId)).rejects.toThrow('Invalid project ID')
+      await expect(service.deleteTasksByProjectId(invalidProjectId)).rejects.toThrow(
+        'Invalid project ID'
+      )
     })
   })
 
@@ -389,7 +424,9 @@ describe('TasksService', () => {
         exec: vi.fn().mockResolvedValue(null)
       })
 
-      await expect(service.findOne(taskId)).rejects.toThrow('Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found')
+      await expect(service.findOne(taskId)).rejects.toThrow(
+        'Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found'
+      )
     })
   })
 
@@ -402,12 +439,19 @@ describe('TasksService', () => {
 
   describe('toTaskResponse', () => {
     it('should handle population error', async () => {
-      const task = { _id: { toString: () => '1' }, populate: vi.fn().mockRejectedValue(new Error('Populate error')) }
+      const task = {
+        _id: { toString: () => '1' },
+        populate: vi.fn().mockRejectedValue(new Error('Populate error'))
+      }
       await expect((service as any).toTaskResponse(task)).rejects.toThrow('Populate error')
     })
 
     it('should handle missing lastModifier', async () => {
-      const task = { _id: { toString: () => '1' }, creator: { _id: '2' }, populate: vi.fn().mockReturnThis() }
+      const task = {
+        _id: { toString: () => '1' },
+        creator: { _id: '2' },
+        populate: vi.fn().mockReturnThis()
+      }
       const result = await (service as any).toTaskResponse(task)
       expect(result.lastModifier).toEqual(result.creator)
     })

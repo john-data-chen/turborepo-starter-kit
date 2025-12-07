@@ -64,7 +64,10 @@ describe('taskApi', () => {
 
       await taskApi.getTasks('project-1')
 
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/tasks?projectId=project-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/tasks?projectId=project-1'),
+        expect.any(Object)
+      )
     })
 
     it('should fetch tasks with assigneeId filter', async () => {
@@ -77,7 +80,10 @@ describe('taskApi', () => {
 
       await taskApi.getTasks(undefined, 'user-1')
 
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/tasks?assigneeId=user-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/tasks?assigneeId=user-1'),
+        expect.any(Object)
+      )
     })
 
     it('should fetch tasks with both filters', async () => {
@@ -131,7 +137,10 @@ describe('taskApi', () => {
       const result = await taskApi.getTaskById('task-1')
 
       expect(result._id).toBe('task-1')
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/tasks/task-1'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/tasks/task-1'),
+        expect.any(Object)
+      )
     })
 
     it('should encode task ID with special characters', async () => {
@@ -273,7 +282,10 @@ describe('taskApi', () => {
       const result = await taskApi.getTaskPermissions('task-1')
 
       expect(result).toEqual(mockPermissions)
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/tasks/task-1/permissions'), expect.any(Object))
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/tasks/task-1/permissions'),
+        expect.any(Object)
+      )
     })
   })
 

@@ -1,4 +1,13 @@
-import { Controller, Get, Logger, Post, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Request,
+  Res,
+  UnauthorizedException,
+  UseGuards
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { EmailAuthGuard } from './guards/email-auth.guard'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
@@ -53,7 +62,10 @@ export class AuthController {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       const stack = error instanceof Error ? error.stack : undefined
-      this.logger.error(`Login failed for user ${req.user?.email || 'unknown'}: ${errorMessage}`, stack)
+      this.logger.error(
+        `Login failed for user ${req.user?.email || 'unknown'}: ${errorMessage}`,
+        stack
+      )
       throw error
     }
   }

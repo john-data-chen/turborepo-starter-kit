@@ -70,7 +70,9 @@ describe('workspace-store', () => {
       const store = useWorkspaceStore.getState()
 
       expect(() => store.setUserInfo('', 'user-123')).toThrow('Email and userId are required')
-      expect(() => store.setUserInfo('test@example.com', '')).toThrow('Email and userId are required')
+      expect(() => store.setUserInfo('test@example.com', '')).toThrow(
+        'Email and userId are required'
+      )
     })
 
     it('should not update if user info is the same', () => {
@@ -175,9 +177,9 @@ describe('workspace-store', () => {
 
       const store = useWorkspaceStore.getState()
 
-      await expect(store.addProject('New Project', 'Description', createProjectMock)).rejects.toThrow(
-        'No board selected'
-      )
+      await expect(
+        store.addProject('New Project', 'Description', createProjectMock)
+      ).rejects.toThrow('No board selected')
     })
 
     it('should throw error when adding project without user authenticated', async () => {
@@ -190,9 +192,9 @@ describe('workspace-store', () => {
 
       const store = useWorkspaceStore.getState()
 
-      await expect(store.addProject('New Project', 'Description', createProjectMock)).rejects.toThrow(
-        'User not authenticated'
-      )
+      await expect(
+        store.addProject('New Project', 'Description', createProjectMock)
+      ).rejects.toThrow('User not authenticated')
     })
 
     it('should update a project', async () => {
@@ -244,9 +246,9 @@ describe('workspace-store', () => {
       const updateFn = vi.fn()
       const store = useWorkspaceStore.getState()
 
-      await expect(store.updateProject('project-1', 'New Title', 'New Description', updateFn)).rejects.toThrow(
-        'User not authenticated'
-      )
+      await expect(
+        store.updateProject('project-1', 'New Title', 'New Description', updateFn)
+      ).rejects.toThrow('User not authenticated')
     })
 
     it('should throw error when project update fails', async () => {
@@ -271,9 +273,9 @@ describe('workspace-store', () => {
 
       const store = useWorkspaceStore.getState()
 
-      await expect(store.updateProject('project-1', 'New Title', 'New Description', updateFn)).rejects.toThrow(
-        'Update failed'
-      )
+      await expect(
+        store.updateProject('project-1', 'New Title', 'New Description', updateFn)
+      ).rejects.toThrow('Update failed')
     })
 
     it('should remove a project', async () => {
@@ -437,7 +439,13 @@ describe('workspace-store', () => {
       vi.mocked(projectApi.getProjects).mockResolvedValue([{ ...mockProject, tasks: [mockTask] }])
 
       const store = useWorkspaceStore.getState()
-      await store.addTask('project-1', 'New Task', TaskStatus.TODO, createTaskMock, 'New Description')
+      await store.addTask(
+        'project-1',
+        'New Task',
+        TaskStatus.TODO,
+        createTaskMock,
+        'New Description'
+      )
 
       expect(createTaskMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -460,9 +468,9 @@ describe('workspace-store', () => {
       const createTaskMock = vi.fn()
       const store = useWorkspaceStore.getState()
 
-      await expect(store.addTask('project-1', 'New Task', TaskStatus.TODO, createTaskMock)).rejects.toThrow(
-        'User not authenticated or no board selected'
-      )
+      await expect(
+        store.addTask('project-1', 'New Task', TaskStatus.TODO, createTaskMock)
+      ).rejects.toThrow('User not authenticated or no board selected')
     })
 
     it('should throw error when adding task without board selected', async () => {
@@ -474,9 +482,9 @@ describe('workspace-store', () => {
       const createTaskMock = vi.fn()
       const store = useWorkspaceStore.getState()
 
-      await expect(store.addTask('project-1', 'New Task', TaskStatus.TODO, createTaskMock)).rejects.toThrow(
-        'User not authenticated or no board selected'
-      )
+      await expect(
+        store.addTask('project-1', 'New Task', TaskStatus.TODO, createTaskMock)
+      ).rejects.toThrow('User not authenticated or no board selected')
     })
 
     it('should update a task', async () => {
@@ -505,7 +513,12 @@ describe('workspace-store', () => {
       vi.mocked(projectApi.getProjects).mockResolvedValue([mockProject])
 
       const store = useWorkspaceStore.getState()
-      await store.updateTask('task-1', 'Updated Title', TaskStatus.IN_PROGRESS, 'Updated Description')
+      await store.updateTask(
+        'task-1',
+        'Updated Title',
+        TaskStatus.IN_PROGRESS,
+        'Updated Description'
+      )
 
       expect(taskApi.updateTask).toHaveBeenCalledWith(
         'task-1',
@@ -526,7 +539,9 @@ describe('workspace-store', () => {
 
       const store = useWorkspaceStore.getState()
 
-      await expect(store.updateTask('task-1', 'Title', TaskStatus.TODO)).rejects.toThrow('User not authenticated')
+      await expect(store.updateTask('task-1', 'Title', TaskStatus.TODO)).rejects.toThrow(
+        'User not authenticated'
+      )
     })
 
     it('should remove a task', async () => {
@@ -624,7 +639,9 @@ describe('workspace-store', () => {
       const getTaskMock = vi.fn().mockResolvedValue(undefined)
       const store = useWorkspaceStore.getState()
 
-      await expect(store.dragTaskOnProject('task-1', 'project-2', getTaskMock)).rejects.toThrow('Task not found')
+      await expect(store.dragTaskOnProject('task-1', 'project-2', getTaskMock)).rejects.toThrow(
+        'Task not found'
+      )
     })
   })
 

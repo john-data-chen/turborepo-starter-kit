@@ -7,7 +7,10 @@ import { TasksController } from './tasks.controller'
 import { TasksService } from './tasks.service'
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]), forwardRef(() => ProjectsModule)],
+  imports: [
+    MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
+    forwardRef(() => ProjectsModule)
+  ],
   controllers: [TasksController],
   providers: [TasksService, ParseObjectIdPipe],
   exports: [TasksService]

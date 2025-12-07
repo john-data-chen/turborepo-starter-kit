@@ -1,6 +1,12 @@
 import React from 'react'
 import { taskApi } from '@/lib/api/taskApi'
-import { useCreateTask, useDeleteTask, useTask, useTasks, useUpdateTask } from '@/lib/api/tasks/queries'
+import {
+  useCreateTask,
+  useDeleteTask,
+  useTask,
+  useTasks,
+  useUpdateTask
+} from '@/lib/api/tasks/queries'
 import { useWorkspaceStore } from '@/stores/workspace-store'
 import type { Task } from '@/types/dbInterface'
 import { TASK_KEYS } from '@/types/taskApi'

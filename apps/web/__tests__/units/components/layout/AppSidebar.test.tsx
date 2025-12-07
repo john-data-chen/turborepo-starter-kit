@@ -36,17 +36,43 @@ vi.mock('@repo/ui/components/sidebar', () => ({
   SidebarGroupLabel: ({ children }: any) => <div data-testid="sidebar-group-label">{children}</div>,
   SidebarMenu: ({ children }: any) => <ul data-testid="sidebar-menu">{children}</ul>,
   SidebarMenuItem: ({ children }: any) => <li data-testid="sidebar-menu-item">{children}</li>,
-  SidebarMenuButton: ({ children, asChild }: any) => <div data-testid="sidebar-menu-button">{children}</div>
+  SidebarMenuButton: ({ children, asChild }: any) => (
+    <div data-testid="sidebar-menu-button">{children}</div>
+  )
 }))
 
 describe('AppSidebar', () => {
   const mockMyBoards = [
-    { _id: 'board-1', title: 'My Board 1', owner: 'user-1', members: [], projects: [], createdAt: '', updatedAt: '' },
-    { _id: 'board-2', title: 'My Board 2', owner: 'user-1', members: [], projects: [], createdAt: '', updatedAt: '' }
+    {
+      _id: 'board-1',
+      title: 'My Board 1',
+      owner: 'user-1',
+      members: [],
+      projects: [],
+      createdAt: '',
+      updatedAt: ''
+    },
+    {
+      _id: 'board-2',
+      title: 'My Board 2',
+      owner: 'user-1',
+      members: [],
+      projects: [],
+      createdAt: '',
+      updatedAt: ''
+    }
   ]
 
   const mockTeamBoards = [
-    { _id: 'board-3', title: 'Team Board 1', owner: 'user-2', members: [], projects: [], createdAt: '', updatedAt: '' }
+    {
+      _id: 'board-3',
+      title: 'Team Board 1',
+      owner: 'user-2',
+      members: [],
+      projects: [],
+      createdAt: '',
+      updatedAt: ''
+    }
   ]
 
   beforeEach(async () => {

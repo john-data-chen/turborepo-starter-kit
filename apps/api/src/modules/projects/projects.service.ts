@@ -1,4 +1,10 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { BoardService } from '../boards/boards.service'
@@ -54,7 +60,11 @@ export class ProjectsService {
     return projects
   }
 
-  async update(id: string, updateProjectDto: UpdateProjectDto, userId: string): Promise<ProjectDocument> {
+  async update(
+    id: string,
+    updateProjectDto: UpdateProjectDto,
+    userId: string
+  ): Promise<ProjectDocument> {
     if (!Types.ObjectId.isValid(id)) {
       const error = 'Invalid project ID'
       console.error(error, { id })
@@ -138,7 +148,9 @@ export class ProjectsService {
     }
 
     if (updateProjectDto.assigneeId !== undefined) {
-      updateData.assignee = updateProjectDto.assigneeId ? new Types.ObjectId(updateProjectDto.assigneeId) : null
+      updateData.assignee = updateProjectDto.assigneeId
+        ? new Types.ObjectId(updateProjectDto.assigneeId)
+        : null
     }
 
     if (updateProjectDto.orderInBoard !== undefined) {

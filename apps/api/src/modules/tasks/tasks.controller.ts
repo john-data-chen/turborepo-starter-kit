@@ -35,7 +35,10 @@ export class TasksController {
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  create(@Body() createTaskDto: CreateTaskDto, @Req() req: { user: { _id: string } }): Promise<TaskResponseDto> {
+  create(
+    @Body() createTaskDto: CreateTaskDto,
+    @Req() req: { user: { _id: string } }
+  ): Promise<TaskResponseDto> {
     if (!req.user?._id) {
       throw new UnauthorizedException('User not authenticated')
     }

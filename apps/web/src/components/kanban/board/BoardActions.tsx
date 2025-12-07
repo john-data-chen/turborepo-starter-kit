@@ -15,7 +15,13 @@ import {
   AlertDialogTitle
 } from '@repo/ui/components/alert-dialog'
 import { Button } from '@repo/ui/components/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@repo/ui/components/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -212,7 +218,13 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
             {asChild ? (
               React.Children.only(children)
             ) : (
-              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid="board-option-button" ref={ref}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                data-testid="board-option-button"
+                ref={ref}
+              >
                 <DotsHorizontalIcon className="h-4 w-4" />
               </Button>
             )}

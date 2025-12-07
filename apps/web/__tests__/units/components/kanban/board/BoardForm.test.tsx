@@ -46,7 +46,10 @@ describe('BoardForm', () => {
 
   it('should render with default values', () => {
     render(
-      <BoardForm defaultValues={{ title: 'Test Board', description: 'Test Description' }} onSubmit={mockOnSubmit} />
+      <BoardForm
+        defaultValues={{ title: 'Test Board', description: 'Test Description' }}
+        onSubmit={mockOnSubmit}
+      />
     )
     expect(screen.getByTestId('form')).toBeInTheDocument()
   })

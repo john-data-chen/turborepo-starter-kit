@@ -50,7 +50,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Quality Assurance
 
-| Layer             | Tool       | Rationale                                     |
+| Type              | Tool       | Rationale                                     |
 | ----------------- | ---------- | --------------------------------------------- |
 | Unit/Integration  | Vitest     | Faster than Jest, native ESM, simpler config  |
 | E2E               | Playwright | Cross-browser support, lighter than Cypress   |
@@ -68,7 +68,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Frontend
 
-| Concern   | Choice                | Rationale                                        |
+| Type      | Choice                | Rationale                                        |
 | --------- | --------------------- | ------------------------------------------------ |
 | Framework | Next.js (App Router)  | SSG for static pages, SSR for dynamic content    |
 | State     | Zustand               | 40% less boilerplate than Redux, simpler testing |
@@ -81,7 +81,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Backend
 
-| Concern    | Choice             | Rationale                                   |
+| Type       | Choice             | Rationale                                   |
 | ---------- | ------------------ | ------------------------------------------- |
 | Framework  | Nest.js (Express)  | Structured, scalable architecture for APIs  |
 | Language   | TypeScript         | Strict typing, shared types with frontend   |
@@ -91,14 +91,14 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Developer Experience
 
-| Tool             | Purpose                                           |
-| ---------------- | ------------------------------------------------- |
-| Rspack           | Rust-based bundler for 5-10x faster builds        |
-| Turbopack        | Rust bundler with filesystem caching for fast HMR |
-| Oxlint           | 50-100x faster than ESLint, clearer diagnostics   |
-| Oxfmt            | 50-100x faster formatter than Prettier            |
-| Prettier + Husky | Pre-commit quality enforcement                    |
-| Commitizen       | Conventional commits for clean history            |
+| Tool       | Purpose                                           |
+| ---------- | ------------------------------------------------- |
+| Rspack     | Rust-based bundler for 5-10x faster than webpack  |
+| Turbopack  | Rust bundler with filesystem caching for fast HMR |
+| Oxlint     | 50-100x faster than ESLint, clearer diagnostics   |
+| Oxfmt      | 50-100x faster formatter than Prettier            |
+| Husky.     | Pre-commit quality enforcement                    |
+| Commitizen | Conventional commits for clean history            |
 
 ---
 
@@ -240,7 +240,7 @@ apps/
 packages/
 ├── global-tsconfig # global tsconfig
 ├── linter-config # linter config
-└── ui # Shadcn ui components
+└── ui # Shared UI components
     ├────── .storybook/ # configs of storybook
     ├────── src/components/ui # Shadcn UI components / component storybooks
     └────── styles/ # Global styles
@@ -275,20 +275,31 @@ Storybook serves as the Single Source of Truth (SSOT) for UI components, providi
 ```typescript
 // Button Click Interaction Test
 export const ClickInteraction: Story = {
-  play: async ({ args, canvas, step }) => {
-    const button = within(canvas).getByRole('button', { name: /click me/i })
+  args: {
+    variant: "default",
+    children: "Click Me",
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole("button", {
+      name: /click me/i,
+    });
 
-    await step('Verify button renders correctly', async () => {
-      await expect(button).toBeInTheDocument()
-      await expect(button).toBeEnabled()
-    })
+    await step("Verify button renders correctly", async () => {
+      await expect(button).toBeInTheDocument();
+      await expect(button).toBeEnabled();
+    });
 
-    await step('Click button and verify callback', async () => {
-      await userEvent.click(button)
-      await expect(args.onClick).toHaveBeenCalledTimes(1)
-    })
-  }
-}
+    await step("Click button and verify callback", async () => {
+      await userEvent.click(button);
+      await expect(args.onClick).toHaveBeenCalledTimes(1);
+    });
+
+    await step("Double click verification", async () => {
+      await userEvent.click(button);
+      await expect(args.onClick).toHaveBeenCalledTimes(2);
+    });
+  },
+};
 ```
 
 ### Running Storybook

@@ -115,12 +115,18 @@ describe('BoardService', () => {
       const board = { _id: boardId, owner: userId, members: [], save: vi.fn() }
 
       ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
-      ;(boardModel.findByIdAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
+      ;(boardModel.findByIdAndUpdate as any).mockReturnValue({
+        exec: vi.fn().mockResolvedValue(board)
+      })
 
       await service.update(boardId, updateBoardDto, userId)
 
       expect(boardModel.findById).toHaveBeenCalledWith(boardId)
-      expect(boardModel.findByIdAndUpdate).toHaveBeenCalledWith(boardId, { $set: updateBoardDto }, { new: true })
+      expect(boardModel.findByIdAndUpdate).toHaveBeenCalledWith(
+        boardId,
+        { $set: updateBoardDto },
+        { new: true }
+      )
     })
   })
 
@@ -135,7 +141,9 @@ describe('BoardService', () => {
       }
 
       ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
-      ;(boardModel.deleteOne as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) })
+      ;(boardModel.deleteOne as any).mockReturnValue({
+        exec: vi.fn().mockResolvedValue({ deletedCount: 1 })
+      })
       ;(projectsService.deleteByBoardId as any).mockResolvedValue({ deletedCount: 0 })
 
       await service.remove(boardId, userId)

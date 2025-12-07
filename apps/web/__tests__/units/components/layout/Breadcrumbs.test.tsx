@@ -26,7 +26,9 @@ vi.mock('@repo/ui/components/breadcrumb', () => ({
       {children}
     </a>
   ),
-  BreadcrumbSeparator: ({ children }: any) => <span data-testid="breadcrumb-separator">{children || '/'}</span>,
+  BreadcrumbSeparator: ({ children }: any) => (
+    <span data-testid="breadcrumb-separator">{children || '/'}</span>
+  ),
   BreadcrumbEllipsis: () => <span data-testid="breadcrumb-ellipsis">...</span>
 }))
 
