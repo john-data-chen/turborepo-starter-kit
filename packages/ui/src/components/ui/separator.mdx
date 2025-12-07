@@ -1,0 +1,238 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as SeparatorStories from './separator.stories';
+
+<Meta of={SeparatorStories} />
+
+<Title />
+
+<Description>
+  A visual divider that separates content into distinct sections.
+  Perfect for creating clear content hierarchy and improving readability.
+</Description>
+
+## Overview
+
+The Separator component visually divides content into sections without using borders or extra spacing.
+It supports both horizontal and vertical orientations and follows accessibility guidelines.
+
+### Key Features
+
+- **Horizontal & Vertical**: Supports both orientations
+- **Accessible**: Proper ARIA roles for semantic meaning
+- **Decorative Mode**: Can be marked as decorative for screen readers
+- **Customizable**: Easy to style with Tailwind classes
+- **Semantic HTML**: Uses appropriate ARIA separator role
+
+## Usage
+
+```tsx
+import { Separator } from '@repo/ui/components/separator'
+
+export function SeparatorDemo() {
+  return (
+    <div>
+      <div className="space-y-1">
+        <h4 className="text-sm font-medium">Radix Primitives</h4>
+        <p className="text-sm text-muted-foreground">
+          An open-source UI component library.
+        </p>
+      </div>
+      <Separator className="my-4" />
+      <div className="space-y-1">
+        <h4 className="text-sm font-medium">Next.js</h4>
+        <p className="text-sm text-muted-foreground">
+          The React Framework for the Web.
+        </p>
+      </div>
+    </div>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={SeparatorStories.Default} />
+
+<Controls of={SeparatorStories.Default} />
+
+## Common Patterns
+
+### Horizontal Separator
+
+```tsx
+<div className="space-y-4">
+  <p>Section one content...</p>
+  <Separator />
+  <p>Section two content...</p>
+</div>
+```
+
+### Vertical Separator
+
+```tsx
+<div className="flex h-5 items-center space-x-4 text-sm">
+  <div>Blog</div>
+  <Separator orientation="vertical" />
+  <div>Docs</div>
+  <Separator orientation="vertical" />
+  <div>Source</div>
+</div>
+```
+
+### In Navigation
+
+```tsx
+<nav className="flex items-center space-x-4">
+  <a href="/">Home</a>
+  <Separator orientation="vertical" className="h-4" />
+  <a href="/about">About</a>
+  <Separator orientation="vertical" className="h-4" />
+  <a href="/contact">Contact</a>
+</nav>
+```
+
+### Between Card Sections
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Account Settings</CardTitle>
+    <CardDescription>Manage your account preferences</CardDescription>
+  </CardHeader>
+  <Separator />
+  <CardContent className="pt-6">
+    <div className="space-y-4">
+      <div>Profile settings...</div>
+      <Separator />
+      <div>Privacy settings...</div>
+      <Separator />
+      <div>Notification settings...</div>
+    </div>
+  </CardContent>
+</Card>
+```
+
+### In Dropdown Menu
+
+```tsx
+<DropdownMenuContent>
+  <DropdownMenuItem>Profile</DropdownMenuItem>
+  <DropdownMenuItem>Settings</DropdownMenuItem>
+  <Separator className="my-1" />
+  <DropdownMenuItem>Log out</DropdownMenuItem>
+</DropdownMenuContent>
+```
+
+### In Sidebar
+
+```tsx
+<aside className="w-64 border-r p-4">
+  <div className="space-y-4">
+    <div>
+      <h3 className="font-semibold">Getting Started</h3>
+      <ul className="mt-2 space-y-1">
+        <li>Introduction</li>
+        <li>Installation</li>
+      </ul>
+    </div>
+
+    <Separator />
+
+    <div>
+      <h3 className="font-semibold">Components</h3>
+      <ul className="mt-2 space-y-1">
+        <li>Button</li>
+        <li>Input</li>
+      </ul>
+    </div>
+  </div>
+</aside>
+```
+
+### With Custom Styling
+
+```tsx
+<div className="space-y-4">
+  <p>Default separator</p>
+  <Separator />
+
+  <p>Thicker separator</p>
+  <Separator className="h-0.5" />
+
+  <p>Colored separator</p>
+  <Separator className="bg-primary" />
+
+  <p>Dashed separator</p>
+  <Separator className="border-t border-dashed border-border bg-transparent" />
+</div>
+```
+
+### In Lists
+
+```tsx
+<ul className="space-y-2">
+  <li className="py-2">Item one</li>
+  <Separator />
+  <li className="py-2">Item two</li>
+  <Separator />
+  <li className="py-2">Item three</li>
+</ul>
+```
+
+### Between Inline Elements
+
+```tsx
+<div className="flex items-center gap-2 text-sm text-muted-foreground">
+  <span>Posted 2 hours ago</span>
+  <Separator orientation="vertical" className="h-4" />
+  <span>5 min read</span>
+  <Separator orientation="vertical" className="h-4" />
+  <span>123 views</span>
+</div>
+```
+
+## Accessibility
+
+The Separator component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **ARIA Role**: Proper separator role for semantic meaning
+- ✅ **Decorative Option**: Can be marked as decorative
+- ✅ **Orientation**: Properly indicates horizontal or vertical orientation
+- ✅ **Screen Reader Support**: Announced appropriately or ignored if decorative
+
+### Best Practices
+
+1. **Use sparingly**: Too many separators can be visually overwhelming
+2. **Consider spacing**: Sometimes margin/padding is better than a separator
+3. **Mark as decorative**: If purely visual, set decorative={true}
+4. **Match orientation**: Ensure orientation matches layout (horizontal/vertical)
+5. **Consistent styling**: Keep separator style consistent across your app
+
+```tsx
+// For semantic separation
+<Separator decorative={false} />
+
+// For purely visual decoration (default)
+<Separator decorative={true} />
+```
+
+## When to Use Separators
+
+Use separators for:
+- **Content sections**: Dividing distinct content areas
+- **Menu items**: Grouping related menu options
+- **List items**: Separating items in vertical lists
+- **Inline elements**: Dividing breadcrumbs, metadata, etc.
+
+Don't use separators when:
+- **Spacing alone works**: Sometimes margin is enough
+- **Overuse**: Too many separators reduce their effectiveness
+- **Card headers**: Often better handled with CardHeader component
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

@@ -1,0 +1,278 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as TextareaStories from './textarea.stories';
+
+<Meta of={TextareaStories} />
+
+<Title />
+
+<Description>
+  A multi-line text input component for longer form content.
+  Perfect for comments, descriptions, and any text that spans multiple lines.
+</Description>
+
+## Overview
+
+The Textarea component provides a multi-line text input field with auto-resize capabilities.
+It's designed for form inputs that require more space than a single-line input field.
+
+### Key Features
+
+- **Auto-Resize**: Automatically adjusts height based on content
+- **Accessible**: Full ARIA support and keyboard navigation
+- **Validation States**: Built-in error and disabled states
+- **Customizable**: Easy to style with Tailwind classes
+- **Form Integration**: Works seamlessly with React Hook Form
+- **Character Counter**: Easy to integrate character limits
+
+## Usage
+
+```tsx
+import { Textarea } from '@repo/ui/components/textarea'
+import { Label } from '@repo/ui/components/label'
+
+export function TextareaDemo() {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="message">Your message</Label>
+      <Textarea id="message" placeholder="Type your message here..." />
+    </div>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={TextareaStories.Default} />
+
+<Controls of={TextareaStories.Default} />
+
+## Common Patterns
+
+### Basic Textarea with Label
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="bio">Bio</Label>
+  <Textarea id="bio" placeholder="Tell us about yourself..." />
+</div>
+```
+
+### Controlled Textarea
+
+```tsx
+import { useState } from 'react'
+
+function ControlledTextarea() {
+  const [value, setValue] = useState('')
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="comment">Comment</Label>
+      <Textarea
+        id="comment"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Write a comment..."
+      />
+      <p className="text-sm text-muted-foreground">
+        {value.length} characters
+      </p>
+    </div>
+  )
+}
+```
+
+### With Character Limit
+
+```tsx
+import { useState } from 'react'
+
+function TextareaWithLimit() {
+  const [value, setValue] = useState('')
+  const maxLength = 500
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="description">Description</Label>
+      <Textarea
+        id="description"
+        value={value}
+        onChange={(e) => setValue(e.target.value.slice(0, maxLength))}
+        placeholder="Enter description..."
+      />
+      <div className="flex justify-between text-sm">
+        <span className="text-muted-foreground">
+          Maximum {maxLength} characters
+        </span>
+        <span className={value.length >= maxLength ? 'text-destructive' : 'text-muted-foreground'}>
+          {value.length}/{maxLength}
+        </span>
+      </div>
+    </div>
+  )
+}
+```
+
+### Disabled Textarea
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="disabled">Disabled</Label>
+  <Textarea
+    id="disabled"
+    disabled
+    placeholder="This field is disabled"
+  />
+</div>
+```
+
+### With Error State
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="error">Message</Label>
+  <Textarea
+    id="error"
+    aria-invalid="true"
+    aria-describedby="error-message"
+    placeholder="Type your message..."
+  />
+  <span id="error-message" className="text-sm text-destructive">
+    This field is required
+  </span>
+</div>
+```
+
+### Form Integration with React Hook Form
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const formSchema = z.object({
+  message: z.string()
+    .min(10, 'Message must be at least 10 characters')
+    .max(500, 'Message must not exceed 500 characters'),
+})
+
+function TextareaForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      message: '',
+    },
+  })
+
+  return (
+    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      <div className="grid gap-2">
+        <Label htmlFor="message">Message</Label>
+        <Textarea
+          id="message"
+          {...form.register('message')}
+          aria-invalid={!!form.formState.errors.message}
+          aria-describedby="message-error"
+          placeholder="Enter your message..."
+        />
+        {form.formState.errors.message && (
+          <span id="message-error" className="text-sm text-destructive">
+            {form.formState.errors.message.message}
+          </span>
+        )}
+      </div>
+      <Button type="submit" className="mt-4">
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+### With Helper Text
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="feedback">Feedback</Label>
+  <Textarea
+    id="feedback"
+    placeholder="Share your thoughts..."
+    aria-describedby="feedback-description"
+  />
+  <p id="feedback-description" className="text-sm text-muted-foreground">
+    Your feedback helps us improve. Please be specific and constructive.
+  </p>
+</div>
+```
+
+### Fixed Height Textarea
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="fixed">Fixed Height</Label>
+  <Textarea
+    id="fixed"
+    className="min-h-32 resize-none"
+    placeholder="This textarea has a fixed height..."
+  />
+</div>
+```
+
+### Resizable Textarea
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="resizable">Resizable</Label>
+  <Textarea
+    id="resizable"
+    className="resize-y"
+    placeholder="You can resize this vertically..."
+  />
+</div>
+```
+
+## Accessibility
+
+The Textarea component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Keyboard Navigation**: Full keyboard support (Tab, Shift+Tab, arrow keys)
+- ✅ **Screen Reader Support**: Compatible with all major screen readers
+- ✅ **Focus Indicators**: Clear visual focus ring
+- ✅ **Label Association**: Proper label linking with htmlFor
+- ✅ **Error Announcements**: Validation errors announced to screen readers
+- ✅ **ARIA Attributes**: Proper aria-invalid and aria-describedby usage
+
+### Best Practices
+
+1. **Always use labels**: Provide clear, descriptive labels
+2. **Indicate required fields**: Use visual indicators and required attribute
+3. **Provide helpful placeholders**: Show example input format
+4. **Show character limits**: Display remaining characters for limited fields
+5. **Give clear error messages**: Explain what went wrong and how to fix it
+6. **Consider auto-resize**: Let content determine height when appropriate
+
+```tsx
+// Good example
+<div className="grid gap-2">
+  <Label htmlFor="comment">
+    Comment <span className="text-destructive">*</span>
+  </Label>
+  <Textarea
+    id="comment"
+    placeholder="Share your thoughts (minimum 10 characters)..."
+    required
+    aria-describedby="comment-hint"
+  />
+  <span id="comment-hint" className="text-sm text-muted-foreground">
+    Your comment will be publicly visible.
+  </span>
+</div>
+```
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

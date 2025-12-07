@@ -1,0 +1,254 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './avatar.stories';
+
+<Meta of={AvatarStories} />
+
+<Title />
+
+<Description>
+  A circular image component representing a user or entity with automatic fallback support.
+  Perfect for user profiles, comment sections, and contact lists.
+</Description>
+
+## Overview
+
+The Avatar component displays a user's profile image with graceful fallback handling.
+If the image fails to load, it automatically shows a fallback (typically initials or an icon).
+
+### Key Features
+
+- **Automatic Fallback**: Shows fallback content when image fails to load
+- **Lazy Loading**: Built-in image lazy loading support
+- **Responsive Sizing**: Easily customizable sizes with Tailwind classes
+- **Accessible**: Proper alt text and ARIA attributes
+- **Circular Design**: Consistent rounded appearance
+- **Status Indicators**: Supports online/offline badges
+
+## Usage
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
+
+export function UserAvatar() {
+  return (
+    <Avatar>
+      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={AvatarStories.Default} />
+
+<Controls of={AvatarStories.Default} />
+
+## Common Patterns
+
+### Avatar with Initials Fallback
+
+```tsx
+<Avatar>
+  <AvatarImage src="/avatars/john-doe.jpg" alt="John Doe" />
+  <AvatarFallback>JD</AvatarFallback>
+</Avatar>
+```
+
+### Avatar with Icon Fallback
+
+```tsx
+import { User } from 'lucide-react'
+
+<Avatar>
+  <AvatarImage src="/avatar.jpg" alt="User" />
+  <AvatarFallback>
+    <User className="h-4 w-4" />
+  </AvatarFallback>
+</Avatar>
+```
+
+### Different Sizes
+
+```tsx
+<div className="flex items-center gap-4">
+  {/* Small */}
+  <Avatar className="h-6 w-6">
+    <AvatarImage src="/avatar.jpg" alt="User" />
+    <AvatarFallback className="text-xs">SM</AvatarFallback>
+  </Avatar>
+
+  {/* Default */}
+  <Avatar>
+    <AvatarImage src="/avatar.jpg" alt="User" />
+    <AvatarFallback>MD</AvatarFallback>
+  </Avatar>
+
+  {/* Large */}
+  <Avatar className="h-12 w-12">
+    <AvatarImage src="/avatar.jpg" alt="User" />
+    <AvatarFallback>LG</AvatarFallback>
+  </Avatar>
+
+  {/* Extra Large */}
+  <Avatar className="h-16 w-16">
+    <AvatarImage src="/avatar.jpg" alt="User" />
+    <AvatarFallback className="text-lg">XL</AvatarFallback>
+  </Avatar>
+</div>
+```
+
+### Avatar with Status Badge
+
+```tsx
+<div className="relative inline-block">
+  <Avatar>
+    <AvatarImage src="/avatar.jpg" alt="User" />
+    <AvatarFallback>JD</AvatarFallback>
+  </Avatar>
+  <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
+</div>
+```
+
+### Avatar Group (Stacked)
+
+```tsx
+<div className="flex -space-x-2">
+  <Avatar className="border-2 border-background">
+    <AvatarImage src="/avatar1.jpg" alt="User 1" />
+    <AvatarFallback>U1</AvatarFallback>
+  </Avatar>
+  <Avatar className="border-2 border-background">
+    <AvatarImage src="/avatar2.jpg" alt="User 2" />
+    <AvatarFallback>U2</AvatarFallback>
+  </Avatar>
+  <Avatar className="border-2 border-background">
+    <AvatarImage src="/avatar3.jpg" alt="User 3" />
+    <AvatarFallback>U3</AvatarFallback>
+  </Avatar>
+  <Avatar className="border-2 border-background">
+    <AvatarFallback>+5</AvatarFallback>
+  </Avatar>
+</div>
+```
+
+### Avatar with Name
+
+```tsx
+<div className="flex items-center gap-3">
+  <Avatar>
+    <AvatarImage src="/avatar.jpg" alt="Jane Doe" />
+    <AvatarFallback>JD</AvatarFallback>
+  </Avatar>
+  <div className="flex flex-col">
+    <span className="text-sm font-medium">Jane Doe</span>
+    <span className="text-xs text-muted-foreground">jane@example.com</span>
+  </div>
+</div>
+```
+
+### Avatar in Comments
+
+```tsx
+<div className="flex gap-3">
+  <Avatar className="h-10 w-10">
+    <AvatarImage src="/avatar.jpg" alt="Commenter" />
+    <AvatarFallback>AB</AvatarFallback>
+  </Avatar>
+  <div className="flex-1">
+    <div className="flex items-center gap-2">
+      <span className="font-semibold">Alex Brown</span>
+      <span className="text-xs text-muted-foreground">2 hours ago</span>
+    </div>
+    <p className="mt-1 text-sm">This is a great article!</p>
+  </div>
+</div>
+```
+
+### Dynamic Fallback Color
+
+```tsx
+// Generate color based on user name
+function getColorFromName(name: string) {
+  const colors = [
+    'bg-red-500',
+    'bg-blue-500',
+    'bg-green-500',
+    'bg-yellow-500',
+    'bg-purple-500',
+  ]
+  const index = name.charCodeAt(0) % colors.length
+  return colors[index]
+}
+
+function UserAvatar({ name, src }: { name: string; src?: string }) {
+  const initials = name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+
+  return (
+    <Avatar>
+      <AvatarImage src={src} alt={name} />
+      <AvatarFallback className={getColorFromName(name)}>
+        {initials}
+      </AvatarFallback>
+    </Avatar>
+  )
+}
+```
+
+## Accessibility
+
+The Avatar component follows accessibility best practices:
+
+- ✅ **Alt Text**: Always provide descriptive alt text for images
+- ✅ **Fallback Content**: Meaningful fallback when image unavailable
+- ✅ **Semantic HTML**: Uses appropriate image elements
+- ✅ **Screen Reader Support**: Fallback content announced properly
+
+### Best Practices
+
+1. **Always provide alt text**: Describe who is in the avatar
+2. **Meaningful fallbacks**: Use initials or icons, not generic text
+3. **Consistent sizing**: Maintain aspect ratio for all avatars
+4. **Status indicators**: Use additional ARIA labels for status badges
+5. **Lazy loading**: Enable for better performance with many avatars
+
+```tsx
+// Good example
+<Avatar>
+  <AvatarImage src="/user.jpg" alt="John Doe's profile picture" />
+  <AvatarFallback>JD</AvatarFallback>
+</Avatar>
+
+// With status indicator
+<div className="relative inline-block">
+  <Avatar>
+    <AvatarImage src="/user.jpg" alt="John Doe" />
+    <AvatarFallback>JD</AvatarFallback>
+  </Avatar>
+  <span
+    className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500"
+    aria-label="Online"
+  />
+</div>
+```
+
+## Component Structure
+
+The Avatar is composed of three sub-components:
+
+- **Avatar**: Root container that defines size and shape
+- **AvatarImage**: The actual image element with loading states
+- **AvatarFallback**: Fallback content shown when image fails or loads
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

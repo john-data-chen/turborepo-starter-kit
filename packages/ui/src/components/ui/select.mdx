@@ -1,0 +1,288 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as SelectStories from './select.stories';
+
+<Meta of={SelectStories} />
+
+<Title />
+
+<Description>
+  A dropdown selection component for choosing one option from a list.
+  Provides better UX than native select with custom styling and keyboard navigation.
+</Description>
+
+## Overview
+
+The Select component provides a dropdown menu for selecting a single option from a list.
+It offers enhanced styling, accessibility, and features compared to native HTML select elements.
+
+### Key Features
+
+- **Accessible**: Full keyboard navigation and ARIA support
+- **Custom Styling**: Fully customizable appearance
+- **Grouped Options**: Support for option groups with labels
+- **Search Integration**: Can be combined with search functionality
+- **Scroll Indicators**: Visual cues for scrollable content
+- **Portal Rendering**: Avoids z-index issues
+- **Two Sizes**: Default and small variants
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@repo/ui/components/select'
+
+export function SelectDemo() {
+  return (
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="apple">Apple</SelectItem>
+        <SelectItem value="banana">Banana</SelectItem>
+        <SelectItem value="orange">Orange</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={SelectStories.Default} />
+
+<Controls of={SelectStories.Default} />
+
+## Common Patterns
+
+### Basic Select with Label
+
+```tsx
+<div className="grid gap-2">
+  <Label htmlFor="fruit">Favorite Fruit</Label>
+  <Select>
+    <SelectTrigger id="fruit" className="w-[180px]">
+      <SelectValue placeholder="Select a fruit" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="apple">Apple</SelectItem>
+      <SelectItem value="banana">Banana</SelectItem>
+      <SelectItem value="orange">Orange</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+```
+
+### Controlled Select
+
+```tsx
+import { useState } from 'react'
+
+function ControlledSelect() {
+  const [value, setValue] = useState('')
+
+  return (
+    <Select value={value} onValueChange={setValue}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select..." />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="option1">Option 1</SelectItem>
+        <SelectItem value="option2">Option 2</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+```
+
+### Grouped Options
+
+```tsx
+import { SelectGroup, SelectLabel } from '@repo/ui/components/select'
+
+<Select>
+  <SelectTrigger className="w-[200px]">
+    <SelectValue placeholder="Select a timezone" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>North America</SelectLabel>
+      <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
+      <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
+      <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
+    </SelectGroup>
+    <SelectGroup>
+      <SelectLabel>Europe</SelectLabel>
+      <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
+      <SelectItem value="cet">Central European Time (CET)</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+### With Disabled Options
+
+```tsx
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select an option" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="option1">Available Option</SelectItem>
+    <SelectItem value="option2" disabled>
+      Disabled Option
+    </SelectItem>
+    <SelectItem value="option3">Another Available</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+### Small Size Variant
+
+```tsx
+<Select>
+  <SelectTrigger size="sm" className="w-[150px]">
+    <SelectValue placeholder="Select..." />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="1">Option 1</SelectItem>
+    <SelectItem value="2">Option 2</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+### Form Integration with React Hook Form
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const formSchema = z.object({
+  country: z.string().min(1, 'Please select a country'),
+})
+
+function SelectForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  })
+
+  return (
+    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      <div className="grid gap-2">
+        <Label htmlFor="country">Country</Label>
+        <Select
+          value={form.watch('country')}
+          onValueChange={(value) => form.setValue('country', value)}
+        >
+          <SelectTrigger id="country" className="w-[200px]">
+            <SelectValue placeholder="Select a country" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="us">United States</SelectItem>
+            <SelectItem value="uk">United Kingdom</SelectItem>
+            <SelectItem value="ca">Canada</SelectItem>
+          </SelectContent>
+        </Select>
+        {form.formState.errors.country && (
+          <span className="text-sm text-destructive">
+            {form.formState.errors.country.message}
+          </span>
+        )}
+      </div>
+      <Button type="submit" className="mt-4">
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+### With Icons
+
+```tsx
+import { Mail, Phone, MessageSquare } from 'lucide-react'
+
+<Select>
+  <SelectTrigger className="w-[220px]">
+    <SelectValue placeholder="Contact method" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="email">
+      <Mail className="mr-2 h-4 w-4" />
+      Email
+    </SelectItem>
+    <SelectItem value="phone">
+      <Phone className="mr-2 h-4 w-4" />
+      Phone
+    </SelectItem>
+    <SelectItem value="sms">
+      <MessageSquare className="mr-2 h-4 w-4" />
+      SMS
+    </SelectItem>
+  </SelectContent>
+</Select>
+```
+
+### With Separator
+
+```tsx
+import { SelectSeparator } from '@repo/ui/components/select'
+
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select action" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="edit">Edit</SelectItem>
+    <SelectItem value="duplicate">Duplicate</SelectItem>
+    <SelectSeparator />
+    <SelectItem value="delete">Delete</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+## Accessibility
+
+The Select component follows WCAG 2.1 Level AA guidelines:
+
+- ✅ **Keyboard Navigation**: Arrow keys to navigate, Enter to select, Escape to close
+- ✅ **Screen Reader Support**: Proper ARIA roles and announcements
+- ✅ **Focus Management**: Clear focus indicators and proper focus flow
+- ✅ **Type-ahead**: Find options by typing
+- ✅ **Label Association**: Proper linking to labels
+- ✅ **Error States**: Visual and programmatic error indication
+
+### Best Practices
+
+1. **Always use labels**: Provide clear, descriptive labels
+2. **Meaningful placeholders**: Help users understand what to select
+3. **Logical grouping**: Group related options together
+4. **Avoid too many options**: Consider search or autocomplete for long lists
+5. **Indicate required fields**: Show when selection is mandatory
+
+## Component Structure
+
+The Select is composed of multiple sub-components:
+
+- **Select**: Root component that manages state
+- **SelectTrigger**: Button that opens the dropdown
+- **SelectValue**: Displays selected value or placeholder
+- **SelectContent**: Container for dropdown options
+- **SelectItem**: Individual selectable option
+- **SelectGroup**: Groups related options
+- **SelectLabel**: Label for option groups
+- **SelectSeparator**: Visual divider between options
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />
