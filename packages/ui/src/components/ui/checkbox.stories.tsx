@@ -7,7 +7,7 @@ const meta: Meta<typeof Checkbox> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
+
   argTypes: {
     checked: {
       control: 'boolean',

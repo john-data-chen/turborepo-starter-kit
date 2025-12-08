@@ -18,8 +18,7 @@ const meta: Meta<typeof Sheet> = {
   component: Sheet,
   parameters: {
     layout: 'centered'
-  },
-  tags: ['autodocs']
+  }
 }
 
 export default meta
@@ -36,7 +35,9 @@ export const Default: Story = {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>Make changes to your profile here. Click save when you're done.</SheetDescription>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you're done.
+          </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -73,7 +74,9 @@ export const Sides: Story = {
           <SheetContent side={side}>
             <SheetHeader>
               <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>Make changes to your profile here. Click save when you're done.</SheetDescription>
+              <SheetDescription>
+                Make changes to your profile here. Click save when you're done.
+              </SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">

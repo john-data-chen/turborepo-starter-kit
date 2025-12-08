@@ -1,0 +1,168 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as SheetStories from './sheet.stories';
+
+<Meta of={SheetStories} />
+
+<Title />
+
+<Description>
+  A sliding panel that appears from the edge of the screen.
+  Perfect for navigation menus, forms, and detail views.
+</Description>
+
+## Overview
+
+The Sheet component provides a slide-out panel from any edge of the screen. It's ideal for mobile navigation, settings panels, and secondary content without leaving the current context.
+
+### Key Features
+
+- **Multiple Sides**: Top, right, bottom, left
+- **Overlay**: Dims background content
+- **Accessible**: Focus trap and ARIA support
+- **Customizable**: Size, styling, and animations
+- **Composable**: Header, footer, close button
+
+## Usage
+
+```tsx
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@repo/ui/components/sheet'
+import { Button } from '@repo/ui/components/button'
+
+export function SheetDemo() {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open Sheet</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit Profile</SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="py-4">
+          {/* Content */}
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={SheetStories.Default} />
+
+<Controls of={SheetStories.Default} />
+
+## Different Sides
+
+<Canvas of={SheetStories.Sides} />
+
+```tsx
+<Sheet>
+  <SheetTrigger asChild>
+    <Button>Open Left</Button>
+  </SheetTrigger>
+  <SheetContent side="left">
+    Content slides in from the left
+  </SheetContent>
+</Sheet>
+```
+
+## Common Patterns
+
+### Mobile Navigation
+
+```tsx
+<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="ghost" size="icon" className="md:hidden">
+      <Menu className="h-5 w-5" />
+    </Button>
+  </SheetTrigger>
+  <SheetContent side="left">
+    <nav className="flex flex-col gap-4">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </SheetContent>
+</Sheet>
+```
+
+### Settings Panel
+
+```tsx
+<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline">
+      <Settings className="mr-2 h-4 w-4" />
+      Settings
+    </Button>
+  </SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Settings</SheetTitle>
+    </SheetHeader>
+    <div className="space-y-4 py-4">
+      <div className="flex items-center justify-between">
+        <Label>Dark Mode</Label>
+        <Switch />
+      </div>
+      <div className="flex items-center justify-between">
+        <Label>Notifications</Label>
+        <Switch />
+      </div>
+    </div>
+  </SheetContent>
+</Sheet>
+```
+
+### Shopping Cart
+
+```tsx
+<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline" size="icon">
+      <ShoppingCart className="h-5 w-5" />
+    </Button>
+  </SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Your Cart</SheetTitle>
+    </SheetHeader>
+    <ScrollArea className="flex-1 py-4">
+      {cartItems.map((item) => (
+        <CartItem key={item.id} {...item} />
+      ))}
+    </ScrollArea>
+    <SheetFooter>
+      <Button className="w-full">Checkout</Button>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+```
+
+## Accessibility
+
+- ✅ **Focus Trap**: Focus stays within sheet
+- ✅ **Escape to Close**: Press Escape to dismiss
+- ✅ **ARIA Dialog**: Proper dialog role
+- ✅ **Screen Reader**: Title announced on open
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

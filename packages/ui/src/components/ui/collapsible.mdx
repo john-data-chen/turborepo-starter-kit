@@ -1,0 +1,121 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as CollapsibleStories from './collapsible.stories';
+
+<Meta of={CollapsibleStories} />
+
+<Title />
+
+<Description>
+  An interactive component that expands/collapses content.
+  Perfect for FAQ sections, sidebars, and progressive disclosure patterns.
+</Description>
+
+## Overview
+
+The Collapsible component allows users to toggle the visibility of content sections. Built on Radix UI primitives, it provides smooth animations and proper accessibility support.
+
+### Key Features
+
+- **Controlled & Uncontrolled**: Works in both modes
+- **Accessible**: Proper ARIA attributes and keyboard navigation
+- **Animated**: Smooth expand/collapse transitions
+- **Composable**: Flexible trigger and content composition
+
+## Usage
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@repo/ui/components/collapsible'
+import { Button } from '@repo/ui/components/button'
+import { ChevronsUpDown } from 'lucide-react'
+
+export function CollapsibleDemo() {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-semibold">Toggle Section</h4>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm">
+            <ChevronsUpDown className="h-4 w-4" />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent>
+        <div className="rounded-md border px-4 py-3 mt-2">
+          Hidden content revealed!
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={CollapsibleStories.Default} />
+
+<Controls of={CollapsibleStories.Default} />
+
+## Common Patterns
+
+### FAQ Section
+
+```tsx
+function FAQ() {
+  return (
+    <div className="space-y-4">
+      {faqs.map((faq) => (
+        <Collapsible key={faq.id}>
+          <CollapsibleTrigger className="flex w-full justify-between">
+            <span>{faq.question}</span>
+            <ChevronDown className="h-4 w-4" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <p className="pt-2 text-muted-foreground">{faq.answer}</p>
+          </CollapsibleContent>
+        </Collapsible>
+      ))}
+    </div>
+  )
+}
+```
+
+### Sidebar Navigation
+
+```tsx
+function SidebarNav() {
+  return (
+    <Collapsible defaultOpen>
+      <CollapsibleTrigger className="flex items-center gap-2">
+        <Folder className="h-4 w-4" />
+        <span>Documents</span>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pl-6 pt-2">
+        <ul className="space-y-1">
+          <li>File 1</li>
+          <li>File 2</li>
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+```
+
+## Accessibility
+
+- ✅ **Keyboard Navigation**: Space/Enter to toggle
+- ✅ **ARIA Expanded**: Indicates current state
+- ✅ **Focus Management**: Proper focus handling
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

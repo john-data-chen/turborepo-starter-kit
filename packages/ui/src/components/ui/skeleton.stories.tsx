@@ -7,7 +7,7 @@ const meta: Meta<typeof Skeleton> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
+
   argTypes: {
     className: {
       control: 'text',
@@ -28,7 +28,7 @@ export const Circle: Story = {
 }
 
 export const Card: Story = {
-  render: (args) => (
+  render: (_args) => (
     <div className="flex items-center space-x-4">
       <Skeleton className="h-12 w-12 rounded-full" />
       <div className="space-y-2">

@@ -1,0 +1,133 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as ScrollAreaStories from './scroll-area.stories';
+
+<Meta of={ScrollAreaStories} />
+
+<Title />
+
+<Description>
+  A custom scrollable container with styled scrollbars.
+  Provides consistent scroll behavior across browsers.
+</Description>
+
+## Overview
+
+The ScrollArea component provides a scrollable container with custom-styled scrollbars. It ensures consistent appearance across different browsers and operating systems.
+
+### Key Features
+
+- **Custom Scrollbars**: Styled, consistent scrollbars
+- **Cross-Browser**: Same look on all browsers
+- **Horizontal & Vertical**: Both scroll directions
+- **Auto-hide**: Scrollbars fade when not in use
+- **Touch Support**: Works on touch devices
+
+## Usage
+
+```tsx
+import { ScrollArea, ScrollBar } from '@repo/ui/components/scroll-area'
+
+export function ScrollAreaDemo() {
+  return (
+    <ScrollArea className="h-72 w-48 rounded-md border">
+      <div className="p-4">
+        <h4 className="mb-4 font-medium">Tags</h4>
+        {tags.map((tag) => (
+          <div key={tag} className="text-sm">{tag}</div>
+        ))}
+      </div>
+    </ScrollArea>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={ScrollAreaStories.Default} />
+
+<Controls of={ScrollAreaStories.Default} />
+
+## Horizontal Scrolling
+
+<Canvas of={ScrollAreaStories.Horizontal} />
+
+```tsx
+<ScrollArea className="w-96 whitespace-nowrap rounded-md border">
+  <div className="flex w-max space-x-4 p-4">
+    {items.map((item) => (
+      <div key={item} className="shrink-0">{item}</div>
+    ))}
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+## Common Patterns
+
+### Dropdown List
+
+```tsx
+<DropdownMenuContent>
+  <ScrollArea className="h-72">
+    {items.map((item) => (
+      <DropdownMenuItem key={item.id}>{item.name}</DropdownMenuItem>
+    ))}
+  </ScrollArea>
+</DropdownMenuContent>
+```
+
+### Chat Messages
+
+```tsx
+<ScrollArea className="h-[400px] pr-4">
+  {messages.map((message) => (
+    <div key={message.id} className="mb-4">
+      <div className="font-semibold">{message.author}</div>
+      <div className="text-sm text-muted-foreground">{message.content}</div>
+    </div>
+  ))}
+</ScrollArea>
+```
+
+### Image Gallery
+
+```tsx
+<ScrollArea className="w-full whitespace-nowrap">
+  <div className="flex gap-4 pb-4">
+    {images.map((image) => (
+      <img
+        key={image.id}
+        src={image.url}
+        className="aspect-square h-40 rounded-md object-cover"
+      />
+    ))}
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+### Code Block
+
+```tsx
+<ScrollArea className="h-72 w-full rounded-md border bg-muted">
+  <pre className="p-4 text-sm">
+    <code>{codeContent}</code>
+  </pre>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+## Accessibility
+
+- ✅ **Keyboard Scrolling**: Arrow keys, Page Up/Down
+- ✅ **Touch Support**: Native touch scrolling
+- ✅ **Focus Visible**: Scrollbar focus indicator
+- ✅ **Reduced Motion**: Respects user preferences
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

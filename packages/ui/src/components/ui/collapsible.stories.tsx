@@ -9,8 +9,7 @@ const meta: Meta<typeof Collapsible> = {
   component: Collapsible,
   parameters: {
     layout: 'centered'
-  },
-  tags: ['autodocs']
+  }
 }
 
 export default meta
