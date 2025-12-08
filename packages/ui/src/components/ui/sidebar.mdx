@@ -1,0 +1,184 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as SidebarStories from './sidebar.stories';
+
+<Meta of={SidebarStories} />
+
+<Title />
+
+<Description>
+  A navigation sidebar component with collapsible support.
+  Perfect for dashboard layouts and application navigation.
+</Description>
+
+## Overview
+
+The Sidebar component provides a comprehensive navigation system for applications. It includes collapsible behavior, nested menus, and responsive design out of the box.
+
+### Key Features
+
+- **Collapsible**: Expand/collapse with animation
+- **Nested Menus**: Sub-menu support
+- **Responsive**: Mobile-friendly behavior
+- **Composable**: Header, footer, groups, separators
+- **Tooltips**: Icon-only mode with tooltips
+- **Accessible**: Full keyboard navigation
+
+## Usage
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger
+} from '@repo/ui/components/sidebar'
+
+export function SidebarDemo() {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <h2>My App</h2>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Home">
+                  <Home />
+                  <span>Home</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard">
+                  <LayoutDashboard />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <main>
+        <SidebarTrigger />
+        {/* Main content */}
+      </main>
+    </SidebarProvider>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={SidebarStories.Default} />
+
+<Controls of={SidebarStories.Default} />
+
+## With Sub-menus
+
+<Canvas of={SidebarStories.WithSubMenu} />
+
+```tsx
+<SidebarMenuItem>
+  <SidebarMenuButton tooltip="Projects">
+    <Rocket />
+    <span>Projects</span>
+    <ChevronRight className="ml-auto" />
+  </SidebarMenuButton>
+  <SidebarMenuSub>
+    <SidebarMenuSubItem>
+      <SidebarMenuSubButton href="#">Overview</SidebarMenuSubButton>
+    </SidebarMenuSubItem>
+    <SidebarMenuSubItem>
+      <SidebarMenuSubButton href="#">Teams</SidebarMenuSubButton>
+    </SidebarMenuSubItem>
+  </SidebarMenuSub>
+</SidebarMenuItem>
+```
+
+## Common Patterns
+
+### With Groups and Labels
+
+```tsx
+<SidebarContent>
+  <SidebarGroup>
+    <SidebarGroupLabel>Main</SidebarGroupLabel>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton>Home</SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarGroup>
+  <SidebarSeparator />
+  <SidebarGroup>
+    <SidebarGroupLabel>Settings</SidebarGroupLabel>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton>Preferences</SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarGroup>
+</SidebarContent>
+```
+
+### With Search Input
+
+```tsx
+<SidebarHeader>
+  <SidebarInput placeholder="Search..." />
+</SidebarHeader>
+```
+
+### With Footer
+
+```tsx
+<SidebarFooter>
+  <SidebarMenu>
+    <SidebarMenuItem>
+      <SidebarMenuButton tooltip="Profile">
+        <User />
+        <span>Profile</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  </SidebarMenu>
+</SidebarFooter>
+```
+
+### Layout with Inset
+
+```tsx
+<SidebarProvider>
+  <Sidebar>
+    {/* Sidebar content */}
+  </Sidebar>
+  <SidebarInset>
+    <header className="border-b p-4">
+      <SidebarTrigger />
+    </header>
+    <main className="p-4">
+      {/* Page content */}
+    </main>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+## Accessibility
+
+- ✅ **Keyboard Navigation**: Tab through items
+- ✅ **Focus Management**: Proper focus handling
+- ✅ **ARIA Expanded**: Collapse state announced
+- ✅ **Tooltips**: Available in collapsed mode
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

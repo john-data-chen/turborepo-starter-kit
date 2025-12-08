@@ -1,0 +1,143 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as PopoverStories from './popover.stories';
+
+<Meta of={PopoverStories} />
+
+<Title />
+
+<Description>
+  A floating panel that displays content when triggered.
+  Ideal for forms, settings panels, and contextual information.
+</Description>
+
+## Overview
+
+The Popover component displays floating content anchored to a trigger element. Unlike tooltips, popovers can contain interactive elements like forms and buttons.
+
+### Key Features
+
+- **Flexible Positioning**: Auto-adjusts to viewport
+- **Interactive Content**: Forms, buttons, and rich content
+- **Focus Management**: Traps focus within popover
+- **Accessible**: Proper ARIA attributes
+- **Customizable**: Size, alignment, and styling
+
+## Usage
+
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@repo/ui/components/popover'
+import { Button } from '@repo/ui/components/button'
+
+export function PopoverDemo() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Open Popover</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="grid gap-4">
+          <h4 className="font-medium">Popover Content</h4>
+          <p className="text-sm text-muted-foreground">
+            This is the popover content area.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={PopoverStories.Default} />
+
+<Controls of={PopoverStories.Default} />
+
+## Common Patterns
+
+### Settings Panel
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Dimensions</Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-80">
+    <div className="grid gap-4">
+      <div className="space-y-2">
+        <h4 className="font-medium">Dimensions</h4>
+        <p className="text-sm text-muted-foreground">
+          Set the dimensions for the layer.
+        </p>
+      </div>
+      <div className="grid gap-2">
+        <div className="grid grid-cols-3 items-center gap-4">
+          <Label htmlFor="width">Width</Label>
+          <Input id="width" defaultValue="100%" className="col-span-2" />
+        </div>
+        <div className="grid grid-cols-3 items-center gap-4">
+          <Label htmlFor="height">Height</Label>
+          <Input id="height" defaultValue="auto" className="col-span-2" />
+        </div>
+      </div>
+    </div>
+  </PopoverContent>
+</Popover>
+```
+
+### User Profile Card
+
+```tsx
+<Popover>
+  <PopoverTrigger>
+    <Avatar>
+      <AvatarImage src="/avatar.jpg" />
+    </Avatar>
+  </PopoverTrigger>
+  <PopoverContent>
+    <div className="flex gap-4">
+      <Avatar>
+        <AvatarImage src="/avatar.jpg" />
+      </Avatar>
+      <div>
+        <h4 className="font-semibold">John Doe</h4>
+        <p className="text-sm text-muted-foreground">john@example.com</p>
+      </div>
+    </div>
+  </PopoverContent>
+</Popover>
+```
+
+### Color Picker
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline" className="w-10 h-10 p-0">
+      <div className="w-6 h-6 rounded" style={{ background: color }} />
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-auto p-3">
+    <ColorPicker value={color} onChange={setColor} />
+  </PopoverContent>
+</Popover>
+```
+
+## Accessibility
+
+- ✅ **Focus Trap**: Focus stays within popover
+- ✅ **Escape to Close**: Press Escape to dismiss
+- ✅ **Click Outside**: Closes on outside click
+- ✅ **ARIA Attributes**: Proper labeling
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

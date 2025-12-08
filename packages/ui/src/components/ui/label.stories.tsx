@@ -8,7 +8,7 @@ const meta: Meta<typeof Label> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
+
   argTypes: {
     htmlFor: {
       control: 'text',

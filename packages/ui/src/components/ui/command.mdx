@@ -1,0 +1,148 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as CommandStories from './command.stories';
+
+<Meta of={CommandStories} />
+
+<Title />
+
+<Description>
+  A fast, composable command menu for keyboard-driven navigation.
+  Ideal for command palettes, search interfaces, and quick actions.
+</Description>
+
+## Overview
+
+The Command component provides a powerful command menu interface similar to Spotlight, VS Code's command palette, or Linear's command menu. Built on cmdk, it offers fast filtering and keyboard navigation.
+
+### Key Features
+
+- **Fast Filtering**: Instant search across all items
+- **Keyboard Navigation**: Full keyboard support
+- **Composable**: Groups, separators, shortcuts
+- **Dialog Mode**: Can be used in a modal dialog
+- **Accessible**: Screen reader friendly
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut
+} from '@repo/ui/components/command'
+
+export function CommandMenu() {
+  return (
+    <Command className="rounded-lg border shadow-md">
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem>
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>Calendar</span>
+          </CommandItem>
+          <CommandItem>
+            <Search className="mr-2 h-4 w-4" />
+            <span>Search</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+          <CommandItem>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+            <CommandShortcut>⌘S</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={CommandStories.Default} />
+
+<Controls of={CommandStories.Default} />
+
+## Command Dialog
+
+Use `CommandDialog` for a modal command palette:
+
+<Canvas of={CommandStories.Dialog} />
+
+```tsx
+import { CommandDialog } from '@repo/ui/components/command'
+
+function CommandPalette() {
+  const [open, setOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpen((open) => !open)
+      }
+    }
+    document.addEventListener('keydown', down)
+    return () => document.removeEventListener('keydown', down)
+  }, [])
+
+  return (
+    <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandInput placeholder="Search..." />
+      <CommandList>
+        {/* items */}
+      </CommandList>
+    </CommandDialog>
+  )
+}
+```
+
+## Common Patterns
+
+### With Keyboard Shortcuts
+
+```tsx
+<CommandItem onSelect={() => navigate('/settings')}>
+  <Settings className="mr-2 h-4 w-4" />
+  <span>Settings</span>
+  <CommandShortcut>⌘,</CommandShortcut>
+</CommandItem>
+```
+
+### Grouped Commands
+
+```tsx
+<CommandGroup heading="Navigation">
+  <CommandItem>Home</CommandItem>
+  <CommandItem>Dashboard</CommandItem>
+</CommandGroup>
+<CommandSeparator />
+<CommandGroup heading="Actions">
+  <CommandItem>New File</CommandItem>
+  <CommandItem>Save</CommandItem>
+</CommandGroup>
+```
+
+## Accessibility
+
+- ✅ **Keyboard Navigation**: Arrow keys, Enter to select
+- ✅ **Search Filtering**: Type to filter items
+- ✅ **Focus Management**: Auto-focus on open
+- ✅ **Screen Reader**: Proper ARIA labels
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

@@ -1,0 +1,128 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as DropdownMenuStories from './dropdown-menu.stories';
+
+<Meta of={DropdownMenuStories} />
+
+<Title />
+
+<Description>
+  A menu component triggered by a button, displaying a list of actions or options.
+  Supports checkboxes, radio groups, sub-menus, and keyboard shortcuts.
+</Description>
+
+## Overview
+
+The DropdownMenu component provides a versatile dropdown interface for actions and settings. Built on Radix UI, it supports nested menus, checkbox items, radio groups, and keyboard shortcuts.
+
+### Key Features
+
+- **Rich Item Types**: Regular, checkbox, radio items
+- **Sub-menus**: Nested menu support
+- **Keyboard Shortcuts**: Display shortcut hints
+- **Accessible**: Full keyboard and screen reader support
+- **Customizable**: Flexible styling and positioning
+
+## Usage
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@repo/ui/components/dropdown-menu'
+import { Button } from '@repo/ui/components/button'
+
+export function DropdownMenuDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Open Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Log out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={DropdownMenuStories.Default} />
+
+<Controls of={DropdownMenuStories.Default} />
+
+## Checkbox Items
+
+<Canvas of={DropdownMenuStories.Default} />
+
+```tsx
+<DropdownMenuCheckboxItem
+  checked={showStatusBar}
+  onCheckedChange={setShowStatusBar}
+>
+  Status Bar
+</DropdownMenuCheckboxItem>
+```
+
+## Radio Group
+
+<Canvas of={DropdownMenuStories.WithRadioGroup} />
+
+```tsx
+<DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+  <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
+  <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
+  <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
+</DropdownMenuRadioGroup>
+```
+
+## Complex Menu
+
+<Canvas of={DropdownMenuStories.Complex} />
+
+### With Keyboard Shortcuts
+
+```tsx
+<DropdownMenuItem>
+  Profile
+  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+</DropdownMenuItem>
+```
+
+### With Sub-menus
+
+```tsx
+<DropdownMenuSub>
+  <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+  <DropdownMenuPortal>
+    <DropdownMenuSubContent>
+      <DropdownMenuItem>Email</DropdownMenuItem>
+      <DropdownMenuItem>Message</DropdownMenuItem>
+    </DropdownMenuSubContent>
+  </DropdownMenuPortal>
+</DropdownMenuSub>
+```
+
+## Accessibility
+
+- ✅ **Keyboard Navigation**: Arrow keys, Enter, Escape
+- ✅ **Focus Trap**: Focus stays within menu
+- ✅ **ARIA Roles**: Proper menu roles
+- ✅ **Screen Reader**: Items announced correctly
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />

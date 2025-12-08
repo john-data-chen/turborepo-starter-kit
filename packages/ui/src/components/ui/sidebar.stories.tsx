@@ -18,8 +18,7 @@ import {
   SidebarTrigger,
   SidebarInset
 } from './sidebar'
-import { Button } from './button'
-import { HomeIcon, DashboardIcon, GearIcon, PersonIcon, RocketIcon, ChevronRightIcon } from '@radix-ui/react-icons'
+import { HomeIcon, PersonIcon, RocketIcon, ChevronRightIcon } from '@radix-ui/react-icons'
 import React from 'react'
 import { BellIcon, LayoutDashboard, Settings, Users } from 'lucide-react'
 
@@ -29,7 +28,7 @@ const meta: Meta<typeof Sidebar> = {
   parameters: {
     layout: 'fullscreen'
   },
-  tags: ['autodocs'],
+
   decorators: [
     (Story) => (
       <SidebarProvider>

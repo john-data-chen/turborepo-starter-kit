@@ -24,8 +24,7 @@ const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
   parameters: {
     layout: 'centered'
-  },
-  tags: ['autodocs']
+  }
 }
 
 export default meta
@@ -36,7 +35,6 @@ export const Default: Story = {
     const [showStatusBar, setShowStatusBar] = React.useState(true)
     const [showActivityBar, setShowActivityBar] = React.useState(false)
     const [showPanel, setShowPanel] = React.useState(false)
-    const [position, setPosition] = React.useState('bottom')
 
     return (
       <DropdownMenu {...args}>
@@ -49,7 +47,11 @@ export const Default: Story = {
           <DropdownMenuCheckboxItem checked={showStatusBar} onCheckedChange={setShowStatusBar}>
             Status Bar
           </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem checked={showActivityBar} onCheckedChange={setShowActivityBar} disabled>
+          <DropdownMenuCheckboxItem
+            checked={showActivityBar}
+            onCheckedChange={setShowActivityBar}
+            disabled
+          >
             Activity Bar
           </DropdownMenuCheckboxItem>
           <DropdownMenuCheckboxItem checked={showPanel} onCheckedChange={setShowPanel}>

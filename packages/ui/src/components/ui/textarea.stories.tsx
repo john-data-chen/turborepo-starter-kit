@@ -7,7 +7,7 @@ const meta: Meta<typeof Textarea> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
+
   argTypes: {
     placeholder: {
       control: 'text',

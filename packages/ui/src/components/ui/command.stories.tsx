@@ -10,20 +10,8 @@ import {
   CommandSeparator,
   CommandShortcut
 } from './command'
-import { Button } from './button'
 import React from 'react'
-import {
-  CalendarIcon,
-  EnvelopeClosedIcon,
-  FaceIcon,
-  GearIcon,
-  GroupIcon,
-  IdCardIcon,
-  MixerHorizontalIcon,
-  PaperPlaneIcon,
-  PlusCircledIcon,
-  RocketIcon
-} from '@radix-ui/react-icons'
+import { CalendarIcon, FaceIcon, GearIcon, RocketIcon } from '@radix-ui/react-icons'
 import { CreditCard, Settings, User } from 'lucide-react'
 
 const meta: Meta<typeof Command> = {
@@ -31,8 +19,7 @@ const meta: Meta<typeof Command> = {
   component: Command,
   parameters: {
     layout: 'centered'
-  },
-  tags: ['autodocs']
+  }
 }
 
 export default meta

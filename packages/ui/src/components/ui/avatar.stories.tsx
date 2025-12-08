@@ -7,7 +7,7 @@ const meta: Meta<typeof Avatar> = {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs'],
+
   argTypes: {
     children: {
       control: {

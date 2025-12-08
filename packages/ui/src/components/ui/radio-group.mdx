@@ -1,0 +1,125 @@
+import { Canvas, Meta, Controls, Stories, Title, Description } from '@storybook/addon-docs/blocks';
+import * as RadioGroupStories from './radio-group.stories';
+
+<Meta of={RadioGroupStories} />
+
+<Title />
+
+<Description>
+  A set of mutually exclusive options where only one can be selected.
+  Perfect for settings, preferences, and single-choice forms.
+</Description>
+
+## Overview
+
+The RadioGroup component provides a set of radio buttons for selecting a single option from a list. Built on Radix UI, it ensures proper accessibility and keyboard navigation.
+
+### Key Features
+
+- **Single Selection**: Only one option at a time
+- **Controlled & Uncontrolled**: Both modes supported
+- **Accessible**: Full keyboard and ARIA support
+- **Customizable**: Flexible layout and styling
+- **Form Integration**: Works with forms
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@repo/ui/components/radio-group'
+import { Label } from '@repo/ui/components/label'
+
+export function RadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="comfortable">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="default" id="r1" />
+        <Label htmlFor="r1">Default</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="comfortable" id="r2" />
+        <Label htmlFor="r2">Comfortable</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="compact" id="r3" />
+        <Label htmlFor="r3">Compact</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+## Interactive Example
+
+<Canvas of={RadioGroupStories.Default} />
+
+<Controls of={RadioGroupStories.Default} />
+
+## Disabled State
+
+<Canvas of={RadioGroupStories.Disabled} />
+
+## Common Patterns
+
+### Horizontal Layout
+
+```tsx
+<RadioGroup defaultValue="option1" className="flex gap-4">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option1" id="h1" />
+    <Label htmlFor="h1">Option 1</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option2" id="h2" />
+    <Label htmlFor="h2">Option 2</Label>
+  </div>
+</RadioGroup>
+```
+
+### Card Selection
+
+```tsx
+<RadioGroup defaultValue="card1">
+  {cards.map((card) => (
+    <div key={card.id} className="flex items-center space-x-3 rounded-md border p-4">
+      <RadioGroupItem value={card.id} id={card.id} />
+      <Label htmlFor={card.id} className="flex-1 cursor-pointer">
+        <div className="font-medium">{card.title}</div>
+        <div className="text-sm text-muted-foreground">{card.description}</div>
+      </Label>
+    </div>
+  ))}
+</RadioGroup>
+```
+
+### With Form
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <RadioGroup name="plan" required>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="free" id="plan-free" />
+      <Label htmlFor="plan-free">Free</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="pro" id="plan-pro" />
+      <Label htmlFor="plan-pro">Pro - $9/month</Label>
+    </div>
+  </RadioGroup>
+  <Button type="submit">Continue</Button>
+</form>
+```
+
+## Accessibility
+
+- ✅ **Keyboard Navigation**: Arrow keys to navigate
+- ✅ **ARIA Radio Group**: Proper role association
+- ✅ **Focus Visible**: Clear focus indicator
+- ✅ **Label Association**: Click label to select
+
+## Component API
+
+<Controls />
+
+## All Stories
+
+<Stories />
