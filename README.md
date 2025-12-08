@@ -252,6 +252,8 @@ packages/
 
 Storybook serves as the Single Source of Truth (SSOT) for UI components, providing living documentation that stays synchronized with the codebase.
 
+[live demo of storybook](https://turborepo-starter-kit-storybook.vercel.app/)
+
 ### Implementation Highlights
 
 | Feature                   | Implementation                                | Value                                        |
@@ -325,12 +327,12 @@ This project demonstrates a "Human-in-the-Loop" architecture where AI tools are 
 
 I utilize a suite of specialized AI tools, each assigned specific roles to mimic a high-performing engineering team structure.
 
-| Role              | Tool                                                                    | Responsibility                      | Impact                                                                                               |
-| :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------- |
-| **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness.                                |
-| **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper model. |
-| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Write automated tests with low or without cost                                                       |
-| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer                             |
+| Role              | Tool                                                                    | Responsibility                      | Impact                                                                                                                  |
+| :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness, perfect for making plans for other AI tools.      |
+| **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper model such as Minimax M2. |
+| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Gemini 3 Pro is the cheapest option in top models, perfect for writing test cases.                                      |
+| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer.                                               |
 
 ### 🔌 MCP (Model Context Protocol) Integration
 
