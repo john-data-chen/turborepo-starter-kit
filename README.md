@@ -412,9 +412,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 
 ---
 
-## Deployment Notes
-
-### Live Demo Constraints
+## Live Demo Constraints
 
 | Aspect             | Current State                       | Production Recommendation           |
 | ------------------ | ----------------------------------- | ----------------------------------- |
