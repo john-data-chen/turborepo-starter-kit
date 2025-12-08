@@ -71,7 +71,7 @@
       "@types/react-dom": "^19.2.3",
       "@types/node": "^24.10.1",
       "lucide-react": "^0.555.0",
-      "oxlint": "^1.30.0",
+      "oxlint": "^1.31.0",
       "jsdom": "^27.2.0",
       "vitest": "^4.0.15",
       "@vitest/coverage-v8": "^4.0.15",
