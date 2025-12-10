@@ -31,20 +31,21 @@
     "react-dom": "*"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.1.4",
-    "@storybook/addon-docs": "^10.1.4",
-    "@storybook/addon-links": "^10.1.4",
-    "@storybook/addon-themes": "^10.1.4",
-    "@storybook/react": "^10.1.4",
-    "@storybook/react-vite": "^10.1.4",
+    "@storybook/addon-a11y": "^10.1.5",
+    "@storybook/addon-docs": "^10.1.5",
+    "@storybook/addon-links": "^10.1.5",
+    "@storybook/addon-themes": "^10.1.5",
+    "@storybook/react": "^10.1.5",
+    "@storybook/react-vite": "^10.1.5",
     "@storybook/test-runner": "^0.24.2",
     "@types/node": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "global-tsconfig": "workspace:*",
     "linter-config": "workspace:*",
-    "storybook": "^10.1.4",
-    "typescript": "*"
+    "storybook": "^10.1.5",
+    "typescript": "*",
+    "@vercel/analytics": "*"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
