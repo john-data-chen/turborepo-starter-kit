@@ -44,8 +44,7 @@
     "global-tsconfig": "workspace:*",
     "linter-config": "workspace:*",
     "storybook": "^10.1.5",
-    "typescript": "*",
-    "@vercel/analytics": "*"
+    "typescript": "*"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
