@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env.test') })
 // 1. System Env (CI)
 // 2. .env.test
 // 3. .env
-const baseURL = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000/en'
+const baseURL = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000/'
 const apiURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 /**
