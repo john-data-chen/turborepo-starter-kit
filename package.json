@@ -14,6 +14,7 @@
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "playwright": "turbo run playwright --filter=./apps/web",
+    "playwright:install": "pnpm --filter=./apps/web exec playwright install --with-deps",
     "init-db": "turbo run init-db",
     "init-db:force": "turbo run init-db:force",
     "storybook": "turbo run storybook --filter=@repo/ui",
