@@ -50,11 +50,12 @@ test.describe.serial('SignInPage', () => {
   // NOTE: This is a soft check with shorter timeout - tests will continue even if API is not ready
   test.beforeAll(async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+    const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000'
     console.log('[Diagnostic] Environment:', {
       NODE_ENV: process.env.NODE_ENV,
       CI: process.env.CI,
       NEXT_PUBLIC_API_URL: apiUrl,
-      NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL
+      NEXT_PUBLIC_WEB_URL: baseUrl
     })
 
     // Use Promise.race to prevent timeout
@@ -90,7 +91,12 @@ test.describe.serial('SignInPage', () => {
 
   test('should sign in with valid credentials', async ({ page }) => {
     // Diagnostic: Listen to all network requests
-    const requests: Array<{ url: string; method: string; status: number; duration: number }> = []
+    const requests: Array<{
+      url: string
+      method: string
+      status: number
+      duration: number
+    }> = []
     const requestStartTimes = new Map<string, number>()
 
     page.on('request', (request) => {
@@ -105,7 +111,12 @@ test.describe.serial('SignInPage', () => {
       const duration = Date.now() - startTime
       const status = response.status()
 
-      requests.push({ url, method: response.request().method(), status, duration })
+      requests.push({
+        url,
+        method: response.request().method(),
+        status,
+        duration
+      })
       console.log(`[Diagnostic] ← Response: ${status} ${url} (${duration}ms)`)
 
       // Log response body for auth-related requests
@@ -165,7 +176,10 @@ test.describe.serial('SignInPage', () => {
       })
 
       // Take a screenshot for debugging
-      await page.screenshot({ path: 'test-results/login-failure.png', fullPage: true })
+      await page.screenshot({
+        path: 'test-results/login-failure.png',
+        fullPage: true
+      })
       console.error('[Diagnostic]   Screenshot saved to test-results/login-failure.png')
 
       throw error
