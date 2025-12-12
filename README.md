@@ -166,11 +166,13 @@ docker-compose up -d
 pnpm init-db
 
 # Run
-pnpm dev           # Development
-pnpm test          # Unit tests
-pnpm playwright    # E2E tests
-pnpm storybook.    # Execute storybook
-pnpm build         # Production build
+pnpm dev                   # Development
+pnpm test                  # Unit tests
+pnpm playwright:install    # Install browsers before E2E tests
+pnpm playwright            # E2E tests
+pnpm storybook             # Execute Storybook
+pnpm storybook:test.       # Run Storybook interaction tests
+pnpm build                 # Production build
 ```
 
 ---
