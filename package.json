@@ -23,7 +23,7 @@
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "commit": "git-cz"
   },
-  "packageManager": "pnpm@10.26.0",
+  "packageManager": "10.26.0",
   "engines": {
     "node": ">=24.11.0"
   },
