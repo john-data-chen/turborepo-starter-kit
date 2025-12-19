@@ -336,17 +336,17 @@ I utilize a suite of specialized AI tools, each assigned specific roles to mimic
 | **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Gemini 3 Pro is the cheapest option in top models, perfect for writing test cases.                                                                               |
 | **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer.                                                                                        |
 
-### 🔌 MCP (Model Context Protocol) Integration
+**MCP (Model Context Protocol) Servers**
 
-I leverage **MCP** to give AI agents direct, secure access to development infrastructure, transforming them from passive chat bots into active engineering partners.
+MCP enables AI tools to interact directly with development infrastructure, eliminating context-switching overhead:
 
-| Server                                                        | Capability            | Engineering Value                                                                      |
-| :------------------------------------------------------------ | :-------------------- | :------------------------------------------------------------------------------------- |
-| **Chrome DevTools**                                           | Browser State Access  | Allows AI to see what I see, enabling "fix it for me" debugging of UI issues.          |
-| **Context7**                                                  | Live Documentation    | Fetches up-to-date documentation, preventing hallucinations about library APIs.        |
-| **Next.js**                                                   | Framework Diagnostics | Gives AI direct access to build errors and routing tables for instant troubleshooting. |
-| **Sequential Thinking**                                       | Problem Decomposition | Forces AI to plan complex tasks step-by-step, reducing error rates in large refactors. |
-| [playwright-mcp](https://github.com/microsoft/playwright-mcp) | E2E testing           | Add e2e tests by AI based on Behavior-Driven Development guidelines                    |
+| Server                                                                                                    | Integration Point     | Workflow Enhancement                                                |
+| --------------------------------------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------- |
+| [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp)                              | Browser state         | Debug without leaving the editor                                    |
+| [context7-mcp](https://github.com/upstash/context7)                                                       | Documentation         | Current library docs during development                             |
+| [nextjs-mcp](https://nextjs.org/docs/app/guides/mcp)                                                      | Framework diagnostics | Direct access to build errors and routes                            |
+| [sequential-thinking-mcp](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking) | Problem decomposition | Structured approach for complex decisions                           |
+| [playwright-mcp](https://github.com/microsoft/playwright-mcp)                                             | E2E testing           | Add e2e tests by AI based on Behavior-Driven Development guidelines |
 
 ### 📈 Measurable Impact
 
