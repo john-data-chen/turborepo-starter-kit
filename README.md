@@ -381,7 +381,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Performance | Near-instant HMR, incremental compilation             |
 | Caching     | Filesystem caching persists artifacts across restarts |
 
-[Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/blog/next-16#turbopack-file-system-caching-beta)
+[Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)
 
 ### Rspack (Nest.js Backend)
 
