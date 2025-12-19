@@ -24,7 +24,8 @@
     "commit": "git-cz"
   },
   "engines": {
-    "node": ">=24.11.0"
+    "node": ">=24.11.0",
+    "pnpm": ">=10.26.0"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,scss}": [
