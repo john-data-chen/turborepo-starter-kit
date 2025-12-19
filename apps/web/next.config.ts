@@ -18,7 +18,10 @@ const nextConfig: NextConfig = {
   },
   // enable react compiler will increase build time 30~40%
   reactCompiler: false,
-  experimental: { turbopackFileSystemCacheForDev: true },
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
+    turbopackFileSystemCacheForBuild: true
+  },
   // Configure output for Vercel
   output: 'standalone',
   // Ensure public directory is included in the build
