@@ -15,8 +15,8 @@ overrides:
   '@types/react-dom': ^19.2.3
   '@types/node': ^24.10.4
   lucide-react: ^0.562.0
-  oxlint: ^1.34.0
-  oxlint-tsgolint: ^0.9.2
+  oxlint: ^1.35.0
+  oxlint-tsgolint: ^0.10.0
   jsdom: ^27.3.0
   vitest: ^4.0.16
   '@vitest/coverage-v8': ^4.0.16
@@ -69,20 +69,20 @@ importers:
         specifier: ^16.2.7
         version: 16.2.7
       oxfmt:
-        specifier: ^0.19.0
-        version: 0.19.0
+        specifier: ^0.20.0
+        version: 0.20.0
       oxlint:
-        specifier: ^1.34.0
-        version: 1.34.0(oxlint-tsgolint@0.9.2)
+        specifier: ^1.35.0
+        version: 1.35.0(oxlint-tsgolint@0.10.0)
       oxlint-tsgolint:
-        specifier: ^0.9.2
-        version: 0.9.2
+        specifier: ^0.10.0
+        version: 0.10.0
       start-server-and-test:
         specifier: ^2.1.3
         version: 2.1.3
       turbo:
-        specifier: ^2.7.1
-        version: 2.7.1
+        specifier: ^2.7.2
+        version: 2.7.2
       unplugin-swc:
         specifier: ^1.5.9
         version: 1.5.9(@swc/core@1.15.7)(rollup@4.52.4)
@@ -93,32 +93,32 @@ importers:
   apps/api:
     dependencies:
       '@nestjs/common':
-        specifier: ^11.1.9
-        version: 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+        specifier: ^11.1.10
+        version: 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config':
         specifier: ^4.0.2
-        version: 4.0.2(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
+        version: 4.0.2(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
       '@nestjs/core':
-        specifier: ^11.1.9
-        version: 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+        specifier: ^11.1.10
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/jwt':
         specifier: ^11.0.2
-        version: 11.0.2(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+        version: 11.0.2(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))
       '@nestjs/mapped-types':
         specifier: ^2.1.0
-        version: 2.1.0(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
+        version: 2.1.0(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
       '@nestjs/mongoose':
         specifier: ^11.0.4
-        version: 11.0.4(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(mongoose@9.0.2)(rxjs@7.8.2)
+        version: 11.0.4(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(mongoose@9.0.2)(rxjs@7.8.2)
       '@nestjs/passport':
         specifier: ^11.0.5
-        version: 11.0.5(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
+        version: 11.0.5(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
       '@nestjs/platform-express':
-        specifier: ^11.1.9
-        version: 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)
+        specifier: ^11.1.10
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)
       '@nestjs/swagger':
         specifier: ^11.2.3
-        version: 11.2.3(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
+        version: 11.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -169,8 +169,8 @@ importers:
         specifier: ^11.0.9
         version: 11.0.9(chokidar@4.0.3)(typescript@5.9.3)
       '@nestjs/testing':
-        specifier: ^11.1.9
-        version: 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/platform-express@11.1.9)
+        specifier: ^11.1.10
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(@nestjs/platform-express@11.1.10)
       '@rspack/cli':
         specifier: ^1.6.8
         version: 1.6.8(@rspack/core@1.6.8)(@types/express@5.0.6)(webpack@5.103.0(@swc/core@1.15.7))
@@ -275,7 +275,7 @@ importers:
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@vercel/analytics':
         specifier: ^1.6.1
-        version: 1.6.1(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 1.6.1(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -289,17 +289,17 @@ importers:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
       next:
-        specifier: 16.1.0
-        version: 16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 16.1.1
+        version: 16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next-intl:
         specifier: ^4.6.1
-        version: 4.6.1(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 4.6.1(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       nextjs-toploader:
         specifier: ^3.9.17
-        version: 3.9.17(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 3.9.17(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -370,11 +370,11 @@ importers:
   packages/linter-config:
     devDependencies:
       oxlint:
-        specifier: ^1.34.0
-        version: 1.34.0(oxlint-tsgolint@0.9.2)
+        specifier: ^1.35.0
+        version: 1.35.0(oxlint-tsgolint@0.10.0)
       oxlint-tsgolint:
-        specifier: ^0.9.2
-        version: 0.9.2
+        specifier: ^0.10.0
+        version: 0.10.0
 
   packages/ui:
     dependencies:
@@ -1862,8 +1862,8 @@ packages:
       '@swc/core':
         optional: true
 
-  '@nestjs/common@11.1.9':
-    resolution: {integrity: sha512-zDntUTReRbAThIfSp3dQZ9kKqI+LjgLp5YZN5c1bgNRDuoeLySAoZg46Bg1a+uV8TMgIRziHocglKGNzr6l+bQ==}
+  '@nestjs/common@11.1.10':
+    resolution: {integrity: sha512-NoBzJFtq1bzHGia5Q5NO1pJNpx530nupbEu/auCWOFCGL5y8Zo8kiG28EXTCDfIhQgregEtn1Cs6H8WSLUC8kg==}
     peerDependencies:
       class-transformer: '>=0.4.1'
       class-validator: '>=0.13.2'
@@ -1881,8 +1881,8 @@ packages:
       '@nestjs/common': ^10.0.0 || ^11.0.0
       rxjs: ^7.1.0
 
-  '@nestjs/core@11.1.9':
-    resolution: {integrity: sha512-a00B0BM4X+9z+t3UxJqIZlemIwCQdYoPKrMcM+ky4z3pkqqG1eTWexjs+YXpGObnLnjtMPVKWlcZHp3adDYvUw==}
+  '@nestjs/core@11.1.10':
+    resolution: {integrity: sha512-LYpaacSb8X9dcRpeZxA7Mvi5Aozv11s6028ZNoVKY2j/fyThLd+xrkksg3u+sw7F8mipFaxS/LuVpoHQ/MrACg==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@nestjs/common': ^11.0.0
@@ -1931,8 +1931,8 @@ packages:
       '@nestjs/common': ^10.0.0 || ^11.0.0
       passport: ^0.5.0 || ^0.6.0 || ^0.7.0
 
-  '@nestjs/platform-express@11.1.9':
-    resolution: {integrity: sha512-GVd3+0lO0mJq2m1kl9hDDnVrX3Nd4oH3oDfklz0pZEVEVS0KVSp63ufHq2Lu9cyPdSBuelJr9iPm2QQ1yX+Kmw==}
+  '@nestjs/platform-express@11.1.10':
+    resolution: {integrity: sha512-B2kvhfY+pE41Y6MXuJs80T7yfYjXzqHkWVyZJ5CAa3nFN3X2OIca6RH+b+7l3wZ+4x1tgsv48Q2P8ZfrDqJWYQ==}
     peerDependencies:
       '@nestjs/common': ^11.0.0
       '@nestjs/core': ^11.0.0
@@ -1959,8 +1959,8 @@ packages:
       class-validator:
         optional: true
 
-  '@nestjs/testing@11.1.9':
-    resolution: {integrity: sha512-UFxerBDdb0RUNxQNj25pvkvNE7/vxKhXYWBt3QuwBFnYISzRIzhVlyIqLfoV5YI3zV0m0Nn4QAn1KM0zzwfEng==}
+  '@nestjs/testing@11.1.10':
+    resolution: {integrity: sha512-MiH1Cjtx84ceO/aCwcbuweJXnxpPzD7Qo2Ofiz2CIBy+YhH4u+NeGpGiqfoeEBOEEULQs1IaW2IbiPua7ChoYg==}
     peerDependencies:
       '@nestjs/common': ^11.0.0
       '@nestjs/core': ^11.0.0
@@ -1972,53 +1972,53 @@ packages:
       '@nestjs/platform-express':
         optional: true
 
-  '@next/env@16.1.0':
-    resolution: {integrity: sha512-Dd23XQeFHmhf3KBW76leYVkejHlCdB7erakC2At2apL1N08Bm+dLYNP+nNHh0tzUXfPQcNcXiQyacw0PG4Fcpw==}
+  '@next/env@16.1.1':
+    resolution: {integrity: sha512-3oxyM97Sr2PqiVyMyrZUtrtM3jqqFxOQJVuKclDsgj/L728iZt/GyslkN4NwarledZATCenbk4Offjk1hQmaAA==}
 
-  '@next/swc-darwin-arm64@16.1.0':
-    resolution: {integrity: sha512-onHq8dl8KjDb8taANQdzs3XmIqQWV3fYdslkGENuvVInFQzZnuBYYOG2HGHqqtvgmEU7xWzhgndXXxnhk4Z3fQ==}
+  '@next/swc-darwin-arm64@16.1.1':
+    resolution: {integrity: sha512-JS3m42ifsVSJjSTzh27nW+Igfha3NdBOFScr9C80hHGrWx55pTrVL23RJbqir7k7/15SKlrLHhh/MQzqBBYrQA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@16.1.0':
-    resolution: {integrity: sha512-Am6VJTp8KhLuAH13tPrAoVIXzuComlZlMwGr++o2KDjWiKPe3VwpxYhgV6I4gKls2EnsIMggL4y7GdXyDdJcFA==}
+  '@next/swc-darwin-x64@16.1.1':
+    resolution: {integrity: sha512-hbyKtrDGUkgkyQi1m1IyD3q4I/3m9ngr+V93z4oKHrPcmxwNL5iMWORvLSGAf2YujL+6HxgVvZuCYZfLfb4bGw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@16.1.0':
-    resolution: {integrity: sha512-fVicfaJT6QfghNyg8JErZ+EMNQ812IS0lmKfbmC01LF1nFBcKfcs4Q75Yy8IqnsCqH/hZwGhqzj3IGVfWV6vpA==}
+  '@next/swc-linux-arm64-gnu@16.1.1':
+    resolution: {integrity: sha512-/fvHet+EYckFvRLQ0jPHJCUI5/B56+2DpI1xDSvi80r/3Ez+Eaa2Yq4tJcRTaB1kqj/HrYKn8Yplm9bNoMJpwQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-musl@16.1.0':
-    resolution: {integrity: sha512-TojQnDRoX7wJWXEEwdfuJtakMDW64Q7NrxQPviUnfYJvAx5/5wcGE+1vZzQ9F17m+SdpFeeXuOr6v3jbyusYMQ==}
+  '@next/swc-linux-arm64-musl@16.1.1':
+    resolution: {integrity: sha512-MFHrgL4TXNQbBPzkKKur4Fb5ICEJa87HM7fczFs2+HWblM7mMLdco3dvyTI+QmLBU9xgns/EeeINSZD6Ar+oLg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@16.1.0':
-    resolution: {integrity: sha512-quhNFVySW4QwXiZkZ34SbfzNBm27vLrxZ2HwTfFFO1BBP0OY1+pI0nbyewKeq1FriqU+LZrob/cm26lwsiAi8Q==}
+  '@next/swc-linux-x64-gnu@16.1.1':
+    resolution: {integrity: sha512-20bYDfgOQAPUkkKBnyP9PTuHiJGM7HzNBbuqmD0jiFVZ0aOldz+VnJhbxzjcSabYsnNjMPsE0cyzEudpYxsrUQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@16.1.0':
-    resolution: {integrity: sha512-6JW0z2FZUK5iOVhUIWqE4RblAhUj1EwhZ/MwteGb//SpFTOHydnhbp3868gxalwea+mbOLWO6xgxj9wA9wNvNw==}
+  '@next/swc-linux-x64-musl@16.1.1':
+    resolution: {integrity: sha512-9pRbK3M4asAHQRkwaXwu601oPZHghuSC8IXNENgbBSyImHv/zY4K5udBusgdHkvJ/Tcr96jJwQYOll0qU8+fPA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@16.1.0':
-    resolution: {integrity: sha512-+DK/akkAvvXn5RdYN84IOmLkSy87SCmpofJPdB8vbLmf01BzntPBSYXnMvnEEv/Vcf3HYJwt24QZ/s6sWAwOMQ==}
+  '@next/swc-win32-arm64-msvc@16.1.1':
+    resolution: {integrity: sha512-bdfQkggaLgnmYrFkSQfsHfOhk/mCYmjnrbRCGgkMcoOBZ4n+TRRSLmT/CU5SATzlBJ9TpioUyBW/vWFXTqQRiA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@16.1.0':
-    resolution: {integrity: sha512-Tr0j94MphimCCks+1rtYPzQFK+faJuhHWCegU9S9gDlgyOk8Y3kPmO64UcjyzZAlligeBtYZ/2bEyrKq0d2wqQ==}
+  '@next/swc-win32-x64-msvc@16.1.1':
+    resolution: {integrity: sha512-Ncwbw2WJ57Al5OX0k4chM68DKhEPlrXBaSXDCi2kPi5f4d8b3ejr3RRJGfKBLrn2YJL5ezNS7w2TZLHSti8CMw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2028,113 +2028,113 @@ packages:
     engines: {node: ^14.18.0 || >=16.10.0, npm: '>=5.10.0'}
     hasBin: true
 
-  '@oxfmt/darwin-arm64@0.19.0':
-    resolution: {integrity: sha512-FfNpn3ximwbBZCaS8WL2vAXcFuQFQgvv/brO6D1WdmL4pnFOgfBIpFfkeFnKfdmdpxtg9O0wF8NTcdw5Iyl2Bg==}
+  '@oxfmt/darwin-arm64@0.20.0':
+    resolution: {integrity: sha512-bjR5dqvrd9gxKYfYR0ljUu3/T3+TuDVWcwA7d+tsfmx9lqidlw3zhgBTblnjF1mrd1zkPMoc5zzq86GeSEt1cA==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxfmt/darwin-x64@0.19.0':
-    resolution: {integrity: sha512-31FWUHAgTdTzOslz0zoA60UDEdeZZpeM6wTzCdffetwLbHkK8ZuCuzd+DauHZPNlSU8G72iw4lF7Zve9pSkK9w==}
+  '@oxfmt/darwin-x64@0.20.0':
+    resolution: {integrity: sha512-esUDes8FlJX3IY4TVjFLgZrnZlIIyPDlhkCaHgGR3+z2eHFZOvQu68kTSpZLCEJmGXdSpU5rlveycQ6n8tk9ew==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxfmt/linux-arm64-gnu@0.19.0':
-    resolution: {integrity: sha512-BkU9h39xKj/8uko82uFDJUharM8VxZO+uXKglpBnEC8XxWRzXocVCX4wpLT/Tfk4NyBy6fRM9DeISdZvQKZCjA==}
+  '@oxfmt/linux-arm64-gnu@0.20.0':
+    resolution: {integrity: sha512-irE0RO9B0R6ziQE6kUVZtZ6IuTdRyuumn1cPWhDfpa0XUa5sE0ly8pjVsvJbj/J9qerVtidU05txeXBB5CirQg==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxfmt/linux-arm64-musl@0.19.0':
-    resolution: {integrity: sha512-wWYk6Z/3iC+0zZAUkVCcEHui/IsUqsl+GEm9o6H7oARPLisXajbwCQcmqYslUD7eK6OXdYoWriBkEvSX/5dU4A==}
+  '@oxfmt/linux-arm64-musl@0.20.0':
+    resolution: {integrity: sha512-eXPBLwYJm26DCmwMwhelEwQMRwuGNaYhYZOhd+CYYsmVoF+h6L6dtjwj0Ovuu0Gqh18EL8vfsaoUvb+jr3vEBg==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxfmt/linux-x64-gnu@0.19.0':
-    resolution: {integrity: sha512-EB/b3or437E3uDie8QxeU3eA502JcmR1koyIBcH9rFidY0cMik58xvw54tXCY3WpMRxEXf37aHZzUSDP3qJnZg==}
+  '@oxfmt/linux-x64-gnu@0.20.0':
+    resolution: {integrity: sha512-dTPW38Hjgb7LoD2mNgyQGBaJ1hu5YgPrxImhl5Eb04eiws+ETCM0wrb2TWGduA+Nv3rHKn3vZEkMTEjklZXgRw==}
     cpu: [x64]
     os: [linux]
 
-  '@oxfmt/linux-x64-musl@0.19.0':
-    resolution: {integrity: sha512-htMB45orYoa1oFSjSmoGgcBDsD47/0joDfqpa8TrTDI5qsW5kAedpFR5wSce8Is9oj7SJ07omhOj96P/QiekWA==}
+  '@oxfmt/linux-x64-musl@0.20.0':
+    resolution: {integrity: sha512-b4duw9JGDK/kZoqrPNU9tBOOZQdUW8KJPZ7gW7z54X1eGSqCJ1PT0XLNmZ7SOA1BzQwQ0a3qmQWfFVOsH3a5bw==}
     cpu: [x64]
     os: [linux]
 
-  '@oxfmt/win32-arm64@0.19.0':
-    resolution: {integrity: sha512-x7+3Eh/VWdXEda+BUmAKYlhGrRJVera7RfWw47Yx8PJUGtNqBfeYGDbf0W59ceK8Z3bY3OinrmOO3d1jOuXzMQ==}
+  '@oxfmt/win32-arm64@0.20.0':
+    resolution: {integrity: sha512-XAzvBhw4K+Fe16dBaFgYAdob9WaM8RYEXl0ibbm5NlNaQEq+5bH9xwc0oaYlHFnLfcgXWmn9ceTAYqNlONQRNA==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxfmt/win32-x64@0.19.0':
-    resolution: {integrity: sha512-X+FKXBg2jx4CxF5SJs3xpx1msMw5JfxaGD5qBZYqlHGdryQsy6zUY+bQwDDcuy3Ic/WNGD8ZNEuggeYNE7jx/Q==}
+  '@oxfmt/win32-x64@0.20.0':
+    resolution: {integrity: sha512-fkJqHbJaoOMRmrjHSljyb4/7BgXO3xPLBsJSFGtm3mpfW0HHFbAKvd4/6njhqJz9KY+b3RWP1WssjFshcqQQ4w==}
     cpu: [x64]
     os: [win32]
 
-  '@oxlint-tsgolint/darwin-arm64@0.9.2':
-    resolution: {integrity: sha512-AujIYejzo2KgSWEn65FxkTwJ7Xkq106wUjyKYpljpEsrldO3QkW1yjj6osisoIjM/NdV0VO21YWjIGFIKd0/Ug==}
+  '@oxlint-tsgolint/darwin-arm64@0.10.0':
+    resolution: {integrity: sha512-mhBF/pjey0UdLL1ocU46Fqta+uJuRfqrLfDpcViRg17BtDiUNd8JY9iN2FOoS2HGSCAgCUjZ0AZkwkHwFs/VTw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxlint-tsgolint/darwin-x64@0.9.2':
-    resolution: {integrity: sha512-rNLCdo5DjSBcMjRwND4eOaboPD30Ssp0sfqS3KpHvo/0acQmQVCJwOaDUO7s2a77YPDJ6jSaGDWYo8HLnEXALg==}
+  '@oxlint-tsgolint/darwin-x64@0.10.0':
+    resolution: {integrity: sha512-roLi34mw/i1z+NS7luboix55SXyhVv38dNUTcRDkk+0lNPzI9ngrM+1y1N2oBSUmz5o9OZGnfJJ7BSGCw/fFEQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxlint-tsgolint/linux-arm64@0.9.2':
-    resolution: {integrity: sha512-xVL66moJftyrvmFSwstWDQ1bqVjn9HCSz+QJLLInf3/b51xZl5QbbGEPX4bf4SKut+7v5ZEM527DbVGg1yRmKQ==}
+  '@oxlint-tsgolint/linux-arm64@0.10.0':
+    resolution: {integrity: sha512-HL9NThPH1V2F6l9XhwNmhQZUknN4m4yQYEvQFFGfZTYN6cvEEBIiqfF4KvBUg8c0xadMbQlW+Ug7/ybA9Nn+CA==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint-tsgolint/linux-x64@0.9.2':
-    resolution: {integrity: sha512-sVH2DADkdUmFZhggaMM/r8NOdn2Ud1Az/nJoGbAiV82Lipw3Kp6y6yV2w+NWfmETHZZ+0gwlWTZod7NSmQuR5w==}
+  '@oxlint-tsgolint/linux-x64@0.10.0':
+    resolution: {integrity: sha512-Tw8QNq8ab+4+qE5krvJyMA66v6XE3GoiISRD5WmJ7YOxUnu//jSw/bBm7OYf/TNEZyeV0BTR7zXzhT5R+VFWlQ==}
     cpu: [x64]
     os: [linux]
 
-  '@oxlint-tsgolint/win32-arm64@0.9.2':
-    resolution: {integrity: sha512-0nvXzcY+W84Vo4pq5qh+0k3BsSb7ImzB9VaX5jIbjTNvx3EYS/KZzo0smhZ+drs43V4oNqJjgt2jnkeWF9Yj/g==}
+  '@oxlint-tsgolint/win32-arm64@0.10.0':
+    resolution: {integrity: sha512-LTogmTRwpwQqVaH1Ama8Wd5/VVZWBSF8v5qTbeT628+1F5Kt1V5eHBvyFh4oN18UCZlgqrh7DqkDhsieXUaC8Q==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxlint-tsgolint/win32-x64@0.9.2':
-    resolution: {integrity: sha512-OGx2CIyWjpOhFOL7tvVjLrKlkjJSOVZBe5S/jmBnxY+vRjFrXQr0zNUXy+S+ggIv6rsMlz3B+ixSriyUIKwDeQ==}
+  '@oxlint-tsgolint/win32-x64@0.10.0':
+    resolution: {integrity: sha512-ygqxx8EmNWy9/wCQS5uXq9k/o2EyYNwNxY1ZHNzlmZC/kV06Aemx5OBDafefawBNqH7xTZPfccUrjdiy+QlTrw==}
     cpu: [x64]
     os: [win32]
 
-  '@oxlint/darwin-arm64@1.34.0':
-    resolution: {integrity: sha512-euz3Dtp5/UE9axFkQnllOWp3gOwoqaxfZPUUwiW8HBelqhI9PRMVIfQ/akmwl+G5XixQZIgXkXQ5SJxnb1+Qww==}
+  '@oxlint/darwin-arm64@1.35.0':
+    resolution: {integrity: sha512-ieiYVHkNZPo77Hgrxav595wGS4rRNKuDNrljf+4xhwpJsddrxMpM64IQUf2IvR3MhK4FxdGzhhB6OVmGVHY5/w==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxlint/darwin-x64@1.34.0':
-    resolution: {integrity: sha512-XpmNviE5KOnHkhmQPwJJIBs+mJkr0qItTZBN4dz+O3p9gWN+gCqi3CBP71RiVahZw4qAEQSgY4wro+z0kx+erg==}
+  '@oxlint/darwin-x64@1.35.0':
+    resolution: {integrity: sha512-1jNHu3j66X5jKySvgtE+jGtjx4ye+xioAucVTi2IuROZO6keK2YG74pnD+9FT+DpWZAtWRZGoW0r0x6aN9sEEg==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxlint/linux-arm64-gnu@1.34.0':
-    resolution: {integrity: sha512-aCPdoEUGsJGF9y88vDYoaugG4IEGwSBa+usyuAvEVl3vTfuTmE0RDQEC1Z+WnJ3J/cIEpbgKOzS12VwbzFicjg==}
+  '@oxlint/linux-arm64-gnu@1.35.0':
+    resolution: {integrity: sha512-T1lc0UaYbTxZyqVpLfC7eipbauNG8pBpkaZEW4JGz8Y68rxTH7d9s+CF0zxUxNr5RCtcmT669RLVjQT7VrKVLg==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-arm64-musl@1.34.0':
-    resolution: {integrity: sha512-cMo72LQBFmdnVLRKLAHD94ZUBq5Z+aA9Y+RKzkjhCmJuef5ZAfKC24TJD/6c5LxGYzkwwmyySoQAHq5B69i3PQ==}
+  '@oxlint/linux-arm64-musl@1.35.0':
+    resolution: {integrity: sha512-7Wv5Pke9kwWKFycUziSHsmi3EM0389TLzraB0KE/MArrKxx30ycwfJ5PYoMj9ERoW+Ybs0txdaOF/xJy/XyYkg==}
     cpu: [arm64]
     os: [linux]
 
-  '@oxlint/linux-x64-gnu@1.34.0':
-    resolution: {integrity: sha512-+9xFhhkqgNIysEh+uHvcba8v4UtL1YzxuyDS2wTLdWrkGvIllCx5WjJItt3K/AhwatciksgNEXSo2Hh4fcQRog==}
+  '@oxlint/linux-x64-gnu@1.35.0':
+    resolution: {integrity: sha512-HDMPOzyVVy+rQl3H7UOq8oGHt7m1yaiWCanlhAu4jciK8dvXeO9OG/OQd74lD/h05IcJh93pCLEJ3wWOG8hTiQ==}
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/linux-x64-musl@1.34.0':
-    resolution: {integrity: sha512-qa7TL2DfEDdMeSP5UiU5JMs6D2PW7ZJAQ0WZYTgqDV8BlZ6nMkIYVBVIk3QPxIfkyxvfJVbG1RB3PkSWDcfwpA==}
+  '@oxlint/linux-x64-musl@1.35.0':
+    resolution: {integrity: sha512-kAPBBsUOM3HQQ6n3nnZauvFR9EoXqCSoj4O3OSXXarzsRTiItNrHabVUwxeswZEc+xMzQNR0FHEWg/d4QAAWLw==}
     cpu: [x64]
     os: [linux]
 
-  '@oxlint/win32-arm64@1.34.0':
-    resolution: {integrity: sha512-mSJumUveg1S3DiOgvsrVNAGuvenBbbC/zsfT1qhltT+GLhJ7RPBK2I/jz0fTdE+I7M9/as8yc0XJ/eY23y2amA==}
+  '@oxlint/win32-arm64@1.35.0':
+    resolution: {integrity: sha512-qrpBkkOASS0WT8ra9xmBRXOEliN6D/MV9JhI/68lFHrtLhfFuRwg4AjzjxrCWrQCnQ0WkvAVpJzu73F4ICLYZw==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxlint/win32-x64@1.34.0':
-    resolution: {integrity: sha512-izsDDt5WY4FSISCkPRLUYQD1aRaaEJkPLtEZe3DlioSUdUVAdvVbE+BGllFqR16DWfTTwO/6K4jDeooxQzTMjw==}
+  '@oxlint/win32-x64@1.35.0':
+    resolution: {integrity: sha512-yPFcj6umrhusnG/kMS5wh96vblsqZ0kArQJS+7kEOSJDrH+DsFWaDCsSRF8U6gmSmZJ26KVMU3C3TMpqDN4M1g==}
     cpu: [x64]
     os: [win32]
 
@@ -3594,8 +3594,8 @@ packages:
     resolution: {integrity: sha512-MADQgmZT1eKjp06jpI2yozxaU9uVs4GzzgSL+uEq7bVcJ9V1ZXQkeGNql1fsSI0gMy1vhvNTNbUqrx+pZfJVmg==}
     engines: {node: '>=18'}
 
-  '@tokenizer/inflate@0.3.1':
-    resolution: {integrity: sha512-4oeoZEBQdLdt5WmP/hx1KZ6D3/Oid/0cUb2nk4F0pTDAWy+KCH3/EnAkZF/bvckWo8I33EqBm01lIPgmgc8rCA==}
+  '@tokenizer/inflate@0.4.1':
+    resolution: {integrity: sha512-2mAv+8pkG6GIZiF1kNg1jAjh27IDxEPKwdGul3snfztFerfPGI1LjDezZp3i7BElXompqEtPmoPx6c2wgtWsOA==}
     engines: {node: '>=18'}
 
   '@tokenizer/token@0.3.0':
@@ -4344,8 +4344,8 @@ packages:
     resolution: {integrity: sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
 
-  body-parser@2.2.0:
-    resolution: {integrity: sha512-02qvAaxv8tp7fBa/mw1ga98OGm+eCbqzJOKoRt70sLmfEEi+jyBYVTDGfCL/k06/4EMk/z01gCe7HoCH/f2LTg==}
+  body-parser@2.2.1:
+    resolution: {integrity: sha512-nfDwkulwiZYQIGwxdy0RUmowMhKcFVcYXUU7m4QlKYim1rUtg83xm2yjZ40QjDuc291AJjjeSc9b++AWHSgSHw==}
     engines: {node: '>=18'}
 
   bonjour-service@1.3.0:
@@ -5170,8 +5170,8 @@ packages:
     resolution: {integrity: sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==}
     engines: {node: '>= 0.10.0'}
 
-  express@5.1.0:
-    resolution: {integrity: sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA==}
+  express@5.2.1:
+    resolution: {integrity: sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==}
     engines: {node: '>= 18'}
 
   ext-list@2.2.2:
@@ -5228,8 +5228,8 @@ packages:
     resolution: {integrity: sha512-BfHZtG/l9iMm4Ecianu7P8HRD2tBHLtjXinm4X62XBOYzi7CYA7jyqfJzOvXHqzVrVPYqBo2/GvbARMaaJkKVg==}
     engines: {node: '>=18'}
 
-  file-type@21.1.0:
-    resolution: {integrity: sha512-boU4EHmP3JXkwDo4uhyBhTt5pPstxB6eEXKJBu2yu2l7aAMMm7QQYQEzssJmKReZYrFdFOJS8koVo6bXIBGDqA==}
+  file-type@21.1.1:
+    resolution: {integrity: sha512-ifJXo8zUqbQ/bLbl9sFoqHNTNWbnPY1COImFfM6CCy7z+E+jC1eY9YfOKkx0fckIg+VljAy2/87T61fp0+eEkg==}
     engines: {node: '>=20'}
 
   filename-reserved-regex@3.0.0:
@@ -6553,8 +6553,8 @@ packages:
       react: ^19.2.3
       react-dom: ^19.2.3
 
-  next@16.1.0:
-    resolution: {integrity: sha512-Y+KbmDbefYtHDDQKLNrmzE/YYzG2msqo2VXhzh5yrJ54tx/6TmGdkR5+kP9ma7i7LwZpZMfoY3m/AoPPPKxtVw==}
+  next@16.1.1:
+    resolution: {integrity: sha512-QI+T7xrxt1pF6SQ/JYFz95ro/mg/1Znk5vBebsWwbpejj1T0A23hO7GYEaVac9QUOT2BIMiuzm0L99ooq7k0/w==}
     engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
@@ -6677,21 +6677,21 @@ packages:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
 
-  oxfmt@0.19.0:
-    resolution: {integrity: sha512-tPTa3j4kXdJBzBRlK9wR0/Lnd4J21rzg29cRr/VVqqfvdhZs6M+Q6TkL+rxI/IQpq8ZY8L3c+KZvga/RgeuMsg==}
+  oxfmt@0.20.0:
+    resolution: {integrity: sha512-+7f8eV8iaK3tENN/FUVxZM1g78HjPehybN8/+/dvEA1O893Dcvk6O7/Q1wTQOHMD7wvdwWdujKl+Uo8QMiKDrQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  oxlint-tsgolint@0.9.2:
-    resolution: {integrity: sha512-UKLudgnuEPyAzpLk5FeZyCdjRaHQE6cSqmlTBwmEp2lGJ1wN59qGc4gfjAXVSCrKrd30jXDGf5/zQ3CTa6BNNQ==}
+  oxlint-tsgolint@0.10.0:
+    resolution: {integrity: sha512-LDDSIu5J/4D4gFUuQQIEQpAC6maNEbMg4nC8JL/+Pe0cUDR86dtVZ09E2x5MwCh8f9yfktoaxt5x6UIVyzrajg==}
     hasBin: true
 
-  oxlint@1.34.0:
-    resolution: {integrity: sha512-Ni0N8wAiKlgaYkI/Yz4VrutfVIZgd2shDtS+loQxyBTwO8YUAnk3+g7OQ1cyI/aatHiFwvFNfV/uvZyHUtyPpA==}
+  oxlint@1.35.0:
+    resolution: {integrity: sha512-QDX1aUgaiqznkGfTM2qHwva2wtKqhVoqPSVXrnPz+yLUhlNadikD3QRuRtppHl7WGuy3wG6nKAuR8lash3aWSg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
-      oxlint-tsgolint: ^0.9.2
+      oxlint-tsgolint: ^0.10.0
     peerDependenciesMeta:
       oxlint-tsgolint:
         optional: true
@@ -7743,38 +7743,38 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  turbo-darwin-64@2.7.1:
-    resolution: {integrity: sha512-EaA7UfYujbY9/Ku0WqPpvfctxm91h9LF7zo8vjielz+omfAPB54Si+ADmUoBczBDC6RoLgbURC3GmUW2alnjJg==}
+  turbo-darwin-64@2.7.2:
+    resolution: {integrity: sha512-dxY3X6ezcT5vm3coK6VGixbrhplbQMwgNsCsvZamS/+/6JiebqW9DKt4NwpgYXhDY2HdH00I7FWs3wkVuan4rA==}
     cpu: [x64]
     os: [darwin]
 
-  turbo-darwin-arm64@2.7.1:
-    resolution: {integrity: sha512-/pWGSygtBugd7sKQOeMm+jKY3qN1vyB0RiHBM6bN/6qUOo2VHo8IQwBTIaSgINN4Ue6fzEU+WfePNvonSU9yXw==}
+  turbo-darwin-arm64@2.7.2:
+    resolution: {integrity: sha512-1bXmuwPLqNFt3mzrtYcVx1sdJ8UYb124Bf48nIgcpMCGZy3kDhgxNv1503kmuK/37OGOZbsWSQFU4I08feIuSg==}
     cpu: [arm64]
     os: [darwin]
 
-  turbo-linux-64@2.7.1:
-    resolution: {integrity: sha512-Y5H11mdhASw/dJuRFyGtTCDFX5/MPT73EKsVEiHbw5MkFc77lx3nMc5L/Q7bKEhef/vYJAsAb61QuHsB6qdP8Q==}
+  turbo-linux-64@2.7.2:
+    resolution: {integrity: sha512-kP+TiiMaiPugbRlv57VGLfcjFNsFbo8H64wMBCPV2270Or2TpDCBULMzZrvEsvWFjT3pBFvToYbdp8/Kw0jAQg==}
     cpu: [x64]
     os: [linux]
 
-  turbo-linux-arm64@2.7.1:
-    resolution: {integrity: sha512-L/r77jD7cqIEXoyu2LGBUrTY5GJSi/XcGLsQ2nZ/fefk6x3MpljTvwsXUVG1BUkiBPc4zaKRj6yGyWMo5MbLxQ==}
+  turbo-linux-arm64@2.7.2:
+    resolution: {integrity: sha512-VDJwQ0+8zjAfbyY6boNaWfP6RIez4ypKHxwkuB6SrWbOSk+vxTyW5/hEjytTwK8w/TsbKVcMDyvpora8tEsRFw==}
     cpu: [arm64]
     os: [linux]
 
-  turbo-windows-64@2.7.1:
-    resolution: {integrity: sha512-rkeuviXZ/1F7lCare7TNKvYtT/SH9dZR55FAMrxrFRh88b+ZKwlXEBfq5/1OctEzRUo/VLIm+s5LJMOEy+QshA==}
+  turbo-windows-64@2.7.2:
+    resolution: {integrity: sha512-rPjqQXVnI6A6oxgzNEE8DNb6Vdj2Wwyhfv3oDc+YM3U9P7CAcBIlKv/868mKl4vsBtz4ouWpTQNXG8vljgJO+w==}
     cpu: [x64]
     os: [win32]
 
-  turbo-windows-arm64@2.7.1:
-    resolution: {integrity: sha512-1rZk9htm3+iP/rWCf/h4/DFQey9sMs2TJPC4T5QQfwqAdMWsphgrxBuFqHdxczlbBCgbWNhVw0CH2bTxe1/GFg==}
+  turbo-windows-arm64@2.7.2:
+    resolution: {integrity: sha512-tcnHvBhO515OheIFWdxA+qUvZzNqqcHbLVFc1+n+TJ1rrp8prYicQtbtmsiKgMvr/54jb9jOabU62URAobnB7g==}
     cpu: [arm64]
     os: [win32]
 
-  turbo@2.7.1:
-    resolution: {integrity: sha512-zAj9jGc7VDvuAo/5Jbos4QTtWz9uUpkMhMKGyTjDJkx//hdL2bM31qQoJSAbU+7JyK5vb0LPzpwf6DUt3zayqg==}
+  turbo@2.7.2:
+    resolution: {integrity: sha512-5JIA5aYBAJSAhrhbyag1ZuMSgUZnHtI+Sq3H8D3an4fL8PeF+L1yYvbEJg47akP1PFfATMf5ehkqFnxfkmuwZQ==}
     hasBin: true
 
   tw-animate-css@1.4.0:
@@ -9700,9 +9700,9 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+  '@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
     dependencies:
-      file-type: 21.1.0
+      file-type: 21.1.1
       iterare: 1.2.1
       load-esm: 1.0.3
       reflect-metadata: 0.2.2
@@ -9715,17 +9715,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nestjs/config@4.0.2(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@nestjs/config@4.0.2(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       dotenv: 17.2.3
       dotenv-expand: 12.0.1
       lodash: 4.17.21
       rxjs: 7.8.2
 
-  '@nestjs/core@11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+  '@nestjs/core@11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nuxt/opencollective': 0.4.1
       fast-safe-stringify: 2.1.1
       iterare: 1.2.1
@@ -9735,40 +9735,40 @@ snapshots:
       tslib: 2.8.1
       uid: 2.0.2
     optionalDependencies:
-      '@nestjs/platform-express': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)
+      '@nestjs/platform-express': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)
 
-  '@nestjs/jwt@11.0.2(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))':
+  '@nestjs/jwt@11.0.2(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@types/jsonwebtoken': 9.0.10
       jsonwebtoken: 9.0.3
 
-  '@nestjs/mapped-types@2.1.0(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)':
+  '@nestjs/mapped-types@2.1.0(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
     optionalDependencies:
       class-transformer: 0.5.1
       class-validator: 0.14.3
 
-  '@nestjs/mongoose@11.0.4(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(mongoose@9.0.2)(rxjs@7.8.2)':
+  '@nestjs/mongoose@11.0.4(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(mongoose@9.0.2)(rxjs@7.8.2)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       mongoose: 9.0.2
       rxjs: 7.8.2
 
-  '@nestjs/passport@11.0.5(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)':
+  '@nestjs/passport@11.0.5(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       passport: 0.7.0
 
-  '@nestjs/platform-express@11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)':
+  '@nestjs/platform-express@11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       cors: 2.8.5
-      express: 5.1.0
+      express: 5.2.1
       multer: 2.0.2
       path-to-regexp: 8.3.0
       tslib: 2.8.1
@@ -9786,12 +9786,12 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@nestjs/swagger@11.2.3(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)':
+  '@nestjs/swagger@11.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/mapped-types': 2.1.0(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/mapped-types': 2.1.0(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
       js-yaml: 4.1.1
       lodash: 4.17.21
       path-to-regexp: 8.3.0
@@ -9801,108 +9801,108 @@ snapshots:
       class-transformer: 0.5.1
       class-validator: 0.14.3
 
-  '@nestjs/testing@11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/platform-express@11.1.9)':
+  '@nestjs/testing@11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(@nestjs/platform-express@11.1.10)':
     dependencies:
-      '@nestjs/common': 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       tslib: 2.8.1
     optionalDependencies:
-      '@nestjs/platform-express': 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)
+      '@nestjs/platform-express': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)
 
-  '@next/env@16.1.0': {}
+  '@next/env@16.1.1': {}
 
-  '@next/swc-darwin-arm64@16.1.0':
+  '@next/swc-darwin-arm64@16.1.1':
     optional: true
 
-  '@next/swc-darwin-x64@16.1.0':
+  '@next/swc-darwin-x64@16.1.1':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@16.1.0':
+  '@next/swc-linux-arm64-gnu@16.1.1':
     optional: true
 
-  '@next/swc-linux-arm64-musl@16.1.0':
+  '@next/swc-linux-arm64-musl@16.1.1':
     optional: true
 
-  '@next/swc-linux-x64-gnu@16.1.0':
+  '@next/swc-linux-x64-gnu@16.1.1':
     optional: true
 
-  '@next/swc-linux-x64-musl@16.1.0':
+  '@next/swc-linux-x64-musl@16.1.1':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@16.1.0':
+  '@next/swc-win32-arm64-msvc@16.1.1':
     optional: true
 
-  '@next/swc-win32-x64-msvc@16.1.0':
+  '@next/swc-win32-x64-msvc@16.1.1':
     optional: true
 
   '@nuxt/opencollective@0.4.1':
     dependencies:
       consola: 3.4.2
 
-  '@oxfmt/darwin-arm64@0.19.0':
+  '@oxfmt/darwin-arm64@0.20.0':
     optional: true
 
-  '@oxfmt/darwin-x64@0.19.0':
+  '@oxfmt/darwin-x64@0.20.0':
     optional: true
 
-  '@oxfmt/linux-arm64-gnu@0.19.0':
+  '@oxfmt/linux-arm64-gnu@0.20.0':
     optional: true
 
-  '@oxfmt/linux-arm64-musl@0.19.0':
+  '@oxfmt/linux-arm64-musl@0.20.0':
     optional: true
 
-  '@oxfmt/linux-x64-gnu@0.19.0':
+  '@oxfmt/linux-x64-gnu@0.20.0':
     optional: true
 
-  '@oxfmt/linux-x64-musl@0.19.0':
+  '@oxfmt/linux-x64-musl@0.20.0':
     optional: true
 
-  '@oxfmt/win32-arm64@0.19.0':
+  '@oxfmt/win32-arm64@0.20.0':
     optional: true
 
-  '@oxfmt/win32-x64@0.19.0':
+  '@oxfmt/win32-x64@0.20.0':
     optional: true
 
-  '@oxlint-tsgolint/darwin-arm64@0.9.2':
+  '@oxlint-tsgolint/darwin-arm64@0.10.0':
     optional: true
 
-  '@oxlint-tsgolint/darwin-x64@0.9.2':
+  '@oxlint-tsgolint/darwin-x64@0.10.0':
     optional: true
 
-  '@oxlint-tsgolint/linux-arm64@0.9.2':
+  '@oxlint-tsgolint/linux-arm64@0.10.0':
     optional: true
 
-  '@oxlint-tsgolint/linux-x64@0.9.2':
+  '@oxlint-tsgolint/linux-x64@0.10.0':
     optional: true
 
-  '@oxlint-tsgolint/win32-arm64@0.9.2':
+  '@oxlint-tsgolint/win32-arm64@0.10.0':
     optional: true
 
-  '@oxlint-tsgolint/win32-x64@0.9.2':
+  '@oxlint-tsgolint/win32-x64@0.10.0':
     optional: true
 
-  '@oxlint/darwin-arm64@1.34.0':
+  '@oxlint/darwin-arm64@1.35.0':
     optional: true
 
-  '@oxlint/darwin-x64@1.34.0':
+  '@oxlint/darwin-x64@1.35.0':
     optional: true
 
-  '@oxlint/linux-arm64-gnu@1.34.0':
+  '@oxlint/linux-arm64-gnu@1.35.0':
     optional: true
 
-  '@oxlint/linux-arm64-musl@1.34.0':
+  '@oxlint/linux-arm64-musl@1.35.0':
     optional: true
 
-  '@oxlint/linux-x64-gnu@1.34.0':
+  '@oxlint/linux-x64-gnu@1.35.0':
     optional: true
 
-  '@oxlint/linux-x64-musl@1.34.0':
+  '@oxlint/linux-x64-musl@1.35.0':
     optional: true
 
-  '@oxlint/win32-arm64@1.34.0':
+  '@oxlint/win32-arm64@1.35.0':
     optional: true
 
-  '@oxlint/win32-x64@1.34.0':
+  '@oxlint/win32-x64@1.35.0':
     optional: true
 
   '@parcel/watcher-android-arm64@2.5.1':
@@ -11341,10 +11341,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tokenizer/inflate@0.3.1':
+  '@tokenizer/inflate@0.4.1':
     dependencies:
       debug: 4.4.3
-      fflate: 0.8.2
       token-types: 6.1.1
     transitivePeerDependencies:
       - supports-color
@@ -11650,9 +11649,9 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vercel/analytics@1.6.1(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
+  '@vercel/analytics@1.6.1(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
     optionalDependencies:
-      next: 16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
 
   '@vitejs/plugin-react-swc@4.2.2(vite@7.1.10(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))':
@@ -12190,13 +12189,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  body-parser@2.2.0:
+  body-parser@2.2.1:
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
       debug: 4.4.3
       http-errors: 2.0.0
-      iconv-lite: 0.6.3
+      iconv-lite: 0.7.0
       on-finished: 2.4.1
       qs: 6.14.0
       raw-body: 3.0.1
@@ -13033,15 +13032,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  express@5.1.0:
+  express@5.2.1:
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.2.0
+      body-parser: 2.2.1
       content-disposition: 1.0.0
       content-type: 1.0.5
       cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
+      depd: 2.0.0
       encodeurl: 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
@@ -13117,9 +13117,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  file-type@21.1.0:
+  file-type@21.1.1:
     dependencies:
-      '@tokenizer/inflate': 0.3.1
+      '@tokenizer/inflate': 0.4.1
       strtok3: 10.3.4
       token-types: 6.1.1
       uint8array-extras: 1.5.0
@@ -14640,13 +14640,13 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.6.1: {}
 
-  next-intl@4.6.1(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
+  next-intl@4.6.1(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.5.10
       '@parcel/watcher': 2.5.1
       '@swc/core': 1.15.7
       negotiator: 1.0.0
-      next: 16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next-intl-swc-plugin-extractor: 4.6.1
       po-parser: 2.0.0
       react: 19.2.3
@@ -14661,9 +14661,9 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
-      '@next/env': 16.1.0
+      '@next/env': 16.1.1
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.8.16
       caniuse-lite: 1.0.30001750
@@ -14672,23 +14672,23 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       styled-jsx: 5.1.6(react@19.2.3)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 16.1.0
-      '@next/swc-darwin-x64': 16.1.0
-      '@next/swc-linux-arm64-gnu': 16.1.0
-      '@next/swc-linux-arm64-musl': 16.1.0
-      '@next/swc-linux-x64-gnu': 16.1.0
-      '@next/swc-linux-x64-musl': 16.1.0
-      '@next/swc-win32-arm64-msvc': 16.1.0
-      '@next/swc-win32-x64-msvc': 16.1.0
+      '@next/swc-darwin-arm64': 16.1.1
+      '@next/swc-darwin-x64': 16.1.1
+      '@next/swc-linux-arm64-gnu': 16.1.1
+      '@next/swc-linux-arm64-musl': 16.1.1
+      '@next/swc-linux-x64-gnu': 16.1.1
+      '@next/swc-linux-x64-musl': 16.1.1
+      '@next/swc-win32-arm64-msvc': 16.1.1
+      '@next/swc-win32-x64-msvc': 16.1.1
       '@playwright/test': 1.57.0
       sharp: 0.34.4
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-toploader@3.9.17(next@16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  nextjs-toploader@3.9.17(next@16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
-      next: 16.1.0(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       nprogress: 0.2.0
       prop-types: 15.8.1
       react: 19.2.3
@@ -14805,39 +14805,39 @@ snapshots:
 
   os-tmpdir@1.0.2: {}
 
-  oxfmt@0.19.0:
+  oxfmt@0.20.0:
     dependencies:
       tinypool: 2.0.0
     optionalDependencies:
-      '@oxfmt/darwin-arm64': 0.19.0
-      '@oxfmt/darwin-x64': 0.19.0
-      '@oxfmt/linux-arm64-gnu': 0.19.0
-      '@oxfmt/linux-arm64-musl': 0.19.0
-      '@oxfmt/linux-x64-gnu': 0.19.0
-      '@oxfmt/linux-x64-musl': 0.19.0
-      '@oxfmt/win32-arm64': 0.19.0
-      '@oxfmt/win32-x64': 0.19.0
+      '@oxfmt/darwin-arm64': 0.20.0
+      '@oxfmt/darwin-x64': 0.20.0
+      '@oxfmt/linux-arm64-gnu': 0.20.0
+      '@oxfmt/linux-arm64-musl': 0.20.0
+      '@oxfmt/linux-x64-gnu': 0.20.0
+      '@oxfmt/linux-x64-musl': 0.20.0
+      '@oxfmt/win32-arm64': 0.20.0
+      '@oxfmt/win32-x64': 0.20.0
 
-  oxlint-tsgolint@0.9.2:
+  oxlint-tsgolint@0.10.0:
     optionalDependencies:
-      '@oxlint-tsgolint/darwin-arm64': 0.9.2
-      '@oxlint-tsgolint/darwin-x64': 0.9.2
-      '@oxlint-tsgolint/linux-arm64': 0.9.2
-      '@oxlint-tsgolint/linux-x64': 0.9.2
-      '@oxlint-tsgolint/win32-arm64': 0.9.2
-      '@oxlint-tsgolint/win32-x64': 0.9.2
+      '@oxlint-tsgolint/darwin-arm64': 0.10.0
+      '@oxlint-tsgolint/darwin-x64': 0.10.0
+      '@oxlint-tsgolint/linux-arm64': 0.10.0
+      '@oxlint-tsgolint/linux-x64': 0.10.0
+      '@oxlint-tsgolint/win32-arm64': 0.10.0
+      '@oxlint-tsgolint/win32-x64': 0.10.0
 
-  oxlint@1.34.0(oxlint-tsgolint@0.9.2):
+  oxlint@1.35.0(oxlint-tsgolint@0.10.0):
     optionalDependencies:
-      '@oxlint/darwin-arm64': 1.34.0
-      '@oxlint/darwin-x64': 1.34.0
-      '@oxlint/linux-arm64-gnu': 1.34.0
-      '@oxlint/linux-arm64-musl': 1.34.0
-      '@oxlint/linux-x64-gnu': 1.34.0
-      '@oxlint/linux-x64-musl': 1.34.0
-      '@oxlint/win32-arm64': 1.34.0
-      '@oxlint/win32-x64': 1.34.0
-      oxlint-tsgolint: 0.9.2
+      '@oxlint/darwin-arm64': 1.35.0
+      '@oxlint/darwin-x64': 1.35.0
+      '@oxlint/linux-arm64-gnu': 1.35.0
+      '@oxlint/linux-arm64-musl': 1.35.0
+      '@oxlint/linux-x64-gnu': 1.35.0
+      '@oxlint/linux-x64-musl': 1.35.0
+      '@oxlint/win32-arm64': 1.35.0
+      '@oxlint/win32-x64': 1.35.0
+      oxlint-tsgolint: 0.10.0
 
   p-cancelable@3.0.0: {}
 
@@ -16030,32 +16030,32 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  turbo-darwin-64@2.7.1:
+  turbo-darwin-64@2.7.2:
     optional: true
 
-  turbo-darwin-arm64@2.7.1:
+  turbo-darwin-arm64@2.7.2:
     optional: true
 
-  turbo-linux-64@2.7.1:
+  turbo-linux-64@2.7.2:
     optional: true
 
-  turbo-linux-arm64@2.7.1:
+  turbo-linux-arm64@2.7.2:
     optional: true
 
-  turbo-windows-64@2.7.1:
+  turbo-windows-64@2.7.2:
     optional: true
 
-  turbo-windows-arm64@2.7.1:
+  turbo-windows-arm64@2.7.2:
     optional: true
 
-  turbo@2.7.1:
+  turbo@2.7.2:
     optionalDependencies:
-      turbo-darwin-64: 2.7.1
-      turbo-darwin-arm64: 2.7.1
-      turbo-linux-64: 2.7.1
-      turbo-linux-arm64: 2.7.1
-      turbo-windows-64: 2.7.1
-      turbo-windows-arm64: 2.7.1
+      turbo-darwin-64: 2.7.2
+      turbo-darwin-arm64: 2.7.2
+      turbo-linux-64: 2.7.2
+      turbo-linux-arm64: 2.7.2
+      turbo-windows-64: 2.7.2
+      turbo-windows-arm64: 2.7.2
 
   tw-animate-css@1.4.0: {}
 
