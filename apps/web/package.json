@@ -44,7 +44,7 @@
     "sonner": "^2.0.7",
     "tailwindcss": "^*",
     "zod": "^4.3.5",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
