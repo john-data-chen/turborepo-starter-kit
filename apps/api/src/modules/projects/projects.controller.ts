@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiBody,
@@ -6,15 +16,15 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags
-} from "@nestjs/swagger"
+} from "@nestjs/swagger";
 
-import { CurrentUser } from "../auth/decorators/current-user.decorator"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
-import { CreateProjectDto } from "./dto/create-project.dto"
-import { UpdateProjectDto } from "./dto/update-project.dto"
-import { ProjectsService } from "./projects.service"
-import { Project } from "./schemas/projects.schema"
+import { CreateProjectDto } from "./dto/create-project.dto";
+import { UpdateProjectDto } from "./dto/update-project.dto";
+import { ProjectsService } from "./projects.service";
+import { Project } from "./schemas/projects.schema";
 
 @ApiTags("projects")
 @Controller("projects")
@@ -40,8 +50,8 @@ export class ProjectsController {
     const projectData = {
       ...createProjectDto,
       owner: user._id
-    }
-    return this.projectsService.create(projectData)
+    };
+    return this.projectsService.create(projectData);
   }
 
   @Get()
@@ -58,7 +68,7 @@ export class ProjectsController {
     @Query("boardId") boardId: string,
     @CurrentUser() _user: { _id: string }
   ) {
-    return this.projectsService.findByBoardId(boardId)
+    return this.projectsService.findByBoardId(boardId);
   }
 
   @Patch(":id")
@@ -79,11 +89,11 @@ export class ProjectsController {
     @CurrentUser() user: { _id: string }
   ) {
     try {
-      const updatedProject = await this.projectsService.update(id, updateProjectDto, user._id)
-      return updatedProject
+      const updatedProject = await this.projectsService.update(id, updateProjectDto, user._id);
+      return updatedProject;
     } catch (error) {
-      console.error("Error in update endpoint:", error)
-      throw error // Let the global exception filter handle it
+      console.error("Error in update endpoint:", error);
+      throw error; // Let the global exception filter handle it
     }
   }
 
@@ -99,11 +109,11 @@ export class ProjectsController {
   @ApiResponse({ status: 404, description: "Project not found" })
   async remove(@Param("id") id: string, @CurrentUser() user: { _id: string }) {
     try {
-      await this.projectsService.remove(id, user._id)
-      return { success: true, message: "Project deleted successfully" }
+      await this.projectsService.remove(id, user._id);
+      return { success: true, message: "Project deleted successfully" };
     } catch (error) {
-      console.error("Error in delete endpoint:", error)
-      throw error
+      console.error("Error in delete endpoint:", error);
+      throw error;
     }
   }
 }

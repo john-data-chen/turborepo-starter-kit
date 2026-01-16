@@ -1,9 +1,9 @@
 // Get API URL from environment variable or fallback to local development URL
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export const URL_PARAMS = {
   LOGIN_SUCCESS: "login_success=true"
-} as const
+} as const;
 
 export const ROUTES = {
   HOME: "/",
@@ -15,4 +15,4 @@ export const ROUTES = {
   BOARDS: {
     OVERVIEW_PAGE: "/boards"
   }
-} as const
+} as const;

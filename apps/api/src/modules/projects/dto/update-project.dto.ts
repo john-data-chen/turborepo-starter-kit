@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from "class-validator"
+import { IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from "class-validator";
 
 export enum ProjectStatus {
   TODO = "TODO",
@@ -10,24 +10,24 @@ export enum ProjectStatus {
 export class UpdateProjectDto {
   @IsString()
   @IsOptional()
-  title?: string
+  title?: string;
 
   @IsString()
   @IsOptional()
-  description?: string | null
+  description?: string | null;
 
   @IsEnum(ProjectStatus)
   @IsOptional()
-  status?: ProjectStatus
+  status?: ProjectStatus;
 
   @IsDateString()
   @IsOptional()
-  dueDate?: string
+  dueDate?: string;
 
   @IsMongoId()
   @IsOptional()
-  assigneeId?: string | null
+  assigneeId?: string | null;
 
   @IsOptional()
-  orderInBoard?: number
+  orderInBoard?: number;
 }

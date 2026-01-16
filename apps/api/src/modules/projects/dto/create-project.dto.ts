@@ -1,11 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateProjectDto {
   @ApiProperty({ description: "The title of the project" })
   @IsString()
   @IsNotEmpty()
-  title: string
+  title: string;
 
   @ApiProperty({
     description: "The description of the project",
@@ -13,17 +13,17 @@ export class CreateProjectDto {
   })
   @IsString()
   @IsOptional()
-  description?: string
+  description?: string;
 
   @ApiProperty({ description: "The ID of the board this project belongs to" })
   @IsString()
   @IsNotEmpty()
-  boardId: string
+  boardId: string;
 
   @ApiProperty({ description: "The ID of the user who owns this project" })
   @IsString()
   @IsNotEmpty()
-  owner: string
+  owner: string;
 
   @ApiProperty({
     description: "The order of the project in the board",
@@ -31,5 +31,5 @@ export class CreateProjectDto {
     default: 0
   })
   @IsOptional()
-  orderInBoard?: number
+  orderInBoard?: number;
 }

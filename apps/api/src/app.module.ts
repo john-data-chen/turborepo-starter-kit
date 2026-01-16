@@ -1,14 +1,14 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
-import { ConfigModule } from "@nestjs/config"
+import { Logger, MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 
-import { AppController } from "./app.controller"
-import { AppService } from "./app.service"
-import { AuthModule } from "./modules/auth/auth.module"
-import { BoardsModule } from "./modules/boards/boards.module"
-import { DatabaseModule } from "./modules/database/database.module"
-import { ProjectsModule } from "./modules/projects/projects.module"
-import { TasksModule } from "./modules/tasks/tasks.module"
-import { UsersModule } from "./modules/users/users.module"
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { AuthModule } from "./modules/auth/auth.module";
+import { BoardsModule } from "./modules/boards/boards.module";
+import { DatabaseModule } from "./modules/database/database.module";
+import { ProjectsModule } from "./modules/projects/projects.module";
+import { TasksModule } from "./modules/tasks/tasks.module";
+import { UsersModule } from "./modules/users/users.module";
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { UsersModule } from "./modules/users/users.module"
   providers: [AppService]
 })
 export class AppModule implements NestModule {
-  private readonly logger = new Logger("AppModule")
+  private readonly logger = new Logger("AppModule");
 
   configure(_consumer: MiddlewareConsumer) {
     // HTTP request/response logging removed to reduce log verbosity

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Form,
@@ -10,46 +10,46 @@ import {
   FormLabel,
   FormMessage,
   Input
-} from "@repo/ui"
-import { useTranslations } from "next-intl"
-import React from "react"
-import { ControllerRenderProps, useForm } from "react-hook-form"
-import * as z from "zod"
+} from "@repo/ui";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { ControllerRenderProps, useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { defaultEmail } from "@/constants/demoData"
-import { useAuthForm } from "@/hooks/useAuth"
+import { defaultEmail } from "@/constants/demoData";
+import { useAuthForm } from "@/hooks/useAuth";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address")
-})
+});
 
 export default function UserAuthForm() {
-  const { handleSubmit, isLoading, error, isNavigating } = useAuthForm()
-  const t = useTranslations("login")
+  const { handleSubmit, isLoading, error, isNavigating } = useAuthForm();
+  const t = useTranslations("login");
 
   // Map backend error messages to i18n keys
   const getErrorMessage = (error: string | null): string | null => {
     if (!error) {
-      return null
+      return null;
     }
     if (error.includes("The login email is incorrect")) {
-      return t("invalidEmail")
+      return t("invalidEmail");
     }
-    return error
-  }
+    return error;
+  };
 
-  const displayError = getErrorMessage(error)
+  const displayError = getErrorMessage(error);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: defaultEmail
     }
-  })
+  });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await handleSubmit(values.email)
-  }
+    await handleSubmit(values.email);
+  };
 
   return (
     <Form {...form}>
@@ -65,7 +65,7 @@ export default function UserAuthForm() {
           render={({
             field
           }: {
-            field: ControllerRenderProps<z.infer<typeof formSchema>, "email">
+            field: ControllerRenderProps<z.infer<typeof formSchema>, "email">;
           }) => (
             <FormItem>
               <FormLabel>{t("emailLabel")}</FormLabel>
@@ -104,5 +104,5 @@ export default function UserAuthForm() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

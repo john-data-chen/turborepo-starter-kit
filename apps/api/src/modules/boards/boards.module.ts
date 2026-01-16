@@ -1,12 +1,12 @@
-import { forwardRef, Module } from "@nestjs/common"
-import { MongooseModule } from "@nestjs/mongoose"
+import { forwardRef, Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
 
-import { ProjectsModule } from "../projects/projects.module"
-import { TasksModule } from "../tasks/tasks.module"
+import { ProjectsModule } from "../projects/projects.module";
+import { TasksModule } from "../tasks/tasks.module";
 
-import { BoardController } from "./boards.controller"
-import { BoardService } from "./boards.service"
-import { Board, BoardSchema } from "./schemas/boards.schema"
+import { BoardController } from "./boards.controller";
+import { BoardService } from "./boards.service";
+import { Board, BoardSchema } from "./schemas/boards.schema";
 
 @Module({
   imports: [

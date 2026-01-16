@@ -1,11 +1,11 @@
-import { Separator } from "@repo/ui/components/separator"
-import { SidebarTrigger } from "@repo/ui/components/sidebar"
+import { Separator } from "@repo/ui/components/separator";
+import { SidebarTrigger } from "@repo/ui/components/sidebar";
 
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs"
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
-import LanguageSwitcher from "./LanguageSwitcher"
-import ThemeToggle from "./ThemeToggle"
-import { UserNav } from "./UserNav"
+import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
+import { UserNav } from "./UserNav";
 
 export default function Header() {
   return (
@@ -25,5 +25,5 @@ export default function Header() {
         <LanguageSwitcher />
       </div>
     </header>
-  )
+  );
 }

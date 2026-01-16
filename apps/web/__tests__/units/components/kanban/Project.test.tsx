@@ -1,13 +1,13 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react";
 /// <reference types="react" />
-import React from "react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { BoardContainer, BoardProject } from "@/components/kanban/project/Project"
-import { TaskStatus, type Project, type Task } from "@/types/dbInterface"
+import { BoardContainer, BoardProject } from "@/components/kanban/project/Project";
+import { TaskStatus, type Project, type Task } from "@/types/dbInterface";
 
 // Ensure React is globally available
-globalThis.React = React
+globalThis.React = React;
 
 // Mock dependencies
 vi.mock("@/stores/workspace-store", () => ({
@@ -15,11 +15,11 @@ vi.mock("@/stores/workspace-store", () => ({
     filter: { status: null, search: "" },
     fetchTasksByProject: vi.fn()
   }))
-}))
+}));
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key
-}))
+}));
 
 vi.mock("@dnd-kit/sortable", () => ({
   SortableContext: ({ children }: any) => <div>{children}</div>,
@@ -31,7 +31,7 @@ vi.mock("@dnd-kit/sortable", () => ({
     transition: undefined,
     isDragging: false
   })
-}))
+}));
 
 vi.mock("@dnd-kit/utilities", () => ({
   CSS: {
@@ -39,19 +39,19 @@ vi.mock("@dnd-kit/utilities", () => ({
       toString: () => ""
     }
   }
-}))
+}));
 
 vi.mock("@/components/kanban/task/NewTaskDialog", () => ({
   default: ({ projectId }: any) => <div data-testid={`new-task-dialog-${projectId}`}>New Task</div>
-}))
+}));
 
 vi.mock("@/components/kanban/task/TaskCard", () => ({
   TaskCard: ({ task }: any) => <div data-testid={`task-${task._id}`}>{task.title}</div>
-}))
+}));
 
 vi.mock("@/components/kanban/project/ProjectAction", () => ({
   ProjectActions: ({ title }: any) => <div data-testid="project-actions">{title} Actions</div>
-}))
+}));
 
 describe("BoardProject", () => {
   const mockProject: Project = {
@@ -68,7 +68,7 @@ describe("BoardProject", () => {
     tasks: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
-  }
+  };
 
   const mockTasks: Task[] = [
     {
@@ -111,11 +111,11 @@ describe("BoardProject", () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-  ]
+  ];
 
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
+    vi.clearAllMocks();
+  });
 
   it("should render project with title", () => {
     render(
@@ -126,10 +126,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText("Test Project")).toBeInTheDocument()
-  })
+    expect(screen.getByText("Test Project")).toBeInTheDocument();
+  });
 
   it("should render project description", () => {
     render(
@@ -140,10 +140,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/Test Description/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/Test Description/)).toBeInTheDocument();
+  });
 
   it("should render project owner", () => {
     render(
@@ -154,10 +154,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/John Doe/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/John Doe/)).toBeInTheDocument();
+  });
 
   it("should render project members", () => {
     render(
@@ -168,10 +168,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/Jane Smith, Bob Johnson/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/Jane Smith, Bob Johnson/)).toBeInTheDocument();
+  });
 
   it("should render all non-deleted tasks", () => {
     render(
@@ -182,12 +182,12 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByTestId("task-task-1")).toBeInTheDocument()
-    expect(screen.getByTestId("task-task-2")).toBeInTheDocument()
-    expect(screen.queryByTestId("task-task-3")).not.toBeInTheDocument() // Deleted task should not render
-  })
+    expect(screen.getByTestId("task-task-1")).toBeInTheDocument();
+    expect(screen.getByTestId("task-task-2")).toBeInTheDocument();
+    expect(screen.queryByTestId("task-task-3")).not.toBeInTheDocument(); // Deleted task should not render
+  });
 
   it("should render new task dialog", () => {
     render(
@@ -198,10 +198,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByTestId("new-task-dialog-project-1")).toBeInTheDocument()
-  })
+    expect(screen.getByTestId("new-task-dialog-project-1")).toBeInTheDocument();
+  });
 
   it("should render project actions", () => {
     render(
@@ -212,13 +212,13 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByTestId("project-actions")).toBeInTheDocument()
-  })
+    expect(screen.getByTestId("project-actions")).toBeInTheDocument();
+  });
 
   it('should show "noDescription" when project has no description', () => {
-    const projectWithoutDesc = { ...mockProject, description: "" }
+    const projectWithoutDesc = { ...mockProject, description: "" };
     render(
       <BoardProject
         project={projectWithoutDesc}
@@ -227,13 +227,13 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/noDescription/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/noDescription/)).toBeInTheDocument();
+  });
 
   it("should render with string owner ID", () => {
-    const projectWithStringOwner = { ...mockProject, owner: "user-1" }
+    const projectWithStringOwner = { ...mockProject, owner: "user-1" };
     render(
       <BoardProject
         project={projectWithStringOwner}
@@ -242,13 +242,13 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/user-1/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/user-1/)).toBeInTheDocument();
+  });
 
   it("should not render members badge when project has no members", () => {
-    const projectWithoutMembers = { ...mockProject, members: [] }
+    const projectWithoutMembers = { ...mockProject, members: [] };
     render(
       <BoardProject
         project={projectWithoutMembers}
@@ -257,19 +257,19 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
     // Members badge should not be rendered
-    const membersBadges = screen.queryByText(/members:/)
-    expect(membersBadges).not.toBeInTheDocument()
-  })
+    const membersBadges = screen.queryByText(/members:/);
+    expect(membersBadges).not.toBeInTheDocument();
+  });
 
   it("should filter tasks by status", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store")
+    const { useWorkspaceStore } = await import("@/stores/workspace-store");
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: TaskStatus.TODO, search: "" },
       fetchTasksByProject: vi.fn()
-    } as any)
+    } as any);
 
     render(
       <BoardProject
@@ -279,20 +279,20 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByTestId("task-task-1")).toBeInTheDocument()
-    expect(screen.queryByTestId("task-task-2")).not.toBeInTheDocument() // Different status
-  })
+    expect(screen.getByTestId("task-task-1")).toBeInTheDocument();
+    expect(screen.queryByTestId("task-task-2")).not.toBeInTheDocument(); // Different status
+  });
 
   it("should fetch tasks on mount", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store")
-    const mockFetchTasksByProject = vi.fn().mockResolvedValue(mockTasks)
+    const { useWorkspaceStore } = await import("@/stores/workspace-store");
+    const mockFetchTasksByProject = vi.fn().mockResolvedValue(mockTasks);
 
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: null, search: "" },
       fetchTasksByProject: mockFetchTasksByProject
-    } as any)
+    } as any);
 
     render(
       <BoardProject
@@ -302,22 +302,22 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
     await waitFor(() => {
-      expect(mockFetchTasksByProject).toHaveBeenCalledWith("project-1")
-    })
-  })
+      expect(mockFetchTasksByProject).toHaveBeenCalledWith("project-1");
+    });
+  });
 
   it("should handle fetch tasks error", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store")
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-    const mockFetchTasksByProject = vi.fn().mockRejectedValue(new Error("Fetch error"))
+    const { useWorkspaceStore } = await import("@/stores/workspace-store");
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const mockFetchTasksByProject = vi.fn().mockRejectedValue(new Error("Fetch error"));
 
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: null, search: "" },
       fetchTasksByProject: mockFetchTasksByProject
-    } as any)
+    } as any);
 
     render(
       <BoardProject
@@ -327,14 +327,14 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to load tasks:", expect.any(Error))
-    })
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to load tasks:", expect.any(Error));
+    });
 
-    consoleErrorSpy.mockRestore()
-  })
+    consoleErrorSpy.mockRestore();
+  });
 
   it("should render with empty tasks array", () => {
     render(
@@ -345,17 +345,17 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText("Test Project")).toBeInTheDocument()
-    expect(screen.queryByTestId("task-task-1")).not.toBeInTheDocument()
-  })
+    expect(screen.getByText("Test Project")).toBeInTheDocument();
+    expect(screen.queryByTestId("task-task-1")).not.toBeInTheDocument();
+  });
 
   it("should handle owner as UserInfo object with missing name", () => {
     const projectWithPartialOwner = {
       ...mockProject,
       owner: { _id: "user-1", email: "john@example.com", createdAt: new Date() } as any
-    }
+    };
     render(
       <BoardProject
         project={projectWithPartialOwner}
@@ -364,10 +364,10 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    expect(screen.getByText(/john@example.com/)).toBeInTheDocument()
-  })
+    expect(screen.getByText(/john@example.com/)).toBeInTheDocument();
+  });
 
   it("should render project container", () => {
     const { container } = render(
@@ -378,12 +378,12 @@ describe("BoardProject", () => {
         isBoardMember={true}
         currentUserId="user-1"
       />
-    )
+    );
 
-    const projectContainer = container.querySelector(".project-container")
-    expect(projectContainer).toBeInTheDocument()
-  })
-})
+    const projectContainer = container.querySelector(".project-container");
+    expect(projectContainer).toBeInTheDocument();
+  });
+});
 
 describe("BoardContainer", () => {
   it("should render children", () => {
@@ -392,9 +392,9 @@ describe("BoardContainer", () => {
         <div data-testid="child-1">Child 1</div>
         <div data-testid="child-2">Child 2</div>
       </BoardContainer>
-    )
+    );
 
-    expect(screen.getByTestId("child-1")).toBeInTheDocument()
-    expect(screen.getByTestId("child-2")).toBeInTheDocument()
-  })
-})
+    expect(screen.getByTestId("child-1")).toBeInTheDocument();
+    expect(screen.getByTestId("child-2")).toBeInTheDocument();
+  });
+});

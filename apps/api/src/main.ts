@@ -1,24 +1,24 @@
-import { ValidationPipe } from "@nestjs/common"
-import { NestFactory } from "@nestjs/core"
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
-import cookieParser from "cookie-parser"
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import cookieParser from "cookie-parser";
 
-import { AppModule } from "./app.module"
-import { API_PORT } from "./constants/api"
+import { AppModule } from "./app.module";
+import { API_PORT } from "./constants/api";
 
 // eslint-disable-next-line eslint-plugin-next/no-assign-module-variable -- Required for NestJS webpack HMR
-declare const module: any
+declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: true,
     logger: ["error", "warn", "log", "debug", "verbose"]
-  })
+  });
 
-  const port = process.env.PORT || API_PORT
+  const port = process.env.PORT || API_PORT;
 
   // Parse cookies before CORS middleware
-  app.use(cookieParser())
+  app.use(cookieParser());
 
   // Define allowed origins
   const allowedOrigins = [
@@ -30,26 +30,26 @@ async function bootstrap() {
     /^https:\/\/turborepo-starter-kit-web-*\.vercel\.app$/,
     // Local development
     "http://localhost:3000"
-  ].filter(Boolean) // Filter out any undefined/null values from env vars
+  ].filter(Boolean); // Filter out any undefined/null values from env vars
 
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) {
-        return callback(null, true)
+        return callback(null, true);
       }
 
       const isAllowed = allowedOrigins.some((o) => {
-        const matches = typeof o === "string" ? o === origin : o.test(origin)
-        return matches
-      })
+        const matches = typeof o === "string" ? o === origin : o.test(origin);
+        return matches;
+      });
 
       if (isAllowed) {
-        return callback(null, true)
+        return callback(null, true);
       }
 
-      const errorMsg = `CORS error: Origin ${origin} not allowed.`
-      return callback(new Error(errorMsg))
+      const errorMsg = `CORS error: Origin ${origin} not allowed.`;
+      return callback(new Error(errorMsg));
     },
     credentials: true, // This is crucial for cookies
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
@@ -66,7 +66,7 @@ async function bootstrap() {
       "XSRF-TOKEN",
       "Set-Cookie" // Expose Set-Cookie header
     ]
-  })
+  });
 
   // Enable global validation pipe
   app.useGlobalPipes(
@@ -75,7 +75,7 @@ async function bootstrap() {
       transform: true,
       forbidNonWhitelisted: true
     })
-  )
+  );
 
   // Swagger configuration
   const config = new DocumentBuilder()
@@ -93,38 +93,38 @@ async function bootstrap() {
       },
       "JWT-auth" // This name should match the one used in @ApiBearerAuth() in controllers
     )
-    .build()
+    .build();
 
-  const document = SwaggerModule.createDocument(app, config)
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api/docs", app, document, {
     swaggerOptions: {
       persistAuthorization: true,
       tagsSorter: "alpha",
       operationsSorter: "method"
     }
-  })
+  });
 
   // For Vercel deployment, we'll export the NestJS app's HTTP adapter
   if (process.env.VERCEL) {
-    await app.init()
-    return app.getHttpAdapter().getInstance()
+    await app.init();
+    return app.getHttpAdapter().getInstance();
   }
 
   // For local development
-  await app.listen(port)
+  await app.listen(port);
 
   // Enable hot module replacement for development
   if (module.hot) {
-    module.hot.accept()
+    module.hot.accept();
     module.hot.dispose(() => {
-      app.close()
-    })
+      app.close();
+    });
   }
 
-  return app
+  return app;
 }
 
 // Export the serverless function for Vercel
-const server = bootstrap()
+const server = bootstrap();
 
-export default server
+export default server;

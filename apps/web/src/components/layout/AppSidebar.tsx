@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Sidebar,
@@ -9,18 +9,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
-} from "@repo/ui/components/sidebar"
-import { HomeIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
+} from "@repo/ui/components/sidebar";
+import { HomeIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { Icons } from "@/components/layout/Icons"
-import { useBoards } from "@/hooks/useBoards"
-import { Link, usePathname } from "@/i18n/navigation"
+import { Icons } from "@/components/layout/Icons";
+import { useBoards } from "@/hooks/useBoards";
+import { Link, usePathname } from "@/i18n/navigation";
 
 export default function AppSidebar() {
-  const t = useTranslations("sidebar")
-  const pathname = usePathname()
-  const { myBoards, teamBoards, loading } = useBoards()
+  const t = useTranslations("sidebar");
+  const pathname = usePathname();
+  const { myBoards, teamBoards, loading } = useBoards();
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -100,5 +100,5 @@ export default function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

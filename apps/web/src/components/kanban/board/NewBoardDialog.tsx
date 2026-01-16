@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@repo/ui/components/button"
+import { Button } from "@repo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -9,44 +9,44 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from "@repo/ui/components/dialog"
-import { useTranslations } from "next-intl"
-import { useState } from "react"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@repo/ui/components/dialog";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useBoards } from "@/hooks/useBoards"
-import { useRouter } from "@/i18n/navigation"
-import { useWorkspaceStore } from "@/stores/workspace-store"
-import { boardSchema } from "@/types/boardForm"
+import { useBoards } from "@/hooks/useBoards";
+import { useRouter } from "@/i18n/navigation";
+import { useWorkspaceStore } from "@/stores/workspace-store";
+import { boardSchema } from "@/types/boardForm";
 
-import { BoardForm } from "./BoardForm"
+import { BoardForm } from "./BoardForm";
 
 interface NewBoardDialogProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
-type BoardFormData = z.infer<typeof boardSchema>
+type BoardFormData = z.infer<typeof boardSchema>;
 
 export default function NewBoardDialog({ children }: NewBoardDialogProps) {
-  const [open, setOpen] = useState(false)
-  const { addBoard } = useWorkspaceStore()
-  const { refresh } = useBoards()
-  const router = useRouter()
-  const t = useTranslations("kanban.actions")
+  const [open, setOpen] = useState(false);
+  const { addBoard } = useWorkspaceStore();
+  const { refresh } = useBoards();
+  const router = useRouter();
+  const t = useTranslations("kanban.actions");
 
   const handleSubmit = async (data: BoardFormData) => {
     try {
-      const boardId = await addBoard(data.title, data.description)
-      toast.success(t("boardCreatedSuccess"))
-      setOpen(false)
-      await refresh()
-      router.push(`/boards/${boardId}`)
+      const boardId = await addBoard(data.title, data.description);
+      toast.success(t("boardCreatedSuccess"));
+      setOpen(false);
+      await refresh();
+      router.push(`/boards/${boardId}`);
     } catch (error) {
-      console.error(error)
-      toast.error(t("boardCreateFailed"))
+      console.error(error);
+      toast.error(t("boardCreateFailed"));
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen} data-testid="new-board-dialog">
@@ -62,7 +62,9 @@ export default function NewBoardDialog({ children }: NewBoardDialogProps) {
               type="button"
               variant="outline"
               data-testid="cancel-button"
-              onClick={() =>{  setOpen(false); }}
+              onClick={() => {
+                setOpen(false);
+              }}
             >
               {t("cancel")}
             </Button>
@@ -73,5 +75,5 @@ export default function NewBoardDialog({ children }: NewBoardDialogProps) {
         </BoardForm>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

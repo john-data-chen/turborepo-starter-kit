@@ -1,10 +1,10 @@
-import { API_URL } from "@/constants/routes"
-import { fetchWithAuth } from "@/lib/api/fetchWithAuth"
-import { Task } from "@/types/dbInterface"
-import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from "@/types/taskApi"
+import { API_URL } from "@/constants/routes";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import { Task } from "@/types/dbInterface";
+import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from "@/types/taskApi";
 
 // API Endpoint
-const TASKS_ENDPOINT = `${API_URL}/tasks`
+const TASKS_ENDPOINT = `${API_URL}/tasks`;
 
 /**
  * API client for task-related operations
@@ -13,25 +13,25 @@ const TASKS_ENDPOINT = `${API_URL}/tasks`
 export const taskApi = {
   // Get all tasks (with optional filters)
   async getTasks(projectId?: string, assigneeId?: string): Promise<Task[]> {
-    const params = new URLSearchParams()
+    const params = new URLSearchParams();
     if (projectId) {
-      params.append("projectId", projectId)
+      params.append("projectId", projectId);
     }
     if (assigneeId) {
-      params.append("assigneeId", assigneeId)
+      params.append("assigneeId", assigneeId);
     }
 
-    const query = params.toString()
-    const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT
+    const query = params.toString();
+    const url = query ? `${TASKS_ENDPOINT}?${query}` : TASKS_ENDPOINT;
 
-    return fetchWithAuth(url, {}, true)
+    return fetchWithAuth(url, {}, true);
   },
 
   // Get a single task by ID
   async getTaskById(id: string): Promise<Task> {
     // Ensure the ID is properly encoded to handle special characters
-    const encodedId = encodeURIComponent(id)
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`)
+    const encodedId = encodeURIComponent(id);
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${encodedId}`);
   },
 
   // Create a new task
@@ -40,12 +40,12 @@ export const taskApi = {
     const requestBody = {
       ...input
       // No need to transform fields since we updated the CreateTaskInput type
-    }
+    };
 
     return fetchWithAuth(TASKS_ENDPOINT, {
       method: "POST",
       body: JSON.stringify(requestBody)
-    })
+    });
   },
 
   // Update a task
@@ -53,7 +53,7 @@ export const taskApi = {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(input)
-    })
+    });
   },
 
   // Delete a task
@@ -64,12 +64,12 @@ export const taskApi = {
         method: "DELETE"
       },
       true // Handle 204 No Content response
-    )
+    );
   },
 
   // Check user permissions for a task
   async getTaskPermissions(taskId: string): Promise<TaskPermissions> {
-    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`)
+    return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/permissions`);
   },
 
   // Move task to a different project
@@ -80,6 +80,6 @@ export const taskApi = {
         projectId,
         orderInProject
       })
-    })
+    });
   }
-}
+};

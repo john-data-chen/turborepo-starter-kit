@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Breadcrumb,
@@ -7,13 +7,13 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator
-} from "@repo/ui/components/breadcrumb"
-import React from "react"
+} from "@repo/ui/components/breadcrumb";
+import React from "react";
 
-import { useBreadcrumbs } from "@/hooks/useBreadcrumbs"
+import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 
 export function Breadcrumbs() {
-  const { items, rootLink } = useBreadcrumbs()
+  const { items, rootLink } = useBreadcrumbs();
 
   return (
     <Breadcrumb>
@@ -52,5 +52,5 @@ export function Breadcrumbs() {
         )}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

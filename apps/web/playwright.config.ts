@@ -1,25 +1,25 @@
-import path from "path"
+import path from "path";
 
-import { defineConfig, devices } from "@playwright/test"
+import { defineConfig, devices } from "@playwright/test";
 // Add this line to import dotenv
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 // Load environment variables from .env file first (as fallback)
 // dotenv will not override existing environment variables (e.g., from CI)
-dotenv.config({ path: path.resolve(__dirname, ".env") })
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 // Load environment variables from .env.test file (as fallback only)
 // This will NOT override existing environment variables (e.g., from CI)
 // Priority: 1. CI env vars, 2. .env.test, 3. .env
-dotenv.config({ path: path.resolve(__dirname, ".env.test") })
+dotenv.config({ path: path.resolve(__dirname, ".env.test") });
 
 // Ensure environment variables are set or use default values
 // process.env will now contain variables loaded according to the priority:
 // 1. System Env (CI)
 // 2. .env.test
 // 3. .env
-const baseURL = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000/"
-const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+const baseURL = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000/";
+const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -106,4 +106,4 @@ export default defineConfig({
     stdout: "pipe",
     stderr: "pipe"
   }
-})
+});

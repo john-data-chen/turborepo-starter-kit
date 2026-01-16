@@ -1,8 +1,8 @@
-import path from "path"
+import path from "path";
 
-import { defineConfig } from "vitest/config"
+import { defineConfig } from "vitest/config";
 
-import rootConfig from "../../vitest.config"
+import rootConfig from "../../vitest.config";
 
 export default defineConfig({
   ...rootConfig,
@@ -46,4 +46,4 @@ export default defineConfig({
       "@repo/ui": path.resolve(__dirname, "../../packages/ui/src")
     }
   }
-})
+});

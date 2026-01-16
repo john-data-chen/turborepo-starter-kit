@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -8,28 +8,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
-import { Textarea } from "@repo/ui/components/textarea"
-import { useTranslations } from "next-intl"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+} from "@repo/ui/components/form";
+import { Input } from "@repo/ui/components/input";
+import { Textarea } from "@repo/ui/components/textarea";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const BoardFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional()
-})
+});
 
-type BoardFormValues = z.infer<typeof BoardFormSchema>
+type BoardFormValues = z.infer<typeof BoardFormSchema>;
 
 interface BoardFormProps {
-  defaultValues?: Partial<BoardFormValues>
-  onSubmit: (values: BoardFormValues) => Promise<void>
-  children?: React.ReactNode
+  defaultValues?: Partial<BoardFormValues>;
+  onSubmit: (values: BoardFormValues) => Promise<void>;
+  children?: React.ReactNode;
 }
 
 export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps) {
-  const t = useTranslations("kanban.actions")
+  const t = useTranslations("kanban.actions");
   const form = useForm<BoardFormValues>({
     resolver: zodResolver(BoardFormSchema),
     defaultValues: {
@@ -37,7 +37,7 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
       description: "",
       ...defaultValues
     }
-  })
+  });
 
   return (
     <Form {...form}>
@@ -53,8 +53,12 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
                   placeholder={t("boardTitlePlaceholder")}
                   className="h-9"
                   {...field}
-                  onClick={(e) =>{  e.stopPropagation(); }}
-                  onMouseDown={(e) =>{  e.stopPropagation(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -72,8 +76,12 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
                   placeholder={t("descriptionPlaceholder")}
                   className="min-h-16 resize-none"
                   {...field}
-                  onClick={(e) =>{  e.stopPropagation(); }}
-                  onMouseDown={(e) =>{  e.stopPropagation(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -83,5 +91,5 @@ export function BoardForm({ defaultValues, onSubmit, children }: BoardFormProps)
         {children}
       </form>
     </Form>
-  )
+  );
 }

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Presentation } from "lucide-react"
-import { useTranslations } from "next-intl"
-import React from "react"
+import { Presentation } from "lucide-react";
+import { useTranslations } from "next-intl";
+import React from "react";
 
-import UserAuthForm from "./UserAuthForm"
+import UserAuthForm from "./UserAuthForm";
 
 export default function SignInViewPage() {
-  const t = useTranslations("login")
+  const t = useTranslations("login");
   return (
     <main
       aria-label="Sign in page"
@@ -30,5 +30,5 @@ export default function SignInViewPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }

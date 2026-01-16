@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from "class-validator"
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from "class-validator";
 
 export enum TaskStatus {
   TODO = "TODO",
@@ -13,7 +13,7 @@ export class CreateTaskDto {
     example: "Implement authentication"
   })
   @IsString()
-  title: string
+  title: string;
 
   @ApiProperty({
     description: "The description of the task",
@@ -22,7 +22,7 @@ export class CreateTaskDto {
   })
   @IsString()
   @IsOptional()
-  description?: string
+  description?: string;
 
   @ApiProperty({
     description: "The status of the task",
@@ -31,7 +31,7 @@ export class CreateTaskDto {
   })
   @IsEnum(TaskStatus)
   @IsOptional()
-  status?: TaskStatus
+  status?: TaskStatus;
 
   @ApiProperty({
     description: "The due date of the task",
@@ -40,7 +40,7 @@ export class CreateTaskDto {
   })
   @IsDateString()
   @IsOptional()
-  dueDate?: Date
+  dueDate?: Date;
 
   @ApiProperty({
     description: "The order of the task within its project",
@@ -49,28 +49,28 @@ export class CreateTaskDto {
   })
   @IsNumber()
   @IsOptional()
-  orderInProject?: number
+  orderInProject?: number;
 
   @ApiProperty({
     description: "The ID of the board this task belongs to",
     example: "507f1f77bcf86cd799439011"
   })
   @IsMongoId()
-  board: string
+  board: string;
 
   @ApiProperty({
     description: "The ID of the project this task belongs to",
     example: "507f1f77bcf86cd799439012"
   })
   @IsMongoId()
-  project: string
+  project: string;
 
   @ApiProperty({
     description: "The ID of the user who created this task",
     example: "507f1f77bcf86cd799439014"
   })
   @IsMongoId()
-  creator: string
+  creator: string;
 
   @ApiProperty({
     description: "The ID of the user assigned to this task",
@@ -79,12 +79,12 @@ export class CreateTaskDto {
   })
   @IsMongoId()
   @IsOptional()
-  assignee?: string
+  assignee?: string;
 
   @ApiProperty({
     description: "The ID of the user who last modified this task",
     example: "507f1f77bcf86cd799439014"
   })
   @IsMongoId()
-  lastModifier: string
+  lastModifier: string;
 }

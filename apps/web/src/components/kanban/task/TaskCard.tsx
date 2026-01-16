@@ -1,50 +1,50 @@
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { Badge } from "@repo/ui/components/badge"
-import { Card, CardContent, CardHeader } from "@repo/ui/components/card"
-import { cn } from "@repo/ui/lib/utils"
-import { cva } from "class-variance-authority"
-import { format } from "date-fns"
-import { Calendar1Icon, FileTextIcon, PointerIcon, UserIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Badge } from "@repo/ui/components/badge";
+import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
+import { cn } from "@repo/ui/lib/utils";
+import { cva } from "class-variance-authority";
+import { format } from "date-fns";
+import { Calendar1Icon, FileTextIcon, PointerIcon, UserIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { Task, TaskStatus } from "@/types/dbInterface"
+import { Task, TaskStatus } from "@/types/dbInterface";
 
-import { TaskActions } from "./TaskAction"
+import { TaskActions } from "./TaskAction";
 
 interface TaskCardProps {
-  task: Task
-  isOverlay?: boolean
-  onUpdate?: () => void
-  isDragEnabled?: boolean
+  task: Task;
+  isOverlay?: boolean;
+  onUpdate?: () => void;
+  isDragEnabled?: boolean;
 }
 
-export type TaskType = "Task"
+export type TaskType = "Task";
 
 export interface TaskDragData {
-  type: TaskType
-  task: Task
+  type: TaskType;
+  task: Task;
 }
 
 function getLastField(task: Task): string {
-  const visibleFields = []
+  const visibleFields = [];
   if (task.creator) {
-    visibleFields.push("creator")
+    visibleFields.push("creator");
   }
   if (task.lastModifier) {
-    visibleFields.push("lastModifier")
+    visibleFields.push("lastModifier");
   }
   if (task.assignee) {
-    visibleFields.push("assignee")
+    visibleFields.push("assignee");
   }
   if (task.dueDate) {
-    visibleFields.push("dueDate")
+    visibleFields.push("dueDate");
   }
   if (task.description) {
-    visibleFields.push("description")
+    visibleFields.push("description");
   }
 
-  return visibleFields[visibleFields.length - 1] || ""
+  return visibleFields[visibleFields.length - 1] || "";
 }
 
 export function TaskCard({
@@ -53,11 +53,11 @@ export function TaskCard({
   onUpdate,
   isDragEnabled = false
 }: TaskCardProps) {
-  const t = useTranslations("kanban.task")
+  const t = useTranslations("kanban.task");
 
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
-    return null
+    return null;
   }
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -74,12 +74,12 @@ export function TaskCard({
       // @ts-ignore - Adding custom data attributes for debugging
       "data-draggable": String(isDragEnabled && !isOverlay)
     }
-  })
+  });
 
   const cardStyle: React.CSSProperties = {
     transition,
     transform: CSS.Translate.toString(transform)
-  }
+  };
 
   const cardVariants = cva("", {
     variants: {
@@ -88,16 +88,16 @@ export function TaskCard({
         overlay: "ring-2 ring-primary"
       }
     }
-  })
+  });
 
-  type DragState = "over" | "overlay" | undefined
-  const dragState: DragState = isOverlay ? "overlay" : isDragging ? "over" : undefined
+  type DragState = "over" | "overlay" | undefined;
+  const dragState: DragState = isOverlay ? "overlay" : isDragging ? "over" : undefined;
 
   const statusConfig: Record<
     TaskStatus,
     {
-      label: string
-      className: string
+      label: string;
+      className: string;
     }
   > = {
     TODO: {
@@ -112,7 +112,7 @@ export function TaskCard({
       label: t("statusDone"),
       className: "bg-green-500 hover:bg-green-500"
     }
-  }
+  };
 
   return (
     <Card
@@ -221,7 +221,7 @@ export function TaskCard({
         )}
       </div>
     </Card>
-  )
+  );
 }
 
-export default TaskCard
+export default TaskCard;

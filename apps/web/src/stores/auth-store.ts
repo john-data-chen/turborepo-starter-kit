@@ -1,18 +1,18 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import { Session, UserInfo } from "@/types/dbInterface"
+import { Session, UserInfo } from "@/types/dbInterface";
 
 export interface AuthState {
-  session: Session | null
-  isLoading: boolean
-  error: string | null
-  user: UserInfo | null
-  setSession: (session: Session | null) => void
-  setUser: (user: UserInfo | null) => void
-  setLoading: (isLoading: boolean) => void
-  setError: (error: string | null) => void
-  clear: () => void
+  session: Session | null;
+  isLoading: boolean;
+  error: string | null;
+  user: UserInfo | null;
+  setSession: (session: Session | null) => void;
+  setUser: (user: UserInfo | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  clear: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -41,4 +41,4 @@ export const useAuthStore = create<AuthState>()(
       })
     }
   )
-)
+);

@@ -11,7 +11,7 @@ export const demoUsers = [
     email: "mark.s@example.com",
     name: "Mark S"
   }
-]
+];
 
 export const demoBoards = [
   {
@@ -30,7 +30,7 @@ export const demoBoards = [
     title: "Dev Team Board",
     description: "public board for Dev Team"
   }
-]
+];
 
 export const demoProjects = [
   {
@@ -45,7 +45,7 @@ export const demoProjects = [
     title: "Demo Project 3",
     description: "This is demo project 3"
   }
-]
+];
 
 export const demoTasks = [
   {
@@ -63,4 +63,4 @@ export const demoTasks = [
     description: "This is task 3",
     status: "DONE"
   }
-]
+];

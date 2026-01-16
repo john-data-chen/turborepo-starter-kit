@@ -6,14 +6,14 @@ import {
   Module,
   OnModuleDestroy,
   OnModuleInit
-} from "@nestjs/common"
-import { ConfigService } from "@nestjs/config"
-import { getConnectionToken, MongooseModule, MongooseModuleOptions } from "@nestjs/mongoose"
-import mongoose from "mongoose"
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { getConnectionToken, MongooseModule, MongooseModuleOptions } from "@nestjs/mongoose";
+import mongoose from "mongoose";
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(DatabaseService.name)
+  private readonly logger = new Logger(DatabaseService.name);
 
   constructor(
     @Inject("DATABASE_CONNECTION")
@@ -22,23 +22,23 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.connection.on("error", (error: Error) => {
-      this.logger.error(`MongoDB connection error: ${error.message}`, error.stack)
-    })
+      this.logger.error(`MongoDB connection error: ${error.message}`, error.stack);
+    });
 
-    process.on("SIGINT", this.gracefulShutdown.bind(this))
+    process.on("SIGINT", this.gracefulShutdown.bind(this));
   }
 
   async onModuleDestroy() {
-    await this.gracefulShutdown()
+    await this.gracefulShutdown();
   }
 
   private async gracefulShutdown() {
     try {
-      await this.connection.close()
-      process.exit(0)
+      await this.connection.close();
+      process.exit(0);
     } catch (error) {
-      this.logger.error("Error closing MongoDB connection", error)
-      process.exit(1)
+      this.logger.error("Error closing MongoDB connection", error);
+      process.exit(1);
     }
   }
 }
@@ -48,27 +48,27 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService): Promise<MongooseModuleOptions> => {
-        const _logger = new Logger("MongoDB")
-        const uri = configService.get<string>("DATABASE_URL")
+        const _logger = new Logger("MongoDB");
+        const uri = configService.get<string>("DATABASE_URL");
 
         // Diagnostic: Log environment and DB connection info
-        const nodeEnv = configService.get("NODE_ENV")
-        const isCI = configService.get("CI")
+        const nodeEnv = configService.get("NODE_ENV");
+        const isCI = configService.get("CI");
 
-        _logger.log(`[Diagnostic] MongoDB Connection Attempt`)
-        _logger.log(`[Diagnostic] NODE_ENV: ${nodeEnv}`)
-        _logger.log(`[Diagnostic] CI: ${isCI}`)
+        _logger.log(`[Diagnostic] MongoDB Connection Attempt`);
+        _logger.log(`[Diagnostic] NODE_ENV: ${nodeEnv}`);
+        _logger.log(`[Diagnostic] CI: ${isCI}`);
 
         if (!uri) {
-          _logger.error("[Diagnostic] ✗ DATABASE_URL is not defined!")
-          throw new Error("MongoDB connection string (DATABASE_URL) is not defined")
+          _logger.error("[Diagnostic] ✗ DATABASE_URL is not defined!");
+          throw new Error("MongoDB connection string (DATABASE_URL) is not defined");
         }
 
         // Log masked connection string for debugging
-        const maskedUri = uri.replace(/:\/\/([^:]+):([^@]+)@/, "://***:***@")
-        _logger.log(`[Diagnostic] DATABASE_URL: ${maskedUri}`)
+        const maskedUri = uri.replace(/:\/\/([^:]+):([^@]+)@/, "://***:***@");
+        _logger.log(`[Diagnostic] DATABASE_URL: ${maskedUri}`);
 
-        const isProduction = nodeEnv === "production"
+        const isProduction = nodeEnv === "production";
 
         const options: MongooseModuleOptions = {
           uri,
@@ -85,17 +85,17 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
           // Add connection event handlers for diagnostic
           connectionFactory: (connection) => {
             connection.on("connected", () => {
-              _logger.log("[Diagnostic] ✓ MongoDB connected successfully")
-            })
+              _logger.log("[Diagnostic] ✓ MongoDB connected successfully");
+            });
             connection.on("error", (error) => {
-              _logger.error(`[Diagnostic] ✗ MongoDB connection error: ${error.message}`)
-            })
+              _logger.error(`[Diagnostic] ✗ MongoDB connection error: ${error.message}`);
+            });
             connection.on("disconnected", () => {
-              _logger.warn("[Diagnostic] MongoDB disconnected")
-            })
-            return connection
+              _logger.warn("[Diagnostic] MongoDB disconnected");
+            });
+            return connection;
           }
-        }
+        };
 
         _logger.log(
           `[Diagnostic] MongoDB connection options: ${JSON.stringify({
@@ -104,9 +104,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
             ssl: options.ssl,
             retryAttempts: options.retryAttempts
           })}`
-        )
+        );
 
-        return options
+        return options;
       },
       inject: [ConfigService]
     })
