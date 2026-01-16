@@ -241,7 +241,6 @@ apps/
 │   └────── env.example # Environment variables example
 packages/
 ├── global-tsconfig # global tsconfig
-├── linter-config # linter config
 └── ui # Shared UI components
     ├────── .storybook/ # configs of storybook
     ├────── src/components/ui # Shadcn UI components / component storybooks
