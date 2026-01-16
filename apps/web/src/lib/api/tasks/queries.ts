@@ -1,8 +1,10 @@
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import type { Task, TaskStatus } from '@/types/dbInterface'
-import { TASK_KEYS, UpdateTaskInput } from '@/types/taskApi'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { taskApi } from '../taskApi'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import type { Task, TaskStatus } from "@/types/dbInterface"
+import { TASK_KEYS, UpdateTaskInput } from "@/types/taskApi"
+
+import { taskApi } from "../taskApi"
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
   return useQuery<Task[]>({
@@ -10,7 +12,7 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
       project: projectId,
       assignee: assigneeId
     }),
-    queryFn: () => taskApi.getTasks(projectId, assigneeId),
+    queryFn:  async () => taskApi.getTasks(projectId, assigneeId),
     enabled: !!projectId || !!assigneeId,
     // Ensure we always get fresh data when the component mounts
     staleTime: 0,
@@ -27,8 +29,8 @@ export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
   const { enabled = true, retry } = options
 
   return useQuery({
-    queryKey: TASK_KEYS.detail(taskId || ''),
-    queryFn: () => taskApi.getTaskById(taskId || ''),
+    queryKey: TASK_KEYS.detail(taskId || ""),
+    queryFn:  async () => taskApi.getTaskById(taskId || ""),
     enabled: !!taskId && enabled,
     retry:
       retry ??
@@ -57,7 +59,7 @@ export const useCreateTask = () => {
       orderInProject?: number
     }) => {
       // Ensure assignee is a string (user ID)
-      const assigneeId = typeof input.assignee === 'string' ? input.assignee : input.assignee?._id
+      const assigneeId = typeof input.assignee === "string" ? input.assignee : input.assignee?._id
       return taskApi.createTask({
         title: input.title,
         description: input.description,
@@ -79,7 +81,7 @@ export const useCreateTask = () => {
 
       // Also invalidate the assignee's tasks if applicable
       const assigneeId = variables.assignee
-        ? typeof variables.assignee === 'string'
+        ? typeof variables.assignee === "string"
           ? variables.assignee
           : variables.assignee._id
         : undefined
@@ -99,14 +101,14 @@ export const useUpdateTask = () => {
   const userId = useWorkspaceStore((state: { userId: string | null }) => state.userId)
 
   if (!userId) {
-    throw new Error('User must be authenticated to update a task')
+    throw new Error("User must be authenticated to update a task")
   }
 
   return useMutation({
-    mutationFn: ({
+    mutationFn:  async ({
       id,
       ...updates
-    }: { id: string } & Omit<UpdateTaskInput, 'assigneeId' | 'lastModifier'> & {
+    }: { id: string } & Omit<UpdateTaskInput, "assigneeId" | "lastModifier"> & {
         assigneeId?: string | null
       }) => {
       // Create a clean update object with only the fields we want to send
@@ -129,7 +131,7 @@ export const useUpdateTask = () => {
       }
 
       // Handle assigneeId separately to ensure it's not sent as undefined
-      if ('assigneeId' in updates) {
+      if ("assigneeId" in updates) {
         apiUpdates.assigneeId = updates.assigneeId ?? null
       }
 
@@ -153,21 +155,21 @@ export const useUpdateTask = () => {
         const updateFields: Partial<Task> = {}
 
         // Only include fields that were actually provided in the update
-        if ('title' in updatedTask) {
+        if ("title" in updatedTask) {
           updateFields.title = updatedTask.title
         }
-        if ('description' in updatedTask) {
+        if ("description" in updatedTask) {
           updateFields.description = updatedTask.description
         }
-        if ('status' in updatedTask) {
+        if ("status" in updatedTask) {
           updateFields.status = updatedTask.status
         }
-        if ('dueDate' in updatedTask) {
+        if ("dueDate" in updatedTask) {
           updateFields.dueDate = updatedTask.dueDate
         }
 
         // Handle assignee update - we need to include all required UserInfo fields
-        if ('assigneeId' in updatedTask) {
+        if ("assigneeId" in updatedTask) {
           if (updatedTask.assigneeId) {
             // If we have an assigneeId, we need to get the user info from the previous task
             // or from the current assignee if it exists
@@ -183,8 +185,8 @@ export const useUpdateTask = () => {
               // The next data fetch will update this with the full user info
               updateFields.assignee = {
                 _id: updatedTask.assigneeId,
-                name: 'Loading...',
-                email: 'loading@example.com'
+                name: "Loading...",
+                email: "loading@example.com"
               }
             }
           } else {
@@ -229,11 +231,11 @@ export const useUpdateTask = () => {
       Promise.all([
         queryClient.invalidateQueries({
           queryKey: TASK_KEYS.detail(taskId),
-          refetchType: 'all'
+          refetchType: "all"
         }),
         queryClient.invalidateQueries({
           queryKey: TASK_KEYS.lists(),
-          refetchType: 'active'
+          refetchType: "active"
         })
       ])
     }
@@ -244,7 +246,7 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (taskId: string) => {
+    mutationFn:  async (taskId: string) => {
       return taskApi.deleteTask(taskId)
     },
     onMutate: async (taskId) => {
@@ -317,18 +319,18 @@ export const useDeleteTask = () => {
       if (context?.taskToDelete?.project) {
         queryClient.invalidateQueries({
           queryKey: TASK_KEYS.list({ project: context.taskToDelete.project }),
-          refetchType: 'active'
+          refetchType: "active"
         })
       }
 
       // Also invalidate general task lists and the specific task
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.lists(),
-        refetchType: 'active'
+        refetchType: "active"
       })
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.detail(taskId),
-        refetchType: 'all'
+        refetchType: "all"
       })
     }
   })

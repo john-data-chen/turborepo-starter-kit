@@ -1,4 +1,4 @@
-import { TaskStatus } from '@/types/dbInterface'
+import { TaskStatus } from "@/types/dbInterface"
 
 // Input types
 export interface CreateTaskInput {
@@ -32,14 +32,14 @@ export interface TaskPermissions {
 
 // Query and Mutation Keys
 export const TASK_KEYS = {
-  all: ['tasks'] as const,
-  lists: () => [...TASK_KEYS.all, 'list'] as const,
+  all: ["tasks"] as const,
+  lists: () => [...TASK_KEYS.all, "list"] as const,
   list: (filters: { project?: string; assignee?: string } = {}) =>
     [
       ...TASK_KEYS.lists(),
       ...(filters.project ? [{ project: filters.project }] : []),
       ...(filters.assignee ? [{ assignee: filters.assignee }] : [])
     ] as const,
-  details: () => [...TASK_KEYS.all, 'detail'] as const,
+  details: () => [...TASK_KEYS.all, "detail"] as const,
   detail: (id: string) => [...TASK_KEYS.details(), id] as const
 } as const

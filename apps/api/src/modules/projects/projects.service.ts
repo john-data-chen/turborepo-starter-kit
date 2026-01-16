@@ -4,14 +4,16 @@ import {
   Inject,
   Injectable,
   NotFoundException
-} from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model, Types } from 'mongoose'
-import { BoardService } from '../boards/boards.service'
-import { TasksService } from '../tasks/tasks.service'
-import { CreateProjectDto } from './dto/create-project.dto'
-import { UpdateProjectDto } from './dto/update-project.dto'
-import { Project, ProjectDocument } from './schemas/projects.schema'
+} from "@nestjs/common"
+import { InjectModel } from "@nestjs/mongoose"
+import { Model, Types } from "mongoose"
+
+import { BoardService } from "../boards/boards.service"
+import { TasksService } from "../tasks/tasks.service"
+
+import { CreateProjectDto } from "./dto/create-project.dto"
+import { UpdateProjectDto } from "./dto/update-project.dto"
+import { Project, ProjectDocument } from "./schemas/projects.schema"
 
 @Injectable()
 export class ProjectsService {
@@ -30,7 +32,7 @@ export class ProjectsService {
    */
   async deleteByBoardId(boardId: string): Promise<{ deletedCount: number }> {
     if (!Types.ObjectId.isValid(boardId)) {
-      throw new BadRequestException('Invalid board ID')
+      throw new BadRequestException("Invalid board ID")
     }
 
     const result = await this.projectModel
@@ -43,14 +45,14 @@ export class ProjectsService {
 
   async findByBoardId(boardId: string): Promise<ProjectDocument[]> {
     if (!Types.ObjectId.isValid(boardId)) {
-      throw new NotFoundException('Invalid board ID')
+      throw new NotFoundException("Invalid board ID")
     }
 
     const projects = await this.projectModel
       .find({ board: new Types.ObjectId(boardId) })
-      .populate('board', 'title')
-      .populate('owner', 'name email') // Populate owner with name and email
-      .populate('members', 'name email') // Populate members with name and email
+      .populate("board", "title")
+      .populate("owner", "name email") // Populate owner with name and email
+      .populate("members", "name email") // Populate members with name and email
       .exec()
 
     if (!projects || projects.length === 0) {
@@ -66,20 +68,20 @@ export class ProjectsService {
     userId: string
   ): Promise<ProjectDocument> {
     if (!Types.ObjectId.isValid(id)) {
-      const error = 'Invalid project ID'
+      const error = "Invalid project ID"
       console.error(error, { id })
       throw new BadRequestException(error)
     }
 
     if (!Types.ObjectId.isValid(userId)) {
-      const error = 'Invalid user ID'
+      const error = "Invalid user ID"
       console.error(error, { userId })
       throw new BadRequestException(error)
     }
 
     const project = await this.projectModel.findById(id)
     if (!project) {
-      const error = 'Project not found'
+      const error = "Project not found"
       console.error(error, { id })
       throw new NotFoundException(error)
     }
@@ -106,12 +108,12 @@ export class ProjectsService {
           const boardId = project.board.toString()
           const board = await this.boardService.findOne(boardId, userId)
           if (!board) {
-            const error = 'You do not have permission to reorder projects in this board'
+            const error = "You do not have permission to reorder projects in this board"
             console.error(error, { userId, projectId: id, boardId })
             throw new BadRequestException(error)
           }
         } catch (err) {
-          const error = 'You do not have permission to reorder projects in this board'
+          const error = "You do not have permission to reorder projects in this board"
           console.error(error, {
             userId,
             projectId: id,
@@ -121,7 +123,7 @@ export class ProjectsService {
           throw new BadRequestException(error)
         }
       } else {
-        const error = 'You do not have permission to update this project'
+        const error = "You do not have permission to update this project"
         console.error(error, { userId, projectId: id })
         throw new BadRequestException(error)
       }
@@ -160,40 +162,40 @@ export class ProjectsService {
     try {
       const updatedProject = await this.projectModel
         .findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
-        .populate('owner', 'name email')
-        .populate('members', 'name email')
-        .populate('assignee', 'name email')
+        .populate("owner", "name email")
+        .populate("members", "name email")
+        .populate("assignee", "name email")
         .exec()
 
       if (!updatedProject) {
-        throw new NotFoundException('Project not found after update')
+        throw new NotFoundException("Project not found after update")
       }
       return updatedProject
     } catch (error) {
-      console.error('Error updating project:', error)
-      if (error instanceof Error && error.name === 'ValidationError') {
+      console.error("Error updating project:", error)
+      if (error instanceof Error && error.name === "ValidationError") {
         throw new BadRequestException(error.message)
       }
-      throw new BadRequestException('Failed to update project')
+      throw new BadRequestException("Failed to update project")
     }
   }
 
   async remove(id: string, userId: string): Promise<{ message: string }> {
     if (!Types.ObjectId.isValid(id)) {
-      const error = 'Invalid project ID'
+      const error = "Invalid project ID"
       console.error(error, { id })
       throw new BadRequestException(error)
     }
 
     if (!Types.ObjectId.isValid(userId)) {
-      const error = 'Invalid user ID'
+      const error = "Invalid user ID"
       console.error(error, { userId })
       throw new BadRequestException(error)
     }
 
     const project = await this.projectModel.findById(id)
     if (!project) {
-      const error = 'Project not found'
+      const error = "Project not found"
       console.error(error, { id })
       throw new NotFoundException(error)
     }
@@ -203,7 +205,7 @@ export class ProjectsService {
 
     // Check if the user is the owner of the project
     if (project.owner.toString() !== userIdString) {
-      const error = 'You do not have permission to delete this project'
+      const error = "You do not have permission to delete this project"
       console.error(error, { userId, projectId: id })
       throw new BadRequestException(error)
     }
@@ -215,7 +217,7 @@ export class ProjectsService {
     try {
       await this.tasksService.deleteTasksByProjectId(id)
     } catch (error) {
-      console.error('Error deleting tasks for project:', error)
+      console.error("Error deleting tasks for project:", error)
       // We'll continue with project deletion even if task deletion fails
       // to prevent orphaned projects, but log the error
     }
@@ -224,7 +226,7 @@ export class ProjectsService {
     const result = await this.projectModel.deleteOne({ _id: id })
 
     if (result.deletedCount === 0) {
-      const error = 'Failed to delete project'
+      const error = "Failed to delete project"
       console.error(error, { id })
       throw new Error(error)
     }
@@ -244,7 +246,7 @@ export class ProjectsService {
         )
         .exec()
     }
-    return { message: 'Project deleted successfully' }
+    return { message: "Project deleted successfully" }
   }
 
   /**
@@ -254,7 +256,7 @@ export class ProjectsService {
    */
   async addMemberIfNotExists(projectId: string, userId: string): Promise<void> {
     if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
-      console.error('Invalid project ID or user ID', { projectId, userId })
+      console.error("Invalid project ID or user ID", { projectId, userId })
       return
     }
 
@@ -279,12 +281,12 @@ export class ProjectsService {
       const { title, description, boardId, owner } = createProjectDto
 
       if (!Types.ObjectId.isValid(boardId)) {
-        console.error('Invalid board ID:', boardId)
+        console.error("Invalid board ID:", boardId)
         throw new BadRequestException(`Invalid board ID: ${boardId}`)
       }
 
       if (!Types.ObjectId.isValid(owner)) {
-        console.error('Invalid owner ID:', owner)
+        console.error("Invalid owner ID:", owner)
         throw new BadRequestException(`Invalid owner ID: ${owner}`)
       }
 
@@ -294,7 +296,7 @@ export class ProjectsService {
         const lastProject = await this.projectModel
           .findOne({ board: boardId })
           .sort({ orderInBoard: -1 })
-          .select('orderInBoard')
+          .select("orderInBoard")
           .lean()
         order = lastProject ? lastProject.orderInBoard + 1 : 0
       }
@@ -318,17 +320,17 @@ export class ProjectsService {
       // Populate the owner and members before returning
       const populatedProject = await this.projectModel
         .findById(savedProject._id)
-        .populate('owner', 'name email')
-        .populate('members', 'name email')
+        .populate("owner", "name email")
+        .populate("members", "name email")
         .exec()
 
       if (!populatedProject) {
-        throw new NotFoundException('Project not found after creation')
+        throw new NotFoundException("Project not found after creation")
       }
 
       return populatedProject
     } catch (error) {
-      console.error('Error creating project:', error)
+      console.error("Error creating project:", error)
       throw error // Re-throw the error to be handled by the controller
     }
   }

@@ -1,22 +1,23 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { Badge } from '@repo/ui/components/badge'
-import { Button } from '@repo/ui/components/button'
-import { Input } from '@repo/ui/components/input'
+import { Badge } from "@repo/ui/components/badge"
+import { Button } from "@repo/ui/components/button"
+import { Input } from "@repo/ui/components/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@repo/ui/components/select'
-import { useTranslations } from 'next-intl'
+} from "@repo/ui/components/select"
+import { useTranslations } from "next-intl"
+import React from "react"
+
+import { useWorkspaceStore } from "@/stores/workspace-store"
 
 export function TaskFilter() {
   const { filter, setFilter, projects } = useWorkspaceStore()
-  const t = useTranslations('kanban.task')
+  const t = useTranslations("kanban.task")
 
   const statusCounts = React.useMemo(() => {
     const counts = {
@@ -48,7 +49,7 @@ export function TaskFilter() {
 
   const handleFilterChange = React.useCallback(
     (value: string) => {
-      setFilter({ status: value === 'TOTAL' ? null : value })
+      setFilter({ status: value === "TOTAL" ? null : value })
     },
     [setFilter]
   )
@@ -64,37 +65,37 @@ export function TaskFilter() {
     <div className="mb-4 flex w-full items-center gap-2 md:w-auto">
       <Input
         type="text"
-        placeholder={t('searchPlaceholder')}
+        placeholder={t("searchPlaceholder")}
         value={filter.search}
         onChange={handleSearchChange}
         className="w-full bg-background md:w-[300px]"
         data-testid="search-input"
       />
-      <Select value={filter.status || 'TOTAL'} onValueChange={handleFilterChange}>
+      <Select value={filter.status || "TOTAL"} onValueChange={handleFilterChange}>
         <SelectTrigger className="w-[140px]" data-testid="status-select">
-          <SelectValue placeholder={t('filterByStatus')} />
+          <SelectValue placeholder={t("filterByStatus")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="TOTAL" data-testid="total-item">
-            {t('total')}
+            {t("total")}
             <Badge variant="outline" className="ml-2">
               {statusCounts.TOTAL}
             </Badge>
           </SelectItem>
           <SelectItem value="TODO" data-testid="todo-item">
-            {t('statusTodo')}
+            {t("statusTodo")}
             <Badge variant="outline" className="ml-2">
               {statusCounts.TODO}
             </Badge>
           </SelectItem>
           <SelectItem value="IN_PROGRESS" data-testid="in-progress-item">
-            {t('statusInProgress')}
+            {t("statusInProgress")}
             <Badge variant="outline" className="ml-2">
               {statusCounts.IN_PROGRESS}
             </Badge>
           </SelectItem>
           <SelectItem value="DONE" data-testid="done-item">
-            {t('statusDone')}
+            {t("statusDone")}
             <Badge variant="outline" className="ml-2">
               {statusCounts.DONE}
             </Badge>
@@ -107,11 +108,11 @@ export function TaskFilter() {
           variant="ghost"
           size="sm"
           onClick={() => {
-            setFilter({ status: null, search: '' })
+            setFilter({ status: null, search: "" })
           }}
           data-testid="clear-filter-button"
         >
-          {t('clearFilter')}
+          {t("clearFilter")}
         </Button>
       )}
     </div>

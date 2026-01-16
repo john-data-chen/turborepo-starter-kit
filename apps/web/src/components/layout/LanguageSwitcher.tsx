@@ -1,24 +1,25 @@
-'use client'
+"use client"
 
-import { useTransition } from 'react'
-import { usePathname, useRouter } from '@/i18n/navigation'
-import { Button } from '@repo/ui/components/button'
+import { Button } from "@repo/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@repo/ui/components/dropdown-menu'
-import { useParams } from 'next/navigation'
+} from "@repo/ui/components/dropdown-menu"
+import { useParams } from "next/navigation"
+import { useTransition } from "react"
+
+import { usePathname, useRouter } from "@/i18n/navigation"
 
 export default function LanguageSwitcher() {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const pathname = usePathname()
   const params = useParams()
-  const locale = params.locale as 'en' | 'de'
+  const locale = params.locale as "en" | "de"
 
-  const handleLanguageChange = (nextLocale: 'en' | 'de') => {
+  const handleLanguageChange = (nextLocale: "en" | "de") => {
     // The pathname from the hook can be inconsistent, sometimes including the
     // locale and sometimes not. To ensure we always have a clean base path,
     // we derive it from the reliable `params.locale`.
@@ -28,7 +29,7 @@ export default function LanguageSwitcher() {
       : pathname
 
     startTransition(() => {
-      router.replace(basePath || '/', { locale: nextLocale })
+      router.replace(basePath || "/", { locale: nextLocale })
     })
   }
 
@@ -40,8 +41,8 @@ export default function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleLanguageChange('en')}>English</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLanguageChange('de')}>Deutsch</DropdownMenuItem>
+        <DropdownMenuItem onClick={() =>{  handleLanguageChange("en"); }}>English</DropdownMenuItem>
+        <DropdownMenuItem onClick={() =>{  handleLanguageChange("de"); }}>Deutsch</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

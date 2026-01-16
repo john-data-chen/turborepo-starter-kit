@@ -1,6 +1,7 @@
-import { Session, UserInfo } from '@/types/dbInterface'
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
+
+import { Session, UserInfo } from "@/types/dbInterface"
 
 export interface AuthState {
   session: Session | null
@@ -34,7 +35,7 @@ export const useAuthStore = create<AuthState>()(
         })
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         session: state.session
       })

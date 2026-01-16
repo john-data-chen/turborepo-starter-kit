@@ -1,13 +1,6 @@
 /* eslint-disable eslint/max-lines -- Complex component managing kanban board state and interactions */
-'use client'
+"use client"
 
-import { Fragment, useMemo, useRef, useState } from 'react'
-import { useAuth } from '@/hooks/useAuth'
-import { taskApi } from '@/lib/api/taskApi'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { Project, Task } from '@/types/dbInterface'
-import DraggableData from '@/types/drag&drop'
-import { UpdateTaskInput } from '@/types/taskApi'
 import {
   Active,
   Announcements,
@@ -22,14 +15,23 @@ import {
   type DragEndEvent,
   type DragOverEvent,
   type DragStartEvent
-} from '@dnd-kit/core'
-import { arrayMove, SortableContext } from '@dnd-kit/sortable'
-import { Skeleton } from '@repo/ui/components/skeleton'
-import { toast } from 'sonner'
-import NewProjectDialog from '../project/NewProjectDialog'
-import { BoardContainer, BoardProject } from '../project/Project'
-import { TaskCard } from '../task/TaskCard'
-import { TaskFilter } from '../task/TaskFilter'
+} from "@dnd-kit/core"
+import { arrayMove, SortableContext } from "@dnd-kit/sortable"
+import { Skeleton } from "@repo/ui/components/skeleton"
+import { Fragment, useMemo, useRef, useState } from "react"
+import { toast } from "sonner"
+
+import { useAuth } from "@/hooks/useAuth"
+import { taskApi } from "@/lib/api/taskApi"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { Project, Task } from "@/types/dbInterface"
+import DraggableData from "@/types/drag&drop"
+import { UpdateTaskInput } from "@/types/taskApi"
+
+import NewProjectDialog from "../project/NewProjectDialog"
+import { BoardContainer, BoardProject } from "../project/Project"
+import { TaskCard } from "../task/TaskCard"
+import { TaskFilter } from "../task/TaskFilter"
 
 export function Board() {
   const rawProjects = useWorkspaceStore((state) => state.projects)
@@ -39,7 +41,7 @@ export function Board() {
   const currentBoardId = useWorkspaceStore((state) => state.currentBoardId)
   const myBoards = useWorkspaceStore((state) => state.myBoards)
   const { user: currentUser, isAuthenticated } = useAuth()
-  const currentUserId = currentUser?._id || ''
+  const currentUserId = currentUser?._id || ""
   const teamBoards = useWorkspaceStore((state) => state.teamBoards)
 
   // Check if current user is the board owner
@@ -59,7 +61,7 @@ export function Board() {
 
     // Check if current user is the owner of the board
     const ownerId =
-      typeof currentBoard.owner === 'string' ? currentBoard.owner : currentBoard.owner?._id
+      typeof currentBoard.owner === "string" ? currentBoard.owner : currentBoard.owner?._id
 
     return ownerId === currentUserId
   }, [currentBoardId, currentUserId, myBoards, isAuthenticated])
@@ -105,7 +107,7 @@ export function Board() {
       return false
     }
     const data = entry.data.current
-    if (data?.type === 'Project' || data?.type === 'Task') {
+    if (data?.type === "Project" || data?.type === "Task") {
       return true
     }
     return false
@@ -137,11 +139,11 @@ export function Board() {
       return
     }
     const data = event.active.data.current
-    if (data?.type === 'Project') {
+    if (data?.type === "Project") {
       setActiveProject(data?.project)
       return
     }
-    if (data?.type === 'Task') {
+    if (data?.type === "Task") {
       setActiveTask(data?.task)
     }
   }
@@ -160,7 +162,7 @@ export function Board() {
     if (!hasDraggableData(active) || !hasDraggableData(over)) {
       return
     }
-    if (active.data.current!.type === 'Project') {
+    if (active.data.current!.type === "Project") {
       return
     }
 
@@ -170,20 +172,20 @@ export function Board() {
     )
 
     if (!activeProject) {
-      console.error('Active project not found')
+      console.error("Active project not found")
       return
     }
 
     const activeTaskIdx = activeProject.tasks.findIndex((task: Task) => task._id === activeTask._id)
 
     // Handle task dragged over a project
-    if (over.data.current!.type === 'Project') {
+    if (over.data.current!.type === "Project") {
       const overProject = updatedProjects.find(
         (project: Project) => project._id === over.data.current!.project._id
       )
 
       if (!overProject) {
-        console.error('Target project not found')
+        console.error("Target project not found")
         return
       }
 
@@ -210,9 +212,9 @@ export function Board() {
 
         toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`)
       } catch (error) {
-        console.error('Failed to move task:', error)
+        console.error("Failed to move task:", error)
         toast.error(
-          `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+          `Failed to move task: ${error instanceof Error ? error.message : "unknown error"}`
         )
         // Revert local state on error
         setProjects([...projects])
@@ -221,14 +223,14 @@ export function Board() {
     }
 
     // Handle task dragged over another task
-    if (over.data.current!.type === 'Task') {
+    if (over.data.current!.type === "Task") {
       const overTask = over.data.current!.task
       const overProject = updatedProjects.find(
         (project: Project) => project._id === overTask.project
       )
 
       if (!overProject) {
-        console.error('Target project not found')
+        console.error("Target project not found")
         return
       }
 
@@ -239,7 +241,7 @@ export function Board() {
         try {
           const userId = useWorkspaceStore.getState().userId
           if (!userId) {
-            throw new Error('User not authenticated')
+            throw new Error("User not authenticated")
           }
 
           // Remove task from source project
@@ -263,9 +265,9 @@ export function Board() {
 
           toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`)
         } catch (error) {
-          console.error('Failed to move task:', error)
+          console.error("Failed to move task:", error)
           toast.error(
-            `Failed to move task: ${error instanceof Error ? error.message : 'unknown error'}`
+            `Failed to move task: ${error instanceof Error ? error.message : "unknown error"}`
           )
           setProjects([...projects])
         }
@@ -315,7 +317,7 @@ export function Board() {
             // Update the backend with the new order for changed tasks
             const userId = useWorkspaceStore.getState().userId
             if (!userId) {
-              throw new Error('User ID not found')
+              throw new Error("User ID not found")
             }
 
             // Process updates one by one to handle potential errors properly
@@ -330,8 +332,8 @@ export function Board() {
             }
           }
         } catch (error) {
-          console.error('Failed to update task order:', error)
-          toast.error('Failed to update task order. Please try again.')
+          console.error("Failed to update task order:", error)
+          toast.error("Failed to update task order. Please try again.")
           // Revert on error
           setProjects(previousProjects)
 
@@ -342,7 +344,7 @@ export function Board() {
               await fetchProjects(overProject.board.toString())
             }
           } catch (refreshError) {
-            console.error('Failed to refresh projects:', refreshError)
+            console.error("Failed to refresh projects:", refreshError)
           }
         }
       }
@@ -371,7 +373,7 @@ export function Board() {
       return
     }
 
-    const isActiveAProject = activeData?.type === 'Project'
+    const isActiveAProject = activeData?.type === "Project"
     if (!isActiveAProject) {
       return
     }
@@ -398,7 +400,7 @@ export function Board() {
     try {
       const userId = useWorkspaceStore.getState().userId
       if (!userId) {
-        throw new Error('User not authenticated')
+        throw new Error("User not authenticated")
       }
 
       // Update backend for all projects that changed position
@@ -409,13 +411,13 @@ export function Board() {
         // Only update if the order actually changed
         if (oldIndex !== newIndex) {
           // Import projectApi dynamically to avoid circular dependency
-          const { projectApi } = await import('@/lib/api/projectApi')
+          const { projectApi } = await import("@/lib/api/projectApi")
 
           // Ensure orderInBoard is a number
-          const order = typeof newIndex === 'number' ? newIndex : Number(newIndex)
+          const order = typeof newIndex === "number" ? newIndex : Number(newIndex)
           if (Number.isNaN(order)) {
-            console.error('Invalid orderInBoard value:', newIndex)
-            return Promise.reject(new Error('Invalid order value'))
+            console.error("Invalid orderInBoard value:", newIndex)
+            return Promise.reject(new Error("Invalid order value"))
           }
 
           const updateData = {
@@ -429,10 +431,10 @@ export function Board() {
 
       await Promise.all(updatePromises)
 
-      toast.success('Project order updated successfully')
+      toast.success("Project order updated successfully")
     } catch (error) {
-      console.error('Failed to update project order:', error)
-      toast.error('Failed to update project order. Please try again.')
+      console.error("Failed to update project order:", error)
+      toast.error("Failed to update project order. Please try again.")
 
       // Revert to previous state on error
       setProjects(previousProjects)
@@ -444,7 +446,7 @@ export function Board() {
           await fetchProjects(currentBoardId)
         }
       } catch (refreshError) {
-        console.error('Failed to refresh projects:', refreshError)
+        console.error("Failed to refresh projects:", refreshError)
       }
     }
   }
@@ -456,11 +458,11 @@ export function Board() {
       if (!hasDraggableData(active)) {
         return
       }
-      if (active.data.current?.type === 'Project') {
+      if (active.data.current?.type === "Project") {
         const startProjectIdx = projectsId.findIndex((id: string) => id === active.id)
         const startProject = projects[startProjectIdx]
         return `Picked up Project ${startProject?.title} at position: ${startProjectIdx + 1} of ${projectsId.length}`
-      } else if (active.data.current?.type === 'Task') {
+      } else if (active.data.current?.type === "Task") {
         pickedUpTaskProject.current = active.data.current.task.project
         const { tasksInProject, taskPosition, project } = getDraggingTaskData(
           active.data.current.task._id,
@@ -475,12 +477,12 @@ export function Board() {
       if (!hasDraggableData(active) || !hasDraggableData(over)) {
         return
       }
-      if (active.data.current?.type === 'Project' && over.data.current?.type === 'Project') {
+      if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
         const overProjectIdx = projectsId.findIndex((id: string) => id === over.id)
         return `Project ${active.data.current.project.title} was moved over ${
           over.data.current.project.title
         } at position ${overProjectIdx + 1} of ${projectsId.length}`
-      } else if (active.data.current?.type === 'Task' && over.data.current?.type === 'Task') {
+      } else if (active.data.current?.type === "Task" && over.data.current?.type === "Task") {
         const { tasksInProject, taskPosition, project } = getDraggingTaskData(
           over.data.current.task._id,
           over.data.current.task.project.toString()
@@ -500,13 +502,13 @@ export function Board() {
         pickedUpTaskProject.current = null
         return
       }
-      if (active.data.current?.type === 'Project' && over.data.current?.type === 'Project') {
+      if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
         const overProjectPosition = projectsId.findIndex((id: string) => id === over.id)
 
         return `Project ${active.data.current.project.title} was dropped into position ${overProjectPosition + 1} of ${
           projectsId.length
         }`
-      } else if (active.data.current?.type === 'Task' && over.data.current?.type === 'Task') {
+      } else if (active.data.current?.type === "Task" && over.data.current?.type === "Task") {
         const { tasksInProject, taskPosition, project } = getDraggingTaskData(
           over.data.current.task._id,
           over.data.current.task.project.toString()
@@ -583,7 +585,7 @@ export function Board() {
                     tasks={filterTasks(project.tasks)}
                     isBoardOwner={isBoardOwner}
                     isBoardMember={isBoardMember}
-                    currentUserId={currentUser?._id || ''}
+                    currentUserId={currentUser?._id || ""}
                   />
                 </Fragment>
               ))}
@@ -598,7 +600,7 @@ export function Board() {
               tasks={filterTasks(activeProject.tasks)}
               isBoardOwner={isBoardOwner}
               isBoardMember={isBoardMember}
-              currentUserId={currentUser?._id || ''}
+              currentUserId={currentUser?._id || ""}
             />
           )}
           {activeTask && <TaskCard task={activeTask} isOverlay />}

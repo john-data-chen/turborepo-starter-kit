@@ -1,8 +1,6 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { projectSchema } from '@/types/projectForm'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
@@ -10,12 +8,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '@repo/ui/components/form'
-import { Input } from '@repo/ui/components/input'
-import { Textarea } from '@repo/ui/components/textarea'
-import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+} from "@repo/ui/components/form"
+import { Input } from "@repo/ui/components/input"
+import { Textarea } from "@repo/ui/components/textarea"
+import { useTranslations } from "next-intl"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { projectSchema } from "@/types/projectForm"
 
 type ProjectFormData = z.infer<typeof projectSchema>
 
@@ -29,12 +30,12 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormProps) {
-  const t = useTranslations('kanban.project')
+  const t = useTranslations("kanban.project")
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: defaultValues || {
-      title: '',
-      description: ''
+      title: "",
+      description: ""
     }
   })
 
@@ -46,9 +47,9 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('titleLabel')}</FormLabel>
+              <FormLabel>{t("titleLabel")}</FormLabel>
               <FormControl>
-                <Input placeholder={t('titlePlaceholder')} {...field} />
+                <Input placeholder={t("titlePlaceholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,10 +60,10 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('descriptionLabel')}</FormLabel>
+              <FormLabel>{t("descriptionLabel")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder={t('descriptionPlaceholder')}
+                  placeholder={t("descriptionPlaceholder")}
                   className="resize-none"
                   {...field}
                 />

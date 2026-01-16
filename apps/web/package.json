@@ -7,15 +7,15 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
+    "dev": "next dev",
     "format": "cd ../.. && oxfmt --ignore-path .prettierignore --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
+    "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
+    "playwright": "npx playwright test",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
+    "start": "next start",
     "test": "vitest run --coverage",
-    "test:watch": "vitest watch",
-    "playwright": "npx playwright test"
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

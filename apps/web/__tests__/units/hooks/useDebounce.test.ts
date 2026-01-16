@@ -1,8 +1,9 @@
-import { useDebounce } from '@/hooks/useDebounce'
-import { act, renderHook } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, renderHook } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-describe('useDebounce', () => {
+import { useDebounce } from "@/hooks/useDebounce"
+
+describe("useDebounce", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
@@ -12,29 +13,29 @@ describe('useDebounce', () => {
     vi.useRealTimers()
   })
 
-  it('should return initial value immediately', () => {
-    const { result } = renderHook(() => useDebounce('initial', 500))
-    expect(result.current).toBe('initial')
+  it("should return initial value immediately", () => {
+    const { result } = renderHook(() => useDebounce("initial", 500))
+    expect(result.current).toBe("initial")
   })
 
-  it('should debounce value changes with default delay', () => {
+  it("should debounce value changes with default delay", () => {
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
-      initialProps: { value: 'initial' }
+      initialProps: { value: "initial" }
     })
 
-    expect(result.current).toBe('initial')
+    expect(result.current).toBe("initial")
 
     // Update the value
-    rerender({ value: 'updated' })
+    rerender({ value: "updated" })
 
     // Value should still be the old value immediately after update
-    expect(result.current).toBe('initial')
+    expect(result.current).toBe("initial")
 
     // Advance time by less than the delay
     act(() => {
       vi.advanceTimersByTime(200)
     })
-    expect(result.current).toBe('initial')
+    expect(result.current).toBe("initial")
 
     // Advance time to complete the delay
     act(() => {
@@ -42,54 +43,54 @@ describe('useDebounce', () => {
     })
 
     // Now the value should be updated
-    expect(result.current).toBe('updated')
+    expect(result.current).toBe("updated")
   })
 
-  it('should debounce value changes with custom delay', () => {
+  it("should debounce value changes with custom delay", () => {
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 1000), {
-      initialProps: { value: 'initial' }
+      initialProps: { value: "initial" }
     })
 
-    expect(result.current).toBe('initial')
+    expect(result.current).toBe("initial")
 
-    rerender({ value: 'updated' })
-    expect(result.current).toBe('initial')
+    rerender({ value: "updated" })
+    expect(result.current).toBe("initial")
 
     act(() => {
       vi.advanceTimersByTime(999)
     })
-    expect(result.current).toBe('initial')
+    expect(result.current).toBe("initial")
 
     act(() => {
       vi.advanceTimersByTime(1)
     })
-    expect(result.current).toBe('updated')
+    expect(result.current).toBe("updated")
   })
 
-  it('should cancel previous timeout on rapid value changes', () => {
+  it("should cancel previous timeout on rapid value changes", () => {
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 500), {
-      initialProps: { value: 'value1' }
+      initialProps: { value: "value1" }
     })
 
-    expect(result.current).toBe('value1')
+    expect(result.current).toBe("value1")
 
     // First update
-    rerender({ value: 'value2' })
+    rerender({ value: "value2" })
     act(() => {
       vi.advanceTimersByTime(300)
     })
 
     // Second update before first completes
-    rerender({ value: 'value3' })
+    rerender({ value: "value3" })
     act(() => {
       vi.advanceTimersByTime(300)
     })
 
     // Third update before second completes
-    rerender({ value: 'value4' })
+    rerender({ value: "value4" })
 
     // Should still have initial value
-    expect(result.current).toBe('value1')
+    expect(result.current).toBe("value1")
 
     // Complete the last timeout
     act(() => {
@@ -97,10 +98,10 @@ describe('useDebounce', () => {
     })
 
     // Should jump directly to the last value
-    expect(result.current).toBe('value4')
+    expect(result.current).toBe("value4")
   })
 
-  it('should handle different value types', () => {
+  it("should handle different value types", () => {
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
       initialProps: { value: 123 }
     })
@@ -115,9 +116,9 @@ describe('useDebounce', () => {
     expect(result.current).toBe(456)
   })
 
-  it('should handle object values', () => {
-    const obj1 = { name: 'test1' }
-    const obj2 = { name: 'test2' }
+  it("should handle object values", () => {
+    const obj1 = { name: "test1" }
+    const obj2 = { name: "test2" }
 
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
       initialProps: { value: obj1 }
@@ -133,10 +134,10 @@ describe('useDebounce', () => {
     expect(result.current).toBe(obj2)
   })
 
-  it('should cleanup timeout on unmount', () => {
-    const { unmount } = renderHook(() => useDebounce('test', 500))
+  it("should cleanup timeout on unmount", () => {
+    const { unmount } = renderHook(() => useDebounce("test", 500))
 
     // Should not throw error on unmount
-    expect(() => unmount()).not.toThrow()
+    expect(() =>{  unmount(); }).not.toThrow()
   })
 })

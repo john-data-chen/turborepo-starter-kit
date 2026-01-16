@@ -3,14 +3,15 @@ import {
   InternalServerErrorException,
   Logger,
   UnauthorizedException
-} from '@nestjs/common'
-import { PassportStrategy } from '@nestjs/passport'
-import { Request } from 'express'
-import { Strategy } from 'passport-custom'
-import { AuthService } from '../auth.service'
+} from "@nestjs/common"
+import { PassportStrategy } from "@nestjs/passport"
+import { Request } from "express"
+import { Strategy } from "passport-custom"
+
+import { AuthService } from "../auth.service"
 
 @Injectable()
-export class EmailStrategy extends PassportStrategy(Strategy, 'email') {
+export class EmailStrategy extends PassportStrategy(Strategy, "email") {
   private readonly logger = new Logger(EmailStrategy.name)
 
   constructor(private authService: AuthService) {
@@ -22,13 +23,13 @@ export class EmailStrategy extends PassportStrategy(Strategy, 'email') {
       const { email } = req.body
 
       if (!email) {
-        throw new UnauthorizedException('The login email is incorrect, please correct it')
+        throw new UnauthorizedException("The login email is incorrect, please correct it")
       }
 
       const user = await this.authService.validateUser(email)
 
       if (!user) {
-        throw new UnauthorizedException('The login email is incorrect, please correct it')
+        throw new UnauthorizedException("The login email is incorrect, please correct it")
       }
 
       return user
@@ -41,7 +42,7 @@ export class EmailStrategy extends PassportStrategy(Strategy, 'email') {
       // Log and wrap unexpected errors (系統錯誤)
       const err = error as Error
       this.logger.error(`Error during validation: ${err.message}`, err.stack)
-      throw new InternalServerErrorException('An error occurred during authentication')
+      throw new InternalServerErrorException("An error occurred during authentication")
     }
   }
 }

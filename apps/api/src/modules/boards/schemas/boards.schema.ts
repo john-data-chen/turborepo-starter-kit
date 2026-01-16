@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Types } from 'mongoose'
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { Document, Types } from "mongoose"
 
 export type BoardDocument = Board & Document
 
@@ -11,13 +11,13 @@ export class Board {
   @Prop({ type: String })
   description?: string
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
   owner: Types.ObjectId
 
-  @Prop([{ type: Types.ObjectId, ref: 'User' }])
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
   members: Types.ObjectId[]
 
-  @Prop([{ type: Types.ObjectId, ref: 'Project' }])
+  @Prop([{ type: Types.ObjectId, ref: "Project" }])
   projects: Types.ObjectId[]
 }
 

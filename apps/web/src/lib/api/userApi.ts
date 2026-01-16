@@ -1,6 +1,6 @@
-import { API_URL } from '@/constants/routes'
-import { fetchWithAuth } from '@/lib/api/fetchWithAuth'
-import { ApiUser, User } from '@/types/userApi'
+import { API_URL } from "@/constants/routes"
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth"
+import { ApiUser, User } from "@/types/userApi"
 
 // API Endpoint
 const USERS_ENDPOINT = `${API_URL}/users`
@@ -26,7 +26,7 @@ function transformUserData(users: ApiUser | ApiUser[]): User | User[] {
  */
 export const userApi = {
   // Search users by username or email
-  async searchUsers(search = ''): Promise<User[]> {
+  async searchUsers(search = ""): Promise<User[]> {
     const response = await fetchWithAuth<{ users: ApiUser[] }>(
       `${USERS_ENDPOINT}/search?username=${encodeURIComponent(search)}`
     )
@@ -39,7 +39,7 @@ export const userApi = {
       const response = await fetchWithAuth<{ user: ApiUser }>(`${USERS_ENDPOINT}/${id}`)
       return response.user ? transformUserData(response.user) : null
     } catch (error) {
-      if (error instanceof Error && error.message.includes('404')) {
+      if (error instanceof Error && error.message.includes("404")) {
         return null
       }
       throw error

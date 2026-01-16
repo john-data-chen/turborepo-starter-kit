@@ -1,13 +1,6 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { TaskForm } from '@/components/kanban/task/TaskForm'
-import { useDeleteTask, useTask, useUpdateTask } from '@/lib/api/tasks/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { TaskStatus } from '@/types/dbInterface'
-import { TASK_KEYS } from '@/types/taskApi'
-import { TaskFormSchema } from '@/types/taskForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,26 +9,34 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@repo/ui/components/alert-dialog'
-import { Button } from '@repo/ui/components/button'
+} from "@repo/ui/components/alert-dialog"
+import { Button } from "@repo/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@repo/ui/components/dialog'
+} from "@repo/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@repo/ui/components/dropdown-menu'
-import { useQueryClient } from '@tanstack/react-query'
-import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
-import { z } from 'zod'
+} from "@repo/ui/components/dropdown-menu"
+import { useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import { TaskForm } from "@/components/kanban/task/TaskForm"
+import { useDeleteTask, useTask, useUpdateTask } from "@/lib/api/tasks/queries"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { TaskStatus } from "@/types/dbInterface"
+import { TASK_KEYS } from "@/types/taskApi"
+import { TaskFormSchema } from "@/types/taskForm"
 
 interface TaskActionsProps {
   id: string
@@ -66,7 +67,7 @@ export function TaskActions({
   const [isDeleted, setIsDeleted] = useState(false)
 
   // Translations
-  const t = useTranslations('kanban.task')
+  const t = useTranslations("kanban.task")
 
   // Fetch task data to ensure we have the latest
   const { data: task, isLoading: isLoadingTask } = useTask(id, {
@@ -98,8 +99,8 @@ export function TaskActions({
   // Prepare default values for the form
   const defaultValues = {
     title,
-    description: description || '',
-    status: status as TaskStatus,
+    description: description || "",
+    status: status,
     dueDate: dueDate ? new Date(dueDate) : undefined,
     // Pass the assignee with required fields - the form will handle loading the full user data
     assignee: assigneeId
@@ -135,14 +136,14 @@ export function TaskActions({
             // Invalidate both the specific task and task lists
             queryClient.invalidateQueries({
               queryKey: TASK_KEYS.detail(id),
-              refetchType: 'all'
+              refetchType: "all"
             })
             queryClient.invalidateQueries({
               queryKey: TASK_KEYS.lists(),
-              refetchType: 'active'
+              refetchType: "active"
             })
 
-            toast.success(t('updateSuccess', { title }))
+            toast.success(t("updateSuccess", { title }))
             setIsEditDialogOpen(false)
 
             // Invalidate all related queries
@@ -150,10 +151,10 @@ export function TaskActions({
               queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(id) }),
               queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() }),
               queryClient.invalidateQueries({
-                queryKey: ['board', boardId, 'tasks']
+                queryKey: ["board", boardId, "tasks"]
               }),
               queryClient.invalidateQueries({
-                queryKey: ['project', projectId, 'tasks']
+                queryKey: ["project", projectId, "tasks"]
               })
             ])
 
@@ -162,10 +163,10 @@ export function TaskActions({
               queryClient.refetchQueries({ queryKey: TASK_KEYS.detail(id) }),
               queryClient.refetchQueries({ queryKey: TASK_KEYS.lists() }),
               queryClient.refetchQueries({
-                queryKey: ['board', boardId, 'tasks']
+                queryKey: ["board", boardId, "tasks"]
               }),
               queryClient.refetchQueries({
-                queryKey: ['project', projectId, 'tasks']
+                queryKey: ["project", projectId, "tasks"]
               })
             ]
 
@@ -181,21 +182,21 @@ export function TaskActions({
             queryCache.findAll().forEach(({ queryKey }) => {
               if (
                 Array.isArray(queryKey) &&
-                (queryKey[0] === 'board' || queryKey[0] === 'project' || queryKey[0] === 'tasks')
+                (queryKey[0] === "board" || queryKey[0] === "project" || queryKey[0] === "tasks")
               ) {
                 queryClient.invalidateQueries({ queryKey })
               }
             })
           },
           onError: (error) => {
-            console.error('Error updating task:', error)
-            toast.error(t('updateError'))
+            console.error("Error updating task:", error)
+            toast.error(t("updateError"))
           }
         }
       )
     } catch (error) {
-      console.error('Error in task update handler:', error)
-      toast.error(t('updateError'))
+      console.error("Error in task update handler:", error)
+      toast.error(t("updateError"))
     }
   }
 
@@ -228,16 +229,16 @@ export function TaskActions({
 
         // Update all list queries
         updateQueries(TASK_KEYS.lists(), id)
-        updateQueries(['board', boardId, 'tasks'], id)
-        updateQueries(['project', projectId, 'tasks'], id)
+        updateQueries(["board", boardId, "tasks"], id)
+        updateQueries(["project", projectId, "tasks"], id)
 
         // Remove the task detail query
         cancelAndRemoveQueries(TASK_KEYS.detail(id))
 
         // Also remove any other potential queries that might contain this task
-        cancelAndRemoveQueries(['task', id, 'details'])
+        cancelAndRemoveQueries(["task", id, "details"])
       } catch (error) {
-        console.error('Error during optimistic update:', error)
+        console.error("Error during optimistic update:", error)
       }
 
       // Mark as deleted immediately to prevent any further fetches
@@ -251,39 +252,39 @@ export function TaskActions({
             await Promise.all([
               queryClient.invalidateQueries({
                 queryKey: TASK_KEYS.lists(),
-                refetchType: 'active' as const
+                refetchType: "active" as const
               }),
               queryClient.invalidateQueries({
-                queryKey: ['board', boardId, 'tasks'],
-                refetchType: 'active' as const
+                queryKey: ["board", boardId, "tasks"],
+                refetchType: "active" as const
               }),
               queryClient.invalidateQueries({
-                queryKey: ['project', projectId, 'tasks'],
-                refetchType: 'active' as const
+                queryKey: ["project", projectId, "tasks"],
+                refetchType: "active" as const
               })
             ])
 
             // Ensure task detail queries are removed
             cancelAndRemoveQueries(TASK_KEYS.detail(id))
-            cancelAndRemoveQueries(['task', id, 'details'])
+            cancelAndRemoveQueries(["task", id, "details"])
 
             // Call parent's update callback if provided
             if (onUpdate) {
               try {
                 await onUpdate()
               } catch (updateError) {
-                console.error('Error in onUpdate callback:', updateError)
+                console.error("Error in onUpdate callback:", updateError)
               }
             }
 
-            toast.success(t('deleteSuccess'))
+            toast.success(t("deleteSuccess"))
           } catch (cleanupError) {
-            console.error('Error during cleanup after successful delete:', cleanupError)
-            toast.success(t('deleteSuccess'))
+            console.error("Error during cleanup after successful delete:", cleanupError)
+            toast.success(t("deleteSuccess"))
           }
         },
         onError: (error) => {
-          console.error('Error in delete mutation:', error)
+          console.error("Error in delete mutation:", error)
 
           // Restore the task data
           if (previousTask) {
@@ -296,23 +297,23 @@ export function TaskActions({
               predicate: (query) => {
                 const queryKey = query.queryKey as readonly (string | readonly string[])[]
                 const firstKey = Array.isArray(queryKey[0]) ? queryKey[0][0] : queryKey[0]
-                return ['tasks', 'board', 'project'].includes(firstKey as string)
+                return ["tasks", "board", "project"].includes(firstKey as string)
               },
-              refetchType: 'active' as const
+              refetchType: "active" as const
             })
           } catch (invalidateError) {
-            console.error('Error during query invalidation:', invalidateError)
-            if (typeof window !== 'undefined') {
+            console.error("Error during query invalidation:", invalidateError)
+            if (typeof window !== "undefined") {
               window.location.reload()
             }
           }
 
-          toast.error(t('deleteError'))
+          toast.error(t("deleteError"))
         }
       })
     } catch (error) {
-      console.error('Error in delete handler:', error)
-      toast.error(t('deleteError'))
+      console.error("Error in delete handler:", error)
+      toast.error(t("deleteError"))
     } finally {
       setShowDeleteDialog(false)
     }
@@ -346,14 +347,14 @@ export function TaskActions({
       >
         <DialogContent className="sm:max-w-md" data-testid="edit-task-dialog">
           <DialogHeader>
-            <DialogTitle>{t('editTaskTitle')}</DialogTitle>
-            <DialogDescription>{t('editTaskDescription')}</DialogDescription>
+            <DialogTitle>{t("editTaskTitle")}</DialogTitle>
+            <DialogDescription>{t("editTaskDescription")}</DialogDescription>
           </DialogHeader>
           <TaskForm
             defaultValues={defaultValues}
             onSubmit={handleSubmit}
-            onCancel={() => setIsEditDialogOpen(false)}
-            submitLabel={t('updateTask')}
+            onCancel={() =>{  setIsEditDialogOpen(false); }}
+            submitLabel={t("updateTask")}
           />
         </DialogContent>
       </Dialog>
@@ -367,7 +368,7 @@ export function TaskActions({
             className="h-8 w-8 p-0"
             data-testid="task-actions-trigger"
           >
-            <span className="sr-only">{t('actions')}</span>
+            <span className="sr-only">{t("actions")}</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -375,9 +376,9 @@ export function TaskActions({
           <DropdownMenuItem
             onSelect={() => canEdit && setIsEditDialogOpen(true)}
             disabled={!canEdit}
-            className={!canEdit ? 'cursor-not-allowed text-muted-foreground line-through' : ''}
+            className={!canEdit ? "cursor-not-allowed text-muted-foreground line-through" : ""}
           >
-            {t('edit')}
+            {t("edit")}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
@@ -387,11 +388,11 @@ export function TaskActions({
             disabled={!canDelete}
             className={
               !canDelete
-                ? 'cursor-not-allowed text-muted-foreground line-through'
-                : 'text-red-600 hover:!bg-destructive/10 hover:!text-red-600'
+                ? "cursor-not-allowed text-muted-foreground line-through"
+                : "text-red-600 hover:!bg-destructive/10 hover:!text-red-600"
             }
           >
-            {t('delete')}
+            {t("delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -400,20 +401,20 @@ export function TaskActions({
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent data-testid="delete-task-dialog">
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('confirmDeleteTitle', { title })}</AlertDialogTitle>
+            <AlertDialogTitle>{t("confirmDeleteTitle", { title })}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('confirmDeleteDescription', { title })}
+              {t("confirmDeleteDescription", { title })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="cancel-delete-button">{t('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel data-testid="cancel-delete-button">{t("cancel")}</AlertDialogCancel>
             <Button
               variant="destructive"
               onClick={handleDelete}
               data-testid="confirm-delete-button"
               disabled={deleteTaskMutation.isPending}
             >
-              {deleteTaskMutation.isPending ? t('deleting') : t('delete')}
+              {deleteTaskMutation.isPending ? t("deleting") : t("delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

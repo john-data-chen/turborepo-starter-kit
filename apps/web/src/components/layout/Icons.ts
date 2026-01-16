@@ -1,4 +1,4 @@
-import { StarIcon } from 'lucide-react'
+import { StarIcon } from "lucide-react"
 
 export const Icons = {
   projectLogo: StarIcon

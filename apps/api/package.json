@@ -7,13 +7,13 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "dev": "rspack dev --watch",
     "build": "cross-env BUILD=true rspack build",
-    "start": "node dist/main.js",
+    "dev": "rspack dev --watch",
+    "format": "cd ../.. && oxfmt --ignore-path .prettierignore --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/api",
     "init-db": "tsx database/init-db-data.ts",
     "init-db:force": "tsx database/init-db-data.ts --force",
     "lint": "npx oxlint --config ../../packages/linter-config/.oxlintrc.json --fix",
-    "format": "cd ../.. && oxfmt --ignore-path .prettierignore --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/api",
+    "start": "node dist/main.js",
     "test": "vitest run --coverage",
     "test:watch": "vitest --watch"
   },

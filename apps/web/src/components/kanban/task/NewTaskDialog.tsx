@@ -1,11 +1,6 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { TaskForm } from '@/components/kanban/task/TaskForm'
-import { useCreateTask } from '@/lib/api/tasks/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { TaskFormSchema } from '@/types/taskForm'
-import { Button } from '@repo/ui/components/button'
+import { Button } from "@repo/ui/components/button"
 import {
   Dialog,
   DialogContent,
@@ -13,10 +8,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@repo/ui/components/dialog'
-import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
-import { z } from 'zod'
+} from "@repo/ui/components/dialog"
+import { useTranslations } from "next-intl"
+import React from "react"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import { TaskForm } from "@/components/kanban/task/TaskForm"
+import { useCreateTask } from "@/lib/api/tasks/queries"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { TaskFormSchema } from "@/types/taskForm"
 
 export interface NewTaskDialogProps {
   projectId: string
@@ -25,7 +26,7 @@ export interface NewTaskDialogProps {
 export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
   const addTask = useWorkspaceStore((state) => state.addTask)
   const [addTaskOpen, setAddTaskOpen] = React.useState(false)
-  const t = useTranslations('kanban.task')
+  const t = useTranslations("kanban.task")
   const { mutateAsync: createTask } = useCreateTask()
 
   const handleSubmit = async (values: z.infer<typeof TaskFormSchema>) => {
@@ -42,16 +43,16 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
     const nextOrder = lastOrder + 1
 
     await addTask(
-      projectId!,
-      values.title!,
+      projectId,
+      values.title,
       values.status!,
       createTask,
-      values.description ?? '',
+      values.description ?? "",
       values.dueDate ?? undefined,
       values.assignee?._id ?? undefined,
       nextOrder
     )
-    toast.success(t('createSuccess', { title: values.title }))
+    toast.success(t("createSuccess", { title: values.title }))
     setAddTaskOpen(false)
   }
 
@@ -64,18 +65,18 @@ export default function NewTaskDialog({ projectId }: NewTaskDialogProps) {
           data-testid="new-task-trigger"
           className="my-4 w-full bg-foreground text-background hover:bg-foreground/90"
         >
-          {t('addNewTask')}
+          {t("addNewTask")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md" data-testid="new-task-dialog">
         <DialogHeader>
-          <DialogTitle>{t('addNewTaskTitle')}</DialogTitle>
-          <DialogDescription>{t('addNewTaskDescription')}</DialogDescription>
+          <DialogTitle>{t("addNewTaskTitle")}</DialogTitle>
+          <DialogDescription>{t("addNewTaskDescription")}</DialogDescription>
         </DialogHeader>
         <TaskForm
           onSubmit={handleSubmit}
-          submitLabel={t('createTask')}
-          onCancel={() => setAddTaskOpen(false)}
+          submitLabel={t("createTask")}
+          onCancel={() =>{  setAddTaskOpen(false); }}
         />
       </DialogContent>
     </Dialog>

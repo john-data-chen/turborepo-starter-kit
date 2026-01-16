@@ -1,10 +1,10 @@
-import { IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator'
+import { IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from "class-validator"
 
 export enum ProjectStatus {
-  TODO = 'TODO',
-  IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
-  ARCHIVED = 'ARCHIVED'
+  TODO = "TODO",
+  IN_PROGRESS = "IN_PROGRESS",
+  DONE = "DONE",
+  ARCHIVED = "ARCHIVED"
 }
 
 export class UpdateProjectDto {

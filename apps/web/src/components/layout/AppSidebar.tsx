@@ -1,8 +1,5 @@
-'use client'
+"use client"
 
-import { Icons } from '@/components/layout/Icons'
-import { useBoards } from '@/hooks/useBoards'
-import { Link, usePathname } from '@/i18n/navigation'
 import {
   Sidebar,
   SidebarContent,
@@ -12,12 +9,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
-} from '@repo/ui/components/sidebar'
-import { HomeIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+} from "@repo/ui/components/sidebar"
+import { HomeIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
+
+import { Icons } from "@/components/layout/Icons"
+import { useBoards } from "@/hooks/useBoards"
+import { Link, usePathname } from "@/i18n/navigation"
 
 export default function AppSidebar() {
-  const t = useTranslations('sidebar')
+  const t = useTranslations("sidebar")
   const pathname = usePathname()
   const { myBoards, teamBoards, loading } = useBoards()
 
@@ -29,7 +30,7 @@ export default function AppSidebar() {
             <Icons.projectLogo />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{t('title')}</span>
+            <span className="truncate font-semibold">{t("title")}</span>
           </div>
         </div>
       </SidebarHeader>
@@ -37,10 +38,10 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.endsWith('/boards')}>
+              <SidebarMenuButton asChild isActive={pathname.endsWith("/boards")}>
                 <Link href="/boards" className="flex items-center gap-2 px-2 py-2">
                   <HomeIcon className="h-4 w-4" />
-                  <span>{t('overview')}</span>
+                  <span>{t("overview")}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -49,11 +50,11 @@ export default function AppSidebar() {
 
         <SidebarGroup>
           <div className="flex items-center justify-between px-2">
-            <SidebarGroupLabel>{t('myBoards')}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t("myBoards")}</SidebarGroupLabel>
           </div>
           <SidebarMenu>
             {loading ? (
-              <div className="px-4 py-2 text-sm text-muted-foreground">{t('loading')}</div>
+              <div className="px-4 py-2 text-sm text-muted-foreground">{t("loading")}</div>
             ) : (
               myBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>
@@ -75,11 +76,11 @@ export default function AppSidebar() {
         {/* Team Boards Section */}
         <SidebarGroup>
           <div className="flex items-center justify-between px-2">
-            <SidebarGroupLabel>{t('teamBoards')}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t("teamBoards")}</SidebarGroupLabel>
           </div>
           <SidebarMenu>
             {loading ? (
-              <div className="px-4 py-2 text-sm text-muted-foreground">{t('loading')}</div>
+              <div className="px-4 py-2 text-sm text-muted-foreground">{t("loading")}</div>
             ) : (
               teamBoards?.map((board) => (
                 <SidebarMenuItem key={board._id}>

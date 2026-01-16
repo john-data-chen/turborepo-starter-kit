@@ -1,15 +1,16 @@
-'use client'
+"use client"
 
-import { useEffect, useMemo, useState } from 'react'
-import { SEARCH_DEBOUNCE_DELAY_MS } from '@/constants/common'
-import { useDebounce } from '@/hooks/useDebounce'
-import { userApi } from '@/lib/api/userApi'
-import { TaskStatus, User } from '@/types/dbInterface'
-import { TaskFormSchema } from '@/types/taskForm'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useMemo, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import { SEARCH_DEBOUNCE_DELAY_MS } from "@/constants/common"
+import { useDebounce } from "@/hooks/useDebounce"
+import { userApi } from "@/lib/api/userApi"
+import { TaskStatus, User } from "@/types/dbInterface"
+import { TaskFormSchema } from "@/types/taskForm"
 
 interface UseTaskFormProps {
   defaultValues?: Partial<z.infer<typeof TaskFormSchema>>
@@ -19,7 +20,7 @@ interface UseTaskFormProps {
 export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [users, setUsers] = useState<User[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
   const [assignOpen, setAssignOpen] = useState(false)
   const debouncedSearchQuery = useDebounce(searchQuery, SEARCH_DEBOUNCE_DELAY_MS)
@@ -31,7 +32,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     }
 
     // If assignee is just an ID, we need to fetch the full user data
-    if (typeof defaultValues.assignee === 'string') {
+    if (typeof defaultValues.assignee === "string") {
       return {
         ...defaultValues,
         assignee: { _id: defaultValues.assignee }
@@ -50,8 +51,8 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
   const form = useForm<z.infer<typeof TaskFormSchema>>({
     resolver: zodResolver(TaskFormSchema),
     defaultValues: {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       status: TaskStatus.TODO,
       dueDate: undefined,
       assignee: undefined,
@@ -59,11 +60,11 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
     }
   })
 
-  const searchUsersLocal = async (search = ''): Promise<User[]> => {
+  const searchUsersLocal = async (search = ""): Promise<User[]> => {
     try {
       return await userApi.searchUsers(search)
     } catch (error) {
-      console.error('Error searching users:', error)
+      console.error("Error searching users:", error)
       return []
     }
   }
@@ -79,7 +80,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
         const results = await searchUsersLocal(debouncedSearchQuery)
         setUsers(results)
       } catch (error) {
-        console.error('Error searching users:', error)
+        console.error("Error searching users:", error)
       } finally {
         setIsSearching(false)
       }
@@ -103,28 +104,28 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
       // If we already have assignee data in the expected format, use it directly
       if (
         defaultValues?.assignee &&
-        typeof defaultValues.assignee === 'object' &&
-        '_id' in defaultValues.assignee
+        typeof defaultValues.assignee === "object" &&
+        "_id" in defaultValues.assignee
       ) {
         return
       }
 
       // If assignee is a string (ID) or we have an ID in the assignee object
       const assigneeId = defaultValues?.assignee
-        ? typeof defaultValues.assignee === 'string'
+        ? typeof defaultValues.assignee === "string"
           ? defaultValues.assignee
           : defaultValues.assignee._id
         : null
 
       if (!assigneeId) {
-        form.setValue('assignee', undefined)
+        form.setValue("assignee", undefined)
         return
       }
 
       // Try to find the user in the existing users list
       const existingUser = users.find((u) => u._id === assigneeId)
       if (existingUser) {
-        form.setValue('assignee', {
+        form.setValue("assignee", {
           _id: existingUser._id,
           name: existingUser.name,
           email: existingUser.email
@@ -138,14 +139,14 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
           const userData = await userApi.getUserById(assigneeId)
           if (userData) {
             setUsers((prev) => [...prev, userData])
-            form.setValue('assignee', {
+            form.setValue("assignee", {
               _id: userData._id,
               name: userData.name,
               email: userData.email
             })
           }
         } catch (error) {
-          console.error('Error fetching assignee data:', error)
+          console.error("Error fetching assignee data:", error)
         }
       }
 

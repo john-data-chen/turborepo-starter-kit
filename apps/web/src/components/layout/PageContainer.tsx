@@ -1,5 +1,5 @@
-import React from 'react'
-import { ScrollArea } from '@repo/ui/components/scroll-area'
+import { ScrollArea } from "@repo/ui/components/scroll-area"
+import React from "react"
 
 export default function PageContainer({
   children,
@@ -8,7 +8,7 @@ export default function PageContainer({
   children: React.ReactNode
   scrollable?: boolean
 }) {
-  const contentClasses = 'h-full px-4 sm:px-6'
+  const contentClasses = "h-full px-4 sm:px-6"
 
   return (
     <div data-testid="page-container">

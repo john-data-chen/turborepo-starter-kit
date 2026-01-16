@@ -1,18 +1,18 @@
-import { NextConfig } from 'next'
-import createNextIntlPlugin from 'next-intl/plugin'
+import { NextConfig } from "next"
+import createNextIntlPlugin from "next-intl/plugin"
 
 const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@repo/ui'],
+  transpilePackages: ["@repo/ui"],
   typescript: {
     ignoreBuildErrors: true
   },
   compiler: {
     relay: {
-      src: './',
-      artifactDirectory: './__generated__',
-      language: 'typescript',
+      src: "./",
+      artifactDirectory: "./__generated__",
+      language: "typescript",
       eagerEsModules: false
     }
   },
@@ -22,9 +22,9 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForBuild: true
   },
   // Configure output for Vercel
-  output: 'standalone',
+  output: "standalone",
   // Ensure public directory is included in the build
-  distDir: '.next',
+  distDir: ".next",
   // Configure static files handling
   images: {
     unoptimized: true // Disable image optimization if not needed

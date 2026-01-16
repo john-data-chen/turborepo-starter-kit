@@ -1,8 +1,7 @@
-'use client'
+"use client"
 
-import { useAuth } from '@/hooks/useAuth'
-import { Avatar, AvatarFallback } from '@repo/ui/components/avatar'
-import { Button } from '@repo/ui/components/button'
+import { Avatar, AvatarFallback } from "@repo/ui/components/avatar"
+import { Button } from "@repo/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,12 +9,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@repo/ui/components/dropdown-menu'
-import { useTranslations } from 'next-intl'
+} from "@repo/ui/components/dropdown-menu"
+import { useTranslations } from "next-intl"
+
+import { useAuth } from "@/hooks/useAuth"
 
 export function UserNav() {
   const { user, isAuthenticated, isLoading, logout } = useAuth()
-  const t = useTranslations('user')
+  const t = useTranslations("user")
 
   // While loading, show a placeholder to prevent flicker
   if (isLoading) {
@@ -37,12 +38,12 @@ export function UserNav() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm leading-none font-medium">{user.email?.split('@')[0]}</p>
+              <p className="text-sm leading-none font-medium">{user.email?.split("@")[0]}</p>
               <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>{t('logOut')}</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>{t("logOut")}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )

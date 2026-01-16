@@ -1,19 +1,21 @@
-import { routing } from '@/i18n/routing'
-import { ClientProviders } from '@/providers/client-providers'
-import '@repo/ui/styles.css'
-import { Analytics } from '@vercel/analytics/react'
-import { Metadata } from 'next'
-import { hasLocale, NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
-import { Roboto } from 'next/font/google'
-import { notFound } from 'next/navigation'
-import NextTopLoader from 'nextjs-toploader'
+import "@repo/ui/styles.css"
+
+import { Analytics } from "@vercel/analytics/react"
+import { Metadata } from "next"
+import { hasLocale, NextIntlClientProvider } from "next-intl"
+import { getMessages, getTranslations } from "next-intl/server"
+import { Roboto } from "next/font/google"
+import { notFound } from "next/navigation"
+import NextTopLoader from "nextjs-toploader"
+
+import { routing } from "@/i18n/routing"
+import { ClientProviders } from "@/providers/client-providers"
 
 const roboto = Roboto({
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-  display: 'swap'
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap"
 })
 
 interface Props {
@@ -21,13 +23,13 @@ interface Props {
   params: { locale: string }
 }
 
-export async function generateMetadata({ params }: Omit<Props, 'children'>): Promise<Metadata> {
+export async function generateMetadata({ params }: Omit<Props, "children">): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'metadata' })
+  const t = await getTranslations({ locale, namespace: "metadata" })
 
   return {
-    title: t('title'),
-    description: t('description')
+    title: t("title"),
+    description: t("description")
   }
 }
 

@@ -1,9 +1,9 @@
 // Core API client
-export { boardApi } from '../boardApi'
+export { boardApi } from "../boardApi"
 
 // Types and constants
-export type { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi'
-export { BOARD_KEYS } from '@/types/boardApi'
+export type { CreateBoardInput, UpdateBoardInput } from "@/types/boardApi"
+export { BOARD_KEYS } from "@/types/boardApi"
 
 // Query and mutation hooks
 export {
@@ -13,4 +13,4 @@ export {
   useUpdateBoard,
   useDeleteBoard,
   useAddBoardMember
-} from './queries'
+} from "./queries"

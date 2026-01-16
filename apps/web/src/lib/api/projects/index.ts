@@ -1,9 +1,9 @@
 // Core API client
-export { projectApi } from '../projectApi'
+export { projectApi } from "../projectApi"
 
 // Types and constants
-export type { CreateProjectInput, UpdateProjectInput } from '@/types/projectApi'
-export { PROJECT_KEYS } from '@/types/projectApi'
+export type { CreateProjectInput, UpdateProjectInput } from "@/types/projectApi"
+export { PROJECT_KEYS } from "@/types/projectApi"
 
 // Query and mutation hooks
 export {
@@ -12,4 +12,4 @@ export {
   useCreateProject,
   useUpdateProject,
   useDeleteProject
-} from './queries'
+} from "./queries"

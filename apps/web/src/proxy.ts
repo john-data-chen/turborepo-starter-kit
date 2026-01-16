@@ -1,5 +1,6 @@
-import { routing } from '@/i18n/routing'
-import createMiddleware from 'next-intl/middleware'
+import createMiddleware from "next-intl/middleware"
+
+import { routing } from "@/i18n/routing"
 
 /**
  * This middleware is now only responsible for internationalization (i18n).
@@ -11,5 +12,5 @@ export default createMiddleware(routing)
 export const config = {
   // Match only internationalized pathnames
   // We skip all API routes, including the old /api/auth paths
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"]
 }

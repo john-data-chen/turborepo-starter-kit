@@ -1,11 +1,12 @@
-'use client'
+"use client"
 
-import { useEffect } from 'react'
-import { ROUTES } from '@/constants/routes'
-import { useBoard } from '@/lib/api/boards/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { useTranslations } from 'next-intl'
-import { useParams } from 'next/navigation'
+import { useTranslations } from "next-intl"
+import { useParams } from "next/navigation"
+import { useEffect } from "react"
+
+import { ROUTES } from "@/constants/routes"
+import { useBoard } from "@/lib/api/boards/queries"
+import { useWorkspaceStore } from "@/stores/workspace-store"
 
 interface BreadcrumbItem {
   title: string
@@ -15,7 +16,7 @@ interface BreadcrumbItem {
 
 export function useBreadcrumbs() {
   const params = useParams()
-  const t = useTranslations('sidebar')
+  const t = useTranslations("sidebar")
   const boardId = params.boardId as string
 
   // Use the useBoard hook to fetch the current board
@@ -33,7 +34,7 @@ export function useBreadcrumbs() {
 
   const items: BreadcrumbItem[] = [
     {
-      title: t('overview'),
+      title: t("overview"),
       link: ROUTES.BOARDS.OVERVIEW_PAGE,
       isRoot: true
     }
@@ -42,7 +43,7 @@ export function useBreadcrumbs() {
   if (board) {
     items.push({
       title: board.title,
-      link: ROUTES.BOARDS.OVERVIEW_PAGE + '/' + board._id
+      link: ROUTES.BOARDS.OVERVIEW_PAGE + "/" + board._id
     })
   }
 

@@ -4,14 +4,16 @@ import {
   Inject,
   Injectable,
   NotFoundException
-} from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model, Types } from 'mongoose'
-import { ProjectsService } from '../projects/projects.service'
-import { CreateTaskDto } from './dto/create-task.dto'
-import { TaskResponseDto } from './dto/task-response.dto'
-import { UpdateTaskDto } from './dto/update-task.dto'
-import { Task, TaskDocument, TaskStatus } from './schemas/tasks.schema'
+} from "@nestjs/common"
+import { InjectModel } from "@nestjs/mongoose"
+import { Model, Types } from "mongoose"
+
+import { ProjectsService } from "../projects/projects.service"
+
+import { CreateTaskDto } from "./dto/create-task.dto"
+import { TaskResponseDto } from "./dto/task-response.dto"
+import { UpdateTaskDto } from "./dto/update-task.dto"
+import { Task, TaskDocument, TaskStatus } from "./schemas/tasks.schema"
 
 @Injectable()
 export class TasksService {
@@ -28,7 +30,7 @@ export class TasksService {
    */
   async deleteTasksByProjectId(projectId: string): Promise<{ deletedCount: number }> {
     if (!Types.ObjectId.isValid(projectId)) {
-      throw new Error('Invalid project ID')
+      throw new Error("Invalid project ID")
     }
 
     const result = await this.taskModel
@@ -44,7 +46,7 @@ export class TasksService {
       return null
     }
     return {
-      _id: user._id?.toString() || '',
+      _id: user._id?.toString() || "",
       name: user.name,
       email: user.email
     }
@@ -54,15 +56,15 @@ export class TasksService {
     try {
       // First populate the user fields with detailed error handling
       let populatedTask = task
-      if (typeof task.populate === 'function') {
+      if (typeof task.populate === "function") {
         try {
           populatedTask = await task.populate([
-            { path: 'creator', select: 'name email' },
-            { path: 'assignee', select: 'name email' },
-            { path: 'lastModifier', select: 'name email' }
+            { path: "creator", select: "name email" },
+            { path: "assignee", select: "name email" },
+            { path: "lastModifier", select: "name email" }
           ])
         } catch (populateError) {
-          console.error('Error during population:', populateError)
+          console.error("Error during population:", populateError)
           throw populateError
         }
       }
@@ -89,8 +91,8 @@ export class TasksService {
         // If population failed but we have the ID, create a minimal user object
         response.lastModifier = {
           _id: task.lastModifier.toString(),
-          name: 'Unknown',
-          email: 'unknown@example.com'
+          name: "Unknown",
+          email: "unknown@example.com"
         }
       } else {
         // If no lastModifier at all, use creator as fallback
@@ -108,14 +110,14 @@ export class TasksService {
 
       return response as TaskResponseDto
     } catch (error) {
-      console.error('Error in toTaskResponse:', error)
+      console.error("Error in toTaskResponse:", error)
       throw error
     }
   }
 
   async create(createTaskDto: CreateTaskDto, userId: string): Promise<TaskResponseDto> {
     if (!userId) {
-      throw new Error('User ID is required to create a task')
+      throw new Error("User ID is required to create a task")
     }
 
     try {
@@ -128,7 +130,7 @@ export class TasksService {
         try {
           await this.projectsService.addMemberIfNotExists(createTaskDto.project, userId)
         } catch (error) {
-          console.error('Error adding creator to project members:', error)
+          console.error("Error adding creator to project members:", error)
           // Continue with task creation even if adding to members fails
         }
       }
@@ -156,7 +158,7 @@ export class TasksService {
 
       return await this.toTaskResponse(savedTask)
     } catch (error) {
-      console.error('Error creating task:', error)
+      console.error("Error creating task:", error)
       throw error
     }
   }
@@ -175,13 +177,13 @@ export class TasksService {
     const tasks = await this.taskModel
       .find(query)
       .sort({ orderInProject: 1 })
-      .populate('lastModifier', 'name email')
+      .populate("lastModifier", "name email")
       .exec()
-    return Promise.all(tasks.map((task) => this.toTaskResponse(task)))
+    return Promise.all(tasks.map( async (task) => this.toTaskResponse(task)))
   }
 
   async findOne(id: string): Promise<TaskResponseDto> {
-    const task = await this.taskModel.findById(id).populate('lastModifier', 'name email').exec()
+    const task = await this.taskModel.findById(id).populate("lastModifier", "name email").exec()
     if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found`)
     }
@@ -208,11 +210,11 @@ export class TasksService {
     const isAssignee = assigneeIdString === userIdString
 
     if (requireCreator && !isCreator) {
-      throw new ForbiddenException('Only the task creator can perform this action')
+      throw new ForbiddenException("Only the task creator can perform this action")
     }
 
     if (!isCreator && !isAssignee) {
-      throw new ForbiddenException('You do not have permission to modify this task')
+      throw new ForbiddenException("You do not have permission to modify this task")
     }
 
     return task
@@ -234,7 +236,7 @@ export class TasksService {
     )
 
     // Handle assigneeId if present - convert to ObjectId or set to null
-    if ('assigneeId' in updateData) {
+    if ("assigneeId" in updateData) {
       updateData.assignee = updateData.assigneeId ? new Types.ObjectId(updateData.assigneeId) : null
       delete updateData.assigneeId
     }
@@ -242,7 +244,7 @@ export class TasksService {
     // Use findByIdAndUpdate for an atomic operation and to get the updated doc
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(id, { $set: updateData }, { new: true })
-      .populate('lastModifier', 'name email') // Explicitly populate lastModifier
+      .populate("lastModifier", "name email") // Explicitly populate lastModifier
       .exec()
 
     if (!updatedTask) {
@@ -293,13 +295,13 @@ export class TasksService {
 
     // Validate inputs
     if (!Types.ObjectId.isValid(taskId)) {
-      throw new Error('Invalid task ID')
+      throw new Error("Invalid task ID")
     }
     if (!Types.ObjectId.isValid(newProjectId)) {
-      throw new Error('Invalid project ID')
+      throw new Error("Invalid project ID")
     }
     if (!Types.ObjectId.isValid(userId)) {
-      throw new Error('Invalid user ID')
+      throw new Error("Invalid user ID")
     }
 
     // Find the task
@@ -382,15 +384,15 @@ export class TasksService {
     // Return the updated task
     const updatedTask = await this.taskModel
       .findById(taskId)
-      .populate('creator', 'name email')
-      .populate('assignee', 'name email')
-      .populate('lastModifier', 'name email')
+      .populate("creator", "name email")
+      .populate("assignee", "name email")
+      .populate("lastModifier", "name email")
       .exec()
 
     if (!updatedTask) {
-      throw new NotFoundException('Task not found after update')
+      throw new NotFoundException("Task not found after update")
     }
 
-    return await this.toTaskResponse(updatedTask)
+    return  this.toTaskResponse(updatedTask)
   }
 }
