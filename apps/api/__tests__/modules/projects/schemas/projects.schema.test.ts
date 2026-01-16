@@ -1,17 +1,18 @@
-import { describe, expect, it, vi } from 'vitest'
-import { ProjectStatus } from '../../../../src/modules/projects/dto/update-project.dto'
-import { Project, ProjectSchema } from '../../../../src/modules/projects/schemas/projects.schema'
+import { describe, expect, it, vi } from "vitest"
 
-describe('ProjectSchema', () => {
-  it('should be defined', () => {
+import { ProjectStatus } from "../../../../src/modules/projects/dto/update-project.dto"
+import { Project, ProjectSchema } from "../../../../src/modules/projects/schemas/projects.schema"
+
+describe("ProjectSchema", () => {
+  it("should be defined", () => {
     expect(ProjectSchema).toBeDefined()
   })
 
-  it('should have timestamps option enabled', () => {
+  it("should have timestamps option enabled", () => {
     expect(ProjectSchema.options.timestamps).toBe(true)
   })
 
-  it('should have required fields defined', () => {
+  it("should have required fields defined", () => {
     const paths = ProjectSchema.paths
     expect(paths.title).toBeDefined()
     expect(paths.title.options.required).toBe(true)
@@ -21,7 +22,7 @@ describe('ProjectSchema', () => {
     expect(paths.board.options.required).toBe(true)
   })
 
-  it('should have optional fields defined', () => {
+  it("should have optional fields defined", () => {
     const paths = ProjectSchema.paths
     expect(paths.description).toBeDefined()
     expect(paths.description.options.required).not.toBe(true)
@@ -31,47 +32,47 @@ describe('ProjectSchema', () => {
     expect(paths.assignee.options.required).not.toBe(true)
   })
 
-  it('should have status field with enum and default value', () => {
+  it("should have status field with enum and default value", () => {
     const statusPath = ProjectSchema.paths.status
     expect(statusPath).toBeDefined()
     expect(statusPath.options.enum).toContain(ProjectStatus.TODO)
     expect(statusPath.options.default).toBe(ProjectStatus.TODO)
   })
 
-  it('should have orderInBoard with default value', () => {
+  it("should have orderInBoard with default value", () => {
     const orderPath = ProjectSchema.paths.orderInBoard
     expect(orderPath).toBeDefined()
     expect(orderPath.options.default).toBe(0)
   })
 
-  it('should have members field with default value', () => {
+  it("should have members field with default value", () => {
     const membersPath = ProjectSchema.paths.members
     expect(membersPath).toBeDefined()
     expect(membersPath.options.default).toBeDefined()
   })
 
-  it('should have reference fields', () => {
+  it("should have reference fields", () => {
     const paths = ProjectSchema.paths
-    expect(paths.owner.options.ref).toBe('User')
-    expect(paths.board.options.ref).toBe('Board')
-    expect(paths.assignee.options.ref).toBe('User')
+    expect(paths.owner.options.ref).toBe("User")
+    expect(paths.board.options.ref).toBe("Board")
+    expect(paths.assignee.options.ref).toBe("User")
   })
 
-  it('should have createdAt and updatedAt fields', () => {
+  it("should have createdAt and updatedAt fields", () => {
     const paths = ProjectSchema.paths
     expect(paths.createdAt).toBeDefined()
     expect(paths.updatedAt).toBeDefined()
   })
 
-  it('should have pre-save hook to update updatedAt', () => {
+  it("should have pre-save hook to update updatedAt", () => {
     // Get the pre-save hooks
-    const hooks = (ProjectSchema as any).s.hooks._pres.get('save')
+    const hooks = (ProjectSchema as any).s.hooks._pres.get("save")
     expect(hooks).toBeDefined()
     expect(hooks.length).toBeGreaterThan(0)
   })
 
-  it('should update updatedAt on save', async () => {
-    const oldDate = new Date('2020-01-01')
+  it("should update updatedAt on save", async () => {
+    const oldDate = new Date("2020-01-01")
     const mockDocument = {
       updatedAt: oldDate,
       save: vi.fn(),
@@ -82,12 +83,12 @@ describe('ProjectSchema', () => {
     }
 
     // Get the pre-save hook (the first hook is our custom hook)
-    const hooks = (ProjectSchema as any).s.hooks._pres.get('save')
+    const hooks = (ProjectSchema as any).s.hooks._pres.get("save")
     expect(hooks).toBeDefined()
     expect(hooks.length).toBeGreaterThan(0)
 
     // Find and call our custom hook (not the timestamps hook)
-    const customHook = hooks.find((hook: any) => hook.fn.toString().includes('this.updatedAt'))
+    const customHook = hooks.find((hook: any) => hook.fn.toString().includes("this.updatedAt"))
     expect(customHook).toBeDefined()
     await customHook.fn.call(mockDocument)
 
@@ -95,7 +96,7 @@ describe('ProjectSchema', () => {
     expect(mockDocument.updatedAt.getTime()).toBeGreaterThan(oldDate.getTime())
   })
 
-  it('should create Project class instance', () => {
+  it("should create Project class instance", () => {
     const project = new Project()
     expect(project).toBeDefined()
     expect(project).toBeInstanceOf(Project)

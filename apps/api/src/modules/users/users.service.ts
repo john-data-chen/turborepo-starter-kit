@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
-import { User, UserDocument } from './schemas/users.schema'
+import { Injectable, Logger } from "@nestjs/common"
+import { InjectModel } from "@nestjs/mongoose"
+import { Model } from "mongoose"
+
+import { User, UserDocument } from "./schemas/users.schema"
 
 @Injectable()
 export class UserService {
@@ -18,10 +19,10 @@ export class UserService {
       const user = await this.userModel.findOne({ email }).exec()
       return user
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       const stack = error instanceof Error ? error.stack : undefined
       this.logger.error(`Error finding user by email ${email}: ${errorMessage}`, stack)
-      throw new Error('An error occurred while processing your request')
+      throw new Error("An error occurred while processing your request")
     }
   }
 
@@ -30,7 +31,7 @@ export class UserService {
       const users = await this.userModel.find().exec()
       return users
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       this.logger.error(
         `Error fetching all users: ${errorMessage}`,
         error instanceof Error ? error.stack : undefined
@@ -41,11 +42,11 @@ export class UserService {
 
   async searchByName(name: string): Promise<User[]> {
     try {
-      const query = name ? { name: { $regex: name, $options: 'i' } } : {}
+      const query = name ? { name: { $regex: name, $options: "i" } } : {}
       const users = await this.userModel.find(query).exec()
       return users
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       this.logger.error(
         `Error searching for users by name ${name}: ${errorMessage}`,
         error instanceof Error ? error.stack : undefined

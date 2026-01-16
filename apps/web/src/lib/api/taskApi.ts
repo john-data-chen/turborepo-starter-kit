@@ -1,7 +1,7 @@
-import { API_URL } from '@/constants/routes'
-import { fetchWithAuth } from '@/lib/api/fetchWithAuth'
-import { Task } from '@/types/dbInterface'
-import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from '@/types/taskApi'
+import { API_URL } from "@/constants/routes"
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth"
+import { Task } from "@/types/dbInterface"
+import { CreateTaskInput, TaskPermissions, UpdateTaskInput } from "@/types/taskApi"
 
 // API Endpoint
 const TASKS_ENDPOINT = `${API_URL}/tasks`
@@ -15,10 +15,10 @@ export const taskApi = {
   async getTasks(projectId?: string, assigneeId?: string): Promise<Task[]> {
     const params = new URLSearchParams()
     if (projectId) {
-      params.append('projectId', projectId)
+      params.append("projectId", projectId)
     }
     if (assigneeId) {
-      params.append('assigneeId', assigneeId)
+      params.append("assigneeId", assigneeId)
     }
 
     const query = params.toString()
@@ -43,7 +43,7 @@ export const taskApi = {
     }
 
     return fetchWithAuth(TASKS_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(requestBody)
     })
   },
@@ -51,7 +51,7 @@ export const taskApi = {
   // Update a task
   async updateTask(id: string, input: UpdateTaskInput): Promise<Task> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(input)
     })
   },
@@ -61,7 +61,7 @@ export const taskApi = {
     return fetchWithAuth(
       `${TASKS_ENDPOINT}/${id}`,
       {
-        method: 'DELETE'
+        method: "DELETE"
       },
       true // Handle 204 No Content response
     )
@@ -75,7 +75,7 @@ export const taskApi = {
   // Move task to a different project
   async moveTask(taskId: string, projectId: string, orderInProject: number): Promise<Task> {
     return fetchWithAuth(`${TASKS_ENDPOINT}/${taskId}/move`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify({
         projectId,
         orderInProject

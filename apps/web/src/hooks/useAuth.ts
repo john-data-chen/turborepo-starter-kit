@@ -1,18 +1,19 @@
-'use client'
+"use client"
 
-import { useCallback, useEffect, useState } from 'react'
-import { ROUTES, URL_PARAMS } from '@/constants/routes'
-import { routing } from '@/i18n/routing'
-import { AuthService } from '@/lib/auth/authService'
-import { useAuthStore } from '@/stores/auth-store'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { Session, UserInfo } from '@/types/dbInterface'
-import { getLocalePath } from '@repo/ui/lib/utils'
-import { useMutation } from '@tanstack/react-query'
+import { getLocalePath } from "@repo/ui/lib/utils"
+import { useMutation } from "@tanstack/react-query"
+import { useCallback, useEffect, useState } from "react"
+
+import { ROUTES, URL_PARAMS } from "@/constants/routes"
+import { routing } from "@/i18n/routing"
+import { AuthService } from "@/lib/auth/authService"
+import { useAuthStore } from "@/stores/auth-store"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { Session, UserInfo } from "@/types/dbInterface"
 
 // Helper function to get current locale from pathname
 function getCurrentLocale(): string {
-  const pathSegments = window.location.pathname.split('/').filter(Boolean)
+  const pathSegments = window.location.pathname.split("/").filter(Boolean)
   const currentLocale = pathSegments[0]
 
   return routing.locales.includes(currentLocale as any) ? currentLocale : routing.defaultLocale
@@ -24,9 +25,9 @@ function createSession(user: UserInfo): Session {
     user: {
       _id: user._id,
       email: user.email,
-      name: user.name || user.email.split('@')[0]
+      name: user.name || user.email.split("@")[0]
     },
-    accessToken: 'http-only-cookie'
+    accessToken: "http-only-cookie"
   }
 }
 
@@ -41,8 +42,8 @@ export interface AuthState {
 }
 
 export const AUTH_KEYS = {
-  all: ['auth'] as const,
-  session: () => [...AUTH_KEYS.all, 'session'] as const
+  all: ["auth"] as const,
+  session: () => [...AUTH_KEYS.all, "session"] as const
 }
 
 export function useAuth() {
@@ -63,7 +64,7 @@ export function useAuth() {
       setSession(currentSession)
       return currentSession
     } catch (error) {
-      console.error('Session check failed:', error)
+      console.error("Session check failed:", error)
       setSession(null)
       return null
     } finally {
@@ -75,26 +76,26 @@ export function useAuth() {
   useEffect(() => {
     const initAuth = async () => {
       // Skip session check on auth pages where user is expected to not be authenticated
-      const isOnAuthPage = window.location.pathname.includes('/login')
+      const isOnAuthPage = window.location.pathname.includes("/login")
       if (isOnAuthPage) {
         setIsCheckingAuth(false)
         return
       }
 
       // Check for authentication cookie (could be jwt= or isAuthenticated=)
-      const hasAuthCookie = document.cookie.split(';').some((item) => {
+      const hasAuthCookie = document.cookie.split(";").some((item) => {
         const trimmed = item.trim()
-        return trimmed.startsWith('jwt=') || trimmed.startsWith('isAuthenticated=')
+        return trimmed.startsWith("jwt=") || trimmed.startsWith("isAuthenticated=")
       })
 
       // Also check for token in localStorage (fallback for httpOnly cookies)
-      const hasStoredToken = localStorage.getItem('auth_token')
+      const hasStoredToken = localStorage.getItem("auth_token")
 
       if (hasAuthCookie || hasStoredToken) {
         try {
           await checkSession()
         } catch (error) {
-          console.error('Failed to check session on mount:', error)
+          console.error("Failed to check session on mount:", error)
           // Don't throw here - just log the error and continue
           // The session will remain null, indicating user is not authenticated
         }
@@ -117,7 +118,7 @@ export function useAuth() {
         const loginResult = await AuthService.login(email)
 
         // If login returned user data directly, use it
-        if (loginResult && typeof loginResult === 'object' && 'user' in loginResult) {
+        if (loginResult && typeof loginResult === "object" && "user" in loginResult) {
           const user = (loginResult as any).user
           const session = createSession(user)
           return { session }
@@ -128,8 +129,8 @@ export function useAuth() {
         const session = createSession(user)
         return { session }
       } catch (err) {
-        console.error('Login error:', err)
-        const errorMessage = err instanceof Error ? err.message : 'Login failed'
+        console.error("Login error:", err)
+        const errorMessage = err instanceof Error ? err.message : "Login failed"
         setError(errorMessage)
         throw new Error(errorMessage)
       } finally {
@@ -148,7 +149,7 @@ export function useAuth() {
       }
     },
     onError: (error) => {
-      console.error('Login mutation error:', error)
+      console.error("Login mutation error:", error)
       setError(error.message)
     }
   })
@@ -164,12 +165,12 @@ export function useAuth() {
 
       // Clear the stores
       useAuthStore.getState().clear()
-      useWorkspaceStore.getState().setUserInfo('', '')
+      useWorkspaceStore.getState().setUserInfo("", "")
 
       // Redirect to login page with a full page reload to ensure all state is cleared
       window.location.href = ROUTES.AUTH.LOGIN_PAGE
     } catch (error) {
-      console.error('Error during logout:', error)
+      console.error("Error during logout:", error)
       // Still redirect even if there was an error
       window.location.href = ROUTES.AUTH.LOGIN_PAGE
     }
@@ -215,12 +216,12 @@ export function useAuthForm() {
       const result = await login(email)
 
       if (!result?.session?.user) {
-        throw new Error('No user data received after login')
+        throw new Error("No user data received after login")
       }
 
       // Get current locale and construct redirect path with login success parameter
       const locale = getCurrentLocale()
-      const redirectPath = getLocalePath('/boards', locale)
+      const redirectPath = getLocalePath("/boards", locale)
       const redirectUrl = `${redirectPath}?${URL_PARAMS.LOGIN_SUCCESS}`
 
       // Add a small delay to ensure the cookie is properly set before redirect
@@ -229,7 +230,7 @@ export function useAuthForm() {
       }, 500)
     } catch (err) {
       // Error is already handled by useAuth hook
-      console.error('Login failed:', err)
+      console.error("Login failed:", err)
     } finally {
       setIsNavigating(false)
     }

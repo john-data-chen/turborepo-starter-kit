@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
-import { AuthController } from '../../src/modules/auth/auth.controller'
+import { beforeEach, describe, expect, it, vi, type Mock } from "vitest"
 
-describe('AuthController', () => {
+import { AuthController } from "../../src/modules/auth/auth.controller"
+
+describe("AuthController", () => {
   let controller: AuthController
   let authService: { login: Mock }
   let logger: { log: Mock; error: Mock; warn: Mock; debug: Mock }
@@ -22,24 +23,24 @@ describe('AuthController', () => {
     ;(controller as any).logger = logger // Manually inject logger
   })
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined()
   })
 
-  describe('login', () => {
-    it('should return user and access_token', async () => {
+  describe("login", () => {
+    it("should return user and access_token", async () => {
       const user = {
-        _id: '1',
-        email: 'test@test.com',
-        name: 'Test User',
+        _id: "1",
+        email: "test@test.com",
+        name: "Test User",
         createdAt: new Date(),
         updatedAt: new Date()
       }
-      const result = { user, access_token: 'token' }
+      const result = { user, access_token: "token" }
       const req = {
         user,
-        headers: { origin: 'http://localhost:3000' },
-        method: 'POST',
+        headers: { origin: "http://localhost:3000" },
+        method: "POST",
         cookies: {}
       }
       const res = {
@@ -55,12 +56,12 @@ describe('AuthController', () => {
     })
   })
 
-  describe('getProfile', () => {
-    it('should return user from request', () => {
-      const user = { _id: '1', email: 'test@test.com', name: 'Test User' }
+  describe("getProfile", () => {
+    it("should return user from request", () => {
+      const user = { _id: "1", email: "test@test.com", name: "Test User" }
       const req = {
         user,
-        headers: { origin: 'http://localhost:3000' },
+        headers: { origin: "http://localhost:3000" },
         cookies: {}
       }
 
@@ -68,18 +69,18 @@ describe('AuthController', () => {
     })
   })
 
-  describe('logout', () => {
-    it('should clear cookies and return a message', async () => {
+  describe("logout", () => {
+    it("should clear cookies and return a message", async () => {
       const req = {
-        user: { _id: '1', email: 'test@test.com' },
-        headers: { origin: 'http://localhost:3000' },
+        user: { _id: "1", email: "test@test.com" },
+        headers: { origin: "http://localhost:3000" },
         cookies: {}
       }
       const res = {
         clearCookie: vi.fn()
       }
 
-      expect(await controller.logout(req, res)).toEqual({ message: 'Successfully logged out' })
+      expect(await controller.logout(req, res)).toEqual({ message: "Successfully logged out" })
       expect(res.clearCookie).toHaveBeenCalledTimes(2)
     })
   })

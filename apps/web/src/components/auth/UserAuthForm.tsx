@@ -1,9 +1,6 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { defaultEmail } from '@/constants/demoData'
-import { useAuthForm } from '@/hooks/useAuth'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Button,
   Form,
@@ -13,26 +10,30 @@ import {
   FormLabel,
   FormMessage,
   Input
-} from '@repo/ui'
-import { useTranslations } from 'next-intl'
-import { ControllerRenderProps, useForm } from 'react-hook-form'
-import * as z from 'zod'
+} from "@repo/ui"
+import { useTranslations } from "next-intl"
+import React from "react"
+import { ControllerRenderProps, useForm } from "react-hook-form"
+import * as z from "zod"
+
+import { defaultEmail } from "@/constants/demoData"
+import { useAuthForm } from "@/hooks/useAuth"
 
 const formSchema = z.object({
-  email: z.string().email('Invalid email address')
+  email: z.string().email("Invalid email address")
 })
 
 export default function UserAuthForm() {
   const { handleSubmit, isLoading, error, isNavigating } = useAuthForm()
-  const t = useTranslations('login')
+  const t = useTranslations("login")
 
   // Map backend error messages to i18n keys
   const getErrorMessage = (error: string | null): string | null => {
     if (!error) {
       return null
     }
-    if (error.includes('The login email is incorrect')) {
-      return t('invalidEmail')
+    if (error.includes("The login email is incorrect")) {
+      return t("invalidEmail")
     }
     return error
   }
@@ -64,14 +65,14 @@ export default function UserAuthForm() {
           render={({
             field
           }: {
-            field: ControllerRenderProps<z.infer<typeof formSchema>, 'email'>
+            field: ControllerRenderProps<z.infer<typeof formSchema>, "email">
           }) => (
             <FormItem>
-              <FormLabel>{t('emailLabel')}</FormLabel>
+              <FormLabel>{t("emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={t("emailPlaceholder")}
                   disabled={isLoading || isNavigating}
                   data-testid="email-input"
                   className="h-10 py-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
@@ -98,7 +99,7 @@ export default function UserAuthForm() {
           {isLoading || isNavigating ? (
             <div className="h-4 w-4 animate-spin" />
           ) : (
-            t('continueButton')
+            t("continueButton")
           )}
         </Button>
       </form>

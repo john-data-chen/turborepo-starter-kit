@@ -8,10 +8,10 @@ export async function fetchWithAuth<T>(
   handleEmptyResponse = false
 ): Promise<T> {
   // Get token from localStorage for Authorization header
-  const token = localStorage.getItem('auth_token')
+  const token = localStorage.getItem("auth_token")
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json"
   }
 
   // Add existing headers if they exist
@@ -28,7 +28,7 @@ export async function fetchWithAuth<T>(
     } else {
       // Handle object format
       Object.entries(options.headers).forEach(([key, value]) => {
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
           headers[key] = value
         }
       })
@@ -42,12 +42,12 @@ export async function fetchWithAuth<T>(
 
   const response = await fetch(url, {
     ...options,
-    credentials: 'include', // Still include for cookie fallback
+    credentials: "include", // Still include for cookie fallback
     headers
   })
 
   if (!response.ok) {
-    let errorMessage = 'Request failed'
+    let errorMessage = "Request failed"
     try {
       // Try to parse as JSON first
       const errorData = await response.json()
@@ -61,7 +61,7 @@ export async function fetchWithAuth<T>(
       }
     }
 
-    if (typeof window !== 'undefined' && response.status === 401) {
+    if (typeof window !== "undefined" && response.status === 401) {
       // Handle unauthorized (e.g., redirect to login)
     }
     throw new Error(errorMessage)
@@ -69,7 +69,7 @@ export async function fetchWithAuth<T>(
 
   // Handle 204 No Content or empty responses when requested
   if (handleEmptyResponse) {
-    if (response.status === 204 || response.headers.get('content-length') === '0') {
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
       return null as unknown as T
     }
   }

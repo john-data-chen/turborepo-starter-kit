@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest"
+
 import {
   PROJECT_KEYS,
   projectApi,
@@ -6,11 +8,10 @@ import {
   useProject,
   useProjects,
   useUpdateProject
-} from '@/lib/api/projects'
-import { describe, expect, it } from 'vitest'
+} from "@/lib/api/projects"
 
-describe('projects/index exports', () => {
-  it('should export projectApi', () => {
+describe("projects/index exports", () => {
+  it("should export projectApi", () => {
     expect(projectApi).toBeDefined()
     expect(projectApi.getProjects).toBeDefined()
     expect(projectApi.getProjectById).toBeDefined()
@@ -19,35 +20,35 @@ describe('projects/index exports', () => {
     expect(projectApi.deleteProject).toBeDefined()
   })
 
-  it('should export PROJECT_KEYS', () => {
+  it("should export PROJECT_KEYS", () => {
     expect(PROJECT_KEYS).toBeDefined()
     expect(PROJECT_KEYS.all).toBeDefined()
     expect(PROJECT_KEYS.lists).toBeDefined()
     expect(PROJECT_KEYS.detail).toBeDefined()
   })
 
-  it('should export useProjects hook', () => {
+  it("should export useProjects hook", () => {
     expect(useProjects).toBeDefined()
-    expect(typeof useProjects).toBe('function')
+    expect(typeof useProjects).toBe("function")
   })
 
-  it('should export useProject hook', () => {
+  it("should export useProject hook", () => {
     expect(useProject).toBeDefined()
-    expect(typeof useProject).toBe('function')
+    expect(typeof useProject).toBe("function")
   })
 
-  it('should export useCreateProject hook', () => {
+  it("should export useCreateProject hook", () => {
     expect(useCreateProject).toBeDefined()
-    expect(typeof useCreateProject).toBe('function')
+    expect(typeof useCreateProject).toBe("function")
   })
 
-  it('should export useUpdateProject hook', () => {
+  it("should export useUpdateProject hook", () => {
     expect(useUpdateProject).toBeDefined()
-    expect(typeof useUpdateProject).toBe('function')
+    expect(typeof useUpdateProject).toBe("function")
   })
 
-  it('should export useDeleteProject hook', () => {
+  it("should export useDeleteProject hook", () => {
     expect(useDeleteProject).toBeDefined()
-    expect(typeof useDeleteProject).toBe('function')
+    expect(typeof useDeleteProject).toBe("function")
   })
 })

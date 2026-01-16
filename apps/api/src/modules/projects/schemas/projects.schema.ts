@@ -1,6 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Types } from 'mongoose'
-import { ProjectStatus } from '../dto/update-project.dto'
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { Document, Types } from "mongoose"
+
+import { ProjectStatus } from "../dto/update-project.dto"
 
 export type ProjectDocument = Project & Document
 
@@ -12,13 +13,13 @@ export class Project {
   @Prop({ type: String })
   description?: string
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
   owner: Types.ObjectId
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: "User" }], default: [] })
   members: Types.ObjectId[]
 
-  @Prop({ type: Types.ObjectId, ref: 'Board', required: true })
+  @Prop({ type: Types.ObjectId, ref: "Board", required: true })
   board: Types.ObjectId
 
   @Prop({ type: Number, default: 0 })
@@ -34,7 +35,7 @@ export class Project {
   @Prop({ type: Date })
   dueDate?: Date
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: "User" })
   assignee?: Types.ObjectId
 
   @Prop({ type: Date, default: Date.now })
@@ -48,7 +49,7 @@ export class Project {
 const ProjectSchema = SchemaFactory.createForClass(Project)
 
 // Add pre-save hook to update the updatedAt timestamp
-ProjectSchema.pre<ProjectDocument>('save', async function () {
+ProjectSchema.pre<ProjectDocument>("save", async function () {
   this.updatedAt = new Date()
 })
 

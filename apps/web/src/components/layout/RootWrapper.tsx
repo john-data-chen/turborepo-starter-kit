@@ -1,11 +1,12 @@
-'use client'
+"use client"
 
-import React from 'react'
-import AppSidebar from '@/components/layout/AppSidebar'
-import Header from '@/components/layout/Header'
-import { TOAST_DURATION } from '@/constants/ui'
-import { SidebarInset, SidebarProvider } from '@repo/ui/components/sidebar'
-import { Toaster } from 'sonner'
+import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar"
+import React from "react"
+import { Toaster } from "sonner"
+
+import AppSidebar from "@/components/layout/AppSidebar"
+import Header from "@/components/layout/Header"
+import { TOAST_DURATION } from "@/constants/ui"
 
 export default function RootWrapper({ children }: { children: React.ReactNode }) {
   return (

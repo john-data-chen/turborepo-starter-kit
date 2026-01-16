@@ -1,11 +1,13 @@
-import { BOARD_KEYS } from '@/types/boardApi'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { boardApi } from '../boardApi'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { BOARD_KEYS } from "@/types/boardApi"
+
+import { boardApi } from "../boardApi"
 
 export const useBoards = () => {
   return useQuery({
     queryKey: BOARD_KEYS.list(),
-    queryFn: () => {
+    queryFn:  async () => {
       return boardApi.getBoards()
     },
     retry: 3,
@@ -17,8 +19,8 @@ export const useBoards = () => {
 
 export const useBoard = (boardId?: string) => {
   return useQuery({
-    queryKey: BOARD_KEYS.detail(boardId || ''),
-    queryFn: () => boardApi.getBoardById(boardId || ''),
+    queryKey: BOARD_KEYS.detail(boardId || ""),
+    queryFn:  async () => boardApi.getBoardById(boardId || ""),
     enabled: !!boardId
   })
 }
@@ -41,7 +43,7 @@ export const useUpdateBoard = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, ...updates }: { id: string } & Parameters<typeof boardApi.updateBoard>[1]) =>
+    mutationFn:  async ({ id, ...updates }: { id: string } & Parameters<typeof boardApi.updateBoard>[1]) =>
       boardApi.updateBoard(id, updates),
     onSuccess: (updatedBoard) => {
       // Invalidate both the list and the specific board
@@ -77,7 +79,7 @@ export const useAddBoardMember = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ boardId, memberId }: { boardId: string; memberId: string }) =>
+    mutationFn:  async ({ boardId, memberId }: { boardId: string; memberId: string }) =>
       boardApi.addBoardMember(boardId, memberId),
     onSuccess: (updatedBoard) => {
       // Invalidate the board data

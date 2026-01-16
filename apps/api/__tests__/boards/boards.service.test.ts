@@ -1,11 +1,12 @@
-import { getModelToken } from '@nestjs/mongoose'
-import { Test, TestingModule } from '@nestjs/testing'
-import { Model } from 'mongoose'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { BoardService } from '../../src/modules/boards/boards.service'
-import { Board } from '../../src/modules/boards/schemas/boards.schema'
-import { ProjectsService } from '../../src/modules/projects/projects.service'
-import { TasksService } from '../../src/modules/tasks/tasks.service'
+import { getModelToken } from "@nestjs/mongoose"
+import { Test, TestingModule } from "@nestjs/testing"
+import { Model } from "mongoose"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+
+import { BoardService } from "../../src/modules/boards/boards.service"
+import { Board } from "../../src/modules/boards/schemas/boards.schema"
+import { ProjectsService } from "../../src/modules/projects/projects.service"
+import { TasksService } from "../../src/modules/tasks/tasks.service"
 
 // Define a mock constructor for the BoardModel
 class MockBoardModel {
@@ -28,7 +29,7 @@ class MockBoardModel {
   static aggregate = vi.fn().mockReturnThis()
 }
 
-describe('BoardService', () => {
+describe("BoardService", () => {
   let service: BoardService
   let boardModel: Model<Board>
   let projectsService: ProjectsService
@@ -62,17 +63,17 @@ describe('BoardService', () => {
     projectsService = module.get<ProjectsService>(ProjectsService)
   })
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined()
   })
 
-  describe('create', () => {
-    it('should create a board', async () => {
-      const createBoardDto = { title: 'Test Board', owner: '60f6e1b3b3f3b3b3b3f3b3b3' }
+  describe("create", () => {
+    it("should create a board", async () => {
+      const createBoardDto = { title: "Test Board", owner: "60f6e1b3b3f3b3b3b3f3b3b3" }
       const expectedResult = {
-        title: 'Test Board',
-        owner: '60f6e1b3b3f3b3b3b3f3b3b3',
-        members: ['60f6e1b3b3f3b3b3b3f3b3b3']
+        title: "Test Board",
+        owner: "60f6e1b3b3f3b3b3b3f3b3b3",
+        members: ["60f6e1b3b3f3b3b3b3f3b3b3"]
       }
 
       const result = await service.create(createBoardDto as any)
@@ -84,9 +85,9 @@ describe('BoardService', () => {
     })
   })
 
-  describe('findAll', () => {
-    it('should find all boards for a user', async () => {
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+  describe("findAll", () => {
+    it("should find all boards for a user", async () => {
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
       ;(boardModel.aggregate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue([]) })
 
       await service.findAll(userId)
@@ -95,10 +96,10 @@ describe('BoardService', () => {
     })
   })
 
-  describe('findOne', () => {
-    it('should find a board by id', async () => {
-      const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+  describe("findOne", () => {
+    it("should find a board by id", async () => {
+      const boardId = "60f6e1b3b3f3b3b3b3f3b3b4"
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
       ;(boardModel.aggregate as any).mockResolvedValue([{}])
 
       await service.findOne(boardId, userId)
@@ -107,11 +108,11 @@ describe('BoardService', () => {
     })
   })
 
-  describe('update', () => {
-    it('should update a board', async () => {
-      const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const updateBoardDto = { title: 'Test Board Updated' }
+  describe("update", () => {
+    it("should update a board", async () => {
+      const boardId = "60f6e1b3b3f3b3b3b3f3b3b4"
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
+      const updateBoardDto = { title: "Test Board Updated" }
       const board = { _id: boardId, owner: userId, members: [], save: vi.fn() }
 
       ;(boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) })
@@ -130,10 +131,10 @@ describe('BoardService', () => {
     })
   })
 
-  describe('remove', () => {
-    it('should remove a board', async () => {
-      const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
+  describe("remove", () => {
+    it("should remove a board", async () => {
+      const boardId = "60f6e1b3b3f3b3b3b3f3b3b4"
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
       const board = {
         _id: boardId,
         owner: { toString: () => userId },
@@ -153,11 +154,11 @@ describe('BoardService', () => {
     })
   })
 
-  describe('addMember', () => {
-    it('should add a member to a board', async () => {
-      const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const memberId = '60f6e1b3b3f3b3b3b3f3b3b5'
+  describe("addMember", () => {
+    it("should add a member to a board", async () => {
+      const boardId = "60f6e1b3b3f3b3b3b3f3b3b4"
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
+      const memberId = "60f6e1b3b3f3b3b3b3f3b3b5"
 
       ;(boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
 
@@ -171,11 +172,11 @@ describe('BoardService', () => {
     })
   })
 
-  describe('removeMember', () => {
-    it('should remove a member from a board', async () => {
-      const boardId = '60f6e1b3b3f3b3b3b3f3b3b4'
-      const userId = '60f6e1b3b3f3b3b3b3f3b3b3'
-      const memberId = '60f6e1b3b3f3b3b3b3f3b3b5'
+  describe("removeMember", () => {
+    it("should remove a member from a board", async () => {
+      const boardId = "60f6e1b3b3f3b3b3b3f3b3b4"
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3"
+      const memberId = "60f6e1b3b3f3b3b3b3f3b3b5"
 
       ;(boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) })
 

@@ -1,10 +1,11 @@
-import { useTaskForm } from '@/hooks/useTaskForm'
-import { TaskStatus, User } from '@/types/dbInterface'
-import { act, renderHook, waitFor } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+
+import { useTaskForm } from "@/hooks/useTaskForm"
+import { TaskStatus, User } from "@/types/dbInterface"
 
 // Mock the userApi
-vi.mock('@/lib/api/userApi', () => ({
+vi.mock("@/lib/api/userApi", () => ({
   userApi: {
     searchUsers: vi.fn(),
     getUserById: vi.fn()
@@ -12,23 +13,23 @@ vi.mock('@/lib/api/userApi', () => ({
 }))
 
 // Mock sonner toast
-vi.mock('sonner', () => ({
+vi.mock("sonner", () => ({
   toast: {
     error: vi.fn()
   }
 }))
 
-describe('useTaskForm', () => {
+describe("useTaskForm", () => {
   const mockUsers: User[] = [
     {
-      _id: 'user-1',
-      name: 'John Doe',
-      email: 'john@example.com'
+      _id: "user-1",
+      name: "John Doe",
+      email: "john@example.com"
     },
     {
-      _id: 'user-2',
-      name: 'Jane Smith',
-      email: 'jane@example.com'
+      _id: "user-2",
+      name: "Jane Smith",
+      email: "jane@example.com"
     }
   ]
 
@@ -36,8 +37,8 @@ describe('useTaskForm', () => {
     vi.clearAllMocks()
   })
 
-  it('should initialize with default values', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should initialize with default values", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
@@ -49,13 +50,13 @@ describe('useTaskForm', () => {
 
     expect(result.current.form).toBeDefined()
     expect(result.current.isSubmitting).toBe(false)
-    expect(result.current.searchQuery).toBe('')
+    expect(result.current.searchQuery).toBe("")
     expect(result.current.isSearching).toBe(false)
     expect(result.current.assignOpen).toBe(false)
   })
 
-  it('should load initial users on mount', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should load initial users on mount", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
@@ -72,16 +73,16 @@ describe('useTaskForm', () => {
     expect(result.current.users).toEqual(mockUsers)
   })
 
-  it('should initialize with provided default values', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should initialize with provided default values", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
     const defaultValues = {
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.IN_PROGRESS,
-      dueDate: new Date('2024-12-31')
+      dueDate: new Date("2024-12-31")
     }
 
     const { result } = renderHook(() =>
@@ -93,21 +94,21 @@ describe('useTaskForm', () => {
 
     await waitFor(() => {
       const values = result.current.form.getValues()
-      expect(values.title).toBe('Test Task')
-      expect(values.description).toBe('Test Description')
+      expect(values.title).toBe("Test Task")
+      expect(values.description).toBe("Test Description")
       expect(values.status).toBe(TaskStatus.IN_PROGRESS)
     })
   })
 
-  it('should handle assignee as string ID in default values', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should handle assignee as string ID in default values", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
     vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0])
 
     const onSubmit = vi.fn()
     const defaultValues = {
-      title: 'Test Task',
-      assignee: 'user-1'
+      title: "Test Task",
+      assignee: "user-1"
     }
 
     const { result } = renderHook(() =>
@@ -119,21 +120,21 @@ describe('useTaskForm', () => {
 
     await waitFor(() => {
       const values = result.current.form.getValues()
-      expect(values.assignee?._id).toBe('user-1')
+      expect(values.assignee?._id).toBe("user-1")
     })
   })
 
-  it('should handle assignee as object in default values', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should handle assignee as object in default values", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
     const defaultValues = {
-      title: 'Test Task',
+      title: "Test Task",
       assignee: {
-        _id: 'user-1',
-        name: 'John Doe',
-        email: 'john@example.com'
+        _id: "user-1",
+        name: "John Doe",
+        email: "john@example.com"
       }
     }
 
@@ -146,13 +147,13 @@ describe('useTaskForm', () => {
 
     await waitFor(() => {
       const values = result.current.form.getValues()
-      expect(values.assignee?._id).toBe('user-1')
-      expect(values.assignee?.name).toBe('John Doe')
+      expect(values.assignee?._id).toBe("user-1")
+      expect(values.assignee?.name).toBe("John Doe")
     })
   })
 
-  it('should search users when search query changes', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should search users when search query changes", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
@@ -164,19 +165,19 @@ describe('useTaskForm', () => {
 
     act(() => {
       result.current.setAssignOpen(true)
-      result.current.setSearchQuery('john')
+      result.current.setSearchQuery("john")
     })
 
     await waitFor(
       () => {
-        expect(userApi.searchUsers).toHaveBeenCalledWith('john')
+        expect(userApi.searchUsers).toHaveBeenCalledWith("john")
       },
       { timeout: 1000 }
     )
   })
 
-  it('should set isSearching to true while searching', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should set isSearching to true while searching", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     let resolveSearch: (value: User[]) => void
     const searchPromise = new Promise<User[]>((resolve) => {
       resolveSearch = resolve
@@ -192,7 +193,7 @@ describe('useTaskForm', () => {
 
     act(() => {
       result.current.setAssignOpen(true)
-      result.current.setSearchQuery('john')
+      result.current.setSearchQuery("john")
     })
 
     await waitFor(() => {
@@ -208,9 +209,9 @@ describe('useTaskForm', () => {
     })
   })
 
-  it('should handle user search errors gracefully', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
-    vi.mocked(userApi.searchUsers).mockRejectedValue(new Error('Search failed'))
+  it("should handle user search errors gracefully", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
+    vi.mocked(userApi.searchUsers).mockRejectedValue(new Error("Search failed"))
 
     const onSubmit = vi.fn()
     const { result } = renderHook(() =>
@@ -221,7 +222,7 @@ describe('useTaskForm', () => {
 
     act(() => {
       result.current.setAssignOpen(true)
-      result.current.setSearchQuery('john')
+      result.current.setSearchQuery("john")
     })
 
     await waitFor(() => {
@@ -229,8 +230,8 @@ describe('useTaskForm', () => {
     })
   })
 
-  it('should call onSubmit when handleSubmit is called', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should call onSubmit when handleSubmit is called", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn().mockResolvedValue(undefined)
@@ -241,8 +242,8 @@ describe('useTaskForm', () => {
     )
 
     const values = {
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.TODO
     }
 
@@ -254,8 +255,8 @@ describe('useTaskForm', () => {
     expect(result.current.isSubmitting).toBe(false)
   })
 
-  it('should handle submit with assignee', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should handle submit with assignee", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn().mockResolvedValue(undefined)
@@ -266,13 +267,13 @@ describe('useTaskForm', () => {
     )
 
     const values = {
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.TODO,
       assignee: {
-        _id: 'user-1',
-        name: 'John Doe',
-        email: 'john@example.com'
+        _id: "user-1",
+        name: "John Doe",
+        email: "john@example.com"
       }
     }
 
@@ -281,22 +282,22 @@ describe('useTaskForm', () => {
     })
 
     expect(onSubmit).toHaveBeenCalledWith({
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.TODO,
       assignee: {
-        _id: 'user-1',
-        name: 'John Doe'
+        _id: "user-1",
+        name: "John Doe"
       }
     })
   })
 
-  it('should handle submit errors', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
-    const { toast } = await import('sonner')
+  it("should handle submit errors", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
+    const { toast } = await import("sonner")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
-    const onSubmit = vi.fn().mockRejectedValue(new Error('Submit failed'))
+    const onSubmit = vi.fn().mockRejectedValue(new Error("Submit failed"))
     const { result } = renderHook(() =>
       useTaskForm({
         onSubmit
@@ -304,8 +305,8 @@ describe('useTaskForm', () => {
     )
 
     const values = {
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.TODO
     }
 
@@ -317,8 +318,8 @@ describe('useTaskForm', () => {
     expect(result.current.isSubmitting).toBe(false)
   })
 
-  it('should set isSubmitting during submission', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should set isSubmitting during submission", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     let resolveSubmit: () => void
@@ -334,8 +335,8 @@ describe('useTaskForm', () => {
     )
 
     const values = {
-      title: 'Test Task',
-      description: 'Test Description',
+      title: "Test Task",
+      description: "Test Description",
       status: TaskStatus.TODO
     }
 
@@ -356,8 +357,8 @@ describe('useTaskForm', () => {
     })
   })
 
-  it('should load assignee data when user is found in existing users list', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should load assignee data when user is found in existing users list", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
@@ -382,24 +383,24 @@ describe('useTaskForm', () => {
     // Update with assignee that exists in users list
     rerender({
       defaultValues: {
-        assignee: 'user-1'
+        assignee: "user-1"
       }
     })
 
     await waitFor(() => {
       const values = result.current.form.getValues()
-      expect(values.assignee?._id).toBe('user-1')
+      expect(values.assignee?._id).toBe("user-1")
     })
   })
 
-  it('should fetch assignee data when user is not in existing users list', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should fetch assignee data when user is not in existing users list", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue([])
     vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0])
 
     const onSubmit = vi.fn()
     const defaultValues = {
-      assignee: 'user-1'
+      assignee: "user-1"
     }
 
     const { result } = renderHook(() =>
@@ -410,23 +411,23 @@ describe('useTaskForm', () => {
     )
 
     await waitFor(() => {
-      expect(userApi.getUserById).toHaveBeenCalledWith('user-1')
+      expect(userApi.getUserById).toHaveBeenCalledWith("user-1")
     })
 
     await waitFor(() => {
       const values = result.current.form.getValues()
-      expect(values.assignee?._id).toBe('user-1')
+      expect(values.assignee?._id).toBe("user-1")
     })
   })
 
-  it('should handle assignee fetch errors gracefully', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should handle assignee fetch errors gracefully", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue([])
-    vi.mocked(userApi.getUserById).mockRejectedValue(new Error('User not found'))
+    vi.mocked(userApi.getUserById).mockRejectedValue(new Error("User not found"))
 
     const onSubmit = vi.fn()
     const defaultValues = {
-      assignee: 'user-999'
+      assignee: "user-999"
     }
 
     const { result } = renderHook(() =>
@@ -437,15 +438,15 @@ describe('useTaskForm', () => {
     )
 
     await waitFor(() => {
-      expect(userApi.getUserById).toHaveBeenCalledWith('user-999')
+      expect(userApi.getUserById).toHaveBeenCalledWith("user-999")
     })
 
     // Should not throw error
     expect(result.current.form).toBeDefined()
   })
 
-  it('should not search users when assignOpen is false', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should not search users when assignOpen is false", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()
@@ -459,17 +460,17 @@ describe('useTaskForm', () => {
     vi.mocked(userApi.searchUsers).mockClear()
 
     act(() => {
-      result.current.setSearchQuery('john')
+      result.current.setSearchQuery("john")
     })
 
     // Wait a bit to ensure no search happens
     await new Promise((resolve) => setTimeout(resolve, 600))
 
-    expect(userApi.searchUsers).not.toHaveBeenCalledWith('john')
+    expect(userApi.searchUsers).not.toHaveBeenCalledWith("john")
   })
 
-  it('should clear assignee when no assignee in default values', async () => {
-    const { userApi } = await import('@/lib/api/userApi')
+  it("should clear assignee when no assignee in default values", async () => {
+    const { userApi } = await import("@/lib/api/userApi")
     vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers)
 
     const onSubmit = vi.fn()

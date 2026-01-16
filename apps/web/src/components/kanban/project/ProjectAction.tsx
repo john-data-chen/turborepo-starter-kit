@@ -1,10 +1,6 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useDeleteProject, useUpdateProject } from '@/lib/api/projects/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { projectSchema } from '@/types/projectForm'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -13,20 +9,26 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@repo/ui/components/alert-dialog'
-import { Button } from '@repo/ui/components/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
+} from "@repo/ui/components/alert-dialog"
+import { Button } from "@repo/ui/components/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@repo/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@repo/ui/components/dropdown-menu'
-import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { ProjectForm } from './ProjectForm'
+} from "@repo/ui/components/dropdown-menu"
+import { useTranslations } from "next-intl"
+import * as React from "react"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import { useDeleteProject, useUpdateProject } from "@/lib/api/projects/queries"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { projectSchema } from "@/types/projectForm"
+
+import { ProjectForm } from "./ProjectForm"
 
 interface ProjectActionsProps {
   id: string
@@ -48,11 +50,11 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
 
   type ProjectFormData = z.infer<typeof projectSchema>
 
-  const t = useTranslations('kanban.project')
+  const t = useTranslations("kanban.project")
 
   async function onSubmit(values: ProjectFormData) {
     if (!userId) {
-      toast.error(t('userNotAuthenticated'))
+      toast.error(t("userNotAuthenticated"))
       return
     }
 
@@ -72,10 +74,10 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
           return updateProjectMutation.mutateAsync(updateData)
         }
       )
-      toast.success(t('updateSuccess'))
+      toast.success(t("updateSuccess"))
       setEditEnable(false)
     } catch (error) {
-      toast.error(t('updateFailed', { error: (error as Error).message }))
+      toast.error(t("updateFailed", { error: (error as Error).message }))
     }
   }
 
@@ -88,14 +90,14 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
       <Dialog open={editEnable} onOpenChange={setEditEnable}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('editProjectTitle')}</DialogTitle>
+            <DialogTitle>{t("editProjectTitle")}</DialogTitle>
           </DialogHeader>
           <ProjectForm onSubmit={onSubmit} defaultValues={{ title, description }}>
             <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => setEditEnable(false)}>
-                {t('cancel')}
+              <Button type="button" variant="outline" onClick={() =>{  setEditEnable(false); }}>
+                {t("cancel")}
               </Button>
-              <Button type="submit">{t('save')}</Button>
+              <Button type="submit">{t("save")}</Button>
             </div>
           </ProjectForm>
         </DialogContent>
@@ -114,25 +116,25 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-            onSelect={() => setEditEnable(true)}
+            onSelect={() =>{  setEditEnable(true); }}
             data-testid="edit-project-button"
-            className={!isOwner ? 'cursor-not-allowed text-muted-foreground line-through' : ''}
+            className={!isOwner ? "cursor-not-allowed text-muted-foreground line-through" : ""}
             disabled={!isOwner}
           >
-            {t('edit')}
+            {t("edit")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
+            onSelect={() =>{  setShowDeleteDialog(true); }}
             className={
               !isOwner
-                ? 'cursor-not-allowed text-muted-foreground line-through'
-                : 'text-red-600 hover:!bg-destructive/10 hover:!text-red-600'
+                ? "cursor-not-allowed text-muted-foreground line-through"
+                : "text-red-600 hover:!bg-destructive/10 hover:!text-red-600"
             }
             data-testid="delete-project-button"
             disabled={!isOwner}
           >
-            {t('delete')}
+            {t("delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -140,20 +142,20 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('confirmDeleteTitle', { title })}</AlertDialogTitle>
-            <AlertDialogDescription>{t('confirmDeleteDescription')}</AlertDialogDescription>
+            <AlertDialogTitle>{t("confirmDeleteTitle", { title })}</AlertDialogTitle>
+            <AlertDialogDescription>{t("confirmDeleteDescription")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <Button
               variant="destructive"
               onClick={() => {
                 setShowDeleteDialog(false)
-                removeProject(id, (id) => deleteProjectMutation.mutateAsync(id))
-                toast.success(t('deleteSuccess', { title }))
+                removeProject(id,  async (id) => deleteProjectMutation.mutateAsync(id))
+                toast.success(t("deleteSuccess", { title }))
               }}
             >
-              {t('delete')}
+              {t("delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -13,9 +13,9 @@ export interface UpdateBoardInput {
 
 // Query and Mutation Keys for React Query
 export const BOARD_KEYS = {
-  all: ['boards'] as const,
-  lists: () => [...BOARD_KEYS.all, 'list'] as const,
+  all: ["boards"] as const,
+  lists: () => [...BOARD_KEYS.all, "list"] as const,
   list: () => [...BOARD_KEYS.lists()] as const,
-  details: () => [...BOARD_KEYS.all, 'detail'] as const,
+  details: () => [...BOARD_KEYS.all, "detail"] as const,
   detail: (id: string) => [...BOARD_KEYS.details(), id] as const
 } as const

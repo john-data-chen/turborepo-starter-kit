@@ -1,6 +1,6 @@
-import { API_URL } from '@/constants/routes'
-import { CreateBoardInput, UpdateBoardInput } from '@/types/boardApi'
-import { Board } from '@/types/dbInterface'
+import { API_URL } from "@/constants/routes"
+import { CreateBoardInput, UpdateBoardInput } from "@/types/boardApi"
+import { Board } from "@/types/dbInterface"
 
 // API Endpoint
 const BOARDS_ENDPOINT = `${API_URL}/boards`
@@ -9,13 +9,13 @@ const BOARDS_ENDPOINT = `${API_URL}/boards`
 async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise<T> {
   try {
     // Get token from localStorage for Authorization header
-    const token = localStorage.getItem('auth_token')
+    const token = localStorage.getItem("auth_token")
 
     // Helper to convert headers to Record<string, string>
     const getHeadersAsRecord = (
       inputHeaders?: Headers | string[][] | Record<string, string>
     ): Record<string, string> => {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
 
       if (!inputHeaders) {
         return headers
@@ -27,13 +27,13 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
         })
       } else if (Array.isArray(inputHeaders)) {
         inputHeaders.forEach(([key, value]) => {
-          if (typeof value === 'string') {
+          if (typeof value === "string") {
             headers[key] = value
           }
         })
       } else {
         Object.entries(inputHeaders).forEach(([key, value]) => {
-          if (typeof value === 'string') {
+          if (typeof value === "string") {
             headers[key] = value
           }
         })
@@ -51,37 +51,37 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
 
     const response = await fetch(url, {
       ...options,
-      credentials: 'include', // Still include for cookie fallback
+      credentials: "include", // Still include for cookie fallback
       headers: baseHeaders
     })
 
     const responseText = await response.text()
 
     if (!response.ok) {
-      let errorMessage = 'Request failed'
+      let errorMessage = "Request failed"
       try {
         const errorData = responseText ? JSON.parse(responseText) : {}
-        errorMessage = errorData.message || response.statusText || 'Request failed'
+        errorMessage = errorData.message || response.statusText || "Request failed"
       } catch (parseError) {
-        console.error('Error parsing error response:', parseError)
-        errorMessage = responseText || 'Request failed'
+        console.error("Error parsing error response:", parseError)
+        errorMessage = responseText || "Request failed"
       }
 
-      if (typeof window !== 'undefined' && response.status === 401) {
-        console.error('Authentication error - redirecting to login')
+      if (typeof window !== "undefined" && response.status === 401) {
+        console.error("Authentication error - redirecting to login")
         // Handle unauthorized (e.g., redirect to login)
-        window.location.href = '/login'
+        window.location.href = "/login"
       }
 
       throw new Error(errorMessage)
     }
 
     if (!responseText) {
-      throw new Error('Empty response from server')
+      throw new Error("Empty response from server")
     }
     return JSON.parse(responseText) as T
   } catch (error) {
-    console.error('Fetch error:', error)
+    console.error("Fetch error:", error)
     throw error
   }
 }
@@ -104,7 +104,7 @@ export const boardApi = {
   // Create a new board
   async createBoard(input: CreateBoardInput): Promise<Board> {
     return fetchWithAuth(BOARDS_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(input)
     })
   },
@@ -112,7 +112,7 @@ export const boardApi = {
   // Update a board
   async updateBoard(id: string, input: UpdateBoardInput): Promise<Board> {
     return fetchWithAuth(`${BOARDS_ENDPOINT}/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(input)
     })
   },
@@ -120,14 +120,14 @@ export const boardApi = {
   // Delete a board
   async deleteBoard(id: string): Promise<void> {
     await fetchWithAuth<void>(`${BOARDS_ENDPOINT}/${id}`, {
-      method: 'DELETE'
+      method: "DELETE"
     })
   },
 
   // Add a member to a board
   async addBoardMember(boardId: string, memberId: string): Promise<Board> {
     return fetchWithAuth(`${BOARDS_ENDPOINT}/${boardId}/members/${memberId}`, {
-      method: 'POST'
+      method: "POST"
     })
   }
 }

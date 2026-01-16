@@ -1,7 +1,7 @@
-import { API_URL } from '@/constants/routes'
-import { fetchWithAuth } from '@/lib/api/fetchWithAuth'
-import { Project } from '@/types/dbInterface'
-import { CreateProjectInput, UpdateProjectInput } from '@/types/projectApi'
+import { API_URL } from "@/constants/routes"
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth"
+import { Project } from "@/types/dbInterface"
+import { CreateProjectInput, UpdateProjectInput } from "@/types/projectApi"
 
 // API Endpoint
 const PROJECTS_ENDPOINT = `${API_URL}/projects`
@@ -24,7 +24,7 @@ export const projectApi = {
   // Create a new project
   async createProject(input: CreateProjectInput): Promise<Project> {
     return fetchWithAuth(PROJECTS_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(input)
     })
   },
@@ -32,7 +32,7 @@ export const projectApi = {
   // Update a project
   async updateProject(id: string, input: UpdateProjectInput): Promise<Project> {
     return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(input)
     })
   },
@@ -40,7 +40,7 @@ export const projectApi = {
   // Delete a project
   async deleteProject(id: string): Promise<void> {
     return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
-      method: 'DELETE'
+      method: "DELETE"
     })
   }
 }

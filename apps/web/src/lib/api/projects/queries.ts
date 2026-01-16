@@ -1,15 +1,17 @@
-import { PROJECT_KEYS, type UpdateProjectInput } from '@/types/projectApi'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { projectApi } from '../projectApi'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { PROJECT_KEYS, type UpdateProjectInput } from "@/types/projectApi"
+
+import { projectApi } from "../projectApi"
 
 export const useProjects = (boardId?: string | { _id: string; title: string }) => {
-  const id = boardId ? (typeof boardId === 'string' ? boardId : boardId._id) : undefined
+  const id = boardId ? (typeof boardId === "string" ? boardId : boardId._id) : undefined
 
   return useQuery({
-    queryKey: PROJECT_KEYS.list(id || ''),
-    queryFn: () => {
+    queryKey: PROJECT_KEYS.list(id || ""),
+    queryFn:  async () => {
       if (!id) {
-        throw new Error('Board ID is required')
+        throw new Error("Board ID is required")
       }
       return projectApi.getProjects(id)
     },
@@ -18,13 +20,13 @@ export const useProjects = (boardId?: string | { _id: string; title: string }) =
 }
 
 export const useProject = (id: string | { _id: string } | undefined) => {
-  const projectId = id ? (typeof id === 'string' ? id : id._id) : undefined
+  const projectId = id ? (typeof id === "string" ? id : id._id) : undefined
 
   return useQuery({
-    queryKey: PROJECT_KEYS.detail(projectId || ''),
-    queryFn: () => {
+    queryKey: PROJECT_KEYS.detail(projectId || ""),
+    queryFn:  async () => {
       if (!projectId) {
-        throw new Error('Project ID is required')
+        throw new Error("Project ID is required")
       }
       return projectApi.getProjectById(projectId)
     },
@@ -40,7 +42,7 @@ export const useCreateProject = () => {
     onSuccess: (newProject) => {
       // Invalidate the projects list for the specific board
       const boardId =
-        typeof newProject.board === 'string' ? newProject.board : newProject.board?._id
+        typeof newProject.board === "string" ? newProject.board : newProject.board?._id
 
       if (boardId) {
         queryClient.invalidateQueries({
@@ -55,7 +57,7 @@ export const useUpdateProject = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string } & Omit<UpdateProjectInput, 'owner'>) => {
+    mutationFn: async ({ id, ...updates }: { id: string } & Omit<UpdateProjectInput, "owner">) => {
       // Create a new object with only the allowed fields
       const updateData: UpdateProjectInput = {
         title: updates.title,
@@ -72,7 +74,7 @@ export const useUpdateProject = () => {
     onSuccess: (updatedProject) => {
       // Invalidate both the list and the specific project
       const boardId =
-        typeof updatedProject.board === 'string' ? updatedProject.board : updatedProject.board?._id
+        typeof updatedProject.board === "string" ? updatedProject.board : updatedProject.board?._id
 
       if (boardId) {
         queryClient.invalidateQueries({

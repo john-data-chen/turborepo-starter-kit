@@ -6,8 +6,30 @@
   "printWidth": 100,
   "proseWrap": "preserve",
   "semi": false,
-  "singleQuote": true,
+  "singleQuote": false,
   "tabWidth": 2,
   "trailingComma": "none",
-  "useTabs": false
+  "useTabs": false,
+  "embeddedLanguageFormatting": "auto",
+  "experimentalSortImports": {
+    "groups": [
+      ["side-effect"],
+      ["builtin"],
+      ["external", "external-type"],
+      ["internal", "internal-type"],
+      ["parent", "parent-type"],
+      ["sibling", "sibling-type"],
+      ["index", "index-type"]
+    ]
+  },
+  "experimentalTailwindcss": {
+    "stylesheet": "./packages/ui/src/styles/globals.css",
+    "attributes": ["class", "className", "/data-.*/"],
+    "functions": ["clsx", "cn"],
+    "preserveDuplicates": false,
+    "preserveWhitespace": false
+  },
+  "experimentalSortPackageJson": {
+    "sortScripts": true
+  }
 }

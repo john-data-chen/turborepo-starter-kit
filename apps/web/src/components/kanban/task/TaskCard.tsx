@@ -1,14 +1,16 @@
-import { Task, TaskStatus } from '@/types/dbInterface'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { Badge } from '@repo/ui/components/badge'
-import { Card, CardContent, CardHeader } from '@repo/ui/components/card'
-import { cn } from '@repo/ui/lib/utils'
-import { cva } from 'class-variance-authority'
-import { format } from 'date-fns'
-import { Calendar1Icon, FileTextIcon, PointerIcon, UserIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { TaskActions } from './TaskAction'
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { Badge } from "@repo/ui/components/badge"
+import { Card, CardContent, CardHeader } from "@repo/ui/components/card"
+import { cn } from "@repo/ui/lib/utils"
+import { cva } from "class-variance-authority"
+import { format } from "date-fns"
+import { Calendar1Icon, FileTextIcon, PointerIcon, UserIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
+
+import { Task, TaskStatus } from "@/types/dbInterface"
+
+import { TaskActions } from "./TaskAction"
 
 interface TaskCardProps {
   task: Task
@@ -17,7 +19,7 @@ interface TaskCardProps {
   isDragEnabled?: boolean
 }
 
-export type TaskType = 'Task'
+export type TaskType = "Task"
 
 export interface TaskDragData {
   type: TaskType
@@ -27,22 +29,22 @@ export interface TaskDragData {
 function getLastField(task: Task): string {
   const visibleFields = []
   if (task.creator) {
-    visibleFields.push('creator')
+    visibleFields.push("creator")
   }
   if (task.lastModifier) {
-    visibleFields.push('lastModifier')
+    visibleFields.push("lastModifier")
   }
   if (task.assignee) {
-    visibleFields.push('assignee')
+    visibleFields.push("assignee")
   }
   if (task.dueDate) {
-    visibleFields.push('dueDate')
+    visibleFields.push("dueDate")
   }
   if (task.description) {
-    visibleFields.push('description')
+    visibleFields.push("description")
   }
 
-  return visibleFields[visibleFields.length - 1] || ''
+  return visibleFields[visibleFields.length - 1] || ""
 }
 
 export function TaskCard({
@@ -51,7 +53,7 @@ export function TaskCard({
   onUpdate,
   isDragEnabled = false
 }: TaskCardProps) {
-  const t = useTranslations('kanban.task')
+  const t = useTranslations("kanban.task")
 
   // Return null if task is undefined or marked as deleted
   if (!task || task._deleted) {
@@ -61,16 +63,16 @@ export function TaskCard({
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: task._id,
     data: {
-      type: 'Task',
+      type: "Task",
       task
     } satisfies TaskDragData,
     disabled: isOverlay || !isDragEnabled, // Disable drag if not enabled or in overlay
     attributes: {
-      roleDescription: 'Task',
+      roleDescription: "Task",
       // @ts-ignore - Adding custom data attributes for debugging
-      'data-task-id': task._id,
+      "data-task-id": task._id,
       // @ts-ignore - Adding custom data attributes for debugging
-      'data-draggable': String(isDragEnabled && !isOverlay)
+      "data-draggable": String(isDragEnabled && !isOverlay)
     }
   })
 
@@ -79,17 +81,17 @@ export function TaskCard({
     transform: CSS.Translate.toString(transform)
   }
 
-  const cardVariants = cva('', {
+  const cardVariants = cva("", {
     variants: {
       dragging: {
-        over: 'ring-2 opacity-30',
-        overlay: 'ring-2 ring-primary'
+        over: "ring-2 opacity-30",
+        overlay: "ring-2 ring-primary"
       }
     }
   })
 
-  type DragState = 'over' | 'overlay' | undefined
-  const dragState: DragState = isOverlay ? 'overlay' : isDragging ? 'over' : undefined
+  type DragState = "over" | "overlay" | undefined
+  const dragState: DragState = isOverlay ? "overlay" : isDragging ? "over" : undefined
 
   const statusConfig: Record<
     TaskStatus,
@@ -99,16 +101,16 @@ export function TaskCard({
     }
   > = {
     TODO: {
-      label: t('statusTodo'),
-      className: 'bg-slate-500 hover:bg-slate-500'
+      label: t("statusTodo"),
+      className: "bg-slate-500 hover:bg-slate-500"
     },
     IN_PROGRESS: {
-      label: t('statusInProgress'),
-      className: 'bg-blue-500 hover:bg-blue-500'
+      label: t("statusInProgress"),
+      className: "bg-blue-500 hover:bg-blue-500"
     },
     DONE: {
-      label: t('statusDone'),
-      className: 'bg-green-500 hover:bg-green-500'
+      label: t("statusDone"),
+      className: "bg-green-500 hover:bg-green-500"
     }
   }
 
@@ -117,7 +119,7 @@ export function TaskCard({
       ref={setNodeRef}
       style={cardStyle}
       className={cn(
-        'mb-3 transition-shadow hover:shadow-md',
+        "mb-3 transition-shadow hover:shadow-md",
         cardVariants({ dragging: dragState })
       )}
       data-testid="task-card"
@@ -142,9 +144,9 @@ export function TaskCard({
           )}
           <Badge
             variant="secondary"
-            className={cn('text-white', task.status && statusConfig[task.status]?.className)}
+            className={cn("text-white", task.status && statusConfig[task.status]?.className)}
           >
-            {task.status ? statusConfig[task.status]?.label : t('noStatus')}
+            {task.status ? statusConfig[task.status]?.label : t("noStatus")}
           </Badge>
         </div>
         <TaskActions
@@ -161,42 +163,42 @@ export function TaskCard({
       </CardHeader>
       <div className="space-y-0">
         {task.creator && (
-          <div className={getLastField(task) !== 'creator' ? 'border-b' : ''}>
+          <div className={getLastField(task) !== "creator" ? "border-b" : ""}>
             <CardContent className="px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <span>{t('createdBy', { name: task.creator.name })}</span>
+                <span>{t("createdBy", { name: task.creator.name })}</span>
               </div>
             </CardContent>
           </div>
         )}
         {task.lastModifier && (
-          <div className={getLastField(task) !== 'lastModifier' ? 'border-b' : ''}>
+          <div className={getLastField(task) !== "lastModifier" ? "border-b" : ""}>
             <CardContent className="px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <span>{t('lastModifiedBy', { name: task.lastModifier.name })}</span>
+                <span>{t("lastModifiedBy", { name: task.lastModifier.name })}</span>
               </div>
             </CardContent>
           </div>
         )}
         {task.assignee && (
-          <div className={getLastField(task) !== 'assignee' ? 'border-b' : ''}>
+          <div className={getLastField(task) !== "assignee" ? "border-b" : ""}>
             <CardContent className="px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <UserIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <span>{t('assignee', { name: task.assignee.name })}</span>
+                <span>{t("assignee", { name: task.assignee.name })}</span>
               </div>
             </CardContent>
           </div>
         )}
         {task.dueDate && (
-          <div className={getLastField(task) !== 'dueDate' ? 'border-b' : ''}>
+          <div className={getLastField(task) !== "dueDate" ? "border-b" : ""}>
             <CardContent className="px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar1Icon className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>
-                  {t('dueDate')}: {task.dueDate ? format(new Date(task.dueDate), 'yyyy/MM/dd') : ''}
+                  {t("dueDate")}: {task.dueDate ? format(new Date(task.dueDate), "yyyy/MM/dd") : ""}
                 </span>
               </div>
             </CardContent>

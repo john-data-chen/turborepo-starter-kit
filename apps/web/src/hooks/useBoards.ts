@@ -1,9 +1,10 @@
-'use client'
+"use client"
 
-import { useEffect, useMemo } from 'react'
-import { useBoards as useApiBoards } from '@/lib/api/boards/queries'
-import { useWorkspaceStore } from '@/stores/workspace-store'
-import { Board } from '@/types/dbInterface'
+import { useEffect, useMemo } from "react"
+
+import { useBoards as useApiBoards } from "@/lib/api/boards/queries"
+import { useWorkspaceStore } from "@/stores/workspace-store"
+import { Board } from "@/types/dbInterface"
 
 // Helper function to ensure consistent board data structure
 function normalizeBoard(board: Board): Board {
@@ -28,7 +29,7 @@ export function useBoards() {
     }
 
     // If we have separate myBoards and teamBoards from the API
-    if ('myBoards' in data && 'teamBoards' in data) {
+    if ("myBoards" in data && "teamBoards" in data) {
       return {
         myBoards: (data.myBoards || []).map(normalizeBoard),
         teamBoards: (data.teamBoards || []).map(normalizeBoard)
@@ -43,7 +44,7 @@ export function useBoards() {
     boards.forEach((board: Board) => {
       const normalizedBoard = normalizeBoard(board)
       const ownerId =
-        typeof normalizedBoard.owner === 'string'
+        typeof normalizedBoard.owner === "string"
           ? normalizedBoard.owner
           : normalizedBoard.owner?._id
 

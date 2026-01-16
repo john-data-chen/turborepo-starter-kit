@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { User } from '../users/schemas/users.schema'
-import { UserService } from '../users/users.service'
+import { Injectable, Logger } from "@nestjs/common"
+import { JwtService } from "@nestjs/jwt"
+
+import { User } from "../users/schemas/users.schema"
+import { UserService } from "../users/users.service"
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,10 @@ export class AuthService {
       const user = await this.userService.findByEmail(email)
       return user
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       const stack = error instanceof Error ? error.stack : undefined
       this.logger.error(`Error validating user: ${errorMessage}`, stack)
-      throw new Error('Authentication failed. Please try again.')
+      throw new Error("Authentication failed. Please try again.")
     }
   }
 
@@ -38,7 +39,7 @@ export class AuthService {
         user
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       const stack = error instanceof Error ? error.stack : undefined
       this.logger.error(`Error generating JWT for user ${user.email}: ${errorMessage}`, stack)
       throw error

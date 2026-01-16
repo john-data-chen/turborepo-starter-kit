@@ -1,7 +1,8 @@
-'use client'
+"use client"
 
-import { TOAST_DURATION } from '@/constants/ui'
-import { Toaster } from 'sonner'
+import { Toaster } from "sonner"
+
+import { TOAST_DURATION } from "@/constants/ui"
 
 interface AuthLayoutProps {
   children: React.ReactNode
