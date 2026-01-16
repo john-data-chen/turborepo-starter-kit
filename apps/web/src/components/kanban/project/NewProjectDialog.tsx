@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@repo/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@repo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -10,29 +10,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from "@repo/ui/components/dialog"
-import { useTranslations } from "next-intl"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@repo/ui/components/dialog";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useCreateProject } from "@/lib/api/projects/queries"
-import { useWorkspaceStore } from "@/stores/workspace-store"
-import { projectSchema } from "@/types/projectForm"
+import { useCreateProject } from "@/lib/api/projects/queries";
+import { useWorkspaceStore } from "@/stores/workspace-store";
+import { projectSchema } from "@/types/projectForm";
 
-import { ProjectForm } from "./ProjectForm"
+import { ProjectForm } from "./ProjectForm";
 
 export interface NewProjectDialogProps {
-  onProjectAdd?: (title: string, description?: string) => void
+  onProjectAdd?: (title: string, description?: string) => void;
 }
 
-type ProjectFormData = z.infer<typeof projectSchema>
+type ProjectFormData = z.infer<typeof projectSchema>;
 
 export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps) {
-  const addProject = useWorkspaceStore((state) => state.addProject)
-  const [isOpen, setIsOpen] = React.useState(false)
-  const t = useTranslations("kanban.project")
+  const addProject = useWorkspaceStore((state) => state.addProject);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const t = useTranslations("kanban.project");
 
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
@@ -40,30 +40,30 @@ export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps
       title: "",
       description: ""
     }
-  })
+  });
 
-  const createProjectMutation = useCreateProject()
+  const createProjectMutation = useCreateProject();
 
   const handleSubmit = async (data: ProjectFormData) => {
     try {
-      const projectId = await addProject(data.title, data.description || "",  async (projectData) =>
+      const projectId = await addProject(data.title, data.description || "", async (projectData) =>
         createProjectMutation.mutateAsync(projectData)
-      )
+      );
 
       if (!projectId) {
-        toast.error(t("createFailed"))
-        return
+        toast.error(t("createFailed"));
+        return;
       }
 
-      onProjectAdd?.(data.title, data.description)
-      toast.success(t("createSuccess"))
-      setIsOpen(false)
-      form.reset()
+      onProjectAdd?.(data.title, data.description);
+      toast.success(t("createSuccess"));
+      setIsOpen(false);
+      form.reset();
     } catch (error) {
-      console.error("Error creating project:", error)
-      toast.error(t("createFailed"))
+      console.error("Error creating project:", error);
+      toast.error(t("createFailed"));
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -84,7 +84,13 @@ export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps
         </DialogHeader>
         <ProjectForm onSubmit={handleSubmit} data-testid="new-project-form">
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() =>{  setIsOpen(false); }}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
               {t("cancel")}
             </Button>
             <Button type="submit" data-testid="submit-project-button">
@@ -94,5 +100,5 @@ export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps
         </ProjectForm>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

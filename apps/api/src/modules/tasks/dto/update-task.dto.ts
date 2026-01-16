@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from "class-validator"
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from "class-validator";
 
-import { TaskStatus } from "../schemas/tasks.schema"
+import { TaskStatus } from "../schemas/tasks.schema";
 
 export class UpdateTaskDto {
   @ApiProperty({
@@ -11,7 +11,7 @@ export class UpdateTaskDto {
   })
   @IsString()
   @IsOptional()
-  title?: string
+  title?: string;
 
   @ApiProperty({
     description: "The description of the task",
@@ -21,7 +21,7 @@ export class UpdateTaskDto {
   })
   @IsString()
   @IsOptional()
-  description?: string | null
+  description?: string | null;
 
   @ApiProperty({
     description: "The status of the task",
@@ -30,7 +30,7 @@ export class UpdateTaskDto {
   })
   @IsEnum(TaskStatus)
   @IsOptional()
-  status?: TaskStatus
+  status?: TaskStatus;
 
   @ApiProperty({
     description: "The due date of the task",
@@ -40,7 +40,7 @@ export class UpdateTaskDto {
   })
   @IsDateString()
   @IsOptional()
-  dueDate?: Date | null
+  dueDate?: Date | null;
 
   @ApiProperty({
     description: "The ID of the user assigned to this task",
@@ -50,7 +50,7 @@ export class UpdateTaskDto {
   })
   @IsMongoId()
   @IsOptional()
-  assigneeId?: string | null
+  assigneeId?: string | null;
 
   @ApiProperty({
     description: "The ID of the user who last modified this task",
@@ -59,7 +59,7 @@ export class UpdateTaskDto {
   })
   @IsMongoId()
   @IsOptional()
-  lastModifier?: string
+  lastModifier?: string;
 
   @ApiProperty({
     description: "The order of the task within its project",
@@ -69,5 +69,5 @@ export class UpdateTaskDto {
   })
   @IsNumber()
   @IsOptional()
-  orderInProject: number
+  orderInProject: number;
 }

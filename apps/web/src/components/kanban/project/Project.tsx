@@ -1,35 +1,35 @@
-import { SortableContext, useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { Badge } from "@repo/ui/components/badge"
-import { Button } from "@repo/ui/components/button"
-import { Card, CardContent, CardHeader } from "@repo/ui/components/card"
-import { ScrollArea, ScrollBar } from "@repo/ui/components/scroll-area"
-import { cn } from "@repo/ui/lib/utils"
-import { cva } from "class-variance-authority"
-import { PointerIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { memo, useCallback, useEffect, useMemo, useState } from "react"
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Badge } from "@repo/ui/components/badge";
+import { Button } from "@repo/ui/components/button";
+import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
+import { ScrollArea, ScrollBar } from "@repo/ui/components/scroll-area";
+import { cn } from "@repo/ui/lib/utils";
+import { cva } from "class-variance-authority";
+import { PointerIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
-import { useWorkspaceStore } from "@/stores/workspace-store"
-import { Project, UserInfo, type Task } from "@/types/dbInterface"
+import { useWorkspaceStore } from "@/stores/workspace-store";
+import { Project, UserInfo, type Task } from "@/types/dbInterface";
 
-import NewTaskDialog from "../task/NewTaskDialog"
-import { TaskCard } from "../task/TaskCard"
+import NewTaskDialog from "../task/NewTaskDialog";
+import { TaskCard } from "../task/TaskCard";
 
-import { ProjectActions as ProjectActionsComponent } from "./ProjectAction"
+import { ProjectActions as ProjectActionsComponent } from "./ProjectAction";
 
 export interface ProjectDragData {
-  type: "Project"
-  project: Project
+  type: "Project";
+  project: Project;
 }
 
 interface BoardProjectProps {
-  project: Project
-  tasks: Task[]
-  isOverlay?: boolean
-  isBoardOwner: boolean
-  isBoardMember: boolean
-  currentUserId: string
+  project: Project;
+  tasks: Task[];
+  isOverlay?: boolean;
+  isBoardOwner: boolean;
+  isBoardMember: boolean;
+  currentUserId: string;
 }
 
 // Memoize the component to prevent unnecessary re-renders
@@ -41,11 +41,11 @@ export const BoardProject = memo(BoardProjectComponent, (prevProps, nextProps) =
     prevProps.project.description === nextProps.project.description &&
     JSON.stringify(prevProps.tasks) === JSON.stringify(nextProps.tasks) &&
     prevProps.isOverlay === nextProps.isOverlay
-  )
-})
+  );
+});
 
 // Set display name for better dev tools
-BoardProject.displayName = "BoardProject"
+BoardProject.displayName = "BoardProject";
 
 function BoardProjectComponent({
   project,
@@ -55,27 +55,27 @@ function BoardProjectComponent({
   isBoardMember,
   currentUserId: _currentUserId
 }: BoardProjectProps) {
-  const { filter, fetchTasksByProject } = useWorkspaceStore()
-  const t = useTranslations("kanban.project")
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
-  const [_isLoading, setIsLoading] = useState(false)
-  const [_error, setError] = useState<string | null>(null)
+  const { filter, fetchTasksByProject } = useWorkspaceStore();
+  const t = useTranslations("kanban.project");
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [_isLoading, setIsLoading] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
 
   // Memoize the helper function
   const getUserDisplayName = useCallback((user: string | UserInfo | null | undefined): string => {
     if (!user) {
-      return "Unassigned"
+      return "Unassigned";
     }
     if (typeof user === "string") {
-      return user
+      return user;
     }
-    return user.name || user.email || "Unknown User"
-  }, [])
+    return user.name || user.email || "Unknown User";
+  }, []);
 
   // Update local state when initialTasks changes
   useEffect(() => {
-    setTasks(initialTasks)
-  }, [initialTasks])
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   // Memoize the project actions to prevent unnecessary re-renders
   const _projectActions = useMemo(
@@ -88,49 +88,49 @@ function BoardProjectComponent({
       />
     ),
     [project._id, project.title, project.description, project.owner]
-  )
+  );
 
   // Memoize the loadTasks function
   const loadTasks = useCallback(async () => {
     if (!project?._id) {
-      return
+      return;
     }
 
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const fetchedTasks = await fetchTasksByProject(project._id)
-      setTasks(fetchedTasks)
+      const fetchedTasks = await fetchTasksByProject(project._id);
+      setTasks(fetchedTasks);
     } catch (err) {
-      console.error("Failed to load tasks:", err)
-      setError("Failed to load tasks")
+      console.error("Failed to load tasks:", err);
+      setError("Failed to load tasks");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [project?._id, fetchTasksByProject])
+  }, [project?._id, fetchTasksByProject]);
 
   // Handle task updates from child components
   const handleTaskUpdate = useCallback(async () => {
     try {
-      const fetchedTasks = await fetchTasksByProject(project._id)
-      setTasks(fetchedTasks)
+      const fetchedTasks = await fetchTasksByProject(project._id);
+      setTasks(fetchedTasks);
     } catch (error) {
-      console.error("Error updating tasks:", error)
+      console.error("Error updating tasks:", error);
     }
-  }, [project._id, fetchTasksByProject])
+  }, [project._id, fetchTasksByProject]);
 
   // Fetch tasks when the project changes
   useEffect(() => {
-    loadTasks()
-  }, [loadTasks])
+    loadTasks();
+  }, [loadTasks]);
 
   const filteredTasks = useMemo(() => {
     if (!filter.status || !tasks?.length) {
-      return tasks || []
+      return tasks || [];
     }
-    return tasks.filter((task) => task.status === filter.status)
-  }, [tasks, filter.status])
+    return tasks.filter((task) => task.status === filter.status);
+  }, [tasks, filter.status]);
 
   // Setup drag & drop functionality
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -143,7 +143,7 @@ function BoardProjectComponent({
     attributes: {
       roleDescription: `Project: ${project.title}`
     }
-  })
+  });
 
   // Add data attributes for debugging
   const containerProps = {
@@ -151,13 +151,13 @@ function BoardProjectComponent({
     "data-board-owner": isBoardOwner,
     "data-project-id": project._id,
     "data-draggable": isBoardOwner ? "true" : "false"
-  }
+  };
 
   // Define drag & drop styles
   const style = {
     transition,
     transform: CSS.Translate.toString(transform)
-  }
+  };
 
   // Define card style variants based on drag state
   const variants = cva(
@@ -171,12 +171,12 @@ function BoardProjectComponent({
         }
       }
     }
-  )
+  );
 
-  const dragState = isOverlay ? "overlay" : isDragging ? "over" : undefined
+  const dragState = isOverlay ? "overlay" : isDragging ? "over" : undefined;
 
   // Memoize task IDs for better performance
-  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks])
+  const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
 
   return (
     <Card
@@ -247,7 +247,7 @@ function BoardProjectComponent({
         </ScrollArea>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export function BoardContainer({ children }: { children: React.ReactNode }) {
@@ -256,5 +256,5 @@ export function BoardContainer({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col gap-4 md:flex-row">{children}</div>
       <ScrollBar orientation="horizontal" className="hidden md:flex" />
     </ScrollArea>
-  )
+  );
 }

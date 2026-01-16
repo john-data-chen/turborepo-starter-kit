@@ -1,10 +1,10 @@
-import { API_URL } from "@/constants/routes"
-import { fetchWithAuth } from "@/lib/api/fetchWithAuth"
-import { Project } from "@/types/dbInterface"
-import { CreateProjectInput, UpdateProjectInput } from "@/types/projectApi"
+import { API_URL } from "@/constants/routes";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import { Project } from "@/types/dbInterface";
+import { CreateProjectInput, UpdateProjectInput } from "@/types/projectApi";
 
 // API Endpoint
-const PROJECTS_ENDPOINT = `${API_URL}/projects`
+const PROJECTS_ENDPOINT = `${API_URL}/projects`;
 
 /**
  * API client for project-related operations
@@ -13,12 +13,12 @@ const PROJECTS_ENDPOINT = `${API_URL}/projects`
 export const projectApi = {
   // Get all projects for a board
   async getProjects(boardId: string): Promise<Project[]> {
-    return fetchWithAuth(`${PROJECTS_ENDPOINT}?boardId=${boardId}`)
+    return fetchWithAuth(`${PROJECTS_ENDPOINT}?boardId=${boardId}`);
   },
 
   // Get a single project by ID
   async getProjectById(id: string): Promise<Project> {
-    return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`)
+    return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`);
   },
 
   // Create a new project
@@ -26,7 +26,7 @@ export const projectApi = {
     return fetchWithAuth(PROJECTS_ENDPOINT, {
       method: "POST",
       body: JSON.stringify(input)
-    })
+    });
   },
 
   // Update a project
@@ -34,13 +34,13 @@ export const projectApi = {
     return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(input)
-    })
+    });
   },
 
   // Delete a project
   async deleteProject(id: string): Promise<void> {
     return fetchWithAuth(`${PROJECTS_ENDPOINT}/${id}`, {
       method: "DELETE"
-    })
+    });
   }
-}
+};

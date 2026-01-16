@@ -1,1 +1,1 @@
-export const defaultEmail = "mark.s@example.com"
+export const defaultEmail = "mark.s@example.com";

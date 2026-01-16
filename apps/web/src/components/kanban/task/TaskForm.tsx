@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Button } from "@repo/ui/components/button"
-import { Calendar } from "@repo/ui/components/calendar"
+import { Button } from "@repo/ui/components/button";
+import { Calendar } from "@repo/ui/components/calendar";
 import {
   Command,
   CommandEmpty,
@@ -9,7 +9,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList
-} from "@repo/ui/components/command"
+} from "@repo/ui/components/command";
 import {
   Form,
   FormControl,
@@ -17,26 +17,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover"
-import { RadioGroup, RadioGroupItem } from "@repo/ui/components/radio-group"
-import { Textarea } from "@repo/ui/components/textarea"
-import { cn } from "@repo/ui/lib/utils"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
-import React from "react"
-import { z } from "zod"
+} from "@repo/ui/components/form";
+import { Input } from "@repo/ui/components/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
+import { RadioGroup, RadioGroupItem } from "@repo/ui/components/radio-group";
+import { Textarea } from "@repo/ui/components/textarea";
+import { cn } from "@repo/ui/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { z } from "zod";
 
-import { useTaskForm } from "@/hooks/useTaskForm"
-import { TaskFormSchema } from "@/types/taskForm"
+import { useTaskForm } from "@/hooks/useTaskForm";
+import { TaskFormSchema } from "@/types/taskForm";
 
 interface TaskFormProps {
-  defaultValues?: z.infer<typeof TaskFormSchema>
-  onSubmit: (values: z.infer<typeof TaskFormSchema>) => Promise<void>
-  onCancel?: () => void
-  submitLabel?: string
+  defaultValues?: z.infer<typeof TaskFormSchema>;
+  onSubmit: (values: z.infer<typeof TaskFormSchema>) => Promise<void>;
+  onCancel?: () => void;
+  submitLabel?: string;
 }
 
 export function TaskForm({
@@ -55,9 +55,9 @@ export function TaskForm({
     assignOpen,
     setAssignOpen,
     handleSubmit
-  } = useTaskForm({ defaultValues, onSubmit })
-  const [calendarOpen, setCalendarOpen] = React.useState(false)
-  const t = useTranslations("kanban.task")
+  } = useTaskForm({ defaultValues, onSubmit });
+  const [calendarOpen, setCalendarOpen] = React.useState(false);
+  const t = useTranslations("kanban.task");
 
   return (
     <Form {...form}>
@@ -112,13 +112,13 @@ export function TaskForm({
                     mode="single"
                     selected={field.value}
                     onSelect={(date) => {
-                      field.onChange(date)
-                      setCalendarOpen(false)
+                      field.onChange(date);
+                      setCalendarOpen(false);
                     }}
                     disabled={(date) => {
-                      const today = new Date()
-                      today.setHours(0, 0, 0, 0)
-                      return date < today
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
                     }}
                     data-testid="task-date-picker-calendar"
                   />
@@ -135,7 +135,7 @@ export function TaskForm({
             // Find the full user object from the users list
             const selectedUser = field.value?._id
               ? users.find((u) => u._id === field.value?._id)
-              : null
+              : null;
 
             return (
               <FormItem className="flex flex-col">
@@ -180,8 +180,8 @@ export function TaskForm({
                                 key={user._id}
                                 value={user.name}
                                 onSelect={() => {
-                                  field.onChange(user)
-                                  setAssignOpen(false)
+                                  field.onChange(user);
+                                  setAssignOpen(false);
                                 }}
                                 className="flex flex-col items-start"
                               >
@@ -200,7 +200,7 @@ export function TaskForm({
                   </Popover>
                 </FormControl>
               </FormItem>
-            )
+            );
           }}
         />
         <FormField
@@ -273,5 +273,5 @@ export function TaskForm({
         </div>
       </form>
     </Form>
-  )
+  );
 }

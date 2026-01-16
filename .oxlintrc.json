@@ -1,5 +1,13 @@
 {
-  "plugins": ["react", "react-perf", "nextjs", "typescript", "unicorn", "oxc", "jsx-a11y"],
+  "plugins": [
+    "react",
+    "react-perf",
+    "nextjs",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "jsx-a11y"
+  ],
   "rules": {
     "react/jsx-no-undef": "warn",
     "react/self-closing-comp": "warn",
@@ -83,9 +91,7 @@
   "ignorePatterns": [
     "node_modules/**/*",
     "dist/**/*",
-    "__tests__/**/*",
     "../../apps/api/database/mongodb/**/*",
-    "../../apps/api/database/docker-compose.yml",
-    "../../apps/api/rspack.config.ts"
+    "../../apps/api/database/docker-compose.yml"
   ]
 }

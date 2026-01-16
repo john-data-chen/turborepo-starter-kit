@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -8,36 +8,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "@repo/ui/components/form"
-import { Input } from "@repo/ui/components/input"
-import { Textarea } from "@repo/ui/components/textarea"
-import { useTranslations } from "next-intl"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+} from "@repo/ui/components/form";
+import { Input } from "@repo/ui/components/input";
+import { Textarea } from "@repo/ui/components/textarea";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { projectSchema } from "@/types/projectForm"
+import { projectSchema } from "@/types/projectForm";
 
-type ProjectFormData = z.infer<typeof projectSchema>
+type ProjectFormData = z.infer<typeof projectSchema>;
 
 interface ProjectFormProps {
-  children?: React.ReactNode
-  onSubmit: (data: ProjectFormData) => void
+  children?: React.ReactNode;
+  onSubmit: (data: ProjectFormData) => void;
   defaultValues?: {
-    title: string
-    description?: string
-  }
+    title: string;
+    description?: string;
+  };
 }
 
 export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormProps) {
-  const t = useTranslations("kanban.project")
+  const t = useTranslations("kanban.project");
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: defaultValues || {
       title: "",
       description: ""
     }
-  })
+  });
 
   return (
     <Form {...form}>
@@ -75,5 +75,5 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
         {children}
       </form>
     </Form>
-  )
+  );
 }

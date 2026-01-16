@@ -1,7 +1,7 @@
-import { NextConfig } from "next"
-import createNextIntlPlugin from "next-intl/plugin"
+import { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin()
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@repo/ui"],
@@ -38,10 +38,10 @@ const nextConfig: NextConfig = {
         fs: false,
         path: false,
         os: false
-      }
+      };
     }
-    return config
+    return config;
   }
-}
+};
 
-export default withNextIntl(nextConfig)
+export default withNextIntl(nextConfig);

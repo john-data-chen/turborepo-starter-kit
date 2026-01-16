@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,170 +9,172 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from "@repo/ui/components/alert-dialog"
-import { Button } from "@repo/ui/components/button"
+} from "@repo/ui/components/alert-dialog";
+import { Button } from "@repo/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from "@repo/ui/components/dialog"
+} from "@repo/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from "@repo/ui/components/dropdown-menu"
-import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
-import React from "react"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@repo/ui/components/dropdown-menu";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useDeleteBoard, useUpdateBoard } from "@/lib/api/boards/queries"
-import { boardSchema } from "@/types/boardForm"
-import { Board } from "@/types/dbInterface"
+import { useDeleteBoard, useUpdateBoard } from "@/lib/api/boards/queries";
+import { boardSchema } from "@/types/boardForm";
+import { Board } from "@/types/dbInterface";
 
-import { BoardForm } from "./BoardForm"
+import { BoardForm } from "./BoardForm";
 
 interface BoardActionsProps {
-  board: Board
-  onDelete?: () => void
-  asChild?: boolean
-  className?: string
-  children?: React.ReactNode
+  board: Board;
+  onDelete?: () => void;
+  asChild?: boolean;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProps>(
   ({ board, onDelete, asChild = false, children }, ref) => {
-    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
-    const [editEnable, setEditEnable] = React.useState(false)
-    const [isSubmitting, setIsSubmitting] = React.useState(false)
+    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+    const [editEnable, setEditEnable] = React.useState(false);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
     // Get the delete and update mutations
-    const deleteBoard = useDeleteBoard()
-    const updateBoard = useUpdateBoard()
+    const deleteBoard = useDeleteBoard();
+    const updateBoard = useUpdateBoard();
 
     // Get router and translations
-    const router = useRouter()
-    const t = useTranslations("kanban.actions")
+    const router = useRouter();
+    const t = useTranslations("kanban.actions");
 
     const onSubmit = async (values: z.infer<typeof boardSchema>) => {
       try {
         if (!board?._id) {
-          throw new Error("Board ID is missing")
+          throw new Error("Board ID is missing");
         }
 
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         await updateBoard.mutateAsync(
           { id: board._id, ...values },
           {
             onSuccess: () => {
-              setEditEnable(false)
-              toast.success(t("boardUpdated", { title: board.title }))
+              setEditEnable(false);
+              toast.success(t("boardUpdated", { title: board.title }));
               // The query invalidation is handled by the mutation's onSuccess
-              router.refresh()
+              router.refresh();
             },
             onError: (error: Error) => {
-              console.error("Error updating board:", error)
+              console.error("Error updating board:", error);
 
               if (error.message.includes("not found")) {
                 // If board is not found, refresh the board list
-                toast.error("Board not found. The board may have been deleted.")
-                router.refresh()
+                toast.error("Board not found. The board may have been deleted.");
+                router.refresh();
               } else {
-                toast.error(`Failed to update board: ${error.message}`)
+                toast.error(`Failed to update board: ${error.message}`);
               }
             }
           }
-        )
+        );
       } catch (error) {
-        console.error("Error updating board:", error)
-        const errorMessage = error instanceof Error ? error.message : String(error)
+        console.error("Error updating board:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
 
         if (errorMessage.includes("not found")) {
-          toast.error("Board not found. The board may have been deleted.")
-          router.refresh()
+          toast.error("Board not found. The board may have been deleted.");
+          router.refresh();
         } else {
-          toast.error(`Failed to update board: ${errorMessage}`)
+          toast.error(`Failed to update board: ${errorMessage}`);
         }
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
-    }
+    };
 
     const handleDelete = async (e: React.MouseEvent) => {
       // Prevent any default behavior and stop propagation
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
 
       // Close the dialog immediately
-      setShowDeleteDialog(false)
+      setShowDeleteDialog(false);
 
       try {
         // Get current path before any async operations
-        const currentPath = window.location.pathname
+        const currentPath = window.location.pathname;
 
         // Immediately redirect to /boards if we're on a board page
         if (currentPath.includes("/board/")) {
-          window.location.href = "/boards"
+          window.location.href = "/boards";
           // Continue with deletion in the background
-          setTimeout(() =>{  deleteBoard.mutate(board._id); }, 0)
-          return
+          setTimeout(() => {
+            deleteBoard.mutate(board._id);
+          }, 0);
+          return;
         }
 
         // For all other cases, perform the deletion first
         await deleteBoard.mutateAsync(board._id, {
           onSuccess: () => {
-            toast.success(t("boardDeleted"))
+            toast.success(t("boardDeleted"));
             // Call the onDelete callback if provided
-            onDelete?.()
+            onDelete?.();
 
             // Force a hard refresh to ensure clean state
             if (window.location.pathname.endsWith("/boards")) {
-              window.location.reload()
+              window.location.reload();
             } else {
-              window.location.href = "/boards"
+              window.location.href = "/boards";
             }
           },
           onError: (error: Error) => {
-            console.error("Failed to delete board:", error)
-            toast.error(t("boardDeleteFailed", { error: error.message }))
+            console.error("Failed to delete board:", error);
+            toast.error(t("boardDeleteFailed", { error: error.message }));
           }
-        })
+        });
       } catch (error) {
-        console.error("Error in handleDelete:", error)
+        console.error("Error in handleDelete:", error);
         toast.error(
           t("boardDeleteFailed", {
             error: error instanceof Error ? error.message : String(error)
           })
-        )
+        );
       }
-    }
+    };
 
     return (
       <>
         <Dialog
           open={editEnable}
           onOpenChange={(open) => {
-            setEditEnable(open)
+            setEditEnable(open);
           }}
         >
           <DialogContent
             className="sm:max-w-md"
             onInteractOutside={(e) => {
-              e.preventDefault()
-              setEditEnable(false)
+              e.preventDefault();
+              setEditEnable(false);
             }}
             onPointerDownOutside={(e) => {
-              e.preventDefault()
-              setEditEnable(false)
+              e.preventDefault();
+              setEditEnable(false);
             }}
             onKeyDown={(e) => {
               // Prevent form submission on Enter key in input fields
               if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
-                e.stopPropagation()
+                e.stopPropagation();
               }
             }}
           >
@@ -186,7 +188,7 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
                 description: board.description || ""
               }}
               onSubmit={async (values: z.infer<typeof boardSchema>) => {
-                await onSubmit(values)
+                await onSubmit(values);
               }}
             >
               <div className="flex justify-end gap-4">
@@ -194,9 +196,9 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
                   type="button"
                   variant="outline"
                   onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setEditEnable(false)
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEditEnable(false);
                   }}
                 >
                   {t("cancel")}
@@ -205,7 +207,7 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
                   type="submit"
                   disabled={isSubmitting}
                   onClick={(e) => {
-                    e.stopPropagation()
+                    e.stopPropagation();
                   }}
                 >
                   {isSubmitting ? t("saving") : t("saveChanges")}
@@ -234,17 +236,24 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
           <DropdownMenuContent
             align="end"
             onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
+              e.preventDefault();
+              e.stopPropagation();
             }}
           >
-            <DropdownMenuItem data-testid="edit-board-button" onSelect={() =>{  setEditEnable(true); }}>
+            <DropdownMenuItem
+              data-testid="edit-board-button"
+              onSelect={() => {
+                setEditEnable(true);
+              }}
+            >
               {t("edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               data-testid="delete-board-button"
-              onSelect={() =>{  setShowDeleteDialog(true); }}
+              onSelect={() => {
+                setShowDeleteDialog(true);
+              }}
               className="text-red-600"
             >
               {t("delete")}
@@ -267,8 +276,8 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
           </AlertDialogContent>
         </AlertDialog>
       </>
-    )
+    );
   }
-)
+);
 
-BoardActions.displayName = "BoardActions"
+BoardActions.displayName = "BoardActions";

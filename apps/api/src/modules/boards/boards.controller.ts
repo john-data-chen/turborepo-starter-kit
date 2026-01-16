@@ -10,7 +10,7 @@ import {
   Req,
   UnauthorizedException,
   UseGuards
-} from "@nestjs/common"
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -18,21 +18,21 @@ import {
   ApiResponse,
   ApiTags,
   getSchemaPath
-} from "@nestjs/swagger"
-import { Request } from "express"
+} from "@nestjs/swagger";
+import { Request } from "express";
 
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
-import { BoardService } from "./boards.service"
-import { CreateBoardDto } from "./dto/create-boards.dto"
-import { UpdateBoardDto } from "./dto/update-boards.dto"
-import { Board } from "./schemas/boards.schema"
+import { BoardService } from "./boards.service";
+import { CreateBoardDto } from "./dto/create-boards.dto";
+import { UpdateBoardDto } from "./dto/update-boards.dto";
+import { Board } from "./schemas/boards.schema";
 
 interface RequestWithUser extends Request {
   user: {
-    _id: string
-    email: string
-  }
+    _id: string;
+    email: string;
+  };
 }
 
 @ApiTags("boards")
@@ -57,13 +57,13 @@ export class BoardController {
     status: HttpStatus.UNAUTHORIZED,
     description: "Unauthorized."
   })
-   async create(@Body() createBoardDto: CreateBoardDto, @Req() req: RequestWithUser) {
+  async create(@Body() createBoardDto: CreateBoardDto, @Req() req: RequestWithUser) {
     // Set the owner from the authenticated user
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    createBoardDto.owner = req.user._id
-    return this.boardService.create(createBoardDto)
+    createBoardDto.owner = req.user._id;
+    return this.boardService.create(createBoardDto);
   }
 
   @Get()
@@ -83,11 +83,11 @@ export class BoardController {
     status: HttpStatus.UNAUTHORIZED,
     description: "Unauthorized."
   })
-   async findAll(@Req() req: RequestWithUser) {
+  async findAll(@Req() req: RequestWithUser) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.findAll(req.user._id)
+    return this.boardService.findAll(req.user._id);
   }
 
   @Get(":id")
@@ -107,11 +107,11 @@ export class BoardController {
     description: "Unauthorized."
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
-   async findOne(@Param("id") id: string, @Req() req: RequestWithUser) {
+  async findOne(@Param("id") id: string, @Req() req: RequestWithUser) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.findOne(id, req.user._id)
+    return this.boardService.findOne(id, req.user._id);
   }
 
   @Patch(":id")
@@ -131,15 +131,15 @@ export class BoardController {
     description: "Unauthorized."
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
-   async update(
+  async update(
     @Param("id") id: string,
     @Body() updateBoardDto: UpdateBoardDto,
     @Req() req: RequestWithUser
   ) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.update(id, updateBoardDto, req.user._id)
+    return this.boardService.update(id, updateBoardDto, req.user._id);
   }
 
   @Delete(":id")
@@ -158,11 +158,11 @@ export class BoardController {
     description: "Unauthorized."
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
-   async remove(@Param("id") id: string, @Req() req: RequestWithUser) {
+  async remove(@Param("id") id: string, @Req() req: RequestWithUser) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.remove(id, req.user._id)
+    return this.boardService.remove(id, req.user._id);
   }
 
   @Post(":id/members/:memberId")
@@ -183,15 +183,15 @@ export class BoardController {
     description: "Unauthorized."
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
-   async addMember(
+  async addMember(
     @Param("id") id: string,
     @Param("memberId") memberId: string,
     @Req() req: RequestWithUser
   ) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.addMember(id, req.user._id, memberId)
+    return this.boardService.addMember(id, req.user._id, memberId);
   }
 
   @Delete(":id/members/:memberId")
@@ -215,14 +215,14 @@ export class BoardController {
     description: "Unauthorized."
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden." })
-   async removeMember(
+  async removeMember(
     @Param("id") id: string,
     @Param("memberId") memberId: string,
     @Req() req: RequestWithUser
   ) {
     if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated")
+      throw new UnauthorizedException("User not authenticated");
     }
-    return this.boardService.removeMember(id, req.user._id, memberId)
+    return this.boardService.removeMember(id, req.user._id, memberId);
   }
 }

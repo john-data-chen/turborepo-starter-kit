@@ -1,22 +1,22 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "vitest";
 
-import { defaultEmail } from "@/constants/demoData"
+import { defaultEmail } from "@/constants/demoData";
 
 describe("demoData constants", () => {
   it("should have correct defaultEmail value", () => {
-    expect(defaultEmail).toBe("mark.s@example.com")
-  })
+    expect(defaultEmail).toBe("mark.s@example.com");
+  });
 
   it("should have valid email format", () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    expect(defaultEmail).toMatch(emailRegex)
-  })
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    expect(defaultEmail).toMatch(emailRegex);
+  });
 
   it("should be a string type", () => {
-    expect(typeof defaultEmail).toBe("string")
-  })
+    expect(typeof defaultEmail).toBe("string");
+  });
 
   it("should not be empty", () => {
-    expect(defaultEmail.length).toBeGreaterThan(0)
-  })
-})
+    expect(defaultEmail.length).toBeGreaterThan(0);
+  });
+});

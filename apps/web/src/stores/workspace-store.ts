@@ -1,57 +1,57 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 /* eslint-disable eslint/max-lines -- Comprehensive workspace state management with multiple features */
-import { boardApi } from "@/lib/api/boardApi"
-import { projectApi } from "@/lib/api/projectApi"
-import { taskApi } from "@/lib/api/taskApi"
-import { useDeleteTask } from "@/lib/api/tasks"
-import { Board, Project, Task, TaskStatus } from "@/types/dbInterface"
-import { CreateTaskInput, UpdateTaskInput } from "@/types/taskApi"
+import { boardApi } from "@/lib/api/boardApi";
+import { projectApi } from "@/lib/api/projectApi";
+import { taskApi } from "@/lib/api/taskApi";
+import { useDeleteTask } from "@/lib/api/tasks";
+import { Board, Project, Task, TaskStatus } from "@/types/dbInterface";
+import { CreateTaskInput, UpdateTaskInput } from "@/types/taskApi";
 
 interface State {
   // User state
-  userId: string | null
-  userEmail: string | null
-  setUserInfo: (email: string, userId: string) => void
+  userId: string | null;
+  userEmail: string | null;
+  setUserInfo: (email: string, userId: string) => void;
 
   // Projects state
-  projects: Project[]
-  isLoadingProjects: boolean
-  setProjects: (projects: Project[]) => void
+  projects: Project[];
+  isLoadingProjects: boolean;
+  setProjects: (projects: Project[]) => void;
 
   // Boards state
-  currentBoardId: string | null
-  myBoards: Board[]
-  teamBoards: Board[]
+  currentBoardId: string | null;
+  myBoards: Board[];
+  teamBoards: Board[];
 
   // Filter state
   filter: {
-    status: string | null
-    search: string
-  }
+    status: string | null;
+    search: string;
+  };
 
   // Actions
-  fetchProjects: (boardId: string) => Promise<void>
-  fetchTasksByProject: (projectId: string) => Promise<Task[]>
+  fetchProjects: (boardId: string) => Promise<void>;
+  fetchTasksByProject: (projectId: string) => Promise<Task[]>;
   addProject: (
     title: string,
     description: string,
     createProject: (project: {
-      title: string
-      description: string
-      boardId: string
-      owner: string
-      orderInBoard?: number
+      title: string;
+      description: string;
+      boardId: string;
+      owner: string;
+      orderInBoard?: number;
     }) => Promise<Project>
-  ) => Promise<string>
+  ) => Promise<string>;
   updateProject: (
     id: string,
     newTitle: string,
     newDescription: string | undefined,
     updateFn: (id: string, data: { title: string; description?: string }) => Promise<Project>
-  ) => Promise<void>
-  removeProject: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>
+  ) => Promise<void>;
+  removeProject: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>;
 
   // Task actions
   addTask: (
@@ -63,7 +63,7 @@ interface State {
     dueDate?: Date,
     assigneeId?: string,
     orderInProject?: number
-  ) => Promise<void>
+  ) => Promise<void>;
 
   updateTask: (
     taskId: string,
@@ -74,26 +74,26 @@ interface State {
     assigneeId?: string,
     newProjectId?: string,
     orderInProject?: number
-  ) => Promise<void>
+  ) => Promise<void>;
 
-  removeTask: (taskId: string) => Promise<void>
+  removeTask: (taskId: string) => Promise<void>;
   dragTaskOnProject: (
     taskId: string,
     newProjectId: string,
     getTask: (taskId: string) => Promise<Task | undefined>
-  ) => Promise<void>
+  ) => Promise<void>;
 
   // Board actions
-  setCurrentBoardId: (boardId: string) => void
-  addBoard: (title: string, description?: string) => Promise<string>
-  updateBoard: (id: string, data: Partial<Board>) => Promise<void>
-  removeBoard: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>
+  setCurrentBoardId: (boardId: string) => void;
+  addBoard: (title: string, description?: string) => Promise<string>;
+  updateBoard: (id: string, data: Partial<Board>) => Promise<void>;
+  removeBoard: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>;
 
   // UI state
-  setFilter: (filter: Partial<State["filter"]>) => void
-  setMyBoards: (boards: Board[]) => void
-  setTeamBoards: (boards: Board[]) => void
-  resetInBoards: () => void
+  setFilter: (filter: Partial<State["filter"]>) => void;
+  setMyBoards: (boards: Board[]) => void;
+  setTeamBoards: (boards: Board[]) => void;
+  resetInBoards: () => void;
 }
 
 // Custom hook to access the store's state and actions
@@ -116,34 +116,34 @@ export const useWorkspaceStore = create<State>()(
       // User actions
       setUserInfo: (email: string, userId: string) => {
         if (!email || !userId) {
-          console.error("Invalid user info provided:", { email, userId })
-          throw new Error("Email and userId are required")
+          console.error("Invalid user info provided:", { email, userId });
+          throw new Error("Email and userId are required");
         }
 
         set((state) => {
           // Only update if the values have changed
           if (state.userEmail === email && state.userId === userId) {
-            return state
+            return state;
           }
 
           return {
             ...state,
             userEmail: email,
             userId: userId
-          }
-        })
+          };
+        });
       },
 
       // Project actions
       fetchProjects: async (boardId: string) => {
         if (!boardId) {
-          return
+          return;
         }
 
-        set({ isLoadingProjects: true })
+        set({ isLoadingProjects: true });
 
         try {
-          const projects = await projectApi.getProjects(boardId)
+          const projects = await projectApi.getProjects(boardId);
 
           if (projects) {
             set({
@@ -151,44 +151,44 @@ export const useWorkspaceStore = create<State>()(
                 ...project,
                 tasks: [] // Tasks will be loaded separately if needed
               }))
-            })
+            });
           } else {
-            set({ projects: [] })
+            set({ projects: [] });
           }
         } catch (error) {
-          console.error("Error fetching projects:", error)
-          set({ projects: [] })
+          console.error("Error fetching projects:", error);
+          set({ projects: [] });
         } finally {
-          set({ isLoadingProjects: false })
+          set({ isLoadingProjects: false });
         }
       },
 
       // Fetch tasks for a specific project
       fetchTasksByProject: async (projectId: string) => {
         if (!projectId) {
-          return []
+          return [];
         }
 
         try {
           // Ensure we're using the correct parameter name that matches the backend
-          const tasks = await taskApi.getTasks(projectId)
+          const tasks = await taskApi.getTasks(projectId);
 
           if (!Array.isArray(tasks)) {
-            return []
+            return [];
           }
 
           // Update the tasks for this project in the store
           set((state) => {
             const updatedProjects = state.projects.map((project) =>
               project._id === projectId ? { ...project, tasks } : project
-            )
-            return { projects: updatedProjects }
-          })
+            );
+            return { projects: updatedProjects };
+          });
 
-          return tasks
+          return tasks;
         } catch (error) {
-          console.error("Error fetching tasks for project:", error)
-          return []
+          console.error("Error fetching tasks for project:", error);
+          return [];
         }
       },
 
@@ -198,33 +198,33 @@ export const useWorkspaceStore = create<State>()(
         title: string,
         description: string,
         createProject: (project: {
-          title: string
-          description: string
-          boardId: string
-          owner: string
-          orderInBoard?: number
+          title: string;
+          description: string;
+          boardId: string;
+          owner: string;
+          orderInBoard?: number;
         }) => Promise<Project>
       ) => {
         try {
-          const { currentBoardId, userId, projects } = get()
+          const { currentBoardId, userId, projects } = get();
           if (!currentBoardId) {
-            throw new Error("No board selected")
+            throw new Error("No board selected");
           }
           if (!userId) {
-            throw new Error("User not authenticated")
+            throw new Error("User not authenticated");
           }
 
           const currentBoardProjects = projects.filter((p) => {
-            const projectBoardId = typeof p.board === "string" ? p.board : p.board?._id
-            return projectBoardId === currentBoardId
-          })
+            const projectBoardId = typeof p.board === "string" ? p.board : p.board?._id;
+            return projectBoardId === currentBoardId;
+          });
 
           const maxOrder =
             currentBoardProjects.length > 0
               ? Math.max(...currentBoardProjects.map((p) => p.orderInBoard ?? 0), -1)
-              : -1
+              : -1;
 
-          const orderInBoard = maxOrder + 1
+          const orderInBoard = maxOrder + 1;
 
           const newProject = await createProject({
             title,
@@ -232,19 +232,19 @@ export const useWorkspaceStore = create<State>()(
             boardId: currentBoardId,
             owner: userId,
             orderInBoard
-          })
+          });
 
           if (newProject) {
             set((state) => ({
               projects: [...state.projects, newProject]
-            }))
-            return newProject._id
+            }));
+            return newProject._id;
           }
 
-          throw new Error("Failed to create project")
+          throw new Error("Failed to create project");
         } catch (error) {
-          console.error("Error in addProject:", error)
-          throw error
+          console.error("Error in addProject:", error);
+          throw error;
         }
       },
 
@@ -267,22 +267,22 @@ export const useWorkspaceStore = create<State>()(
                   }
                 : project
             )
-          }))
+          }));
 
-          const modifier = get().userId
+          const modifier = get().userId;
           if (!modifier) {
-            throw new Error("User not authenticated")
+            throw new Error("User not authenticated");
           }
 
           // Call the update function provided by the component
           const updateData = {
             title: newTitle,
             description: newDescription ?? ""
-          }
+          };
 
-          await updateFn(id, updateData)
+          await updateFn(id, updateData);
         } catch (error) {
-          console.error("Error updating project:", error)
+          console.error("Error updating project:", error);
           // Revert optimistic update on error
           set((state) => ({
             projects: state.projects.map((project) =>
@@ -290,22 +290,22 @@ export const useWorkspaceStore = create<State>()(
                 ? project // Revert to original project data
                 : project
             )
-          }))
-          throw error
+          }));
+          throw error;
         }
       },
 
       removeProject: async (id: string, deleteFn: (id: string) => Promise<void>) => {
         try {
-          await deleteFn(id)
+          await deleteFn(id);
 
           // Optimistic update
           set((state) => ({
             projects: state.projects.filter((project) => project._id !== id)
-          }))
+          }));
         } catch (error) {
-          console.error("Error removing project:", error)
-          throw error
+          console.error("Error removing project:", error);
+          throw error;
         }
       },
 
@@ -321,21 +321,21 @@ export const useWorkspaceStore = create<State>()(
         orderInProject?: number
       ) => {
         try {
-          const { userId, currentBoardId } = get()
+          const { userId, currentBoardId } = get();
           if (!userId || !currentBoardId) {
-            throw new Error("User not authenticated or no board selected")
+            throw new Error("User not authenticated or no board selected");
           }
 
           // Get the current project and its tasks
-          const currentProject = get().projects.find((p) => p._id === projectId)
-          const currentTasks = currentProject?.tasks || []
+          const currentProject = get().projects.find((p) => p._id === projectId);
+          const currentTasks = currentProject?.tasks || [];
 
           // Calculate orderInProject if not provided
-          let calculatedOrderInProject = orderInProject
+          let calculatedOrderInProject = orderInProject;
           if (calculatedOrderInProject === undefined) {
-            calculatedOrderInProject = 0 // Default value if no order is provided
+            calculatedOrderInProject = 0; // Default value if no order is provided
           }
-          calculatedOrderInProject = currentTasks.length
+          calculatedOrderInProject = currentTasks.length;
 
           const taskInput: CreateTaskInput = {
             title,
@@ -348,16 +348,16 @@ export const useWorkspaceStore = create<State>()(
             orderInProject: calculatedOrderInProject,
             ...(dueDate && { dueDate }),
             ...(assigneeId && { assignee: assigneeId })
-          }
+          };
 
-          await createTask(taskInput)
+          await createTask(taskInput);
 
           // Invalidate and refetch projects to get the new task
-          const { fetchProjects } = get()
-          await fetchProjects(currentBoardId)
+          const { fetchProjects } = get();
+          await fetchProjects(currentBoardId);
         } catch (error) {
-          console.error("Error adding task:", error)
-          throw error
+          console.error("Error adding task:", error);
+          throw error;
         }
       },
 
@@ -372,9 +372,9 @@ export const useWorkspaceStore = create<State>()(
         orderInProject?: number
       ) => {
         try {
-          const { userId, currentBoardId } = get()
+          const { userId, currentBoardId } = get();
           if (!userId) {
-            throw new Error("User not authenticated")
+            throw new Error("User not authenticated");
           }
 
           // Build update data with only defined values
@@ -387,25 +387,25 @@ export const useWorkspaceStore = create<State>()(
             ...(assigneeId !== undefined && { assigneeId }),
             ...(orderInProject !== undefined && { orderInProject }),
             ...(newProjectId && { projectId: newProjectId })
-          }
+          };
 
-          await taskApi.updateTask(taskId, updateData)
+          await taskApi.updateTask(taskId, updateData);
 
           // Invalidate and refetch projects to get the updated task
           if (currentBoardId) {
-            const { fetchProjects } = get()
-            await fetchProjects(currentBoardId)
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
           }
         } catch (error) {
-          console.error("Error updating task:", error)
-          throw error
+          console.error("Error updating task:", error);
+          throw error;
         }
       },
 
       removeTask: async (taskId: string) => {
         try {
-          const { currentBoardId } = get()
-          const deleteTask = useDeleteTask()
+          const { currentBoardId } = get();
+          const deleteTask = useDeleteTask();
 
           // Optimistically update the UI by removing the task from the store
           set((state) => ({
@@ -413,29 +413,29 @@ export const useWorkspaceStore = create<State>()(
               ...project,
               tasks: project.tasks?.filter((task) => task._id !== taskId) || []
             }))
-          }))
+          }));
 
           // Execute the delete mutation
           await deleteTask.mutateAsync(taskId, {
             onError: (error) => {
-              console.error("Error in delete mutation:", error)
+              console.error("Error in delete mutation:", error);
               // Revert the optimistic update if the deletion fails
               if (currentBoardId) {
-                const { fetchProjects } = get()
-                fetchProjects(currentBoardId)
+                const { fetchProjects } = get();
+                fetchProjects(currentBoardId);
               }
             },
             onSettled: () => {
               // Refresh the projects to ensure consistency
               if (currentBoardId) {
-                const { fetchProjects } = get()
-                fetchProjects(currentBoardId)
+                const { fetchProjects } = get();
+                fetchProjects(currentBoardId);
               }
             }
-          })
+          });
         } catch (error) {
-          console.error("Error in removeTask:", error)
-          throw error
+          console.error("Error in removeTask:", error);
+          throw error;
         }
       },
 
@@ -445,13 +445,13 @@ export const useWorkspaceStore = create<State>()(
         getTask: (taskId: string) => Promise<Task | undefined>
       ) => {
         try {
-          const { updateTask, currentBoardId } = get()
+          const { updateTask, currentBoardId } = get();
 
           // First, find the task to get its current data
-          const taskToMove = await getTask(taskId)
+          const taskToMove = await getTask(taskId);
 
           if (!taskToMove) {
-            throw new Error("Task not found")
+            throw new Error("Task not found");
           }
 
           // Update the task's project
@@ -463,29 +463,29 @@ export const useWorkspaceStore = create<State>()(
             taskToMove.dueDate ? new Date(taskToMove.dueDate) : undefined,
             taskToMove.assignee?._id || undefined,
             newProjectId
-          )
+          );
 
           // Invalidate and refetch projects to update the UI
           if (currentBoardId) {
-            const { fetchProjects } = get()
-            await fetchProjects(currentBoardId)
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
           }
         } catch (error) {
-          console.error("Error moving task to project:", error)
-          throw error
+          console.error("Error moving task to project:", error);
+          throw error;
         }
       },
 
       // Board actions
       setCurrentBoardId: (boardId: string) => {
-        set({ currentBoardId: boardId })
+        set({ currentBoardId: boardId });
       },
 
       addBoard: async (title: string, description?: string) => {
         try {
-          const { userId } = get()
+          const { userId } = get();
           if (!userId) {
-            throw new Error("User not authenticated")
+            throw new Error("User not authenticated");
           }
 
           // Call the API to create the board with the current user as owner
@@ -493,28 +493,28 @@ export const useWorkspaceStore = create<State>()(
             title,
             description,
             owner: userId // Add the current user's ID as the board owner
-          })
+          });
 
           if (newBoard) {
             // Add the new board to the myBoards array
             set((state) => ({
               myBoards: [...state.myBoards, newBoard]
-            }))
+            }));
 
-            return newBoard._id
+            return newBoard._id;
           }
 
-          throw new Error("Failed to create board")
+          throw new Error("Failed to create board");
         } catch (error) {
-          console.error("Error in addBoard:", error)
-          throw error
+          console.error("Error in addBoard:", error);
+          throw error;
         }
       },
 
       updateBoard: async (id: string, data: Partial<Board>) => {
         try {
           // Update the board using the API directly
-          await boardApi.updateBoard(id, data)
+          await boardApi.updateBoard(id, data);
 
           // Optimistic update
           set((state) => ({
@@ -524,16 +524,16 @@ export const useWorkspaceStore = create<State>()(
             teamBoards: state.teamBoards.map((board) =>
               board._id === id ? { ...board, ...data } : board
             )
-          }))
+          }));
         } catch (error) {
-          console.error("Error updating board:", error)
-          throw error
+          console.error("Error updating board:", error);
+          throw error;
         }
       },
 
       removeBoard: async (id: string, deleteFn: (id: string) => Promise<void>) => {
         try {
-          await deleteFn(id)
+          await deleteFn(id);
 
           // Update state to remove the deleted board
           set((state) => ({
@@ -541,10 +541,10 @@ export const useWorkspaceStore = create<State>()(
             teamBoards: state.teamBoards.filter((board) => board._id !== id),
             // Reset current board if it's the one being deleted
             currentBoardId: state.currentBoardId === id ? null : state.currentBoardId
-          }))
+          }));
         } catch (error) {
-          console.error("Error removing board:", error)
-          throw error
+          console.error("Error removing board:", error);
+          throw error;
         }
       },
 
@@ -576,4 +576,4 @@ export const useWorkspaceStore = create<State>()(
       })
     }
   )
-)
+);

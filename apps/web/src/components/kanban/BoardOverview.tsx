@@ -1,164 +1,164 @@
-"use client"
+"use client";
 
-import { DotsHorizontalIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
-import { Button } from "@repo/ui/components/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/components/card"
-import { Input } from "@repo/ui/components/input"
+import { DotsHorizontalIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Button } from "@repo/ui/components/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/components/card";
+import { Input } from "@repo/ui/components/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "@repo/ui/components/select"
-import { useTranslations } from "next-intl"
-import { useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { toast } from "sonner"
+} from "@repo/ui/components/select";
+import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
-import { useBoards } from "@/hooks/useBoards"
-import { usePathname, useRouter } from "@/i18n/navigation"
-import { AuthService } from "@/lib/auth/authService"
-import { useAuthStore } from "@/stores/auth-store"
-import { useWorkspaceStore } from "@/stores/workspace-store"
+import { useBoards } from "@/hooks/useBoards";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { AuthService } from "@/lib/auth/authService";
+import { useAuthStore } from "@/stores/auth-store";
+import { useWorkspaceStore } from "@/stores/workspace-store";
 
-import { BoardActions } from "./board/BoardActions"
-import NewBoardDialog from "./board/NewBoardDialog"
+import { BoardActions } from "./board/BoardActions";
+import NewBoardDialog from "./board/NewBoardDialog";
 
-type FilterType = "all" | "my" | "team"
+type FilterType = "all" | "my" | "team";
 
 export function BoardOverview() {
-  const { myBoards, teamBoards, loading: boardsLoading, refresh } = useBoards()
-  const [search, setSearch] = useState("")
-  const [filter, setFilter] = useState<FilterType>("all")
-  const [isProcessingLogin, setIsProcessingLogin] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const t = useTranslations("kanban")
-  const tLogin = useTranslations("login")
-  const { setUserInfo } = useWorkspaceStore()
-  const { setSession } = useAuthStore()
-  const [recentlyDeleted, setRecentlyDeleted] = useState<Set<string>>(new Set())
+  const { myBoards, teamBoards, loading: boardsLoading, refresh } = useBoards();
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [isProcessingLogin, setIsProcessingLogin] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const t = useTranslations("kanban");
+  const tLogin = useTranslations("login");
+  const { setUserInfo } = useWorkspaceStore();
+  const { setSession } = useAuthStore();
+  const [recentlyDeleted, setRecentlyDeleted] = useState<Set<string>>(new Set());
 
   // Handle board click with proper event handling
   const handleBoardClick = useCallback(
     (boardId: string, e?: React.MouseEvent) => {
       // Always prevent default to avoid any default link behavior
-      e?.preventDefault()
-      e?.stopPropagation()
+      e?.preventDefault();
+      e?.stopPropagation();
 
       // If this is a click on the actions menu or a recently deleted board, don't navigate
-      const isActionsClick = (e?.target as HTMLElement)?.closest(".board-actions")
+      const isActionsClick = (e?.target as HTMLElement)?.closest(".board-actions");
 
       if (recentlyDeleted.has(boardId) || isActionsClick) {
-        return
+        return;
       }
 
       // Only navigate if we have a valid board ID and it's not recently deleted
       if (boardId && !recentlyDeleted.has(boardId)) {
-        router.push(`/boards/${boardId}`)
+        router.push(`/boards/${boardId}`);
       }
     },
     [recentlyDeleted, router]
-  )
+  );
 
   // Handle board deletion
   const handleBoardDelete = useCallback(
     (boardId: string) => {
       // Store the current path
-      const currentPath = window.location.pathname
+      const currentPath = window.location.pathname;
 
       // Add to recently deleted set
-      setRecentlyDeleted((prev) => new Set(prev).add(boardId))
+      setRecentlyDeleted((prev) => new Set(prev).add(boardId));
 
       // Immediately redirect to /boards if we're on a board page
       if (currentPath.includes(`/board/`)) {
-        window.location.href = "/boards"
-        return
+        window.location.href = "/boards";
+        return;
       }
 
       // Refresh the board list
-      refresh()
+      refresh();
 
       // Force a hard refresh to ensure we're on the correct page
       if (!currentPath.endsWith("/boards")) {
-        window.location.href = "/boards"
+        window.location.href = "/boards";
       } else {
-        window.location.reload()
+        window.location.reload();
       }
     },
     [refresh]
-  )
+  );
 
   // Handle login success and user data initialization
   useEffect(() => {
-    const loginSuccess = searchParams.get("login_success")
+    const loginSuccess = searchParams.get("login_success");
 
     const processLogin = async () => {
       if (loginSuccess !== "true") {
-        return
+        return;
       }
 
       try {
-        setIsProcessingLogin(true)
+        setIsProcessingLogin(true);
 
         // Always fetch fresh session to ensure we have the latest data
-        const session = await AuthService.getSession()
+        const session = await AuthService.getSession();
 
         if (session?.user?._id) {
           // Update both auth and workspace stores with the user info
-          setSession(session)
-          setUserInfo(session.user.email, session.user._id)
+          setSession(session);
+          setUserInfo(session.user.email, session.user._id);
 
           // Manually trigger boards data refresh after user info is set
-          await refresh()
+          await refresh();
 
           // Show success message
-          toast.success(tLogin("success"))
+          toast.success(tLogin("success"));
 
           // Clean up URL
-          const params = new URLSearchParams(searchParams.toString())
-          params.delete("login_success")
-          const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
-          await router.replace(newUrl, { scroll: false })
+          const params = new URLSearchParams(searchParams.toString());
+          params.delete("login_success");
+          const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+          await router.replace(newUrl, { scroll: false });
         } else {
-          throw new Error("Failed to get user session")
+          throw new Error("Failed to get user session");
         }
       } catch (error) {
-        console.error("Error processing login:", error)
-        toast.error(tLogin("error"))
+        console.error("Error processing login:", error);
+        toast.error(tLogin("error"));
       } finally {
-        setIsProcessingLogin(false)
+        setIsProcessingLogin(false);
       }
-    }
+    };
 
-    processLogin()
-  }, [searchParams, router, pathname, tLogin, setSession, setUserInfo, refresh])
+    processLogin();
+  }, [searchParams, router, pathname, tLogin, setSession, setUserInfo, refresh]);
 
   // Ensure boards data is fetched when user is authenticated
   useEffect(() => {
-    const { userId } = useWorkspaceStore.getState()
+    const { userId } = useWorkspaceStore.getState();
 
     // If user is authenticated but we don't have boards data, fetch it
     if (userId && !boardsLoading && !myBoards?.length && !teamBoards?.length) {
-      refresh()
+      refresh();
     }
-  }, [refresh, myBoards, teamBoards, boardsLoading])
+  }, [refresh, myBoards, teamBoards, boardsLoading]);
 
   // Handle data refresh on tab visibility change
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        refresh()
+        refresh();
       }
-    }
+    };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange)
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-    }
-  }, [refresh])
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [refresh]);
 
   // Show loading state while processing login or loading boards
   if (isProcessingLogin || boardsLoading) {
@@ -169,19 +169,19 @@ export function BoardOverview() {
           <p>{t("loading")}</p>
         </div>
       </div>
-    )
+    );
   }
 
   const filteredMyBoards = myBoards?.filter((board) =>
     board.title.toLowerCase().includes(search.toLowerCase())
-  )
+  );
 
   const filteredTeamBoards = teamBoards?.filter((board) =>
     board.title.toLowerCase().includes(search.toLowerCase())
-  )
+  );
 
-  const shouldShowMyBoards = filter === "all" || filter === "my"
-  const shouldShowTeamBoards = filter === "all" || filter === "team"
+  const shouldShowMyBoards = filter === "all" || filter === "my";
+  const shouldShowTeamBoards = filter === "all" || filter === "team";
 
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col">
@@ -203,10 +203,17 @@ export function BoardOverview() {
               placeholder={t("searchBoards")}
               className="pl-8"
               value={search}
-              onChange={(e) =>{  setSearch(e.target.value); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
             />
           </div>
-          <Select value={filter} onValueChange={(value: FilterType) =>{  setFilter(value); }}>
+          <Select
+            value={filter}
+            onValueChange={(value: FilterType) => {
+              setFilter(value);
+            }}
+          >
             <SelectTrigger className="w-[140px]" data-testid="select-filter-trigger">
               {" "}
               {/* Add data-testid here */}
@@ -247,7 +254,9 @@ export function BoardOverview() {
                     <Card
                       key={board._id}
                       className="cursor-pointer rounded-lg py-4 shadow-md transition-colors hover:border-primary"
-                      onClick={() =>{  handleBoardClick(board._id); }}
+                      onClick={() => {
+                        handleBoardClick(board._id);
+                      }}
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
                         <CardTitle className="text-lg font-semibold">{board.title}</CardTitle>
@@ -255,19 +264,21 @@ export function BoardOverview() {
                           board={board}
                           asChild
                           className="board-actions"
-                          onDelete={() =>{  handleBoardDelete(board._id); }}
+                          onDelete={() => {
+                            handleBoardDelete(board._id);
+                          }}
                         >
                           <Button
                             variant="ghost"
                             size="icon"
                             className="-mr-2 h-8 w-8"
                             onClick={(e) => {
-                              e.stopPropagation()
+                              e.stopPropagation();
                             }}
                             onKeyDown={(e) => {
                               if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault()
-                                e.stopPropagation()
+                                e.preventDefault();
+                                e.stopPropagation();
                               }
                             }}
                             aria-label={board.title ? `${board.title} actions` : "Board actions"}
@@ -315,7 +326,9 @@ export function BoardOverview() {
                     <Card
                       key={board._id}
                       className="cursor-pointer rounded-lg py-4 shadow-md transition-colors hover:border-primary"
-                      onClick={() =>{  handleBoardClick(board._id); }}
+                      onClick={() => {
+                        handleBoardClick(board._id);
+                      }}
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
                         <CardTitle className="text-lg font-semibold">{board.title}</CardTitle>
@@ -351,5 +364,5 @@ export function BoardOverview() {
         </div>
       </div>
     </div>
-  )
+  );
 }

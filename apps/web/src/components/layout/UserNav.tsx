@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback } from "@repo/ui/components/avatar"
-import { Button } from "@repo/ui/components/button"
+import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
+import { Button } from "@repo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,18 +9,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from "@repo/ui/components/dropdown-menu"
-import { useTranslations } from "next-intl"
+} from "@repo/ui/components/dropdown-menu";
+import { useTranslations } from "next-intl";
 
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/hooks/useAuth";
 
 export function UserNav() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
-  const t = useTranslations("user")
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const t = useTranslations("user");
 
   // While loading, show a placeholder to prevent flicker
   if (isLoading) {
-    return <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200" />
+    return <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200" />;
   }
 
   // If the user is logged in, show the avatar and dropdown menu
@@ -46,6 +46,6 @@ export function UserNav() {
           <DropdownMenuItem onClick={logout}>{t("logOut")}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    )
+    );
   }
 }

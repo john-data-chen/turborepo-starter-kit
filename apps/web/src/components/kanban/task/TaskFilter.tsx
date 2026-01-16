@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { Badge } from "@repo/ui/components/badge"
-import { Button } from "@repo/ui/components/button"
-import { Input } from "@repo/ui/components/input"
+import { Badge } from "@repo/ui/components/badge";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "@repo/ui/components/select"
-import { useTranslations } from "next-intl"
-import React from "react"
+} from "@repo/ui/components/select";
+import { useTranslations } from "next-intl";
+import React from "react";
 
-import { useWorkspaceStore } from "@/stores/workspace-store"
+import { useWorkspaceStore } from "@/stores/workspace-store";
 
 export function TaskFilter() {
-  const { filter, setFilter, projects } = useWorkspaceStore()
-  const t = useTranslations("kanban.task")
+  const { filter, setFilter, projects } = useWorkspaceStore();
+  const t = useTranslations("kanban.task");
 
   const statusCounts = React.useMemo(() => {
     const counts = {
@@ -25,41 +25,41 @@ export function TaskFilter() {
       TODO: 0,
       IN_PROGRESS: 0,
       DONE: 0
-    }
+    };
 
     if (!Array.isArray(projects)) {
-      return counts
+      return counts;
     }
 
     projects.forEach((project) => {
-      const tasks = Array.isArray(project?.tasks) ? project.tasks : []
+      const tasks = Array.isArray(project?.tasks) ? project.tasks : [];
       tasks.forEach((task) => {
         if (!task) {
-          return
+          return;
         }
-        counts.TOTAL++
+        counts.TOTAL++;
         if (task.status && counts.hasOwnProperty(task.status)) {
-          counts[task.status as keyof typeof counts]++
+          counts[task.status as keyof typeof counts]++;
         }
-      })
-    })
+      });
+    });
 
-    return counts
-  }, [projects])
+    return counts;
+  }, [projects]);
 
   const handleFilterChange = React.useCallback(
     (value: string) => {
-      setFilter({ status: value === "TOTAL" ? null : value })
+      setFilter({ status: value === "TOTAL" ? null : value });
     },
     [setFilter]
-  )
+  );
 
   const handleSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFilter({ search: event.target.value })
+      setFilter({ search: event.target.value });
     },
     [setFilter]
-  )
+  );
 
   return (
     <div className="mb-4 flex w-full items-center gap-2 md:w-auto">
@@ -108,7 +108,7 @@ export function TaskFilter() {
           variant="ghost"
           size="sm"
           onClick={() => {
-            setFilter({ status: null, search: "" })
+            setFilter({ status: null, search: "" });
           }}
           data-testid="clear-filter-button"
         >
@@ -116,5 +116,5 @@ export function TaskFilter() {
         </Button>
       )}
     </div>
-  )
+  );
 }
