@@ -173,7 +173,12 @@ function BoardProjectComponent({
     }
   );
 
-  const dragState = isOverlay ? "overlay" : isDragging ? "over" : undefined;
+  let dragState: "overlay" | "over" | undefined;
+  if (isOverlay) {
+    dragState = "overlay";
+  } else if (isDragging) {
+    dragState = "over";
+  }
 
   // Memoize task IDs for better performance
   const tasksIds = useMemo(() => tasks?.map((task) => task._id) || [], [tasks]);
