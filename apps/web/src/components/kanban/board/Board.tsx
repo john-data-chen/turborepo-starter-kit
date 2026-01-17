@@ -343,7 +343,9 @@ export function Board() {
           try {
             const { fetchProjects } = useWorkspaceStore.getState();
             if (overProject.board) {
-              await fetchProjects(overProject.board.toString());
+              const boardId =
+                typeof overProject.board === "string" ? overProject.board : overProject.board._id;
+              await fetchProjects(boardId);
             }
           } catch (refreshError) {
             console.error("Failed to refresh projects:", refreshError);
