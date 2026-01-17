@@ -430,7 +430,7 @@ export function Board() {
 
           return projectApi.updateProject(project._id, updateData);
         }
-        return Promise.resolve();
+        return;
       });
 
       await Promise.all(updatePromises);
