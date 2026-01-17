@@ -288,7 +288,7 @@ export function Board() {
         const [movedTask] = newTasks.splice(activeTaskIdx, 1);
 
         // Calculate the new index after removal
-        const newIndex = activeTaskIdx < overTaskIdx ? overTaskIdx : overTaskIdx;
+        const newIndex = overTaskIdx;
 
         // Insert at the new position
         newTasks.splice(newIndex, 0, movedTask);
