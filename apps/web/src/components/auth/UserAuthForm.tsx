@@ -20,7 +20,7 @@ import { defaultEmail } from "@/constants/demoData";
 import { useAuthForm } from "@/hooks/useAuth";
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address")
+  email: z.email({ message: "Invalid email address" })
 });
 
 export default function UserAuthForm() {
