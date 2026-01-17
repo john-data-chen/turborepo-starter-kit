@@ -303,8 +303,8 @@ export function TaskActions({
             });
           } catch (invalidateError) {
             console.error("Error during query invalidation:", invalidateError);
-            if (typeof window !== "undefined") {
-              window.location.reload();
+            if (typeof globalThis !== "undefined") {
+              globalThis.location.reload();
             }
           }
 

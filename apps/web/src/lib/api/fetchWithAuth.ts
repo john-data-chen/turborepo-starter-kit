@@ -61,7 +61,7 @@ export async function fetchWithAuth<T>(
       }
     }
 
-    if (typeof window !== "undefined" && response.status === 401) {
+    if (typeof globalThis.window !== "undefined" && response.status === 401) {
       // Handle unauthorized (e.g., redirect to login)
     }
     throw new Error(errorMessage);
