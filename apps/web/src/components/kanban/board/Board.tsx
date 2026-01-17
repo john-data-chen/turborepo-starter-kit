@@ -312,7 +312,7 @@ export function Board() {
             const oldTask = previousProjects
               .flatMap((p: Project) => p.tasks)
               .find((t: Task) => t._id === task._id);
-            return !oldTask || oldTask.orderInProject !== newIndex;
+            return oldTask?.orderInProject !== newIndex;
           });
 
           if (tasksToUpdate.length > 0) {
