@@ -82,10 +82,10 @@ export function BoardOverview() {
       refresh();
 
       // Force a hard refresh to ensure we're on the correct page
-      if (!currentPath.endsWith("/boards")) {
-        globalThis.location.href = "/boards";
-      } else {
+      if (currentPath.endsWith("/boards")) {
         globalThis.location.reload();
+      } else {
+        globalThis.location.href = "/boards";
       }
     },
     [refresh]
