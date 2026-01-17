@@ -382,9 +382,9 @@ export function Board() {
       return;
     }
 
-    const activeProjectIndex = projects.findIndex((project: Project) => project._id === activeId);
+    const activeProjectIndex = projectsId.indexOf(activeId as string);
 
-    const overProjectIndex = projects.findIndex((project: Project) => project._id === overId);
+    const overProjectIndex = projectsId.indexOf(overId as string);
 
     // Create backup for rollback
     const previousProjects = [...rawProjects];
@@ -463,7 +463,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project") {
-        const startProjectIdx = projectsId.findIndex((id: string) => id === active.id);
+        const startProjectIdx = projectsId.indexOf(active.id as string);
         const startProject = projects[startProjectIdx];
         return `Picked up Project ${startProject?.title} at position: ${startProjectIdx + 1} of ${projectsId.length}`;
       } else if (active.data.current?.type === "Task") {
@@ -482,7 +482,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
-        const overProjectIdx = projectsId.findIndex((id: string) => id === over.id);
+        const overProjectIdx = projectsId.indexOf(over.id as string);
         return `Project ${active.data.current.project.title} was moved over ${
           over.data.current.project.title
         } at position ${overProjectIdx + 1} of ${projectsId.length}`;
@@ -507,7 +507,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
-        const overProjectPosition = projectsId.findIndex((id: string) => id === over.id);
+        const overProjectPosition = projectsId.indexOf(over.id as string);
 
         return `Project ${active.data.current.project.title} was dropped into position ${overProjectPosition + 1} of ${
           projectsId.length
