@@ -67,14 +67,14 @@ export function BoardOverview() {
   const handleBoardDelete = useCallback(
     (boardId: string) => {
       // Store the current path
-      const currentPath = window.location.pathname;
+      const currentPath = globalThis.location.pathname;
 
       // Add to recently deleted set
       setRecentlyDeleted((prev) => new Set(prev).add(boardId));
 
       // Immediately redirect to /boards if we're on a board page
       if (currentPath.includes(`/board/`)) {
-        window.location.href = "/boards";
+        globalThis.location.href = "/boards";
         return;
       }
 
@@ -83,9 +83,9 @@ export function BoardOverview() {
 
       // Force a hard refresh to ensure we're on the correct page
       if (!currentPath.endsWith("/boards")) {
-        window.location.href = "/boards";
+        globalThis.location.href = "/boards";
       } else {
-        window.location.reload();
+        globalThis.location.reload();
       }
     },
     [refresh]
