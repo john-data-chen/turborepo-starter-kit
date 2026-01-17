@@ -67,6 +67,16 @@ export class ProjectsService {
     updateProjectDto: UpdateProjectDto,
     userId: string
   ): Promise<ProjectDocument> {
+    this.validateIds(id, userId);
+
+    const project = await this.findProjectById(id);
+    await this.checkUpdatePermissions(project, userId, updateProjectDto);
+    const updateData = this.prepareUpdateData(updateProjectDto);
+
+    return this.performUpdate(id, updateData);
+  }
+
+  private validateIds(id: string, userId: string): void {
     if (!Types.ObjectId.isValid(id)) {
       const error = "Invalid project ID";
       console.error(error, { id });
@@ -78,76 +88,78 @@ export class ProjectsService {
       console.error(error, { userId });
       throw new BadRequestException(error);
     }
+  }
 
+  private async findProjectById(id: string): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(id);
     if (!project) {
       const error = "Project not found";
       console.error(error, { id });
       throw new NotFoundException(error);
     }
+    return project;
+  }
 
-    // Convert userId to string to ensure consistent comparison
+  private async checkUpdatePermissions(
+    project: ProjectDocument,
+    userId: string,
+    updateProjectDto: UpdateProjectDto
+  ): Promise<void> {
     const userIdString = userId.toString();
-
-    // Permission model:
-    // - Owner can update any field
-    // - Board members (owner or members) can update orderInBoard only
     const isOwner = project.owner.toString() === userIdString;
-    const isOrderOnly =
+    const isOrderOnly = this.isOrderOnlyUpdate(updateProjectDto);
+
+    if (!isOwner) {
+      if (isOrderOnly) {
+        await this.verifyBoardMembership(project, userId);
+      } else {
+        const error = "You do not have permission to update this project";
+        console.error(error, { userId, projectId: project._id });
+        throw new BadRequestException(error);
+      }
+    }
+  }
+
+  private isOrderOnlyUpdate(updateProjectDto: UpdateProjectDto): boolean {
+    return (
       updateProjectDto.orderInBoard !== undefined &&
       updateProjectDto.title === undefined &&
       updateProjectDto.description === undefined &&
       updateProjectDto.status === undefined &&
       updateProjectDto.dueDate === undefined &&
-      updateProjectDto.assigneeId === undefined;
+      updateProjectDto.assigneeId === undefined
+    );
+  }
 
-    if (!isOwner) {
-      if (isOrderOnly) {
-        // Allow if user is a member of the board containing this project
-        try {
-          const boardId = project.board.toString();
-          const board = await this.boardService.findOne(boardId, userId);
-          if (!board) {
-            const error = "You do not have permission to reorder projects in this board";
-            console.error(error, { userId, projectId: id, boardId });
-            throw new BadRequestException(error);
-          }
-        } catch (err) {
-          const error = "You do not have permission to reorder projects in this board";
-          console.error(error, {
-            userId,
-            projectId: id,
-            boardId: project.board.toString(),
-            originalError: err instanceof Error ? err.message : String(err)
-          });
-          throw new BadRequestException(error);
-        }
-      } else {
-        const error = "You do not have permission to update this project";
-        console.error(error, { userId, projectId: id });
-        throw new BadRequestException(error);
+  private async verifyBoardMembership(project: ProjectDocument, userId: string): Promise<void> {
+    try {
+      const boardId = project.board.toString();
+      const board = await this.boardService.findOne(boardId, userId);
+      if (!board) {
+        throw new Error("Board not found or user not member");
       }
+    } catch (err) {
+      const error = "You do not have permission to reorder projects in this board";
+      console.error(error, {
+        userId,
+        projectId: project._id,
+        boardId: project.board.toString(),
+        originalError: err instanceof Error ? err.message : String(err)
+      });
+      throw new BadRequestException(error);
     }
+  }
 
-    // Prepare update data
+  private prepareUpdateData(updateProjectDto: UpdateProjectDto): Partial<Project> {
     const updateData: Partial<Project> = {};
 
-    // Only update the fields that are provided in the DTO
-    if (updateProjectDto.title !== undefined) {
-      updateData.title = updateProjectDto.title;
-    }
-
-    if (updateProjectDto.description !== undefined) {
-      updateData.description = updateProjectDto.description;
-    }
-
-    if (updateProjectDto.status) {
-      updateData.status = updateProjectDto.status;
-    }
-
-    if (updateProjectDto.dueDate) {
-      updateData.dueDate = new Date(updateProjectDto.dueDate);
-    }
+    if (updateProjectDto.title !== undefined) {updateData.title = updateProjectDto.title;}
+    if (updateProjectDto.description !== undefined)
+      {updateData.description = updateProjectDto.description;}
+    if (updateProjectDto.status) {updateData.status = updateProjectDto.status;}
+    if (updateProjectDto.dueDate) {updateData.dueDate = new Date(updateProjectDto.dueDate);}
+    if (updateProjectDto.orderInBoard !== undefined)
+      {updateData.orderInBoard = updateProjectDto.orderInBoard;}
 
     if (updateProjectDto.assigneeId !== undefined) {
       updateData.assignee = updateProjectDto.assigneeId
@@ -155,10 +167,10 @@ export class ProjectsService {
         : null;
     }
 
-    if (updateProjectDto.orderInBoard !== undefined) {
-      updateData.orderInBoard = updateProjectDto.orderInBoard;
-    }
+    return updateData;
+  }
 
+  private async performUpdate(id: string, updateData: Partial<Project>): Promise<ProjectDocument> {
     try {
       const updatedProject = await this.projectModel
         .findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
