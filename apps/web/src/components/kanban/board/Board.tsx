@@ -294,7 +294,7 @@ export function Board() {
         newTasks.splice(newIndex, 0, movedTask);
 
         // Create a backup of current projects for rollback
-        const previousProjects = JSON.parse(JSON.stringify(projects));
+        const previousProjects = structuredClone(projects);
 
         // Update orderInProject for all tasks in the new order
         const updatedTasks = newTasks.map((task, index) => ({
