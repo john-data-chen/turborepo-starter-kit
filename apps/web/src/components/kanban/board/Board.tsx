@@ -421,7 +421,7 @@ export function Board() {
           const order = typeof newIndex === "number" ? newIndex : Number(newIndex);
           if (Number.isNaN(order)) {
             console.error("Invalid orderInBoard value:", newIndex);
-            return Promise.reject(new Error("Invalid order value"));
+            throw new Error("Invalid order value");
           }
 
           const updateData = {
