@@ -5,7 +5,10 @@ import { PROJECT_KEYS, type UpdateProjectInput } from "@/types/projectApi";
 import { projectApi } from "../projectApi";
 
 export const useProjects = (boardId?: string | { _id: string; title: string }) => {
-  const id = boardId ? (typeof boardId === "string" ? boardId : boardId._id) : undefined;
+  let id: string | undefined;
+  if (boardId) {
+    id = typeof boardId === "string" ? boardId : boardId._id;
+  }
 
   return useQuery({
     queryKey: PROJECT_KEYS.list(id || ""),
@@ -20,7 +23,10 @@ export const useProjects = (boardId?: string | { _id: string; title: string }) =
 };
 
 export const useProject = (id: string | { _id: string } | undefined) => {
-  const projectId = id ? (typeof id === "string" ? id : id._id) : undefined;
+  let projectId: string | undefined;
+  if (id) {
+    projectId = typeof id === "string" ? id : id._id;
+  }
 
   return useQuery({
     queryKey: PROJECT_KEYS.detail(projectId || ""),

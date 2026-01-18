@@ -80,11 +80,11 @@ export const useCreateTask = () => {
       });
 
       // Also invalidate the assignee's tasks if applicable
-      const assigneeId = variables.assignee
-        ? typeof variables.assignee === "string"
-          ? variables.assignee
-          : variables.assignee._id
-        : undefined;
+      let assigneeId: string | undefined;
+      if (variables.assignee) {
+        assigneeId =
+          typeof variables.assignee === "string" ? variables.assignee : variables.assignee._id;
+      }
 
       if (assigneeId) {
         queryClient.invalidateQueries({

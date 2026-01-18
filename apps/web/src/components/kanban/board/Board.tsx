@@ -288,13 +288,13 @@ export function Board() {
         const [movedTask] = newTasks.splice(activeTaskIdx, 1);
 
         // Calculate the new index after removal
-        const newIndex = activeTaskIdx < overTaskIdx ? overTaskIdx : overTaskIdx;
+        const newIndex = overTaskIdx;
 
         // Insert at the new position
         newTasks.splice(newIndex, 0, movedTask);
 
         // Create a backup of current projects for rollback
-        const previousProjects = JSON.parse(JSON.stringify(projects));
+        const previousProjects = structuredClone(projects);
 
         // Update orderInProject for all tasks in the new order
         const updatedTasks = newTasks.map((task, index) => ({
@@ -312,7 +312,7 @@ export function Board() {
             const oldTask = previousProjects
               .flatMap((p: Project) => p.tasks)
               .find((t: Task) => t._id === task._id);
-            return !oldTask || oldTask.orderInProject !== newIndex;
+            return oldTask?.orderInProject !== newIndex;
           });
 
           if (tasksToUpdate.length > 0) {
@@ -343,7 +343,9 @@ export function Board() {
           try {
             const { fetchProjects } = useWorkspaceStore.getState();
             if (overProject.board) {
-              await fetchProjects(overProject.board.toString());
+              const boardId =
+                typeof overProject.board === "string" ? overProject.board : overProject.board._id;
+              await fetchProjects(boardId);
             }
           } catch (refreshError) {
             console.error("Failed to refresh projects:", refreshError);
@@ -380,9 +382,9 @@ export function Board() {
       return;
     }
 
-    const activeProjectIndex = projects.findIndex((project: Project) => project._id === activeId);
+    const activeProjectIndex = projectsId.indexOf(activeId as string);
 
-    const overProjectIndex = projects.findIndex((project: Project) => project._id === overId);
+    const overProjectIndex = projectsId.indexOf(overId as string);
 
     // Create backup for rollback
     const previousProjects = [...rawProjects];
@@ -419,7 +421,7 @@ export function Board() {
           const order = typeof newIndex === "number" ? newIndex : Number(newIndex);
           if (Number.isNaN(order)) {
             console.error("Invalid orderInBoard value:", newIndex);
-            return Promise.reject(new Error("Invalid order value"));
+            throw new Error("Invalid order value");
           }
 
           const updateData = {
@@ -428,7 +430,7 @@ export function Board() {
 
           return projectApi.updateProject(project._id, updateData);
         }
-        return Promise.resolve();
+        return;
       });
 
       await Promise.all(updatePromises);
@@ -461,7 +463,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project") {
-        const startProjectIdx = projectsId.findIndex((id: string) => id === active.id);
+        const startProjectIdx = projectsId.indexOf(active.id as string);
         const startProject = projects[startProjectIdx];
         return `Picked up Project ${startProject?.title} at position: ${startProjectIdx + 1} of ${projectsId.length}`;
       } else if (active.data.current?.type === "Task") {
@@ -480,7 +482,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
-        const overProjectIdx = projectsId.findIndex((id: string) => id === over.id);
+        const overProjectIdx = projectsId.indexOf(over.id as string);
         return `Project ${active.data.current.project.title} was moved over ${
           over.data.current.project.title
         } at position ${overProjectIdx + 1} of ${projectsId.length}`;
@@ -505,7 +507,7 @@ export function Board() {
         return;
       }
       if (active.data.current?.type === "Project" && over.data.current?.type === "Project") {
-        const overProjectPosition = projectsId.findIndex((id: string) => id === over.id);
+        const overProjectPosition = projectsId.indexOf(over.id as string);
 
         return `Project ${active.data.current.project.title} was dropped into position ${overProjectPosition + 1} of ${
           projectsId.length

@@ -112,11 +112,11 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
 
       try {
         // Get current path before any async operations
-        const currentPath = window.location.pathname;
+        const currentPath = globalThis.location.pathname;
 
         // Immediately redirect to /boards if we're on a board page
         if (currentPath.includes("/board/")) {
-          window.location.href = "/boards";
+          globalThis.location.href = "/boards";
           // Continue with deletion in the background
           setTimeout(() => {
             deleteBoard.mutate(board._id);
@@ -132,10 +132,10 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
             onDelete?.();
 
             // Force a hard refresh to ensure clean state
-            if (window.location.pathname.endsWith("/boards")) {
-              window.location.reload();
+            if (globalThis.location.pathname.endsWith("/boards")) {
+              globalThis.location.reload();
             } else {
-              window.location.href = "/boards";
+              globalThis.location.href = "/boards";
             }
           },
           onError: (error: Error) => {

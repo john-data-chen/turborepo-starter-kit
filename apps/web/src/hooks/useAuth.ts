@@ -13,10 +13,11 @@ import { Session, UserInfo } from "@/types/dbInterface";
 
 // Helper function to get current locale from pathname
 function getCurrentLocale(): string {
-  const pathSegments = window.location.pathname.split("/").filter(Boolean);
-  const currentLocale = pathSegments[0];
+  const currentLocale = globalThis.location.pathname.split("/").find(Boolean);
 
-  return routing.locales.includes(currentLocale as any) ? currentLocale : routing.defaultLocale;
+  return currentLocale && routing.locales.includes(currentLocale as any)
+    ? currentLocale
+    : routing.defaultLocale;
 }
 
 // Helper function to create session from user data
@@ -76,7 +77,7 @@ export function useAuth() {
   useEffect(() => {
     const initAuth = async () => {
       // Skip session check on auth pages where user is expected to not be authenticated
-      const isOnAuthPage = window.location.pathname.includes("/login");
+      const isOnAuthPage = globalThis.location.pathname.includes("/login");
       if (isOnAuthPage) {
         setIsCheckingAuth(false);
         return;
@@ -168,13 +169,13 @@ export function useAuth() {
       useWorkspaceStore.getState().setUserInfo("", "");
 
       // Redirect to login page with a full page reload to ensure all state is cleared
-      window.location.href = ROUTES.AUTH.LOGIN_PAGE;
+      globalThis.location.href = ROUTES.AUTH.LOGIN_PAGE;
     } catch (error) {
       console.error("Error during logout:", error);
       // Still redirect even if there was an error
-      window.location.href = ROUTES.AUTH.LOGIN_PAGE;
+      globalThis.location.href = ROUTES.AUTH.LOGIN_PAGE;
     }
-  }, []); // Removed router dependency since we're using window.location
+  }, []); // Removed router dependency since we're using globalThis.location
 
   // Update user info in store when session changes
   useEffect(() => {
@@ -226,7 +227,7 @@ export function useAuthForm() {
 
       // Add a small delay to ensure the cookie is properly set before redirect
       setTimeout(() => {
-        window.location.href = redirectUrl;
+        globalThis.location.href = redirectUrl;
       }, 500);
     } catch (err) {
       // Error is already handled by useAuth hook

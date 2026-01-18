@@ -320,15 +320,15 @@ describe("AuthService", () => {
     });
 
     it("should handle logout when window is undefined", () => {
-      const originalWindow = global.window;
+      const originalWindow = globalThis.window;
       // @ts-expect-error - Testing undefined window
-      delete global.window;
+      delete (globalThis as any).window;
 
       expect(() => {
         AuthService.logout();
       }).not.toThrow();
 
-      global.window = originalWindow;
+      (globalThis as any).window = originalWindow;
     });
   });
 });

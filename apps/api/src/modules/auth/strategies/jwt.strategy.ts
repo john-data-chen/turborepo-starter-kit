@@ -27,13 +27,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private static fromCookie(req: Request): string | null {
     // First try to get JWT from cookies
-    if (req.cookies && req.cookies.jwt) {
+    if (req.cookies?.jwt) {
       return req.cookies.jwt;
     }
 
     // Check for JWT in Authorization header as fallback
     const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
+    if (authHeader?.startsWith("Bearer ")) {
       return authHeader.substring(7); // Remove 'Bearer ' prefix
     }
     return null;

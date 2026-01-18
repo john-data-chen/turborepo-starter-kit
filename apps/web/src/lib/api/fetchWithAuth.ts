@@ -7,38 +7,8 @@ export async function fetchWithAuth<T>(
   options: RequestInit = {},
   handleEmptyResponse = false
 ): Promise<T> {
-  // Get token from localStorage for Authorization header
   const token = localStorage.getItem("auth_token");
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json"
-  };
-
-  // Add existing headers if they exist
-  if (options.headers) {
-    if (options.headers instanceof Headers) {
-      options.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
-    } else if (Array.isArray(options.headers)) {
-      // Handle array format [['key', 'value'], ...]
-      options.headers.forEach(([key, value]) => {
-        headers[key] = value;
-      });
-    } else {
-      // Handle object format
-      Object.entries(options.headers).forEach(([key, value]) => {
-        if (typeof value === "string") {
-          headers[key] = value;
-        }
-      });
-    }
-  }
-
-  // Add Authorization header if token exists
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
+  const headers = getHeaders(options.headers, token);
 
   const response = await fetch(url, {
     ...options,
@@ -47,32 +17,72 @@ export async function fetchWithAuth<T>(
   });
 
   if (!response.ok) {
-    let errorMessage = "Request failed";
-    try {
-      // Try to parse as JSON first
-      const errorData = await response.json();
-      errorMessage = errorData.message || JSON.stringify(errorData);
-    } catch {
-      // If JSON parsing fails, try to get text
-      try {
-        errorMessage = await response.text();
-      } catch {
-        errorMessage = `Request failed with status ${response.status}`;
-      }
-    }
-
-    if (typeof window !== "undefined" && response.status === 401) {
-      // Handle unauthorized (e.g., redirect to login)
-    }
-    throw new Error(errorMessage);
+    await handleErrorResponse(response);
   }
 
-  // Handle 204 No Content or empty responses when requested
+  return handleSuccessResponse<T>(response, handleEmptyResponse);
+}
+
+function getHeaders(
+  optionHeaders: RequestInit["headers"],
+  token: string | null
+): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json"
+  };
+
+  if (optionHeaders) {
+    if (optionHeaders instanceof Headers) {
+      optionHeaders.forEach((value, key) => {
+        headers[key] = value;
+      });
+    } else if (Array.isArray(optionHeaders)) {
+      optionHeaders.forEach(([key, value]) => {
+        headers[key] = value;
+      });
+    } else {
+      Object.entries(optionHeaders).forEach(([key, value]) => {
+        if (typeof value === "string") {
+          headers[key] = value;
+        }
+      });
+    }
+  }
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+}
+
+async function handleErrorResponse(response: Response): Promise<never> {
+  let errorMessage: string;
+  try {
+    const errorData = await response.json();
+    errorMessage = errorData.message || JSON.stringify(errorData);
+  } catch {
+    try {
+      errorMessage = await response.text();
+    } catch {
+      errorMessage = `Request failed with status ${response.status}`;
+    }
+  }
+
+  if (typeof globalThis.window !== "undefined" && response.status === 401) {
+    // Handle unauthorized (e.g., redirect to login)
+  }
+  throw new Error(errorMessage);
+}
+
+async function handleSuccessResponse<T>(
+  response: Response,
+  handleEmptyResponse: boolean
+): Promise<T> {
   if (handleEmptyResponse) {
     if (response.status === 204 || response.headers.get("content-length") === "0") {
       return null as unknown as T;
     }
   }
-
   return response.json();
 }
