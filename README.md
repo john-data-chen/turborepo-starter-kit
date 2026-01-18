@@ -94,7 +94,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | Rspack     | Rust-based bundler for 5-10x faster than webpack  |
 | Turbopack  | Rust bundler with filesystem caching for fast HMR |
 | Oxlint     | 50-100x faster than ESLint, clearer diagnostics   |
-| Oxfmt      | 50-100x faster formatter than Prettier            |
+| Oxfmt      | 30x faster formatter than Prettier            |
 | Husky      | Pre-commit quality enforcement                    |
 | Commitizen | Conventional commits for clean history            |
 
