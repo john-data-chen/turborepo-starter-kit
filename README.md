@@ -74,7 +74,6 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | State     | Zustand                  | 40% less boilerplate than Redux, simpler testing |
 | Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas         |
 | Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy |
-| Auth      | Auth.js                  | Native Next.js integration, OAuth support        |
 | DnD       | dnd-kit                  | Lightweight, accessible, extensible              |
 | i18n      | next-intl                | App Router native support                        |
 | UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration        |
@@ -231,14 +230,14 @@ apps/
 │   ├────── hooks/ # Custom React hooks
 │   ├────── i18n/ # i18n configs
 │   ├────── lib/
-│   │       ├── db/ # Database functions
-│   │       ├── auth.ts # Authentication functions
-│   │       ├── store.ts # State management functions
-│   │       └── utils.ts # tailwindcss utils
-│   ├────── middleware.ts
-│   ├────── models/ # Database models
+│   │       ├── api/ # API clients with auth handling
+│   │       ├── auth/ # Authentication services
+│   │       └── config/ # Environment configuration
+│   ├────── providers/ # React context providers
+│   ├────── stores/ # Zustand state management
 │   ├────── types/ # Type definitions
-│   └────── env.example # Environment variables example
+│   └─────  proxy.ts # the middleware for handling API requests
+└────────── env.example # Environment variables example
 packages/
 ├── global-tsconfig # global tsconfig
 └── ui # Shared UI components

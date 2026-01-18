@@ -153,13 +153,21 @@ export class ProjectsService {
   private prepareUpdateData(updateProjectDto: UpdateProjectDto): Partial<Project> {
     const updateData: Partial<Project> = {};
 
-    if (updateProjectDto.title !== undefined) {updateData.title = updateProjectDto.title;}
-    if (updateProjectDto.description !== undefined)
-      {updateData.description = updateProjectDto.description;}
-    if (updateProjectDto.status) {updateData.status = updateProjectDto.status;}
-    if (updateProjectDto.dueDate) {updateData.dueDate = new Date(updateProjectDto.dueDate);}
-    if (updateProjectDto.orderInBoard !== undefined)
-      {updateData.orderInBoard = updateProjectDto.orderInBoard;}
+    if (updateProjectDto.title !== undefined) {
+      updateData.title = updateProjectDto.title;
+    }
+    if (updateProjectDto.description !== undefined) {
+      updateData.description = updateProjectDto.description;
+    }
+    if (updateProjectDto.status) {
+      updateData.status = updateProjectDto.status;
+    }
+    if (updateProjectDto.dueDate) {
+      updateData.dueDate = new Date(updateProjectDto.dueDate);
+    }
+    if (updateProjectDto.orderInBoard !== undefined) {
+      updateData.orderInBoard = updateProjectDto.orderInBoard;
+    }
 
     if (updateProjectDto.assigneeId !== undefined) {
       updateData.assignee = updateProjectDto.assigneeId
