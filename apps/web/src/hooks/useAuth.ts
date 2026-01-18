@@ -13,10 +13,11 @@ import { Session, UserInfo } from "@/types/dbInterface";
 
 // Helper function to get current locale from pathname
 function getCurrentLocale(): string {
-  const pathSegments = globalThis.location.pathname.split("/").filter(Boolean);
-  const currentLocale = pathSegments[0];
+  const currentLocale = globalThis.location.pathname.split("/").find(Boolean);
 
-  return routing.locales.includes(currentLocale as any) ? currentLocale : routing.defaultLocale;
+  return currentLocale && routing.locales.includes(currentLocale as any)
+    ? currentLocale
+    : routing.defaultLocale;
 }
 
 // Helper function to create session from user data
