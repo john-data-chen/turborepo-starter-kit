@@ -2,7 +2,6 @@
 
 [![codecov](https://codecov.io/gh/john-data-chen/turborepo-starter-kit/graph/badge.svg?token=WvGIkvgW39)](https://codecov.io/gh/john-data-chen/turborepo-starter-kit)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=john-data-chen_turborepo-starter-kit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=john-data-chen_turborepo-starter-kit)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![CI](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml/badge.svg)](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -95,7 +94,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 | Rspack     | Rust-based bundler for 5-10x faster than webpack  |
 | Turbopack  | Rust bundler with filesystem caching for fast HMR |
 | Oxlint     | 50-100x faster than ESLint, clearer diagnostics   |
-| Oxfmt      | 50-100x faster formatter than Prettier            |
+| Oxfmt      | 30x faster formatter than Prettier            |
 | Husky      | Pre-commit quality enforcement                    |
 | Commitizen | Conventional commits for clean history            |
 
@@ -272,38 +271,6 @@ Storybook serves as the Single Source of Truth (SSOT) for UI components, providi
 | **Card**   | Composition patterns, Real-world examples, Layout guides     | N/A (Presentational)                                        | N/A              |
 | **Badge**  | Semantic usage, Color meanings, Accessibility best practices | N/A (Presentational)                                        | N/A              |
 
-### Interaction Testing Examples
-
-```typescript
-// Button Click Interaction Test
-export const ClickInteraction: Story = {
-  args: {
-    variant: "default",
-    children: "Click Me",
-  },
-  play: async ({ args, canvasElement, step }) => {
-    const button = within(canvasElement).getByRole("button", {
-      name: /click me/i,
-    });
-
-    await step("Verify button renders correctly", async () => {
-      await expect(button).toBeInTheDocument();
-      await expect(button).toBeEnabled();
-    });
-
-    await step("Click button and verify callback", async () => {
-      await userEvent.click(button);
-      await expect(args.onClick).toHaveBeenCalledTimes(1);
-    });
-
-    await step("Double click verification", async () => {
-      await userEvent.click(button);
-      await expect(args.onClick).toHaveBeenCalledTimes(2);
-    });
-  },
-};
-```
-
 ### Running Storybook
 
 ```bash
@@ -372,6 +339,15 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 
 Type-aware rules are available but kept in evaluation for this project. [Oxlint Docs](https://oxc.rs/blog/2025-06-10-oxlint-stable.html)
 
+### Oxfmt (Rust-based Formatter)
+
+| Aspect      | Details                                           |
+| ----------- | ------------------------------------------------- |
+| Status      | **Evaluation** - enabled for local development    |
+| Performance | 30x faster than Prettier with instant cold start |
+
+[Oxfmt Docs](https://oxc.rs/docs/guide/usage/formatter)
+
 ### Turbopack + Filesystem Caching
 
 | Aspect      | Details                                               |
@@ -391,15 +367,6 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Benefit     | Dramatic reduction in dev server startup and build time |
 
 [Rspack Docs](https://rspack.dev/guide/start/introduction)
-
-### Oxfmt (Rust-based Formatter)
-
-| Aspect      | Details                                           |
-| ----------- | ------------------------------------------------- |
-| Status      | **Evaluation** - enabled for local development    |
-| Performance | ~50x faster than Prettier with instant cold start |
-
-[Oxfmt Docs](https://oxc.rs/docs/guide/usage/formatter)
 
 ### React Compiler
 
