@@ -57,7 +57,7 @@ function getHeaders(
 }
 
 async function handleErrorResponse(response: Response): Promise<never> {
-  let errorMessage = "Request failed";
+  let errorMessage: string;
   try {
     const errorData = await response.json();
     errorMessage = errorData.message || JSON.stringify(errorData);
