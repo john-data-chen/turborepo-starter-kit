@@ -90,8 +90,12 @@ export function TaskCard({
     }
   });
 
-  type DragState = "over" | "overlay" | undefined;
-  const dragState: DragState = isOverlay ? "overlay" : isDragging ? "over" : undefined;
+  let dragState: "over" | "overlay" | undefined;
+  if (isOverlay) {
+    dragState = "overlay";
+  } else if (isDragging) {
+    dragState = "over";
+  }
 
   const statusConfig: Record<
     TaskStatus,
