@@ -260,7 +260,6 @@ describe("Project Query Hooks", () => {
 
       const { result } = renderHook(() => useDeleteProject(), { wrapper });
 
-      const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
       const removeSpy = vi.spyOn(queryClient, "removeQueries");
 
       await act(async () => {

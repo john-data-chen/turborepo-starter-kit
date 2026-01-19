@@ -14,7 +14,7 @@ vi.mock("@/hooks/useBoards", () => ({
 }));
 
 vi.mock("@/i18n/navigation", () => ({
-  Link: ({ children, href }: any) => <a href={href}>{children}</a>,
+  Link: ({ children, href }: any) => <div data-href={href}>{children}</div>,
   usePathname: vi.fn(() => "/boards")
 }));
 
@@ -37,7 +37,7 @@ vi.mock("@repo/ui/components/sidebar", () => ({
   SidebarGroupLabel: ({ children }: any) => <div data-testid="sidebar-group-label">{children}</div>,
   SidebarMenu: ({ children }: any) => <ul data-testid="sidebar-menu">{children}</ul>,
   SidebarMenuItem: ({ children }: any) => <li data-testid="sidebar-menu-item">{children}</li>,
-  SidebarMenuButton: ({ children, asChild }: any) => (
+  SidebarMenuButton: ({ children, _asChild }: any) => (
     <div data-testid="sidebar-menu-button">{children}</div>
   )
 }));
@@ -185,7 +185,7 @@ describe("AppSidebar", () => {
 
   it("should render links with correct href", () => {
     const { container } = render(<AppSidebar />);
-    const links = container.querySelectorAll("a");
+    const links = container.querySelectorAll("[data-href]");
     expect(links.length).toBeGreaterThan(0);
   });
 

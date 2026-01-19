@@ -35,7 +35,7 @@ describe("BoardService", () => {
   let projectsService: ProjectsService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const testingModule: TestingModule = await Test.createTestingModule({
       providers: [
         BoardService,
         {
@@ -58,9 +58,9 @@ describe("BoardService", () => {
       ]
     }).compile();
 
-    service = module.get<BoardService>(BoardService);
-    boardModel = module.get<typeof MockBoardModel & Model<Board>>(getModelToken(Board.name));
-    projectsService = module.get<ProjectsService>(ProjectsService);
+    service = testingModule.get<BoardService>(BoardService);
+    boardModel = testingModule.get<typeof MockBoardModel & Model<Board>>(getModelToken(Board.name));
+    projectsService = testingModule.get<ProjectsService>(ProjectsService);
   });
 
   it("should be defined", () => {

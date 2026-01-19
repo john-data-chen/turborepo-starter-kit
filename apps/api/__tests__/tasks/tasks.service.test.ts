@@ -105,10 +105,10 @@ class MockTaskModel {
 
 describe("TasksService", () => {
   let service: TasksService;
-  let module: TestingModule;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       providers: [
         TasksService,
         {
@@ -124,7 +124,7 @@ describe("TasksService", () => {
       ]
     }).compile();
 
-    service = module.get<TasksService>(TasksService);
+    service = testingModule.get<TasksService>(TasksService);
   });
 
   it("should be defined", () => {
@@ -161,7 +161,7 @@ describe("TasksService", () => {
   describe("deleteTasksByProjectId", () => {
     it("should delete tasks by project id", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.deleteMany.mockReturnValue({
         exec: vi.fn().mockResolvedValue({ deletedCount: 1 })
       });
@@ -180,7 +180,7 @@ describe("TasksService", () => {
 
   describe("findAll", () => {
     it("should find all tasks", async () => {
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.find.mockReturnValue({
         sort: vi.fn().mockReturnThis(),
         populate: vi.fn().mockReturnThis(),
@@ -193,7 +193,7 @@ describe("TasksService", () => {
     });
 
     it("should find all tasks with projectId", async () => {
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
       taskModel.find.mockReturnValue({
         sort: vi.fn().mockReturnThis(),
@@ -207,7 +207,7 @@ describe("TasksService", () => {
     });
 
     it("should find all tasks with assigneeId", async () => {
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       const assigneeId = "60f6e1b3b3f3b3b3b3f3b3b3";
       taskModel.find.mockReturnValue({
         sort: vi.fn().mockReturnThis(),
@@ -240,7 +240,7 @@ describe("TasksService", () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockReturnValue({
         populate: vi.fn().mockReturnThis(),
         exec: vi.fn().mockResolvedValue(task)
@@ -269,7 +269,7 @@ describe("TasksService", () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
       taskModel.findByIdAndUpdate.mockReturnValue({
         populate: vi.fn().mockReturnThis(),
@@ -293,7 +293,7 @@ describe("TasksService", () => {
         project: "1",
         orderInProject: 0
       };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
       taskModel.deleteOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) });
       taskModel.updateMany.mockReturnValue({ exec: vi.fn() });
@@ -307,7 +307,7 @@ describe("TasksService", () => {
     it("should throw not found exception when removing a non-existing task", async () => {
       const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(null);
 
       await expect(service.remove(taskId, userId)).rejects.toThrow(
@@ -325,7 +325,7 @@ describe("TasksService", () => {
         project: "1",
         orderInProject: 0
       };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
 
       await expect(service.remove(taskId, userId)).rejects.toThrow(
@@ -345,7 +345,7 @@ describe("TasksService", () => {
 
   describe("findAll", () => {
     it("should find all tasks with projectId", async () => {
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
       taskModel.find.mockReturnValue({
         sort: vi.fn().mockReturnThis(),
@@ -359,7 +359,7 @@ describe("TasksService", () => {
     });
 
     it("should find all tasks with assigneeId", async () => {
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       const assigneeId = "60f6e1b3b3f3b3b3b3f3b3b3";
       taskModel.find.mockReturnValue({
         sort: vi.fn().mockReturnThis(),
@@ -395,7 +395,7 @@ describe("TasksService", () => {
       const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateTaskDto = { title: "Test Task Updated" };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(null);
 
       await expect(service.update(taskId, updateTaskDto, userId)).rejects.toThrow(
@@ -409,7 +409,7 @@ describe("TasksService", () => {
       const differentUserId = "60f6e1b3b3f3b3b3b3f3b3b4";
       const updateTaskDto = { title: "Test Task Updated" };
       const task = { _id: taskId, creator: new Types.ObjectId(differentUserId), assignee: null };
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
 
       await expect(service.update(taskId, updateTaskDto, userId)).rejects.toThrow(
@@ -421,7 +421,7 @@ describe("TasksService", () => {
   describe("findOne", () => {
     it("should throw not found exception when task is not found", async () => {
       const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const taskModel = module.get(getModelToken(Task.name));
+      const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockReturnValue({
         populate: vi.fn().mockReturnThis(),
         exec: vi.fn().mockResolvedValue(null)

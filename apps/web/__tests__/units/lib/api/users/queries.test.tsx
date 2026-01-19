@@ -1,10 +1,10 @@
+import type { User } from "@/types/userApi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useUser, useUserSearch } from "@/lib/api/users/queries";
-import type { User } from "@/types/userApi";
 
 // Mock the userApi module
 vi.mock("@/lib/api/userApi", () => ({

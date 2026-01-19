@@ -4,7 +4,7 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Board } from "@/components/kanban/board/Board";
-import { TaskStatus, type Project, type Task } from "@/types/dbInterface";
+import { TaskStatus, type Project } from "@/types/dbInterface";
 
 // Ensure React is globally available
 globalThis.React = React;

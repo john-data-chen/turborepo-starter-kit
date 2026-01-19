@@ -29,9 +29,9 @@ vi.mock("@repo/ui/components/dropdown-menu", () => ({
   DropdownMenuTrigger: ({ children }: any) => <div data-testid="dropdown-trigger">{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
   DropdownMenuItem: ({ children, onClick }: any) => (
-    <div data-testid="dropdown-item" onClick={onClick}>
+    <button data-testid="dropdown-item" onClick={onClick} type="button">
       {children}
-    </div>
+    </button>
   )
 }));
 

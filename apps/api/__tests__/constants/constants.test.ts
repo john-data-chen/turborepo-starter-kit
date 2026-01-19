@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { API_PORT } from "../../src/constants/api";
 import { demoBoards, demoProjects, demoTasks, demoUsers } from "../../src/constants/demoData";

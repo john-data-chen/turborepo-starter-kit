@@ -49,10 +49,10 @@ class MockProjectModel {
 
 describe("ProjectsService", () => {
   let service: ProjectsService;
-  let module: TestingModule;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       providers: [
         ProjectsService,
         {
@@ -74,7 +74,7 @@ describe("ProjectsService", () => {
       ]
     }).compile();
 
-    service = module.get<ProjectsService>(ProjectsService);
+    service = testingModule.get<ProjectsService>(ProjectsService);
   });
 
   it("should be defined", () => {
@@ -89,7 +89,7 @@ describe("ProjectsService", () => {
         boardId: "60f6e1b3b3f3b3b3b3f3b3b4"
       };
 
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
 
       // Mock static methods needed for create
       projectModel.findOne = vi.fn().mockReturnValue({
@@ -113,7 +113,7 @@ describe("ProjectsService", () => {
   describe("deleteByBoardId", () => {
     it("should delete projects by board id", async () => {
       const boardId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.deleteMany = vi
         .fn()
         .mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) });
@@ -127,7 +127,7 @@ describe("ProjectsService", () => {
   describe("findByBoardId", () => {
     it("should find projects by board id", async () => {
       const boardId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.find = vi.fn().mockReturnValue({
         populate: vi.fn().mockReturnThis(),
         exec: vi.fn().mockResolvedValue([])
@@ -145,7 +145,7 @@ describe("ProjectsService", () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateProjectDto = { title: "Test Project Updated" };
       const project = { _id: projectId, owner: userId, board: "60f6e1b3b3f3b3b3f3b3b3b4" };
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
       projectModel.findByIdAndUpdate = vi.fn().mockReturnValue({
         populate: vi.fn().mockReturnThis(),
@@ -169,14 +169,14 @@ describe("ProjectsService", () => {
         board: "60f6e1b3b3f3b3b3b3f3b3b4",
         orderInBoard: 0
       };
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
       projectModel.deleteOne = vi.fn().mockResolvedValue({ deletedCount: 1 });
       projectModel.updateMany = vi
         .fn()
         .mockReturnValue({ exec: vi.fn().mockResolvedValue({ modifiedCount: 1 }) });
 
-      const tasksService = module.get(TasksService);
+      const tasksService = testingModule.get(TasksService);
       vi.spyOn(tasksService, "deleteTasksByProjectId").mockResolvedValue({ deletedCount: 0 });
 
       await service.remove(projectId, userId);
@@ -190,7 +190,7 @@ describe("ProjectsService", () => {
     it("should add a member to a project if not exists", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.exists = vi.fn().mockResolvedValue(null);
       projectModel.updateOne = vi.fn().mockResolvedValue({ acknowledged: true });
 
@@ -233,7 +233,7 @@ describe("ProjectsService", () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateProjectDto = { title: "Test Project Updated" };
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(null);
       await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
         "Project not found"
@@ -249,7 +249,7 @@ describe("ProjectsService", () => {
         owner: "60f6e1b3b3f3b3b3b3f3b3b3",
         board: "60f6e1b3b3f3b3b3b3f3b3b4"
       };
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
       await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
         "You do not have permission to update this project"
@@ -273,7 +273,7 @@ describe("ProjectsService", () => {
     it("should throw not found for non-existing project", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(null);
       await expect(service.remove(projectId, userId)).rejects.toThrow("Project not found");
     });
@@ -282,7 +282,7 @@ describe("ProjectsService", () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b6"; // Valid ObjectId, different from owner
       const project = { _id: projectId, owner: "60f6e1b3b3f3b3b3b3f3b3b3" };
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
       await expect(service.remove(projectId, userId)).rejects.toThrow(
         "You do not have permission to delete this project"
@@ -294,7 +294,7 @@ describe("ProjectsService", () => {
     it("should not add member if user is already a member", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const projectModel = module.get(getModelToken(Project.name));
+      const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.exists = vi.fn().mockResolvedValue({ _id: projectId });
       projectModel.updateOne = vi.fn();
 

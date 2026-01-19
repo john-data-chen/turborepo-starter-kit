@@ -51,7 +51,7 @@ describe("ClientProviders", () => {
   });
 
   it("should wrap children with QueryClientProvider and ThemeProvider", () => {
-    const { container } = render(
+    render(
       <ClientProviders>
         <div data-testid="child">Test Child</div>
       </ClientProviders>

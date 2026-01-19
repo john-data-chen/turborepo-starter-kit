@@ -1,7 +1,7 @@
+import type { Project } from "@/types/dbInterface";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { projectApi } from "@/lib/api/projectApi";
-import type { Project } from "@/types/dbInterface";
 
 // Mock fetch
 const mockFetch = vi.fn();

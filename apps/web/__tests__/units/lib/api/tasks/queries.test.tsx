@@ -1,3 +1,4 @@
+import type { Task } from "@/types/dbInterface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
@@ -12,7 +13,6 @@ import {
   useUpdateTask
 } from "@/lib/api/tasks/queries";
 import { useWorkspaceStore } from "@/stores/workspace-store";
-import type { Task } from "@/types/dbInterface";
 import { TASK_KEYS } from "@/types/taskApi";
 
 // Mock taskApi

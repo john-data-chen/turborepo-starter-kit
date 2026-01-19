@@ -33,7 +33,7 @@ describe("Providers", () => {
   });
 
   it("should wrap children with ThemeProvider", () => {
-    const { container } = render(
+    render(
       <Providers>
         <div data-testid="nested-child">Nested Content</div>
       </Providers>

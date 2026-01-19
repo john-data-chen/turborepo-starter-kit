@@ -47,15 +47,15 @@ vi.mock("@repo/ui/components/command", () => ({
   CommandEmpty: ({ children }: any) => <div>{children}</div>,
   CommandGroup: ({ children }: any) => <div>{children}</div>,
   CommandItem: ({ children, onSelect }: any) => (
-    <div onClick={onSelect} data-testid="command-item">
+    <button onClick={onSelect} data-testid="command-item" type="button">
       {children}
-    </div>
+    </button>
   )
 }));
 
 // Mock RadioGroup components
 vi.mock("@repo/ui/components/radio-group", () => ({
-  RadioGroup: ({ children, defaultValue }: any) => <div data-testid="radio-group">{children}</div>,
+  RadioGroup: ({ children, _defaultValue }: any) => <div data-testid="radio-group">{children}</div>,
   RadioGroupItem: ({ value }: any) => <input type="radio" value={value} />
 }));
 

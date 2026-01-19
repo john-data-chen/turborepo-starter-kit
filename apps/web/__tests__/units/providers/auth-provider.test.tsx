@@ -46,7 +46,7 @@ describe("AuthProvider", () => {
   });
 
   it("should wrap children with QueryClientProvider", () => {
-    const { container } = render(
+    render(
       <AuthProvider>
         <div data-testid="child">Test Child</div>
       </AuthProvider>

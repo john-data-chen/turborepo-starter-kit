@@ -1,10 +1,10 @@
+import type { Board } from "@/types/dbInterface";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 /// <reference types="react" />
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BoardOverview } from "@/components/kanban/BoardOverview";
-import type { Board } from "@/types/dbInterface";
 
 // Ensure React is globally available
 globalThis.React = React;
@@ -62,11 +62,7 @@ vi.mock("sonner", () => ({
 }));
 
 vi.mock("@/components/kanban/board/BoardActions", () => ({
-  BoardActions: ({ children, onDelete }: any) => (
-    <div data-testid="board-actions" onClick={onDelete}>
-      {children}
-    </div>
-  )
+  BoardActions: ({ children }: any) => <div data-testid="board-actions">{children}</div>
 }));
 
 vi.mock("@/components/kanban/board/NewBoardDialog", () => ({
@@ -80,9 +76,7 @@ describe("BoardOverview", () => {
       title: "My Board 1",
       description: "Description 1",
       owner: "user-1",
-      members: [
-        { _id: "user-1", name: "John Doe", email: "john@example.com", createdAt: new Date() }
-      ],
+      members: [{ _id: "user-1", name: "John Doe", email: "john@example.com" }],
       projects: [{ _id: "proj-1", title: "Project 1" } as any],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -119,7 +113,11 @@ describe("BoardOverview", () => {
 
   const mockRouter = {
     push: vi.fn(),
-    replace: vi.fn()
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn()
   };
 
   const mockSearchParams = {
@@ -138,7 +136,8 @@ describe("BoardOverview", () => {
       myBoards: mockMyBoards,
       teamBoards: mockTeamBoards,
       loading: false,
-      refresh: vi.fn()
+      refresh: vi.fn(),
+      error: null
     });
 
     vi.mocked(useRouter).mockReturnValue(mockRouter);
@@ -152,7 +151,8 @@ describe("BoardOverview", () => {
       myBoards: [],
       teamBoards: [],
       loading: true,
-      refresh: vi.fn()
+      refresh: vi.fn(),
+      error: null
     });
 
     render(<BoardOverview />);
@@ -204,7 +204,8 @@ describe("BoardOverview", () => {
       myBoards: [],
       teamBoards: mockTeamBoards,
       loading: false,
-      refresh: vi.fn()
+      refresh: vi.fn(),
+      error: null
     });
 
     render(<BoardOverview />);
@@ -217,7 +218,8 @@ describe("BoardOverview", () => {
       myBoards: mockMyBoards,
       teamBoards: [],
       loading: false,
-      refresh: vi.fn()
+      refresh: vi.fn(),
+      error: null
     });
 
     render(<BoardOverview />);
@@ -264,7 +266,8 @@ describe("BoardOverview", () => {
       myBoards: mockMyBoards,
       teamBoards: mockTeamBoards,
       loading: false,
-      refresh: mockRefresh
+      refresh: mockRefresh,
+      error: null
     });
 
     render(<BoardOverview />);
@@ -303,7 +306,8 @@ describe("BoardOverview", () => {
       myBoards: mockMyBoards,
       teamBoards: mockTeamBoards,
       loading: false,
-      refresh: mockRefresh
+      refresh: mockRefresh,
+      error: null
     });
 
     render(<BoardOverview />);

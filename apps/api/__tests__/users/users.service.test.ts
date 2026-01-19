@@ -7,10 +7,10 @@ import { UserService } from "../../src/modules/users/users.service";
 
 describe("UserService", () => {
   let service: UserService;
-  let module: TestingModule;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       providers: [
         UserService,
         {
@@ -23,7 +23,7 @@ describe("UserService", () => {
       ]
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    service = testingModule.get<UserService>(UserService);
   });
 
   it("should be defined", () => {
@@ -32,7 +32,7 @@ describe("UserService", () => {
 
   describe("findByEmail", () => {
     it("should find a user by email", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.findOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
 
       await service.findByEmail("test@test.com");
@@ -46,14 +46,14 @@ describe("UserService", () => {
     });
 
     it("should return null if user is not found", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.findOne.mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
       const user = await service.findByEmail("test@test.com");
       expect(user).toBeNull();
     });
 
     it("should throw an error if database throws an error", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.findOne.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
       await expect(service.findByEmail("test@test.com")).rejects.toThrow(
         "An error occurred while processing your request"
@@ -63,7 +63,7 @@ describe("UserService", () => {
 
   describe("findAll", () => {
     it("should find all users", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
 
       await service.findAll();
@@ -72,7 +72,7 @@ describe("UserService", () => {
     });
 
     it("should throw an error if database throws an error", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
       await expect(service.findAll()).rejects.toThrow("DB Error");
     });
@@ -80,7 +80,7 @@ describe("UserService", () => {
 
   describe("searchByName", () => {
     it("should search users by name", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
 
       await service.searchByName("test");
@@ -89,7 +89,7 @@ describe("UserService", () => {
     });
 
     it("should search with empty query if no name is provided", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
 
       await service.searchByName(null);
@@ -98,7 +98,7 @@ describe("UserService", () => {
     });
 
     it("should throw an error if database throws an error", async () => {
-      const userModel = module.get(getModelToken(User.name));
+      const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
       await expect(service.searchByName("test")).rejects.toThrow("DB Error");
     });

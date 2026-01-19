@@ -1,7 +1,7 @@
+import type { Task, TaskStatus } from "@/types/dbInterface";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useWorkspaceStore } from "@/stores/workspace-store";
-import type { Task, TaskStatus } from "@/types/dbInterface";
 import { TASK_KEYS, UpdateTaskInput } from "@/types/taskApi";
 
 import { taskApi } from "../taskApi";

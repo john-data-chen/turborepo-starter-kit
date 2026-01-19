@@ -1,9 +1,9 @@
+import type { Board } from "@/types/dbInterface";
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { useWorkspaceStore } from "@/stores/workspace-store";
-import type { Board } from "@/types/dbInterface";
 
 // Mock next-intl
 vi.mock("next-intl", () => ({
