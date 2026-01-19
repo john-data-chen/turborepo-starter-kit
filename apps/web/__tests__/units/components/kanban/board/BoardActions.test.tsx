@@ -1,10 +1,10 @@
+import type { Board } from "@/types/dbInterface";
 import { render, screen } from "@testing-library/react";
 /// <reference types="react" />
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BoardActions } from "@/components/kanban/board/BoardActions";
-import type { Board } from "@/types/dbInterface";
 
 // Ensure React is globally available
 globalThis.React = React;
@@ -54,7 +54,7 @@ describe("BoardActions", () => {
     title: "Test Board",
     description: "Test Description",
     owner: "user-1",
-    members: [{ _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() }],
+    members: [{ _id: "user-1", name: "John", email: "john@example.com" }],
     projects: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -130,8 +130,8 @@ describe("BoardActions", () => {
       ...mockBoard,
       description: "Full Description",
       members: [
-        { _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() },
-        { _id: "user-2", name: "Jane", email: "jane@example.com", createdAt: new Date() }
+        { _id: "user-1", name: "John", email: "john@example.com" },
+        { _id: "user-2", name: "Jane", email: "jane@example.com" }
       ],
       projects: [{ _id: "proj-1", title: "Project 1" } as any]
     };

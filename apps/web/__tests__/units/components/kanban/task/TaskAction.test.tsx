@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 /// <reference types="react" />
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -192,7 +192,7 @@ describe("TaskActions", () => {
     render(<TaskActions {...mockProps} status={TaskStatus.IN_PROGRESS} />);
     expect(screen.getByTestId("task-actions-trigger")).toBeInTheDocument();
 
-    const { rerender } = render(<TaskActions {...mockProps} status={TaskStatus.DONE} />);
+    render(<TaskActions {...mockProps} status={TaskStatus.DONE} />);
     expect(screen.getAllByTestId("task-actions-trigger").length).toBeGreaterThan(0);
   });
 

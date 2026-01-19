@@ -23,9 +23,9 @@ vi.mock("@repo/ui/components/breadcrumb", () => ({
   BreadcrumbList: ({ children }: any) => <ol data-testid="breadcrumb-list">{children}</ol>,
   BreadcrumbItem: ({ children }: any) => <li data-testid="breadcrumb-item">{children}</li>,
   BreadcrumbLink: ({ children, href }: any) => (
-    <a href={href} data-testid="breadcrumb-link">
+    <div data-href={href} data-testid="breadcrumb-link">
       {children}
-    </a>
+    </div>
   ),
   BreadcrumbSeparator: ({ children }: any) => (
     <span data-testid="breadcrumb-separator">{children || "/"}</span>
@@ -55,7 +55,7 @@ describe("Breadcrumbs", () => {
 
   it("should render all breadcrumb items", () => {
     const { container } = render(<Breadcrumbs />);
-    const links = container.querySelectorAll("a");
+    const links = container.querySelectorAll("[data-href]");
     // Should have 3 breadcrumb links
     expect(links.length).toBeGreaterThanOrEqual(3);
   });
@@ -95,7 +95,7 @@ describe("Breadcrumbs", () => {
     });
 
     const { container } = render(<Breadcrumbs />);
-    const links = container.querySelectorAll("a");
+    const links = container.querySelectorAll("[data-href]");
     expect(links.length).toBeGreaterThanOrEqual(4);
   });
 

@@ -1,7 +1,7 @@
+import type { Board } from "@/types/dbInterface";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { boardApi } from "@/lib/api/boardApi";
-import type { Board } from "@/types/dbInterface";
 
 // Mock fetch
 const mockFetch = vi.fn();

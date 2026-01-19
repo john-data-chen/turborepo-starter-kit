@@ -21,15 +21,17 @@ vi.mock("next-intl", () => ({
 // Mock Select components to simplify testing
 vi.mock("@repo/ui/components/select", () => ({
   Select: ({ children, value, onValueChange }: any) => (
-    <div
+    <button
       data-testid="select"
       data-value={value}
       onClick={() => onValueChange && onValueChange("TODO")}
+      onKeyDown={() => onValueChange && onValueChange("TODO")}
+      type="button"
     >
       {children}
-    </div>
+    </button>
   ),
-  SelectTrigger: ({ children }: any) => <button data-testid="status-select">{children}</button>,
+  SelectTrigger: ({ children }: any) => <div data-testid="status-select">{children}</div>,
   SelectValue: ({ placeholder }: any) => <span>{placeholder}</span>,
   SelectContent: ({ children }: any) => <div>{children}</div>,
   SelectItem: ({ children, value }: any) => (

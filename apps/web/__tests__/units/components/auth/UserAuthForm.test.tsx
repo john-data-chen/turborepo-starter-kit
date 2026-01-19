@@ -69,8 +69,8 @@ vi.mock("react-hook-form", async (importOriginal) => {
 // Mock @repo/ui components
 vi.mock("@repo/ui", () => ({
   Button: vi.fn(({ children, ...props }) => <button {...props}>{children}</button>),
-  Form: vi.fn(({ children }) => <>{children}</>),
-  FormControl: vi.fn(({ children }) => <>{children}</>),
+  Form: vi.fn(({ children }) => <div>{children}</div>),
+  FormControl: vi.fn(({ children }) => <div>{children}</div>),
   FormField: vi.fn(({ render }) =>
     render({ field: { name: "email", value: "test@example.com", onChange: vi.fn(), id: "email" } })
   ),

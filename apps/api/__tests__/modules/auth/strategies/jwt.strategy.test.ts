@@ -20,7 +20,7 @@ describe("JwtStrategy", () => {
     // Mock JWT_SECRET environment variable
     process.env.JWT_SECRET = "test-secret-key";
 
-    const module: TestingModule = await Test.createTestingModule({
+    const testingModule: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: JwtStrategy,
@@ -36,8 +36,8 @@ describe("JwtStrategy", () => {
       ]
     }).compile();
 
-    jwtStrategy = module.get<JwtStrategy>(JwtStrategy);
-    userService = module.get(UserService);
+    jwtStrategy = testingModule.get<JwtStrategy>(JwtStrategy);
+    userService = testingModule.get(UserService);
   });
 
   describe("validate", () => {

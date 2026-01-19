@@ -1,7 +1,7 @@
+import type { ApiUser } from "@/types/userApi";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { userApi } from "@/lib/api/userApi";
-import type { ApiUser } from "@/types/userApi";
 
 // Mock fetch
 const mockFetch = vi.fn();
