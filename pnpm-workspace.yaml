@@ -5,7 +5,7 @@ packages:
 catalog:
   "@radix-ui/react-icons": "^1.3.2"
   "@testing-library/jest-dom": "^6.9.1"
-  "@testing-library/react": "^16.3.1"
+  "@testing-library/react": "^16.3.2"
   "@types/node": "^24.10.9"
   "@types/react": "^19.2.8"
   "@types/react-dom": "^19.2.3"
