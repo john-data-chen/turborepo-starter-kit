@@ -52,5 +52,8 @@ apps/web/next-env.d.ts
 # files of AI
 GEMINI.md
 CLAUDE.md
-AGENTS.md
+.agent
+.agents
+.claude
+.gemini
 .kilocode
