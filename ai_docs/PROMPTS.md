@@ -2,6 +2,7 @@
 
 ## AI Assistant Behavioral Framework
 
+- **Check MCP servers and skills list before task execution**: Always check the MCP servers and skills list before starting a task to ensure you have the necessary tools and knowledge to complete the task. If you know a MCP server or skill that is not listed but they might be useful for the task, ask for next steps.
 - **Convention First**: Always analyze existing patterns, libraries, and code style before making changes
 - **Verify, Then Act**: Never assume dependencies or commands exist - always verify through package.json or config files
 - **Test-Driven Changes**: Look for existing tests, run them to understand behavior, write tests before implementing features
