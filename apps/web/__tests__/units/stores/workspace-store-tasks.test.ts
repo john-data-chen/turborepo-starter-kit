@@ -190,7 +190,9 @@ describe("workspace-store - Task actions", () => {
 
       await expect(
         store.addTask("project-1", "New Task", TaskStatus.TODO, createTaskMock)
-      ).rejects.toThrow("User not authenticated or no board selected");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated or no board selected")
+      });
     });
 
     it("should throw error when adding task without board selected", async () => {
@@ -204,7 +206,9 @@ describe("workspace-store - Task actions", () => {
 
       await expect(
         store.addTask("project-1", "New Task", TaskStatus.TODO, createTaskMock)
-      ).rejects.toThrow("User not authenticated or no board selected");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated or no board selected")
+      });
     });
 
     it("should update a task", async () => {
@@ -259,9 +263,9 @@ describe("workspace-store - Task actions", () => {
 
       const store = useWorkspaceStore.getState();
 
-      await expect(store.updateTask("task-1", "Title", TaskStatus.TODO)).rejects.toThrow(
-        "User not authenticated"
-      );
+      await expect(store.updateTask("task-1", "Title", TaskStatus.TODO)).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated")
+      });
     });
 
     it("should remove a task", async () => {
@@ -359,9 +363,11 @@ describe("workspace-store - Task actions", () => {
       const getTaskMock = vi.fn().mockResolvedValue(undefined);
       const store = useWorkspaceStore.getState();
 
-      await expect(store.dragTaskOnProject("task-1", "project-2", getTaskMock)).rejects.toThrow(
-        "Task not found"
-      );
+      await expect(
+        store.dragTaskOnProject("task-1", "project-2", getTaskMock)
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("Task not found")
+      });
     });
   });
 });

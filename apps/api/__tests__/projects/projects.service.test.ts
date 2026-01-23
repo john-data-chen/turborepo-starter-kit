@@ -206,7 +206,14 @@ describe("ProjectsService", () => {
   describe("findByBoardId", () => {
     it("should throw not found exception for invalid board id", async () => {
       const boardId = "invalid-id";
-      await expect(service.findByBoardId(boardId)).rejects.toThrow("Invalid board ID");
+      let thrownError: Error | null = null;
+      try {
+        await service.findByBoardId(boardId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid board ID");
     });
   });
 
@@ -215,18 +222,28 @@ describe("ProjectsService", () => {
       const projectId = "invalid-id";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateProjectDto = { title: "Test Project Updated" };
-      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
-        "Invalid project ID"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(projectId, updateProjectDto as any, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid project ID");
     });
 
     it("should throw bad request for invalid user id", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "invalid-id";
       const updateProjectDto = { title: "Test Project Updated" };
-      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
-        "Invalid user ID"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(projectId, updateProjectDto as any, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid user ID");
     });
 
     it("should throw not found for non-existing project", async () => {
@@ -235,9 +252,14 @@ describe("ProjectsService", () => {
       const updateProjectDto = { title: "Test Project Updated" };
       const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(null);
-      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
-        "Project not found"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(projectId, updateProjectDto as any, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Project not found");
     });
 
     it("should throw bad request if user is not owner and updates more than orderInBoard", async () => {
@@ -251,9 +273,14 @@ describe("ProjectsService", () => {
       };
       const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
-      await expect(service.update(projectId, updateProjectDto as any, userId)).rejects.toThrow(
-        "You do not have permission to update this project"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(projectId, updateProjectDto as any, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("You do not have permission to update this project");
     });
   });
 
@@ -261,13 +288,27 @@ describe("ProjectsService", () => {
     it("should throw bad request for invalid project id", async () => {
       const projectId = "invalid-id";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      await expect(service.remove(projectId, userId)).rejects.toThrow("Invalid project ID");
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(projectId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid project ID");
     });
 
     it("should throw bad request for invalid user id", async () => {
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b5";
       const userId = "invalid-id";
-      await expect(service.remove(projectId, userId)).rejects.toThrow("Invalid user ID");
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(projectId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid user ID");
     });
 
     it("should throw not found for non-existing project", async () => {
@@ -275,7 +316,14 @@ describe("ProjectsService", () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(null);
-      await expect(service.remove(projectId, userId)).rejects.toThrow("Project not found");
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(projectId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Project not found");
     });
 
     it("should throw bad request if user is not owner", async () => {
@@ -284,9 +332,14 @@ describe("ProjectsService", () => {
       const project = { _id: projectId, owner: "60f6e1b3b3f3b3b3b3f3b3b3" };
       const projectModel = testingModule.get(getModelToken(Project.name));
       projectModel.findById = vi.fn().mockResolvedValue(project);
-      await expect(service.remove(projectId, userId)).rejects.toThrow(
-        "You do not have permission to delete this project"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(projectId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("You do not have permission to delete this project");
     });
   });
 
@@ -307,12 +360,26 @@ describe("ProjectsService", () => {
   describe("create", () => {
     it("should throw bad request for invalid board id", async () => {
       const createProjectDto = { boardId: "invalid-id", owner: "60f6e1b3b3f3b3b3b3f3b3b3" };
-      await expect(service.create(createProjectDto as any)).rejects.toThrow("Invalid board ID");
+      let thrownError: Error | null = null;
+      try {
+        await service.create(createProjectDto as any);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toContain("Invalid board ID");
     });
 
     it("should throw bad request for invalid owner", async () => {
       const createProjectDto = { boardId: "60f6e1b3b3f3b3b3b3f3b3b4", owner: "invalid-id" };
-      await expect(service.create(createProjectDto as any)).rejects.toThrow("Invalid owner ID");
+      let thrownError: Error | null = null;
+      try {
+        await service.create(createProjectDto as any);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toContain("Invalid owner ID");
     });
   });
 });

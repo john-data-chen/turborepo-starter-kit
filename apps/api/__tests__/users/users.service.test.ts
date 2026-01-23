@@ -55,9 +55,14 @@ describe("UserService", () => {
     it("should throw an error if database throws an error", async () => {
       const userModel = testingModule.get(getModelToken(User.name));
       userModel.findOne.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      await expect(service.findByEmail("test@test.com")).rejects.toThrow(
-        "An error occurred while processing your request"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.findByEmail("test@test.com");
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("An error occurred while processing your request");
     });
   });
 
@@ -74,7 +79,14 @@ describe("UserService", () => {
     it("should throw an error if database throws an error", async () => {
       const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      await expect(service.findAll()).rejects.toThrow("DB Error");
+      let thrownError: Error | null = null;
+      try {
+        await service.findAll();
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("DB Error");
     });
   });
 
@@ -100,7 +112,14 @@ describe("UserService", () => {
     it("should throw an error if database throws an error", async () => {
       const userModel = testingModule.get(getModelToken(User.name));
       userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      await expect(service.searchByName("test")).rejects.toThrow("DB Error");
+      let thrownError: Error | null = null;
+      try {
+        await service.searchByName("test");
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("DB Error");
     });
   });
 });

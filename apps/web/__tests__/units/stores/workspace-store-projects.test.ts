@@ -123,7 +123,9 @@ describe("workspace-store - Project actions", () => {
 
       await expect(
         store.addProject("New Project", "Description", createProjectMock)
-      ).rejects.toThrow("No board selected");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("No board selected")
+      });
     });
 
     it("should throw error when adding project without user authenticated", async () => {
@@ -138,7 +140,9 @@ describe("workspace-store - Project actions", () => {
 
       await expect(
         store.addProject("New Project", "Description", createProjectMock)
-      ).rejects.toThrow("User not authenticated");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated")
+      });
     });
 
     it("should update a project", async () => {
@@ -192,7 +196,9 @@ describe("workspace-store - Project actions", () => {
 
       await expect(
         store.updateProject("project-1", "New Title", "New Description", updateFn)
-      ).rejects.toThrow("User not authenticated");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated")
+      });
     });
 
     it("should throw error when project update fails", async () => {
@@ -219,7 +225,9 @@ describe("workspace-store - Project actions", () => {
 
       await expect(
         store.updateProject("project-1", "New Title", "New Description", updateFn)
-      ).rejects.toThrow("Update failed");
+      ).rejects.toMatchObject({
+        message: expect.stringContaining("Update failed")
+      });
     });
 
     it("should remove a project", async () => {

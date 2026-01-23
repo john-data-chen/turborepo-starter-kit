@@ -90,13 +90,17 @@ describe("AuthService", () => {
         text: async () => "Invalid credentials"
       });
 
-      await expect(AuthService.login("invalid@example.com")).rejects.toThrow("Invalid credentials");
+      await expect(AuthService.login("invalid@example.com")).rejects.toMatchObject({
+        message: expect.stringContaining("Invalid credentials")
+      });
     });
 
     it("should handle network errors", async () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-      await expect(AuthService.login("test@example.com")).rejects.toThrow("Network error");
+      await expect(AuthService.login("test@example.com")).rejects.toMatchObject({
+        message: expect.stringContaining("Network error")
+      });
     });
 
     it("should handle failed text parsing in error response", async () => {
@@ -109,7 +113,9 @@ describe("AuthService", () => {
         }
       });
 
-      await expect(AuthService.login("test@example.com")).rejects.toThrow("Login failed");
+      await expect(AuthService.login("test@example.com")).rejects.toMatchObject({
+        message: expect.stringContaining("Login failed")
+      });
     });
   });
 
@@ -205,7 +211,9 @@ describe("AuthService", () => {
         text: async () => "Unauthorized"
       });
 
-      await expect(AuthService.getProfile()).rejects.toThrow("Failed to fetch user profile");
+      await expect(AuthService.getProfile()).rejects.toMatchObject({
+        message: expect.stringContaining("Failed to fetch user profile")
+      });
       expect(logoutSpy).toHaveBeenCalled();
     });
 
@@ -221,9 +229,9 @@ describe("AuthService", () => {
         status: 200
       });
 
-      await expect(AuthService.getProfile()).rejects.toThrow(
-        "Invalid user data received from server"
-      );
+      await expect(AuthService.getProfile()).rejects.toMatchObject({
+        message: expect.stringContaining("Invalid user data received from server")
+      });
     });
 
     it("should throw error on null user data", async () => {
@@ -233,9 +241,9 @@ describe("AuthService", () => {
         status: 200
       });
 
-      await expect(AuthService.getProfile()).rejects.toThrow(
-        "Invalid user data received from server"
-      );
+      await expect(AuthService.getProfile()).rejects.toMatchObject({
+        message: expect.stringContaining("Invalid user data received from server")
+      });
     });
 
     it("should handle text parsing errors in profile fetch", async () => {
@@ -248,7 +256,9 @@ describe("AuthService", () => {
         }
       });
 
-      await expect(AuthService.getProfile()).rejects.toThrow("Failed to fetch user profile");
+      await expect(AuthService.getProfile()).rejects.toMatchObject({
+        message: expect.stringContaining("Failed to fetch user profile")
+      });
     });
   });
 

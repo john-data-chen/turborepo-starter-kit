@@ -54,9 +54,14 @@ describe("AuthService", () => {
     it("should throw error if validation fails", async () => {
       userService.findByEmail.mockRejectedValue(new Error("Database error"));
 
-      await expect(service.validateUser("test@test.com")).rejects.toThrow(
-        "Authentication failed. Please try again."
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.validateUser("test@test.com");
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Authentication failed. Please try again.");
       expect(logger.error).toHaveBeenCalled();
     });
   });
@@ -91,7 +96,14 @@ describe("AuthService", () => {
         throw new Error("JWT error");
       });
 
-      await expect(service.login(user)).rejects.toThrow("JWT error");
+      let thrownError: Error | null = null;
+      try {
+        await service.login(user);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("JWT error");
       expect(logger.error).toHaveBeenCalled();
     });
   });
