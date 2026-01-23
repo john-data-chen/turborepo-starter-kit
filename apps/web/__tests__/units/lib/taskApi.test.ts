@@ -168,7 +168,9 @@ describe("taskApi", () => {
         headers: new Headers()
       });
 
-      await expect(taskApi.getTaskById("non-existent")).rejects.toThrow("Task not found");
+      await expect(taskApi.getTaskById("non-existent")).rejects.toMatchObject({
+        message: expect.stringContaining("Task not found")
+      });
     });
   });
 
@@ -324,13 +326,17 @@ describe("taskApi", () => {
         headers: new Headers()
       });
 
-      await expect(taskApi.getTasks()).rejects.toThrow("Server error");
+      await expect(taskApi.getTasks()).rejects.toMatchObject({
+        message: expect.stringContaining("Server error")
+      });
     });
 
     it("should handle network errors", async () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-      await expect(taskApi.getTasks()).rejects.toThrow("Network error");
+      await expect(taskApi.getTasks()).rejects.toMatchObject({
+        message: expect.stringContaining("Network error")
+      });
     });
 
     it("should handle text parsing failure", async () => {
@@ -343,7 +349,9 @@ describe("taskApi", () => {
         headers: new Headers()
       });
 
-      await expect(taskApi.getTasks()).rejects.toThrow("Request failed");
+      await expect(taskApi.getTasks()).rejects.toMatchObject({
+        message: expect.stringContaining("Request failed")
+      });
     });
 
     it("should handle empty response with content-length 0", async () => {

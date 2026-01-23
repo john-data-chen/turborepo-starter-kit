@@ -152,9 +152,14 @@ describe("TasksService", () => {
         project: "60f6e1b3b3f3b3b3b3f3b3b4",
         board: "60f6e1b3b3f3b3b3b3f3b3b5"
       };
-      await expect(service.create(createTaskDto as any, null)).rejects.toThrow(
-        "User ID is required to create a task"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.create(createTaskDto as any, null);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("User ID is required to create a task");
     });
   });
 
@@ -172,9 +177,14 @@ describe("TasksService", () => {
     });
 
     it("should throw an error if project id is invalid", async () => {
-      await expect(service.deleteTasksByProjectId("invalid-id")).rejects.toThrow(
-        "Invalid project ID"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.deleteTasksByProjectId("invalid-id");
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid project ID");
     });
   });
 
@@ -310,9 +320,14 @@ describe("TasksService", () => {
       const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(null);
 
-      await expect(service.remove(taskId, userId)).rejects.toThrow(
-        "Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(taskId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
     });
 
     it("should throw forbidden exception when removing a task without being the creator", async () => {
@@ -328,18 +343,28 @@ describe("TasksService", () => {
       const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
 
-      await expect(service.remove(taskId, userId)).rejects.toThrow(
-        "Only the task creator can perform this action"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.remove(taskId, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Only the task creator can perform this action");
     });
   });
 
   describe("deleteTasksByProjectId", () => {
     it("should throw an error for an invalid project ID", async () => {
       const invalidProjectId = "invalid-id";
-      await expect(service.deleteTasksByProjectId(invalidProjectId)).rejects.toThrow(
-        "Invalid project ID"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.deleteTasksByProjectId(invalidProjectId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Invalid project ID");
     });
   });
 
@@ -398,9 +423,14 @@ describe("TasksService", () => {
       const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(null);
 
-      await expect(service.update(taskId, updateTaskDto, userId)).rejects.toThrow(
-        "Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(taskId, updateTaskDto, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
     });
 
     it("should throw forbidden exception when updating a task without permission", async () => {
@@ -412,9 +442,14 @@ describe("TasksService", () => {
       const taskModel = testingModule.get(getModelToken(Task.name));
       taskModel.findById.mockResolvedValue(task);
 
-      await expect(service.update(taskId, updateTaskDto, userId)).rejects.toThrow(
-        "You do not have permission to modify this task"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.update(taskId, updateTaskDto, userId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("You do not have permission to modify this task");
     });
   });
 
@@ -427,9 +462,14 @@ describe("TasksService", () => {
         exec: vi.fn().mockResolvedValue(null)
       });
 
-      await expect(service.findOne(taskId)).rejects.toThrow(
-        "Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found"
-      );
+      let thrownError: Error | null = null;
+      try {
+        await service.findOne(taskId);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
     });
   });
 
@@ -446,7 +486,14 @@ describe("TasksService", () => {
         _id: { toString: () => "1" },
         populate: vi.fn().mockRejectedValue(new Error("Populate error"))
       };
-      await expect((service as any).toTaskResponse(task)).rejects.toThrow("Populate error");
+      let thrownError: Error | null = null;
+      try {
+        await (service as any).toTaskResponse(task);
+      } catch (error) {
+        thrownError = error as Error;
+      }
+      expect(thrownError).not.toBeNull();
+      expect(thrownError?.message).toBe("Populate error");
     });
 
     it("should handle missing lastModifier", async () => {

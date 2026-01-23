@@ -97,7 +97,9 @@ describe("projectApi", () => {
         text: async () => "Project not found"
       });
 
-      await expect(projectApi.getProjectById("non-existent")).rejects.toThrow("Project not found");
+      await expect(projectApi.getProjectById("non-existent")).rejects.toMatchObject({
+        message: expect.stringContaining("Project not found")
+      });
     });
   });
 
@@ -177,13 +179,17 @@ describe("projectApi", () => {
         text: async () => "Server error"
       });
 
-      await expect(projectApi.getProjects("board-1")).rejects.toThrow("Server error");
+      await expect(projectApi.getProjects("board-1")).rejects.toMatchObject({
+        message: expect.stringContaining("Server error")
+      });
     });
 
     it("should handle network errors", async () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-      await expect(projectApi.getProjects("board-1")).rejects.toThrow("Network error");
+      await expect(projectApi.getProjects("board-1")).rejects.toMatchObject({
+        message: expect.stringContaining("Network error")
+      });
     });
 
     it("should handle text parsing failure", async () => {
@@ -194,7 +200,9 @@ describe("projectApi", () => {
         }
       });
 
-      await expect(projectApi.getProjects("board-1")).rejects.toThrow("Request failed");
+      await expect(projectApi.getProjects("board-1")).rejects.toMatchObject({
+        message: expect.stringContaining("Request failed")
+      });
     });
   });
 });

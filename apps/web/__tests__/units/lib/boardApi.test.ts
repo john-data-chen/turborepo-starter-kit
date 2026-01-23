@@ -105,7 +105,9 @@ describe("boardApi", () => {
         text: async () => JSON.stringify({ message: "Board not found" })
       });
 
-      await expect(boardApi.getBoardById("non-existent")).rejects.toThrow("Board not found");
+      await expect(boardApi.getBoardById("non-existent")).rejects.toMatchObject({
+        message: expect.stringContaining("Board not found")
+      });
     });
   });
 
@@ -182,7 +184,9 @@ describe("boardApi", () => {
         text: async () => ""
       });
 
-      await expect(boardApi.deleteBoard("board-1")).rejects.toThrow("Empty response from server");
+      await expect(boardApi.deleteBoard("board-1")).rejects.toMatchObject({
+        message: expect.stringContaining("Empty response from server")
+      });
     });
   });
 
@@ -218,7 +222,9 @@ describe("boardApi", () => {
         text: async () => "Invalid JSON"
       });
 
-      await expect(boardApi.getBoards()).rejects.toThrow("Invalid JSON");
+      await expect(boardApi.getBoards()).rejects.toMatchObject({
+        message: expect.stringContaining("Invalid JSON")
+      });
     });
 
     it("should handle empty error response", async () => {
@@ -229,13 +235,17 @@ describe("boardApi", () => {
         text: async () => ""
       });
 
-      await expect(boardApi.getBoards()).rejects.toThrow("Internal Server Error");
+      await expect(boardApi.getBoards()).rejects.toMatchObject({
+        message: expect.stringContaining("Internal Server Error")
+      });
     });
 
     it("should handle fetch network error", async () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-      await expect(boardApi.getBoards()).rejects.toThrow("Network error");
+      await expect(boardApi.getBoards()).rejects.toMatchObject({
+        message: expect.stringContaining("Network error")
+      });
     });
 
     it("should handle 401 unauthorized", async () => {
@@ -253,7 +263,9 @@ describe("boardApi", () => {
         text: async () => JSON.stringify({ message: "Unauthorized" })
       });
 
-      await expect(boardApi.getBoards()).rejects.toThrow("Unauthorized");
+      await expect(boardApi.getBoards()).rejects.toMatchObject({
+        message: expect.stringContaining("Unauthorized")
+      });
       expect(mockLocation.href).toBe("/login");
     });
 
@@ -263,7 +275,9 @@ describe("boardApi", () => {
         text: async () => ""
       });
 
-      await expect(boardApi.getBoards()).rejects.toThrow("Empty response from server");
+      await expect(boardApi.getBoards()).rejects.toMatchObject({
+        message: expect.stringContaining("Empty response from server")
+      });
     });
   });
 

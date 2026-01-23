@@ -108,7 +108,9 @@ describe("userApi", () => {
         text: async () => "Server error"
       });
 
-      await expect(userApi.searchUsers("test")).rejects.toThrow("Server error");
+      await expect(userApi.searchUsers("test")).rejects.toMatchObject({
+        message: expect.stringContaining("Server error")
+      });
     });
   });
 
@@ -164,7 +166,9 @@ describe("userApi", () => {
         text: async () => "Server error"
       });
 
-      await expect(userApi.getUserById("user-1")).rejects.toThrow("Server error");
+      await expect(userApi.getUserById("user-1")).rejects.toMatchObject({
+        message: expect.stringContaining("Server error")
+      });
     });
 
     it("should include auth token in request", async () => {
@@ -204,7 +208,9 @@ describe("userApi", () => {
         text: async () => "Unauthorized"
       });
 
-      await expect(userApi.searchUsers("test")).rejects.toThrow("Unauthorized");
+      await expect(userApi.searchUsers("test")).rejects.toMatchObject({
+        message: expect.stringContaining("Unauthorized")
+      });
     });
 
     it("should handle error text parsing failure", async () => {
@@ -216,7 +222,9 @@ describe("userApi", () => {
         }
       });
 
-      await expect(userApi.searchUsers("test")).rejects.toThrow("Request failed");
+      await expect(userApi.searchUsers("test")).rejects.toMatchObject({
+        message: expect.stringContaining("Request failed")
+      });
     });
   });
 

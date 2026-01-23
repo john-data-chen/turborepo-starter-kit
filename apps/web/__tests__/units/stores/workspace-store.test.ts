@@ -135,7 +135,9 @@ describe("workspace-store", () => {
 
       const store = useWorkspaceStore.getState();
 
-      await expect(store.addBoard("New Board")).rejects.toThrow("User not authenticated");
+      await expect(store.addBoard("New Board")).rejects.toMatchObject({
+        message: expect.stringContaining("User not authenticated")
+      });
     });
 
     it("should update a board", async () => {
