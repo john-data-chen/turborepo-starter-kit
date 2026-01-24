@@ -26,7 +26,7 @@
     "@radix-ui/react-icons": "catalog:",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.18",
-    "@tanstack/react-query": "^5.90.19",
+    "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@vercel/analytics": "^1.6.1",
     "class-variance-authority": "catalog:",
@@ -47,7 +47,7 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.0",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/js-cookie": "^3.0.6",
