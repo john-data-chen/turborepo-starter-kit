@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Separator } from './separator'
 
 const meta: Meta<typeof Separator> = {
@@ -25,7 +26,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Separator>) => (
     <div className="w-[300px]">
       <div className="space-y-1">
         <h4 className="text-sm font-medium">Radix Primitives</h4>
@@ -41,7 +42,7 @@ export const Default: Story = {
 }
 
 export const Vertical: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Separator>) => (
     <div className="flex h-5 items-center space-x-4 text-sm">
       <div>Blog</div>
       <Separator orientation="vertical" {...args} />
@@ -53,7 +54,7 @@ export const Vertical: Story = {
 }
 
 export const InNavigation: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Separator>) => (
     <nav className="flex items-center space-x-4">
       <a href="#" className="text-sm">
         Home

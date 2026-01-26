@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   Command,
   CommandDialog,
@@ -26,7 +27,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Command>) => (
     <Command className="rounded-lg border shadow-md" {...args}>
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
@@ -69,7 +70,7 @@ export const Default: Story = {
 }
 
 export const Dialog: Story = {
-  render: (args) => {
+  render: (args: ComponentProps<typeof CommandDialog>) => {
     const [open, setOpen] = React.useState(false)
 
     React.useEffect(() => {
@@ -81,7 +82,7 @@ export const Dialog: Story = {
       }
 
       document.addEventListener('keydown', down)
-      return () => document.removeEventListener('keydown', down)
+      return () =>{  document.removeEventListener('keydown', down); }
     }, [])
 
     return (

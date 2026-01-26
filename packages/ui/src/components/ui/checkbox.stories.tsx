@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Checkbox } from './checkbox'
 
 const meta: Meta<typeof Checkbox> = {
@@ -52,7 +53,7 @@ export const DisabledChecked: Story = {
 }
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Checkbox>) => (
     <div className="flex items-center space-x-2">
       <Checkbox id="terms" {...args} />
       <label

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +32,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => {
+  render: (args: ComponentProps<typeof DropdownMenu>) => {
     const [showStatusBar, setShowStatusBar] = React.useState(true)
     const [showActivityBar, setShowActivityBar] = React.useState(false)
     const [showPanel, setShowPanel] = React.useState(false)
@@ -64,7 +65,7 @@ export const Default: Story = {
 }
 
 export const WithRadioGroup: Story = {
-  render: (args) => {
+  render: (args: ComponentProps<typeof DropdownMenu>) => {
     const [position, setPosition] = React.useState('bottom')
 
     return (
@@ -87,7 +88,7 @@ export const WithRadioGroup: Story = {
 }
 
 export const Complex: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof DropdownMenu>) => (
     <DropdownMenu {...args}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">Open</Button>

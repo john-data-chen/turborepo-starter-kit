@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Textarea } from './textarea'
 
 const meta: Meta<typeof Textarea> = {
@@ -34,7 +35,7 @@ export const Default: Story = {
 }
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Textarea>) => (
     <div className="grid w-full gap-1.5">
       <label htmlFor="message">Your message</label>
       <Textarea placeholder="Type your message here." id="message" {...args} />

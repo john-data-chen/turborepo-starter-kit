@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   Sheet,
   SheetClose,
@@ -27,7 +28,7 @@ type Story = StoryObj<typeof meta>
 const SHEET_SIDES = ['top', 'right', 'bottom', 'left'] as const
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Sheet>) => (
     <Sheet {...args}>
       <SheetTrigger asChild>
         <Button variant="outline">Open</Button>
@@ -64,7 +65,7 @@ export const Default: Story = {
 }
 
 export const Sides: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Sheet>) => (
     <div className="grid grid-cols-2 gap-2">
       {SHEET_SIDES.map((side) => (
         <Sheet key={side} {...args}>

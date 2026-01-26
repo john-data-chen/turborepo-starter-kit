@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { RadioGroup, RadioGroupItem } from './radio-group'
 import { Label } from './label'
 
@@ -25,7 +26,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof RadioGroup>) => (
     <RadioGroup defaultValue="comfortable" {...args}>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="default" id="r1" />
@@ -44,7 +45,7 @@ export const Default: Story = {
 }
 
 export const Disabled: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof RadioGroup>) => (
     <RadioGroup defaultValue="comfortable" disabled {...args}>
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="default" id="r1" />

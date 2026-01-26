@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +25,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof AlertDialog>) => (
     <AlertDialog {...args}>
       <AlertDialogTrigger asChild>
         <Button variant="outline">Show Dialog</Button>

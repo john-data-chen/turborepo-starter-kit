@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './collapsible'
 import { Button } from './button'
 import { ChevronsUpDownIcon } from 'lucide-react'
@@ -16,7 +17,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => {
+  render: (args: ComponentProps<typeof Collapsible>) => {
     const [isOpen, setIsOpen] = React.useState(false)
 
     return (
