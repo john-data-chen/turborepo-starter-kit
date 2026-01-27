@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 import { Button } from './button'
 import { Input } from './input'
@@ -16,7 +17,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Popover>) => (
     <Popover {...args}>
       <PopoverTrigger asChild>
         <Button variant="outline">Open popover</Button>

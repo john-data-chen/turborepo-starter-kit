@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Label } from './label'
 import { Input } from './input'
 
@@ -29,7 +30,7 @@ export const Default: Story = {
     children: 'Your Name',
     htmlFor: 'name'
   },
-  render: (args) => (
+  render: (args: ComponentProps<typeof Label>) => (
     <div className="flex items-center space-x-2">
       <Label {...args} />
       <Input id="name" type="text" placeholder="Enter your name" />
@@ -42,7 +43,7 @@ export const WithDisabledInput: Story = {
     children: 'Disabled Field',
     htmlFor: 'disabled-field'
   },
-  render: (args) => (
+  render: (args: ComponentProps<typeof Label>) => (
     <div className="flex items-center space-x-2">
       <Label {...args} />
       <Input id="disabled-field" type="text" placeholder="This is disabled" disabled />

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -25,7 +26,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Dialog>) => (
     <Dialog {...args}>
       <DialogTrigger asChild>
         <Button variant="outline">Edit Profile</Button>
@@ -60,7 +61,7 @@ export const Default: Story = {
 }
 
 export const WithCloseButton: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Dialog>) => (
     <Dialog {...args}>
       <DialogTrigger asChild>
         <Button variant="outline">Edit Profile</Button>

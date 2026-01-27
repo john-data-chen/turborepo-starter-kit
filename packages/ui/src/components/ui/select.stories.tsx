@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import {
   Select,
   SelectContent,
@@ -21,7 +22,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Select>) => (
     <Select {...args}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a fruit" />
@@ -41,7 +42,7 @@ export const Default: Story = {
 }
 
 export const WithGroups: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Select>) => (
     <Select {...args}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Select a timezone" />
@@ -71,7 +72,7 @@ export const Disabled: Story = {
   args: {
     disabled: true
   },
-  render: (args) => (
+  render: (args: ComponentProps<typeof Select>) => (
     <Select {...args}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a fruit" />

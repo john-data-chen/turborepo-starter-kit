@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentProps } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip'
 import { Button } from './button'
 
@@ -22,7 +23,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Tooltip>) => (
     <Tooltip {...args}>
       <TooltipTrigger asChild>
         <Button variant="outline">Hover</Button>
@@ -35,7 +36,7 @@ export const Default: Story = {
 }
 
 export const WithLongContent: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Tooltip>) => (
     <Tooltip {...args}>
       <TooltipTrigger asChild>
         <Button variant="outline">Hover</Button>
@@ -48,7 +49,7 @@ export const WithLongContent: Story = {
 }
 
 export const WithSideOffset: Story = {
-  render: (args) => (
+  render: (args: ComponentProps<typeof Tooltip>) => (
     <Tooltip {...args}>
       <TooltipTrigger asChild>
         <Button variant="outline">Hover</Button>
