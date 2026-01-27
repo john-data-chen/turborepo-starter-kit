@@ -1,13 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import type { ComponentProps } from 'react'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { Button } from './button'
-
-interface StoryContext {
-  args: ComponentProps<typeof Button> & { onClick?: () => void }
-  canvasElement: HTMLElement
-  step: (name: string, fn: () => Promise<void>) => Promise<void>
-}
 
 const meta: Meta<typeof Button> = {
   title: 'UI/Button',
@@ -174,7 +167,7 @@ export const ClickInteraction: Story = {
     variant: 'default',
     children: 'Click Me'
   },
-  play: async ({ args, canvasElement, step }: StoryContext) => {
+  play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: /click me/i })
 
     await step('Verify button renders correctly', async () => {
@@ -200,7 +193,7 @@ export const KeyboardInteraction: Story = {
     variant: 'secondary',
     children: 'Press Enter or Space'
   },
-  play: async ({ args, canvasElement, step }: StoryContext) => {
+  play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button')
 
     await step('Focus button with Tab key', async () => {
@@ -227,7 +220,7 @@ export const DisabledInteraction: Story = {
     disabled: true,
     children: 'Disabled Button'
   },
-  play: async ({ args, canvasElement, step }: StoryContext) => {
+  play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button')
 
     await step('Verify disabled state', async () => {
@@ -251,7 +244,7 @@ export const VariantsAccessibility: Story = {
       <Button variant="outline">Cancel</Button>
     </div>
   ),
-  play: async ({ canvasElement, step }: Omit<StoryContext, 'args'>) => {
+  play: async ({ canvasElement, step }) => {
     const buttons = within(canvasElement).getAllByRole('button')
 
     await step('Verify all buttons are accessible', async () => {
