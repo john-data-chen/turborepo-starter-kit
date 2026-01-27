@@ -1,5 +1,4 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
 
 /* Tailwind CSS 4.x: Explicitly tell Tailwind where to scan for classes in monorepo */
 @source '../components'; /* Scan UI package components */
