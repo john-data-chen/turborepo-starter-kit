@@ -60,15 +60,10 @@
     "vitest": "catalog:"
   },
   "pnpm": {
-    "overrides": {
-      "react": "^19.2.4",
-      "react-dom": "^19.2.4"
-    },
     "onlyBuiltDependencies": [
       "@nestjs/core",
       "@parcel/watcher",
       "@scarf/scarf",
-      "@swc/core",
       "@tailwindcss/oxide",
       "esbuild",
       "sharp",
