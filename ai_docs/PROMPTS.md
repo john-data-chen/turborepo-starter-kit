@@ -2,7 +2,7 @@
 
 ## AI Assistant Behavioral Framework
 
-- **Check MCP servers and skills list before task execution**: Always check the MCP servers and skills list before starting a task to ensure you have the necessary tools and knowledge to complete the task. If you know a MCP server or skill that is not listed but they might be useful for the task, ask for next steps.
+- **Check MCP servers and skills list before task execution**: Always check the MCP servers and skills list before starting a task to ensure you have the necessary tools and knowledge to complete the task. If you know a MCP server or skill that is not installed and enabled but they might be useful for the task, remind the user and ask for next steps.
 - **Convention First**: Always analyze existing patterns, libraries, and code style before making changes
 - **Verify, Then Act**: Never assume dependencies or commands exist - always verify through package.json or config files
 - **Test-Driven Changes**: Look for existing tests, run them to understand behavior, write tests before implementing features
@@ -11,6 +11,9 @@
 > [!TIP]
 > For React/Next.js performance optimization, use the `vercel-react-best-practices` skill.
 > For UI/UX review and accessibility, use the `web-design-guidelines` skill.
+> For React composition patterns that scale, use the `composition-patterns` skill.
+> Use `next-devtools-mcp` to help you finish the task if it is installed and you need to.
+> Use `context7-mcp` to get more information about the packages if it is installed and you need to.
 
 ## Project Overview
 
@@ -21,7 +24,6 @@
 | **App**     | `apps/api`                 | Nest.js (Express)         |
 | **App**     | `apps/web`                 | Next.js AppRouter         |
 | **Package** | `packages/ui`              | Shadcn UI Shared UI       |
-| **Package** | `packages/linter-config`   | Oxlint configurations     |
 | **Package** | `packages/global-tsconfig` | TypeScript configurations |
 
 #### Shadcn UI Components
@@ -53,7 +55,8 @@ pnpm lint-staged                      # Run linter and prettier
 
 ## Technology Stack
 
-Check `package.json` for versions before starting.
+- Check `package.json` for versions before starting.
+- use `node -v` to check node version if you need it
 
 | Category            | Technology                                      |
 | ------------------- | ----------------------------------------------- |
@@ -69,22 +72,22 @@ Check `package.json` for versions before starting.
 
 ### State Management Quick Reference
 
-| Use Case         | Solution                                            |
-| ---------------- | --------------------------------------------------- |
-| Component State  | `useState` (simple) / `useReducer` (complex)        |
-| Context API      | 2-3 levels deep, domain-specific                    |
-| Global State     | Zustand stores by feature                           |
-| Server State     | TanStack Query                                      |
-| Form State       | React Hook Form + Zod                               |
+| Use Case        | Solution                                     |
+| --------------- | -------------------------------------------- |
+| Component State | `useState` (simple) / `useReducer` (complex) |
+| Context API     | 2-3 levels deep, domain-specific             |
+| Global State    | Zustand stores by feature                    |
+| Server State    | TanStack Query                               |
+| Form State      | React Hook Form + Zod                        |
 
 ## Naming Conventions
 
-| Type       | Convention     | Example                |
-| ---------- | -------------- | ---------------------- |
-| Components | PascalCase     | `DatePicker.tsx`       |
-| Utilities  | camelCase      | `dateUtils.ts`         |
-| Constants  | UPPER_SNAKE    | `API_ENDPOINTS.ts`     |
-| Types      | PascalCase     | `UserData`, `ApiResponse` |
+| Type       | Convention  | Example                   |
+| ---------- | ----------- | ------------------------- |
+| Components | PascalCase  | `DatePicker.tsx`          |
+| Utilities  | camelCase   | `dateUtils.ts`            |
+| Constants  | UPPER_SNAKE | `API_ENDPOINTS.ts`        |
+| Types      | PascalCase  | `UserData`, `ApiResponse` |
 
 ### Export Pattern
 
@@ -123,6 +126,7 @@ grep -r "ComponentName" apps/forms/src/
 > Format: `feat(scope): description` / `fix(scope): description`
 
 **After completing changes:**
+
 1. Stage files: `git add /path/to/your/file`
 2. Verify: `pnpm lint-staged && pnpm build --filter=@repo/web`
 3. Fix all linter errors/warnings
