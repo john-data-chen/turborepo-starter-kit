@@ -2,18 +2,15 @@
 
 ## AI Assistant Behavioral Framework
 
-- **Check MCP servers and skills list before task execution**: Always check the MCP servers and skills list before starting a task to ensure you have the necessary tools and knowledge to complete the task. If you know a MCP server or skill that is not installed and enabled but they might be useful for the task, remind the user and ask for next steps.
+- **Check MCP/skills before execution**: Verify available tools; suggest missing ones if useful.
 - **Convention First**: Always analyze existing patterns, libraries, and code style before making changes
 - **Verify, Then Act**: Never assume dependencies or commands exist - always verify through package.json or config files
 - **Test-Driven Changes**: Look for existing tests, run them to understand behavior, write tests before implementing features
 - **Incremental Verification**: Run lint, type-check, test, and build commands after every significant change
 
 > [!TIP]
-> For React/Next.js performance optimization, use the `vercel-react-best-practices` skill.
-> For UI/UX review and accessibility, use the `web-design-guidelines` skill.
-> For React composition patterns that scale, use the `composition-patterns` skill.
-> Use `next-devtools-mcp` to help you finish the task if it is installed and you need to.
-> Use `context7-mcp` to get more information about the packages if it is installed and you need to.
+> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `composition-patterns` (React patterns).
+> Use MCPs: `next-devtools-mcp`, `context7-mcp` if installed.
 
 ## Project Overview
 
@@ -45,8 +42,6 @@ pnpm build --filter=@repo/api         # Build for production
 
 ### Debugging & Verification
 
-Run after all modifications are complete and ready for commit:
-
 ```bash
 pnpm turbo clean                      # Clean build cache
 git add /path/to/your/file.ts         # Stage file for linting
@@ -54,9 +49,6 @@ pnpm lint-staged                      # Run linter and prettier
 ```
 
 ## Technology Stack
-
-- Check `package.json` for versions before starting.
-- use `node -v` to check node version if you need it
 
 | Category            | Technology                                      |
 | ------------------- | ----------------------------------------------- |
@@ -69,16 +61,6 @@ pnpm lint-staged                      # Run linter and prettier
 | **Unit Test**       | Vitest                                          |
 | **State**           | Zustand (global), TanStack Query (server state) |
 | **Forms**           | React Hook Form + Zod                           |
-
-### State Management Quick Reference
-
-| Use Case        | Solution                                     |
-| --------------- | -------------------------------------------- |
-| Component State | `useState` (simple) / `useReducer` (complex) |
-| Context API     | 2-3 levels deep, domain-specific             |
-| Global State    | Zustand stores by feature                    |
-| Server State    | TanStack Query                               |
-| Form State      | React Hook Form + Zod                        |
 
 ## Naming Conventions
 
