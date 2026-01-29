@@ -9,7 +9,7 @@
 - **Incremental Verification**: Run lint, type-check, test, and build commands after every significant change
 
 > [!TIP]
-> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `composition-patterns` (React patterns).
+> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `vercel-composition-patterns` (React patterns).
 > Use MCPs: `next-devtools-mcp`, `context7-mcp` if installed.
 
 ## Project Overview
