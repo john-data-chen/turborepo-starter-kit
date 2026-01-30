@@ -169,7 +169,7 @@ pnpm test                  # Unit tests
 pnpm playwright:install    # Install browsers before E2E tests
 pnpm playwright            # E2E tests
 pnpm storybook             # Execute Storybook
-pnpm storybook:test.       # Run Storybook interaction tests
+pnpm storybook:test       # Run Storybook interaction tests
 pnpm build                 # Production build
 ```
 
@@ -271,19 +271,6 @@ Storybook serves as the Single Source of Truth (SSOT) for UI components, providi
 | **Input**  | Form integration, Validation patterns, Type variants         | Text input, Email validation, Focus/Blur, Keyboard controls | 7 test scenarios |
 | **Card**   | Composition patterns, Real-world examples, Layout guides     | N/A (Presentational)                                        | N/A              |
 | **Badge**  | Semantic usage, Color meanings, Accessibility best practices | N/A (Presentational)                                        | N/A              |
-
-### Running Storybook
-
-```bash
-# Start Storybook development server
-pnpm storybook
-
-# Build Storybook for production
-pnpm storybook:build
-
-# Run Storybook interaction tests
-pnpm storybook:test
-```
 
 ---
 
