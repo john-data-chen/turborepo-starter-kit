@@ -169,7 +169,7 @@ pnpm test                  # Unit tests
 pnpm playwright:install    # Install browsers before E2E tests
 pnpm playwright            # E2E tests
 pnpm storybook             # Execute Storybook
-pnpm storybook:test       # Run Storybook interaction tests
+pnpm storybook:test        # Run Storybook interaction tests
 pnpm build                 # Production build
 ```
 
