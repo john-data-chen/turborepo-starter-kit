@@ -31,18 +31,18 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.2.1",
-    "@storybook/addon-docs": "^10.2.1",
-    "@storybook/addon-links": "^10.2.1",
-    "@storybook/addon-themes": "^10.2.1",
-    "@storybook/react": "^10.2.1",
-    "@storybook/react-vite": "^10.2.1",
+    "@storybook/addon-a11y": "^10.2.3",
+    "@storybook/addon-docs": "^10.2.3",
+    "@storybook/addon-links": "^10.2.3",
+    "@storybook/addon-themes": "^10.2.3",
+    "@storybook/react": "^10.2.3",
+    "@storybook/react-vite": "^10.2.3",
     "@storybook/test-runner": "^0.24.2",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "global-tsconfig": "workspace:*",
-    "storybook": "^10.2.1",
+    "storybook": "^10.2.3",
     "typescript": "catalog:"
   },
   "dependencies": {
