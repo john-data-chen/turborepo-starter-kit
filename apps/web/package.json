@@ -9,7 +9,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "format": "cd ../.. && oxfmt --ignore-path .prettierignore --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
+    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "playwright": "npx playwright test",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
