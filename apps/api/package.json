@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "cross-env BUILD=true rspack build",
-    "dev": "rspack dev --watch",
+    "dev": "rspack dev",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/api",
     "init-db": "tsx database/init-db-data.ts",
     "init-db:force": "tsx database/init-db-data.ts --force",
