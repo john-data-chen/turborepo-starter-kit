@@ -16,12 +16,14 @@
 
 ### Repository Structure
 
-| Type        | Package                    | Description               |
-| ----------- | -------------------------- | ------------------------- |
-| **App**     | `apps/api`                 | Nest.js (Express)         |
-| **App**     | `apps/web`                 | Next.js AppRouter         |
-| **Package** | `packages/ui`              | Shadcn UI Shared UI       |
-| **Package** | `packages/global-tsconfig` | TypeScript configurations |
+| Type        | Package                    | Description                                          |
+| ----------- | -------------------------- | ---------------------------------------------------- |
+| **App**     | `apps/api`                 | Nest.js (Express)                                    |
+| **App**     | `apps/web`                 | Next.js AppRouter                                    |
+| **App**     | `apps/mobile`              | React Native (Expo) app                              |
+| **Package** | `packages/global-tsconfig` | TypeScript configurations                            |
+| **Package** | `packages/store`           | Domain types, Zustand stores, StorageAdapter pattern |
+| **Package** | `packages/ui`              | Shadcn UI Shared UI                                  |
 
 #### Shadcn UI Components
 
@@ -33,8 +35,9 @@ The Shadcn UI components are in `packages/ui/components/ui`. They are a UI libra
 
 ```bash
 pnpm install                          # Install all dependencies
-pnpm upgrade                          # Upgrade all dependencies
-pnpm build --filter=@repo/api         # Build for production
+pnpm lint --fix                       # Fix lint errors
+pnpm test                             # Run tests
+pnpm build                            # Build for production
 ```
 
 > [!NOTE]
@@ -45,22 +48,25 @@ pnpm build --filter=@repo/api         # Build for production
 ```bash
 pnpm turbo clean                      # Clean build cache
 git add /path/to/your/file.ts         # Stage file for linting
-pnpm lint-staged                      # Run linter and prettier
+pnpm lint-staged                      # Run linter and formatter
 ```
 
 ## Technology Stack
 
-| Category            | Technology                                      |
-| ------------------- | ----------------------------------------------- |
-| **Runtime**         | Node.js latest (check with `node -v`)           |
-| **Framework**       | Next.js (App Router) + React                    |
-| **Language**        | TypeScript (strict mode)                        |
-| **Styling**         | TailwindCSS                                     |
-| **Package Manager** | PNPM (not npm/yarn)                             |
-| **Monorepo**        | Turborepo                                       |
-| **Unit Test**       | Vitest                                          |
-| **State**           | Zustand (global), TanStack Query (server state) |
-| **Forms**           | React Hook Form + Zod                           |
+| Category               | Technology                                      |
+| ---------------------- | ----------------------------------------------- |
+| **Runtime**            | Node.js latest (check with `node -v`)           |
+| **Frontend Framework** | Next.js (App Router) + React                    |
+| **Backend Framework**  | Nest.js (Express)                               |
+| **Mobile Framework**   | React Native (Expo)                             |
+| **Language**           | TypeScript (strict mode)                        |
+| **Styling**            | TailwindCSS                                     |
+| **Package Manager**    | PNPM (not npm/yarn)                             |
+| **Monorepo**           | Turborepo                                       |
+| **Unit Test**          | Vitest                                          |
+| **E2E Test**           | Playwright                                      |
+| **State**              | Zustand (global), TanStack Query (server state) |
+| **Forms**              | React Hook Form + Zod                           |
 
 ## Naming Conventions
 
