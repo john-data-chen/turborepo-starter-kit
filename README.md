@@ -15,14 +15,14 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Architectural Evolution
 
-| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                                | Now (Multi-Platform)                                                      | Trade-off Reasoning                                      |
-| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **Team Structure**    | Full-stack developers required             | Specialized Frontend & Backend Teams                                      | **+ Mobile Team with shared domain knowledge**                            | Teams share types/state; onboard faster via shared code  |
-| **Development Cycle** | Tightly coupled; one change can impact all | Independent development cycles                                            | **Web & Mobile iterate independently on shared foundations**              | Platform teams move at their own pace                    |
-| **Deployment**        | Single, monolithic deployment              | Independent Frontend/Backend deployment                                   | **+ OTA updates for Mobile via Expo**                                     | Three independent release channels                       |
-| **Scalability**       | Vertical scaling of the entire app         | Targeted horizontal scaling (e.g., scale only the API service)            | **Same API serves Web & Mobile clients**                                  | Single backend; multiple frontends                       |
-| **Technology Stack**  | Locked into Next.js for backend            | Flexible backend choice (Nest.js); can add more services (Go, Python)     | **+ React Native (Expo) with NativeWind**                                 | Best tool per platform; shared logic layer               |
-| **Code Reusability**  | Limited to the Next.js app                 | Centralized `ui` & `config` packages                                      | **+ Shared `store` package (types, state, validation)**                   | Write once for logic; platform-specific for UI           |
+| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                            | Now (Multi-Platform)                                         | Trade-off Reasoning                                     |
+| --------------------- | ------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
+| **Team Structure**    | Full-stack developers required             | Specialized Frontend & Backend Teams                                  | **+ Mobile Team with shared domain knowledge**               | Teams share types/state; onboard faster via shared code |
+| **Development Cycle** | Tightly coupled; one change can impact all | Independent development cycles                                        | **Web & Mobile iterate independently on shared foundations** | Platform teams move at their own pace                   |
+| **Deployment**        | Single, monolithic deployment              | Independent Frontend/Backend deployment                               | **+ OTA updates for Mobile via Expo**                        | Three independent release channels                      |
+| **Scalability**       | Vertical scaling of the entire app         | Targeted horizontal scaling (e.g., scale only the API service)        | **Same API serves Web & Mobile clients**                     | Single backend; multiple frontends                      |
+| **Technology Stack**  | Locked into Next.js for backend            | Flexible backend choice (Nest.js); can add more services (Go, Python) | **+ React Native (Expo) with NativeWind**                    | Best tool per platform; shared logic layer              |
+| **Code Reusability**  | Limited to the Next.js app                 | Centralized `ui` & `config` packages                                  | **+ Shared `store` package (types, state, validation)**      | Write once for logic; platform-specific for UI          |
 
 ### Code Sharing Strategy
 
@@ -222,12 +222,12 @@ pnpm mobile:android        # Start on Android Emulator
 
 While this monorepo shares business logic across platforms, **React and React Native maintain independent version lifecycles**. This is a deliberate architectural choice:
 
-| Concern              | Web (Next.js)                    | Mobile (Expo)                         |
-| -------------------- | -------------------------------- | ------------------------------------- |
-| **React Version**    | Latest stable (via PNPM catalog) | Pinned to Expo SDK requirements       |
-| **Update Cadence**   | Immediate adoption               | Follows Expo SDK release cycle        |
-| **Bundler**          | Turbopack                        | Metro                                 |
-| **Version Coupling** | None — independent               | Locked to Expo SDK 54 compatibility   |
+| Concern              | Web (Next.js)                    | Mobile (Expo)                       |
+| -------------------- | -------------------------------- | ----------------------------------- |
+| **React Version**    | Latest stable (via PNPM catalog) | Pinned to Expo SDK requirements     |
+| **Update Cadence**   | Immediate adoption               | Follows Expo SDK release cycle      |
+| **Bundler**          | Turbopack                        | Metro                               |
+| **Version Coupling** | None — independent               | Locked to Expo SDK 54 compatibility |
 
 **Why:** Expo SDK releases are tightly coupled to specific React Native and React versions. Attempting to unify versions across platforms would create constant breakage. Turborepo's workspace isolation ensures each app resolves the correct dependency versions without conflict, while `@repo/store` remains version-agnostic (pure TypeScript, no React dependency).
 
@@ -375,12 +375,12 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use.
 
-| Skill                                | Purpose                             | When to Use                                                                |
-| :----------------------------------- | :---------------------------------- | :------------------------------------------------------------------------- |
-| `vercel-composition-patterns`        | React composition patterns          | "Refactoring components", "Build reusable components", "Review components" |
-| `vercel-react-best-practices`        | 45+ React/Next.js performance rules | Writing, reviewing, or refactoring React code                              |
-| `vercel-react-native-best-practices` | 16+ React Native performance rules  | Writing, reviewing, or refactoring React Native code                       |
-| `web-design-guidelines`              | UI/UX accessibility audits          | "Review my UI", "Check accessibility", "Audit design"                      |
+| Skill                                | Purpose                                        | When to Use                                                                |
+| :----------------------------------- | :--------------------------------------------- | :------------------------------------------------------------------------- |
+| `vercel-composition-patterns`        | React composition patterns                     | "Refactoring components", "Build reusable components", "Review components" |
+| `vercel-react-best-practices`        | 40+ React/Next.js performance rules            | Writing, reviewing, or refactoring React code                              |
+| `vercel-react-native-best-practices` | 16+ React Native performance rules             | Writing, reviewing, or refactoring React Native code                       |
+| `web-design-guidelines`              | 100+ rules covering UI/UX accessibility audits | "Review my UI", "Check accessibility", "Audit design"                      |
 
 Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills)
 
@@ -394,9 +394,13 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 
 - create a folder named `.claude`
 - then copy skills folder from `ai_docs/skills/` to `.claude`
-- Copy `ai_docs/PROMPTS.md` to root directory, then rename it to `CLAUDE.md`
+- Copy or symlink `PROMPTS.md` to your AI tool's context file location
+  | AI Tool | Target Path |
+  | ----------- | ------------------- |
+  | Claude Code | `.claude/CLAUDE.md` |
+  | Gemini CLI | `.gemini/GEMINI.md` |
 - restart the Claude Code
-- AI assistants will use the skills when they are needed
+- AI assistants should use the skills when they are needed
 
 ### Measurable Impact
 
