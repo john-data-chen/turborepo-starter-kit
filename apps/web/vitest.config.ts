@@ -1,11 +1,19 @@
-import { createRequire } from "module";
 import path from "path";
 
+import type { ViteUserConfig } from "vitest/config";
 import { defineConfig } from "vitest/config";
 
-import rootConfig from "../../vitest.config";
+import rootConfigRaw from "../../vitest.config";
 
-const require = createRequire(import.meta.url);
+// Cast to ViteUserConfig to avoid type mismatch from duplicate vitest installations
+const rootConfig = rootConfigRaw as ViteUserConfig;
+
+// Force all React imports to resolve to apps/web's local copy.
+// This prevents "Invalid hook call" / "multiple React instances" errors
+// caused by workspace packages (e.g. @repo/store → zustand) resolving
+// a different React than the test runner in a pnpm monorepo.
+const reactPath = path.resolve(__dirname, "./node_modules/react");
+const reactDomPath = path.resolve(__dirname, "./node_modules/react-dom");
 
 export default defineConfig({
   ...rootConfig,
@@ -15,6 +23,14 @@ export default defineConfig({
     exclude: ["__tests__/e2e/**"],
     setupFiles: ["./vitest.setup.ts"],
     environment: "jsdom",
+    // test.alias takes precedence over resolve.alias for test files.
+    // Pinning react here ensures hooks in Zustand / @repo/store
+    // always reference the same React dispatcher.
+    alias: {
+      ...rootConfig.test?.alias,
+      react: reactPath,
+      "react-dom": reactDomPath
+    },
     coverage: {
       reporter: ["text", "json", "html", "lcov"],
       include: ["src/**/*.{ts,tsx}"],
@@ -47,8 +63,12 @@ export default defineConfig({
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),
       "@repo/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      react: path.dirname(require.resolve("react/package.json")),
-      "react-dom": path.dirname(require.resolve("react-dom/package.json"))
+      // Pin React and all sub-path imports to the web app's local copy
+      react: reactPath,
+      "react-dom": reactDomPath,
+      "react/jsx-runtime": path.resolve(reactPath, "jsx-runtime"),
+      "react/jsx-dev-runtime": path.resolve(reactPath, "jsx-dev-runtime"),
+      "react-dom/client": path.resolve(reactDomPath, "client")
     }
   }
 });

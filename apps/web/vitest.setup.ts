@@ -1,5 +1,21 @@
-// 1. Import Global Setup (Environment Variables)
-import "../../vitest.setup";
+// 1. Load Environment Variables
+// Load the app-local .env.test instead of the root (which doesn't exist).
+// The existence check prevents the ENOENT console noise in CI.
+import fs from "fs";
+import path from "path";
+
+import dotenv from "dotenv";
+
+const envTestPath = path.resolve(__dirname, ".env.test");
+
+if (fs.existsSync(envTestPath)) {
+  dotenv.config({ path: envTestPath });
+} else {
+  // Fallback: ensure essential env vars are always defined for tests
+  process.env.NEXT_PUBLIC_WEB_URL ??= "http://localhost:3000";
+  process.env.NEXT_PUBLIC_API_URL ??= "http://localhost:3001";
+}
+
 // 2. Testing Library Setup
 import "@testing-library/jest-dom/vitest";
 
