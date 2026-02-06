@@ -58,18 +58,18 @@ window.matchMedia =
 
 // 4. Component & Library Mocks
 
-// Mock @repo/ui components
-vi.mock("@repo/ui/components/button", () => ({
-  Button: ({ children, className, onClick, ...props }: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React = require("react");
-    return React.createElement("button", { className, onClick, ...props }, children);
-  }
-}));
+// Mock @repo/ui components using async factories with vi.importActual
+// to avoid no-require-imports lint warnings
+vi.mock("@repo/ui/components/button", async () => {
+  const React = await vi.importActual<typeof import("react")>("react");
+  return {
+    Button: ({ children, className, onClick, ...props }: any) =>
+      React.createElement("button", { className, onClick, ...props }, children)
+  };
+});
 
-vi.mock("@repo/ui/components/card", () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const React = require("react");
+vi.mock("@repo/ui/components/card", async () => {
+  const React = await vi.importActual<typeof import("react")>("react");
   return {
     Card: ({ children, className, onClick }: any) =>
       React.createElement("div", { className, onClick }, children),
@@ -79,17 +79,15 @@ vi.mock("@repo/ui/components/card", () => {
   };
 });
 
-vi.mock("@repo/ui/components/input", () => ({
-  Input: (props: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React = require("react");
-    return React.createElement("input", props);
-  }
-}));
+vi.mock("@repo/ui/components/input", async () => {
+  const React = await vi.importActual<typeof import("react")>("react");
+  return {
+    Input: (props: any) => React.createElement("input", props)
+  };
+});
 
-vi.mock("@repo/ui/components/select", () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const React = require("react");
+vi.mock("@repo/ui/components/select", async () => {
+  const React = await vi.importActual<typeof import("react")>("react");
   return {
     Select: ({ children, value, onValueChange }: any) =>
       React.createElement(
@@ -105,13 +103,13 @@ vi.mock("@repo/ui/components/select", () => {
   };
 });
 
-vi.mock("@repo/ui/components/skeleton", () => ({
-  Skeleton: ({ className }: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React = require("react");
-    return React.createElement("div", { className, "data-testid": "skeleton" });
-  }
-}));
+vi.mock("@repo/ui/components/skeleton", async () => {
+  const React = await vi.importActual<typeof import("react")>("react");
+  return {
+    Skeleton: ({ className }: any) =>
+      React.createElement("div", { className, "data-testid": "skeleton" })
+  };
+});
 
 // Mock next/navigation
 vi.mock("next/navigation", async () => {
@@ -127,11 +125,7 @@ vi.mock("next/navigation", async () => {
     })),
     usePathname: vi.fn(() => "/"),
     useSearchParams: vi.fn(() => new URLSearchParams()),
-    redirect: vi.fn((path) => {
-      // throw new Error(`Redirected to: ${path}`); // Optional: simulate redirect behavior
-    }),
-    permanentRedirect: vi.fn((path) => {
-      // throw new Error(`Permanently redirected to: ${path}`);
-    })
+    redirect: vi.fn(),
+    permanentRedirect: vi.fn()
   };
 });

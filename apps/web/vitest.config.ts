@@ -1,3 +1,4 @@
+import { createRequire } from "module";
 import path from "path";
 
 import type { ViteUserConfig } from "vitest/config";
@@ -8,12 +9,13 @@ import rootConfigRaw from "../../vitest.config";
 // Cast to ViteUserConfig to avoid type mismatch from duplicate vitest installations
 const rootConfig = rootConfigRaw as ViteUserConfig;
 
-// Force all React imports to resolve to apps/web's local copy.
-// This prevents "Invalid hook call" / "multiple React instances" errors
-// caused by workspace packages (e.g. @repo/store → zustand) resolving
-// a different React than the test runner in a pnpm monorepo.
-const reactPath = path.resolve(__dirname, "./node_modules/react");
-const reactDomPath = path.resolve(__dirname, "./node_modules/react-dom");
+// Use require.resolve to dynamically locate React wherever pnpm stores it.
+// path.resolve(__dirname, './node_modules/react') breaks in CI where pnpm
+// may not create a local symlink. require.resolve follows Node's resolution
+// algorithm and works in all pnpm hoisting modes.
+const require = createRequire(import.meta.url);
+const reactPath = path.dirname(require.resolve("react/package.json"));
+const reactDomPath = path.dirname(require.resolve("react-dom/package.json"));
 
 export default defineConfig({
   ...rootConfig,
@@ -63,7 +65,7 @@ export default defineConfig({
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),
       "@repo/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      // Pin React and all sub-path imports to the web app's local copy
+      // Pin React and all sub-path imports to the same resolved copy
       react: reactPath,
       "react-dom": reactDomPath,
       "react/jsx-runtime": path.resolve(reactPath, "jsx-runtime"),

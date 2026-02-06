@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
@@ -154,7 +155,7 @@ describe("TasksService", () => {
       };
       let thrownError: Error | null = null;
       try {
-        await service.create(createTaskDto as any, null);
+        await service.create(createTaskDto as any, null as unknown as string);
       } catch (error) {
         thrownError = error as Error;
       }
