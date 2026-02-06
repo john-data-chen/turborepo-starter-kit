@@ -1,8 +1,11 @@
+import { createRequire } from "module";
 import path from "path";
 
 import { defineConfig } from "vitest/config";
 
 import rootConfig from "../../vitest.config";
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   ...rootConfig,
@@ -44,8 +47,8 @@ export default defineConfig({
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),
       "@repo/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      react: path.resolve(__dirname, "node_modules/react"),
-      "react-dom": path.resolve(__dirname, "node_modules/react-dom")
+      react: path.dirname(require.resolve("react/package.json")),
+      "react-dom": path.dirname(require.resolve("react-dom/package.json"))
     }
   }
 });
