@@ -106,6 +106,12 @@
       ],
       "outputs": []
     },
+    "mobile#expo:upgrade": {
+      "cache": false
+    },
+    "mobile#expo:fix": {
+      "cache": false
+    },
     "lint": {
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx}",
