@@ -71,6 +71,7 @@
       "@nestjs/core",
       "@parcel/watcher",
       "@scarf/scarf",
+      "@swc/core",
       "@tailwindcss/oxide",
       "esbuild",
       "sharp",
