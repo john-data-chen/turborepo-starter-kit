@@ -38,12 +38,8 @@
     "@storybook/react": "^10.2.7",
     "@storybook/react-vite": "^10.2.7",
     "@storybook/test-runner": "^0.24.2",
-    "@types/node": "catalog:",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
     "global-tsconfig": "workspace:*",
-    "storybook": "^10.2.7",
-    "typescript": "catalog:"
+    "storybook": "^10.2.7"
   },
   "dependencies": {
     "@radix-ui/react-icons": "catalog:",

@@ -57,6 +57,12 @@ catalogs:
     vitest:
       specifier: ^4.0.18
       version: 4.0.18
+    zod:
+      specifier: ^4.3.6
+      version: 4.3.6
+    zustand:
+      specifier: ^5.0.11
+      version: 5.0.11
 
 importers:
 
@@ -77,6 +83,15 @@ importers:
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.11
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.13
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.13)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.0.18(vitest@4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
@@ -110,6 +125,9 @@ importers:
       turbo:
         specifier: ^2.8.3
         version: 2.8.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
@@ -198,27 +216,15 @@ importers:
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.10.11
       '@types/passport-jwt':
         specifier: ^4.0.1
         version: 4.0.1
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 4.0.18(vitest@4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   apps/mobile:
     dependencies:
@@ -292,10 +298,10 @@ importers:
         specifier: 0.5.1
         version: 0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       zod:
-        specifier: ^4.3.6
+        specifier: 'catalog:'
         version: 4.3.6
       zustand:
-        specifier: ^5.0.11
+        specifier: 'catalog:'
         version: 5.0.11(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.6.0(react@19.1.0))
     devDependencies:
       '@types/react':
@@ -392,60 +398,27 @@ importers:
         specifier: 'catalog:'
         version: 4.1.18
       zod:
-        specifier: ^4.3.6
+        specifier: 'catalog:'
         version: 4.3.6
       zustand:
-        specifier: ^5.0.11
+        specifier: 'catalog:'
         version: 5.0.11(@types/react@19.2.13)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
     devDependencies:
       '@playwright/test':
         specifier: ^1.58.1
         version: 1.58.1
-      '@testing-library/jest-dom':
-        specifier: 'catalog:'
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: 'catalog:'
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.10.11
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.13
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.13)
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 4.0.18(vitest@4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
-      dotenv:
-        specifier: 'catalog:'
-        version: 17.2.3
-      jsdom:
-        specifier: 'catalog:'
-        version: 28.0.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.0.18(@types/node@24.10.11)(jiti@2.6.1)(jsdom@28.0.0)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   packages/global-tsconfig: {}
 
   packages/store:
     dependencies:
       zustand:
-        specifier: ^5.0.11
+        specifier: 'catalog:'
         version: 5.0.11(@types/react@19.2.13)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
     devDependencies:
       global-tsconfig:
         specifier: workspace:*
         version: link:../global-tsconfig
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
 
   packages/ui:
     dependencies:
@@ -510,24 +483,12 @@ importers:
       '@storybook/test-runner':
         specifier: ^0.24.2
         version: 0.24.2(@types/node@24.10.11)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(ts-node@10.9.2(@swc/core@1.15.10)(@types/node@24.10.11)(typescript@5.9.3))
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.10.11
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.13
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.13)
       global-tsconfig:
         specifier: workspace:*
         version: link:../global-tsconfig
       storybook:
         specifier: ^10.2.7
         version: 10.2.7(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
 
 packages:
 
@@ -4430,9 +4391,6 @@ packages:
 
   '@types/node-forge@1.3.14':
     resolution: {integrity: sha512-mhVF2BnD4BO+jtOp7z1CdzaK4mbuK0LLQYAvdOLqHTavxFNq4zA1EmYkpnFjP8HOUzedfQkRnp0E2ulSAYSzAw==}
-
-  '@types/node@24.10.10':
-    resolution: {integrity: sha512-+0/4J266CBGPUq/ELg7QUHhN25WYjE0wYTPSQJn1xeu8DOlIOPxXxrNGiLmfAWl7HMMgWFWXpt9IDjMWrF5Iow==}
 
   '@types/node@24.10.11':
     resolution: {integrity: sha512-/Af7O8r1frCVgOz0I62jWUtMohJ0/ZQU/ZoketltOJPZpnb17yoNc9BSoVuV9qlaIXJiPNOpsfq4ByFajSArNQ==}
@@ -10161,7 +10119,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.28.5':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -10199,7 +10157,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/helper-plugin-utils@7.27.1': {}
 
@@ -14276,12 +14234,12 @@ snapshots:
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@types/babel__template@7.4.4':
     dependencies:
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.29.0
+      '@babel/types': 7.29.0
 
   '@types/babel__traverse@7.28.0':
     dependencies:
@@ -14311,7 +14269,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 24.10.10
+      '@types/node': 24.10.11
     optional: true
 
   '@types/cookie-parser@1.4.10(@types/express@5.0.6)':
@@ -14400,11 +14358,6 @@ snapshots:
   '@types/node-forge@1.3.14':
     dependencies:
       '@types/node': 24.10.11
-
-  '@types/node@24.10.10':
-    dependencies:
-      undici-types: 7.16.0
-    optional: true
 
   '@types/node@24.10.11':
     dependencies:
@@ -15063,8 +15016,8 @@ snapshots:
 
   babel-plugin-jest-hoist@29.6.3:
     dependencies:
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
+      '@babel/template': 7.28.6
+      '@babel/types': 7.29.0
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.28.0
 
@@ -17143,7 +17096,7 @@ snapshots:
   istanbul-lib-instrument@5.2.1:
     dependencies:
       '@babel/core': 7.28.5
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.0
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
       semver: 6.3.1
@@ -17384,7 +17337,7 @@ snapshots:
 
   jest-message-util@29.7.0:
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       '@jest/types': 29.6.3
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2

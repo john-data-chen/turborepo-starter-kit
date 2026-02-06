@@ -15,10 +15,9 @@
     "build": "tsc --noEmit"
   },
   "dependencies": {
-    "zustand": "^5.0.11"
+    "zustand": "catalog:"
   },
   "devDependencies": {
-    "global-tsconfig": "workspace:*",
-    "typescript": "catalog:"
+    "global-tsconfig": "workspace:*"
   }
 }
