@@ -1,3 +1,5 @@
+import type { Board, CreateTaskInput, Project, Task, UpdateTaskInput } from "@repo/store";
+import { TaskStatus } from "@repo/store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -6,8 +8,6 @@ import { boardApi } from "@/lib/api/boardApi";
 import { projectApi } from "@/lib/api/projectApi";
 import { taskApi } from "@/lib/api/taskApi";
 import { useDeleteTask } from "@/lib/api/tasks";
-import { Board, Project, Task, TaskStatus } from "@/types/dbInterface";
-import { CreateTaskInput, UpdateTaskInput } from "@/types/taskApi";
 
 interface State {
   // User state
