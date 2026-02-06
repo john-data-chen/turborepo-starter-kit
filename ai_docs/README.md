@@ -8,10 +8,10 @@ This directory contains AI context files and reusable skills for AI-assisted dev
 
 Copy or symlink `PROMPTS.md` to your AI tool's context file location:
 
-| AI Tool     | Target Path         |
-| ----------- | ------------------- |
-| Claude Code | `.claude/CLAUDE.md` |
-| Gemini CLI  | `.gemini/GEMINI.md` |
+| AI Tool     | Target Path             |
+| ----------- | ----------------------- |
+| Claude Code | `root-folder/CLAUDE.md` |
+| Gemini CLI  | `root-folder/GEMINI.md` |
 
 **Claude Code example:**
 
