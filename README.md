@@ -397,8 +397,8 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 - Copy or symlink `PROMPTS.md` to your AI tool's context file location
   | AI Tool | Target Path |
   | ----------- | ------------------- |
-  | Claude Code | `.claude/CLAUDE.md` |
-  | Gemini CLI | `.gemini/GEMINI.md` |
+  | Claude Code | `[root-folder]/CLAUDE.md` |
+  | Gemini CLI | `[root-folder]/GEMINI.md` |
 - restart the Claude Code
 - AI assistants should use the skills when they are needed
 
