@@ -352,12 +352,12 @@ This project demonstrates a "Human-in-the-Loop" architecture where AI tools are 
 
 I utilize a suite of specialized AI tools, each assigned specific roles to mimic a high-performing engineering team structure.
 
-| Role              | Tool                                                                    | Responsibility                      | Impact                                                                                                                                                           |
-| :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness, perfect for making plans for other AI tools.                                               |
-| **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper model such as Grok Code Fast 1, MiniMax M2 and Mistral Devstral 2. |
-| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Gemini 3 Pro is the cheapest option in top models, perfect for writing test cases.                                                                               |
-| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer.                                                                                        |
+| Role              | Tool                                                                    | Responsibility                      | Impact                                                                                                                                   |
+| :---------------- | :---------------------------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **Architect**     | [Claude Code](https://github.com/anthropics/claude-code)                | System design & complex refactoring | Handles multi-file architectural changes with deep context awareness, perfect for making plans for other AI tools.                       |
+| **Plan Executor** | [Kilo Code](https://github.com/Kilo-Org/kilocode)                       | Code writing                        | Follow the plan by Architect, implement functionality and refactor using a faster and cheaper models coming from MiniMax, Z.AI and Kimi. |
+| **QA**            | [Gemini CLI](https://github.com/google-gemini/gemini-cli)               | Writing test cases                  | Gemini 3 Pro is the cheapest option in top models, perfect for writing test cases.                                                       |
+| **PR Reviewer**   | [Gemini Code Assist](https://github.com/marketplace/gemini-code-assist) | Automated PR Review                 | Enforces code standards and catches potential bugs before human reviewer.                                                                |
 
 **MCP (Model Context Protocol) Servers**
 
