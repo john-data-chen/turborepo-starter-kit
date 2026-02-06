@@ -48,7 +48,12 @@
     "zustand": "catalog:"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.1"
+    "@playwright/test": "^1.58.1",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24.13.0"
