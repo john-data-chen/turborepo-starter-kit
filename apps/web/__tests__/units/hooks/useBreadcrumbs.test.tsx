@@ -1,9 +1,43 @@
 import type { Board } from "@/types/dbInterface";
+import type { UseQueryResult } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { useWorkspaceStore } from "@/stores/workspace-store";
+
+// Helper to create mock query results with proper typing
+function createMockQueryResult(
+  overrides: Partial<UseQueryResult<Board>> = {}
+): UseQueryResult<Board> {
+  return {
+    data: undefined,
+    error: null,
+    isError: false,
+    isLoading: false,
+    isPending: true,
+    isLoadingError: false,
+    isRefetchError: false,
+    isSuccess: false,
+    isPlaceholderData: false,
+    status: "pending",
+    dataUpdatedAt: 0,
+    errorUpdatedAt: 0,
+    failureCount: 0,
+    failureReason: null,
+    errorUpdateCount: 0,
+    isFetched: false,
+    isFetchedAfterMount: false,
+    isFetching: false,
+    isInitialLoading: false,
+    isPaused: false,
+    isRefetching: false,
+    isStale: false,
+    fetchStatus: "idle",
+    refetch: vi.fn(),
+    ...overrides
+  } as UseQueryResult<Board>;
+}
 
 // Mock next-intl
 vi.mock("next-intl", () => ({
@@ -18,6 +52,21 @@ vi.mock("next/navigation", () => ({
 // Mock the board queries
 vi.mock("@/lib/api/boards/queries", () => ({
   useBoard: vi.fn()
+}));
+
+// Mock workspace-store's transitive dependencies to break circular import:
+// workspace-store → @/lib/api/tasks → tasks/queries → workspace-store
+vi.mock("@/lib/api/tasks", () => ({
+  useDeleteTask: vi.fn()
+}));
+vi.mock("@/lib/api/boardApi", () => ({
+  boardApi: {}
+}));
+vi.mock("@/lib/api/projectApi", () => ({
+  projectApi: {}
+}));
+vi.mock("@/lib/api/taskApi", () => ({
+  taskApi: {}
 }));
 
 describe("useBreadcrumbs", () => {
@@ -44,12 +93,7 @@ describe("useBreadcrumbs", () => {
     const { useBoard } = await import("@/lib/api/boards/queries");
 
     vi.mocked(useParams).mockReturnValue({});
-    vi.mocked(useBoard).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(createMockQueryResult());
 
     const { result } = renderHook(() => useBreadcrumbs());
 
@@ -74,12 +118,13 @@ describe("useBreadcrumbs", () => {
     };
 
     vi.mocked(useParams).mockReturnValue({ boardId: "board-123" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     const { result } = renderHook(() => useBreadcrumbs());
 
@@ -109,12 +154,13 @@ describe("useBreadcrumbs", () => {
     };
 
     vi.mocked(useParams).mockReturnValue({ boardId: "board-123" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     renderHook(() => useBreadcrumbs());
 
@@ -129,12 +175,13 @@ describe("useBreadcrumbs", () => {
     const { useBoard } = await import("@/lib/api/boards/queries");
 
     vi.mocked(useParams).mockReturnValue({ boardId: "board-123" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        isLoading: true,
+        isFetching: true,
+        fetchStatus: "fetching"
+      })
+    );
 
     const { result } = renderHook(() => useBreadcrumbs());
 
@@ -147,12 +194,13 @@ describe("useBreadcrumbs", () => {
     const { useBoard } = await import("@/lib/api/boards/queries");
 
     vi.mocked(useParams).mockReturnValue({ boardId: "board-123" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: new Error("Failed to load board"),
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        error: new Error("Failed to load board"),
+        isError: true,
+        status: "error"
+      })
+    );
 
     const { result } = renderHook(() => useBreadcrumbs());
 
@@ -165,12 +213,7 @@ describe("useBreadcrumbs", () => {
     const { useBoard } = await import("@/lib/api/boards/queries");
 
     vi.mocked(useParams).mockReturnValue({});
-    vi.mocked(useBoard).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(createMockQueryResult());
 
     const { result } = renderHook(() => useBreadcrumbs());
 
@@ -205,12 +248,13 @@ describe("useBreadcrumbs", () => {
     };
 
     vi.mocked(useParams).mockReturnValue({ boardId: "board-1" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard1,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard1,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     const { result, rerender } = renderHook(() => useBreadcrumbs());
 
@@ -220,12 +264,13 @@ describe("useBreadcrumbs", () => {
 
     // Update to board 2
     vi.mocked(useParams).mockReturnValue({ boardId: "board-2" });
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard2,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard2,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     rerender();
 
@@ -238,7 +283,8 @@ describe("useBreadcrumbs", () => {
     const { useParams } = await import("next/navigation");
     const { useBoard } = await import("@/lib/api/boards/queries");
 
-    const mockBoard = {
+    const mockBoard: Board = {
+      _id: undefined as unknown as string, // intentionally undefined to test missing ID behavior
       title: "Test Board",
       description: "Test description",
       owner: "user-123",
@@ -246,16 +292,16 @@ describe("useBreadcrumbs", () => {
       projects: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
-      // _id is missing
     };
 
     vi.mocked(useParams).mockReturnValue({});
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard as Board,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     useWorkspaceStore.setState({ currentBoardId: "old-board-id" });
 
@@ -288,12 +334,13 @@ describe("useBreadcrumbs", () => {
       locale: "en",
       projectId: "project-456"
     });
-    vi.mocked(useBoard).mockReturnValue({
-      data: mockBoard,
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    });
+    vi.mocked(useBoard).mockReturnValue(
+      createMockQueryResult({
+        data: mockBoard,
+        isSuccess: true,
+        status: "success"
+      })
+    );
 
     const { result } = renderHook(() => useBreadcrumbs());
 
