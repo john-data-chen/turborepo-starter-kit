@@ -1,28 +1,52 @@
-# Full-Stack Monorepo Architecture: Next.js + Nest.js with 80%+ Test Coverage
+# Full-Stack Multi-Platform Monorepo: Next.js + Nest.js + React Native (Expo)
 
 [![codecov](https://codecov.io/gh/john-data-chen/turborepo-starter-kit/graph/badge.svg?token=WvGIkvgW39)](https://codecov.io/gh/john-data-chen/turborepo-starter-kit)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=john-data-chen_turborepo-starter-kit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=john-data-chen_turborepo-starter-kit)
 [![CI](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml/badge.svg)](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> A portfolio project demonstrating production-grade architecture, test-driven development, and data-driven tooling decisions. Built to showcase engineering practices and decision-making for senior full-stack roles.
+> A production-grade multi-platform monorepo demonstrating shared business logic across Web and Mobile. Built with a write-once approach for state management, validation, and types — while each platform retains full control over its UI and navigation. Showcases engineering practices and decision-making for senior full-stack roles.
 
 ## Architecture & Engineering Decisions
 
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
 
-A production-grade Kanban application demonstrating monorepo architecture, test-driven development, and modern tooling practices. Originally built as a monolithic Next.js app ([next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit)), then strategically re-architected to a decoupled frontend/backend system.
+A production-grade Kanban application demonstrating monorepo architecture, test-driven development, and modern tooling practices. Originally built as a monolithic Next.js app ([next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit)), then strategically re-architected to a decoupled frontend/backend system, and now expanded to a **multi-platform solution** with shared business logic across Web and Mobile.
 
 ### Architectural Evolution
 
-| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                                | Trade-off Reasoning                                  |
-| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **Team Structure**    | Full-stack developers required             | **Specialized Frontend & Backend Teams**                                  | Enables parallel development; teams own their domain |
-| **Development Cycle** | Tightly coupled; one change can impact all | **Independent development cycles**                                        | Reduces cross-team blocking; faster iteration        |
-| **Deployment**        | Single, monolithic deployment              | **Independent Frontend/Backend deployment**                               | Lower-risk releases; isolated failure domains        |
-| **Scalability**       | Vertical scaling of the entire app         | **Targeted horizontal scaling** (e.g., scale only the API service)        | Cost-effective resource allocation                   |
-| **Technology Stack**  | Locked into Next.js for backend            | **Flexible backend choice (Nest.js)**; can add more services (Go, Python) | Future-proofs architecture; best tool for each job   |
-| **Code Reusability**  | Limited to the Next.js app                 | **Centralized `ui` & `config` packages**                                  | Enforces consistency; DRY across applications        |
+| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                                | Now (Multi-Platform)                                                      | Trade-off Reasoning                                      |
+| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Team Structure**    | Full-stack developers required             | Specialized Frontend & Backend Teams                                      | **+ Mobile Team with shared domain knowledge**                            | Teams share types/state; onboard faster via shared code  |
+| **Development Cycle** | Tightly coupled; one change can impact all | Independent development cycles                                            | **Web & Mobile iterate independently on shared foundations**              | Platform teams move at their own pace                    |
+| **Deployment**        | Single, monolithic deployment              | Independent Frontend/Backend deployment                                   | **+ OTA updates for Mobile via Expo**                                     | Three independent release channels                       |
+| **Scalability**       | Vertical scaling of the entire app         | Targeted horizontal scaling (e.g., scale only the API service)            | **Same API serves Web & Mobile clients**                                  | Single backend; multiple frontends                       |
+| **Technology Stack**  | Locked into Next.js for backend            | Flexible backend choice (Nest.js); can add more services (Go, Python)     | **+ React Native (Expo) with NativeWind**                                 | Best tool per platform; shared logic layer               |
+| **Code Reusability**  | Limited to the Next.js app                 | Centralized `ui` & `config` packages                                      | **+ Shared `store` package (types, state, validation)**                   | Write once for logic; platform-specific for UI           |
+
+### Code Sharing Strategy
+
+The monorepo shares business logic across platforms while keeping UI and navigation platform-specific:
+
+```text
+┌─────────────────────────────────────────────────────┐
+│                  Shared Packages                     │
+│                                                      │
+│  @repo/store         @repo/ui        global-tsconfig │
+│  ├── Types           ├── Shadcn UI    └── Base TS    │
+│  ├── Zustand Stores  └── Storybook       configs     │
+│  └── Storage Adapter                                 │
+│       (injectable)                                   │
+├──────────────────┬──────────────────┬────────────────┤
+│    apps/web      │   apps/mobile    │   apps/api     │
+│    Next.js       │   Expo (RN)      │   Nest.js      │
+│    App Router    │   Expo Router    │   Express      │
+│    Tailwind CSS  │   NativeWind     │   Rspack       │
+│    localStorage  │   AsyncStorage   │   MongoDB      │
+└──────────────────┴──────────────────┴────────────────┘
+```
+
+`@repo/store` exports a `createAuthStore()` factory with an injectable `StorageAdapter`, allowing Web to use `localStorage` and Mobile to use `AsyncStorage` — same state logic, platform-appropriate persistence.
 
 ### Features
 
@@ -65,17 +89,28 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 - E2E tests validate critical flows (auth)
 - Every PR triggers the full pipeline before merge
 
-### Frontend
+### Frontend (Web)
 
 | Type      | Choice                   | Rationale                                        |
 | --------- | ------------------------ | ------------------------------------------------ |
 | Framework | Next.js (App Router)     | SSG for static pages, SSR for dynamic content    |
-| State     | Zustand                  | 40% less boilerplate than Redux, simpler testing |
+| State     | Zustand (shared)         | 40% less boilerplate than Redux, simpler testing |
 | Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas         |
 | Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy |
 | DnD       | dnd-kit                  | Lightweight, accessible, extensible              |
 | i18n      | next-intl                | App Router native support                        |
 | UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration        |
+
+### Mobile
+
+| Type       | Choice                   | Rationale                                         |
+| ---------- | ------------------------ | ------------------------------------------------- |
+| Framework  | Expo (Managed)           | Rapid iteration, OTA updates, no native build env |
+| Navigation | Expo Router              | File-based routing, consistent with Next.js model |
+| Styling    | NativeWind (Tailwind v4) | Shared mental model with web Tailwind CSS         |
+| State      | Zustand (shared)         | Same stores as web via `@repo/store`              |
+| Animations | React Native Reanimated  | 60fps native-thread animations                    |
+| Storage    | AsyncStorage             | Platform-appropriate persistence adapter          |
 
 ### Backend
 
@@ -107,6 +142,7 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 - Node.js latest LTS version
 - PNPM latest version
 - Docker / OrbStack (for local MongoDB)
+- **For Mobile:** iOS Simulator (Xcode) or Android Emulator (Android Studio), or [Expo Go](https://expo.dev/go) on a physical device
 
 ### Environment Configuration
 
@@ -163,15 +199,51 @@ docker-compose up -d
 # initialize mongodb in root folder
 pnpm init-db
 
-# Run
-pnpm dev                   # Development
+# Run Web + API
+pnpm dev                   # Development (all apps)
 pnpm test                  # Unit tests
 pnpm playwright:install    # Install browsers before E2E tests
 pnpm playwright            # E2E tests
 pnpm storybook             # Execute Storybook
 pnpm storybook:test        # Run Storybook interaction tests
 pnpm build                 # Production build
+
+# Run Mobile
+pnpm mobile                # Start Expo dev server
+pnpm mobile:ios            # Start on iOS Simulator
+pnpm mobile:android        # Start on Android Emulator
 ```
+
+---
+
+## Engineering Decisions
+
+### Version Isolation Strategy
+
+While this monorepo shares business logic across platforms, **React and React Native maintain independent version lifecycles**. This is a deliberate architectural choice:
+
+| Concern              | Web (Next.js)                    | Mobile (Expo)                         |
+| -------------------- | -------------------------------- | ------------------------------------- |
+| **React Version**    | Latest stable (via PNPM catalog) | Pinned to Expo SDK requirements       |
+| **Update Cadence**   | Immediate adoption               | Follows Expo SDK release cycle        |
+| **Bundler**          | Turbopack                        | Metro                                 |
+| **Version Coupling** | None — independent               | Locked to Expo SDK 54 compatibility   |
+
+**Why:** Expo SDK releases are tightly coupled to specific React Native and React versions. Attempting to unify versions across platforms would create constant breakage. Turborepo's workspace isolation ensures each app resolves the correct dependency versions without conflict, while `@repo/store` remains version-agnostic (pure TypeScript, no React dependency).
+
+### Storage Adapter Pattern
+
+`@repo/store` uses dependency injection for platform persistence:
+
+```typescript
+// Web: uses localStorage (default)
+const useAuthStore = createAuthStore();
+
+// Mobile: injects AsyncStorage adapter
+const useAuthStore = createAuthStore(asyncStorageAdapter);
+```
+
+This pattern enables shared state logic without platform-specific imports leaking across boundaries.
 
 ---
 
@@ -187,63 +259,61 @@ pnpm build                 # Production build
 
 ---
 
-## 📖 Detailed Technical Documentation
-
-### Project Structure
+## Project Structure
 
 ```text
-.github/ # GitHub Actions workflows
-.husky/ # Husky configuration
-ai-docs/ # AI documentations including skills and prompts
+.github/                    # GitHub Actions workflows
+.husky/                     # Husky configuration
+ai-docs/                    # AI documentations including skills and prompts
 apps/
-├── api/ # Nest.js API server
-│   ├── __tests__/ # Unit tests (by Vitest)
-│   ├── database/ # MongoDB docker-compose and initialization
+├── api/                    # Nest.js API server
+│   ├── __tests__/          # Unit tests (by Vitest)
+│   ├── database/           # MongoDB docker-compose and initialization
 │   ├── src/
-│   │   ├── common/ # Nest pipe
-│   │   ├── constants/ # Nest constants
-│   │   ├── controllers/ # Nest controllers
-│   │   └── modules/ # Nest modules
-│   └── env.example # Environment variables example
-├── web/ # Next.js Web app
+│   │   ├── common/         # Nest pipe
+│   │   ├── constants/      # Nest constants
+│   │   ├── controllers/    # Nest controllers
+│   │   └── modules/        # Nest modules
+│   └── env.example         # Environment variables example
+├── mobile/                 # React Native (Expo) app
+│   ├── app/                # Expo Router file-based routes
+│   │   ├── (tabs)/         # Tab navigation
+│   │   └── modal.tsx       # Modal screen
+│   ├── components/         # React Native components
+│   ├── constants/          # App constants (colors, themes)
+│   ├── lib/                # Utilities and helpers
+│   ├── stores/             # Platform-specific store bindings
+│   ├── types/              # Mobile-specific type extensions
+│   └── global.css          # NativeWind theme (Tailwind v4)
+├── web/                    # Next.js Web app
 │   ├── __tests__/
-│   │   ├── e2e/ # End-to-end tests (by Playwright)
-│   │   └── unit/ # Unit tests (by Vitest)
-│   ├── .github/ # GitHub Actions workflows
-│   ├── .husky/ # Husky configuration
-│   ├── database/ # MongoDB docker-compose and initialization
-│   ├── messages/ # i18n translations
-│   ├── public/ # Static files such as images
+│   │   ├── e2e/            # End-to-end tests (by Playwright)
+│   │   └── unit/           # Unit tests (by Vitest)
+│   ├── messages/           # i18n translations
+│   ├── public/             # Static files such as images
 │   ├── src/
-│   │   └── app/ # Next.js App routes
-│   │       ├── [locale] # i18n locale routers
-│   │       ├── page.tsx # Root page
-│   │       ├── layout.tsx # Layout component
-│   │       ├── not-found.tsx # 404 page
-│   │       ├── (auth)/ # Authentication routes
-│   │            └── login/ # Login page
-│   │       └── (workspace)/ # Workspace routes
-│   │            └── boards/ # Kanban Overview routes
-│   │                └── [boardId]/ # Board
-│   ├────── components/ # Custom React components
-│   ├────── constants/ # Application-wide constants
-│   ├────── hooks/ # Custom React hooks
-│   ├────── i18n/ # i18n configs
-│   ├────── lib/
-│   │       ├── api/ # API clients with auth handling
-│   │       ├── auth/ # Authentication services
-│   │       └── config/ # Environment configuration
-│   ├────── providers/ # React context providers
-│   ├────── stores/ # Zustand state management
-│   ├────── types/ # Type definitions
-│   └─────  proxy.ts # the middleware for handling API requests
-└────────── env.example # Environment variables example
+│   │   └── app/            # Next.js App routes
+│   │       ├── [locale]    # i18n locale routers
+│   │       ├── (auth)/     # Authentication routes
+│   │       └── (workspace)/# Workspace routes
+│   ├── components/         # Custom React components
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # API clients, auth, config
+│   ├── providers/          # React context providers
+│   ├── stores/             # Web-specific store bindings
+│   └── types/              # Type definitions
 packages/
-├── global-tsconfig # global tsconfig
-└── ui # Shared UI components
-    ├────── .storybook/ # configs of storybook
-    ├────── src/components/ui # Shadcn UI components / component storybooks
-    └────── styles/ # Global styles
+├── global-tsconfig/        # Base TypeScript configuration
+├── store/                  # Shared state & types (@repo/store)
+│   └── src/
+│       ├── types.ts        # Domain types (Board, Task, User, etc.)
+│       ├── auth-store.ts   # Auth store factory with StorageAdapter
+│       ├── storage.ts      # StorageAdapter interface
+│       └── workspace-types.ts  # Shared workspace interface
+└── ui/                     # Shared UI components (@repo/ui)
+    ├── .storybook/         # Storybook configuration
+    ├── src/components/ui/  # Shadcn UI components + storybooks
+    └── styles/             # Global styles
 ```
 
 ---
@@ -274,11 +344,11 @@ Storybook serves as the Single Source of Truth (SSOT) for UI components, providi
 
 ---
 
-## 🤖 AI-Augmented Engineering Workflow
+## AI-Augmented Engineering Workflow
 
 This project demonstrates a "Human-in-the-Loop" architecture where AI tools are orchestrated to amplify engineering impact. The focus is not just on code generation, but on **architectural leverage, rigorous quality assurance, and accelerated velocity**.
 
-### 🚀 Orchestration & Agency
+### Orchestration & Agency
 
 I utilize a suite of specialized AI tools, each assigned specific roles to mimic a high-performing engineering team structure.
 
@@ -328,7 +398,7 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 - restart the Claude Code
 - AI assistants will use the skills when they are needed
 
-### 📈 Measurable Impact
+### Measurable Impact
 
 By treating AI as an integrated part of the stack, this project achieves:
 
