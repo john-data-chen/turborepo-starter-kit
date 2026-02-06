@@ -20,6 +20,9 @@
     "storybook": "turbo run storybook --filter=@repo/ui",
     "storybook:build": "turbo run storybook:build --filter=@repo/ui",
     "storybook:test": "turbo run storybook:test --filter=@repo/ui",
+    "mobile": "turbo dev --filter=mobile",
+    "mobile:ios": "pnpm --filter=mobile ios",
+    "mobile:android": "pnpm --filter=mobile android",
     "test": "turbo test",
     "test:watch": "turbo run test:watch"
   },

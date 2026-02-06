@@ -89,6 +89,21 @@
         "dist/**"
       ]
     },
+    "mobile#dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "mobile#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
     "lint": {
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx}",
