@@ -305,11 +305,12 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use.
 
-| Skill                         | Purpose                             | When to Use                                                                |
-| :---------------------------- | :---------------------------------- | :------------------------------------------------------------------------- |
-| `vercel-react-best-practices` | 45+ React/Next.js performance rules | Writing, reviewing, or refactoring React code                              |
-| `web-design-guidelines`       | UI/UX accessibility audits          | "Review my UI", "Check accessibility", "Audit design"                      |
-| `vercel-composition-patterns` | React composition patterns          | "Refactoring components", "Build reusable components", "Review components" |
+| Skill                                | Purpose                             | When to Use                                                                |
+| :----------------------------------- | :---------------------------------- | :------------------------------------------------------------------------- |
+| `vercel-composition-patterns`        | React composition patterns          | "Refactoring components", "Build reusable components", "Review components" |
+| `vercel-react-best-practices`        | 45+ React/Next.js performance rules | Writing, reviewing, or refactoring React code                              |
+| `vercel-react-native-best-practices` | 16+ React Native performance rules  | Writing, reviewing, or refactoring React Native code                       |
+| `web-design-guidelines`              | UI/UX accessibility audits          | "Review my UI", "Check accessibility", "Audit design"                      |
 
 Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills)
 
