@@ -8,7 +8,13 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "eas build"
+    "build": "tsc --noEmit",
+    "build:eas": "eas build",
+    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
+    "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
+    "expo:upgrade": "npx expo upgrade",
+    "expo:fix": "npx expo install --fix",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

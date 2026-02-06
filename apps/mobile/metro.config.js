@@ -1,3 +1,4 @@
+/* eslint-disable typescript-eslint/no-require-imports */
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativewind } = require("nativewind/metro");
 const path = require("path");

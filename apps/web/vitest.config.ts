@@ -1,11 +1,21 @@
 import { createRequire } from "module";
 import path from "path";
 
+import type { ViteUserConfig } from "vitest/config";
 import { defineConfig } from "vitest/config";
 
-import rootConfig from "../../vitest.config";
+import rootConfigRaw from "../../vitest.config";
 
+// Cast to ViteUserConfig to avoid type mismatch from duplicate vitest installations
+const rootConfig = rootConfigRaw as ViteUserConfig;
+
+// Use require.resolve to dynamically locate React wherever pnpm stores it.
+// path.resolve(__dirname, './node_modules/react') breaks in CI where pnpm
+// may not create a local symlink. require.resolve follows Node's resolution
+// algorithm and works in all pnpm hoisting modes.
 const require = createRequire(import.meta.url);
+const reactPath = path.dirname(require.resolve("react/package.json"));
+const reactDomPath = path.dirname(require.resolve("react-dom/package.json"));
 
 export default defineConfig({
   ...rootConfig,
@@ -15,6 +25,14 @@ export default defineConfig({
     exclude: ["__tests__/e2e/**"],
     setupFiles: ["./vitest.setup.ts"],
     environment: "jsdom",
+    // test.alias takes precedence over resolve.alias for test files.
+    // Pinning react here ensures hooks in Zustand / @repo/store
+    // always reference the same React dispatcher.
+    alias: {
+      ...rootConfig.test?.alias,
+      react: reactPath,
+      "react-dom": reactDomPath
+    },
     coverage: {
       reporter: ["text", "json", "html", "lcov"],
       include: ["src/**/*.{ts,tsx}"],
@@ -47,8 +65,18 @@ export default defineConfig({
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),
       "@repo/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      react: path.dirname(require.resolve("react/package.json")),
-      "react-dom": path.dirname(require.resolve("react-dom/package.json"))
+      // Pin React and all sub-path imports to the same resolved copy
+      react: reactPath,
+      "react-dom": reactDomPath,
+      "react/jsx-runtime": path.resolve(reactPath, "jsx-runtime"),
+      "react/jsx-dev-runtime": path.resolve(reactPath, "jsx-dev-runtime"),
+      "react-dom/client": path.resolve(reactDomPath, "client")
     }
+  },
+  // Force zustand to be bundled (not externalized) so React aliases are applied.
+  // This prevents zustand from using its own node_modules/react copy
+  // which causes "Cannot read properties of null (reading 'useCallback')" errors.
+  ssr: {
+    noExternal: [/zustand/]
   }
 });

@@ -69,5 +69,5 @@ export class UpdateTaskDto {
   })
   @IsNumber()
   @IsOptional()
-  orderInProject: number;
+  orderInProject?: number;
 }

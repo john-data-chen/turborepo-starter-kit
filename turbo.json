@@ -104,21 +104,27 @@
       "dependsOn": [
         "^build"
       ],
-      "outputs": [
-        "dist/**"
-      ]
+      "outputs": []
+    },
+    "mobile#expo:upgrade": {
+      "cache": false
+    },
+    "mobile#expo:fix": {
+      "cache": false
     },
     "lint": {
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx}",
-        "__tests__/**/*.{ts,tsx,js,jsx}"
+        "__tests__/**/*.{ts,tsx,js,jsx}",
+        "apps/mobile/**/*.{ts,tsx,js,jsx}"
       ]
     },
     "format": {
       "cache": false,
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx,css,scss}",
-        "__tests__/**/*.{ts,tsx,js,jsx,css,scss}"
+        "__tests__/**/*.{ts,tsx,js,jsx,css,scss}",
+        "apps/mobile/**/*.{ts,tsx,js,jsx,css,scss}",
       ]
     },
     "dev": {
