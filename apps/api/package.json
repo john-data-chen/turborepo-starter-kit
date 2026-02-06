@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^11.1.13",
-    "@nestjs/config": "^4.0.2",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.13",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "^2.1.0",
@@ -47,13 +47,9 @@
     "@rspack/core": "^1.7.5",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
-    "@types/node": "catalog:",
     "@types/passport-jwt": "^4.0.1",
-    "@vitest/coverage-v8": "catalog:",
     "cross-env": "^10.1.0",
-    "tsx": "^4.21.0",
-    "typescript": "catalog:",
-    "vitest": "catalog:"
+    "tsx": "^4.21.0"
   },
   "engines": {
     "node": ">=24.13.0"

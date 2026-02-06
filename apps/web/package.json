@@ -24,6 +24,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-icons": "catalog:",
+    "@repo/store": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/react-query": "^5.90.20",
@@ -43,20 +44,15 @@
     "react-hook-form": "catalog:",
     "sonner": "^2.0.7",
     "tailwindcss": "catalog:",
-    "zod": "^4.3.6",
-    "zustand": "^5.0.11"
+    "zod": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.1",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
-    "@types/node": "catalog:",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "dotenv": "catalog:",
     "jsdom": "catalog:",
-    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

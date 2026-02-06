@@ -45,6 +45,10 @@
         "^build"
       ]
     },
+    "@repo/store#build": {
+      "dependsOn": [],
+      "outputs": []
+    },
     "@repo/ui#build": {
       "dependsOn": [],
       "outputs": []
@@ -82,6 +86,21 @@
       ]
     },
     "api#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
+    "mobile#dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "mobile#build": {
       "dependsOn": [
         "^build"
       ],

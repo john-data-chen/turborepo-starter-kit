@@ -1,0 +1,121 @@
+// 1. Import Global Setup (Environment Variables)
+import "../../vitest.setup";
+// 2. Testing Library Setup
+import "@testing-library/jest-dom/vitest";
+
+import * as matchers from "@testing-library/jest-dom/matchers";
+import { cleanup } from "@testing-library/react";
+import { afterEach, vi, expect } from "vitest";
+
+// Extend Vitest's expect method with testing-library matchers
+expect.extend(matchers);
+
+// Cleanup after each test case
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
+// 3. Browser Environment Mocks
+// Mock ResizeObserver
+window.ResizeObserver =
+  window.ResizeObserver ||
+  vi.fn().mockImplementation(() => ({
+    disconnect: vi.fn(),
+    observe: vi.fn(),
+    unobserve: vi.fn()
+  }));
+
+// Mock matchMedia
+window.matchMedia =
+  window.matchMedia ||
+  vi.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn()
+  }));
+
+// 4. Component & Library Mocks
+
+// Mock @repo/ui components
+vi.mock("@repo/ui/components/button", () => ({
+  Button: ({ children, className, onClick, ...props }: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const React = require("react");
+    return React.createElement("button", { className, onClick, ...props }, children);
+  }
+}));
+
+vi.mock("@repo/ui/components/card", () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const React = require("react");
+  return {
+    Card: ({ children, className, onClick }: any) =>
+      React.createElement("div", { className, onClick }, children),
+    CardHeader: ({ children }: any) => React.createElement("div", null, children),
+    CardTitle: ({ children }: any) => React.createElement("h3", null, children),
+    CardContent: ({ children }: any) => React.createElement("div", null, children)
+  };
+});
+
+vi.mock("@repo/ui/components/input", () => ({
+  Input: (props: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const React = require("react");
+    return React.createElement("input", props);
+  }
+}));
+
+vi.mock("@repo/ui/components/select", () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const React = require("react");
+  return {
+    Select: ({ children, value, onValueChange }: any) =>
+      React.createElement(
+        "div",
+        { "data-value": value, onClick: () => onValueChange?.("test") },
+        children
+      ),
+    SelectTrigger: ({ children, ...props }: any) => React.createElement("div", props, children),
+    SelectValue: ({ placeholder }: any) => React.createElement("span", null, placeholder),
+    SelectContent: ({ children }: any) => React.createElement("div", null, children),
+    SelectItem: ({ children, value, ...props }: any) =>
+      React.createElement("div", { ...props, "data-value": value }, children)
+  };
+});
+
+vi.mock("@repo/ui/components/skeleton", () => ({
+  Skeleton: ({ className }: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const React = require("react");
+    return React.createElement("div", { className, "data-testid": "skeleton" });
+  }
+}));
+
+// Mock next/navigation
+vi.mock("next/navigation", async () => {
+  const actual = await vi.importActual("next/navigation");
+  return {
+    ...actual,
+    useRouter: vi.fn(() => ({
+      push: vi.fn(),
+      replace: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+      refresh: vi.fn()
+    })),
+    usePathname: vi.fn(() => "/"),
+    useSearchParams: vi.fn(() => new URLSearchParams()),
+    redirect: vi.fn((path) => {
+      // throw new Error(`Redirected to: ${path}`); // Optional: simulate redirect behavior
+    }),
+    permanentRedirect: vi.fn((path) => {
+      // throw new Error(`Permanently redirected to: ${path}`);
+    })
+  };
+});
