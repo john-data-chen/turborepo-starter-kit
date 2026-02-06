@@ -72,5 +72,11 @@ export default defineConfig({
       "react/jsx-dev-runtime": path.resolve(reactPath, "jsx-dev-runtime"),
       "react-dom/client": path.resolve(reactDomPath, "client")
     }
+  },
+  // Force zustand to be bundled (not externalized) so React aliases are applied.
+  // This prevents zustand from using its own node_modules/react copy
+  // which causes "Cannot read properties of null (reading 'useCallback')" errors.
+  ssr: {
+    noExternal: [/zustand/]
   }
 });
