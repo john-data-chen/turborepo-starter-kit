@@ -43,7 +43,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),
-      "@repo/ui": path.resolve(__dirname, "../../packages/ui/src")
+      "@repo/ui": path.resolve(__dirname, "../../packages/ui/src"),
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom")
     }
   }
 });
