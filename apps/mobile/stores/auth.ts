@@ -7,7 +7,7 @@ import { createAuthStore, type StorageAdapter } from "@repo/store";
  */
 const asyncStorageAdapter: StorageAdapter = {
   getItem: async (name: string) => {
-    return  AsyncStorage.getItem(name);
+    return AsyncStorage.getItem(name);
   },
   setItem: async (name: string, value: string) => {
     await AsyncStorage.setItem(name, value);
