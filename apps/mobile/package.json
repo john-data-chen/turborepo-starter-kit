@@ -1,20 +1,21 @@
 {
   "name": "mobile",
-  "main": "expo-router/entry",
   "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
   "scripts": {
-    "dev": "expo start",
-    "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
     "build": "tsc --noEmit",
     "build:eas": "eas build",
-    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
-    "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
-    "expo:upgrade": "npx expo upgrade",
+    "dev": "expo start",
     "expo:fix": "npx expo install --fix",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
+    "expo:upgrade": "npx expo upgrade",
+    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/mobile",
+    "ios": "expo start --ios",
+    "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
+    "start": "expo start",
+    "web": "expo start --web"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -48,6 +49,5 @@
     "react-test-renderer": "19.1.0",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.2"
-  },
-  "private": true
+  }
 }

@@ -1,13 +1,5 @@
 {
-  "plugins": [
-    "react",
-    "react-perf",
-    "nextjs",
-    "typescript",
-    "unicorn",
-    "oxc",
-    "jsx-a11y"
-  ],
+  "plugins": ["react", "react-perf", "nextjs", "typescript", "unicorn", "oxc", "jsx-a11y"],
   "rules": {
     "react/jsx-no-undef": "warn",
     "react/self-closing-comp": "warn",
@@ -89,6 +81,7 @@
     "typescript/use-unknown-in-catch-callback-variable": "warn"
   },
   "ignorePatterns": [
+    "ai_docs/**/*",
     "node_modules/**/*",
     "dist/**/*",
     "../../apps/api/database/mongodb/**/*",
