@@ -1,15 +1,15 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const getLocalePath = (path: string, locale: string | string[] | undefined) => {
-  const currentLocale = Array.isArray(locale) ? locale[0] : locale
+  const currentLocale = Array.isArray(locale) ? locale[0] : locale;
   if (currentLocale) {
-    return `/${currentLocale}${path}`
+    return `/${currentLocale}${path}`;
   }
   // Fallback to the path without locale if it's not present
-  return path
-}
+  return path;
+};
