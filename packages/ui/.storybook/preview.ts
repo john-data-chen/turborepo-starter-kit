@@ -1,9 +1,10 @@
-import type { Preview } from '@storybook/react'
-import '../src/styles/globals.css'
+import "../src/styles/globals.css";
+
+import type { Preview } from "@storybook/react";
 
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
+    actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -12,25 +13,25 @@ const preview: Preview = {
     },
     a11y: {
       // 這個元素是為了確保 Storybook 容器有適當的最小高度
-      element: '#storybook-root',
+      element: "#storybook-root",
       manual: false
     },
     themes: {
-      default: 'light',
+      default: "light",
       list: [
         {
-          name: 'light',
-          class: 'light',
-          color: '#ffffff'
+          name: "light",
+          class: "light",
+          color: "#ffffff"
         },
         {
-          name: 'dark',
-          class: 'dark',
-          color: '#0f172a'
+          name: "dark",
+          class: "dark",
+          color: "#0f172a"
         }
       ]
     }
   }
-}
+};
 
-export default preview
+export default preview;
