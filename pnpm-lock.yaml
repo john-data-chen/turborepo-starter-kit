@@ -151,7 +151,7 @@ importers:
         version: 2.1.0(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
       '@nestjs/mongoose':
         specifier: ^11.0.4
-        version: 11.0.4(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(mongoose@9.1.6)(rxjs@7.8.2)
+        version: 11.0.4(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(mongoose@9.2.0)(rxjs@7.8.2)
       '@nestjs/passport':
         specifier: ^11.0.5
         version: 11.0.5(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
@@ -174,8 +174,8 @@ importers:
         specifier: 'catalog:'
         version: 17.2.4
       mongoose:
-        specifier: ^9.1.6
-        version: 9.1.6
+        specifier: ^9.2.0
+        version: 9.2.0
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -462,8 +462,8 @@ importers:
         specifier: 'catalog:'
         version: 19.2.4
       react-day-picker:
-        specifier: ^9.13.0
-        version: 9.13.0(react@19.2.4)
+        specifier: ^9.13.2
+        version: 9.13.2(react@19.2.4)
       react-dom:
         specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
@@ -7185,8 +7185,8 @@ packages:
   jws@4.0.1:
     resolution: {integrity: sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==}
 
-  kareem@3.0.0:
-    resolution: {integrity: sha512-RKhaOBSPN8L7y4yAgNhDT2602G5FD6QbOIISbjN9D6mjHPeqeg7K+EB5IGSU5o81/X2Gzm3ICnAvQW3x3OP8HA==}
+  kareem@3.2.0:
+    resolution: {integrity: sha512-VS8MWZz/cT+SqBCpVfNN4zoVz5VskR3N4+sTmUXme55e9avQHntpwpNq0yjnosISXqwJ3AQVjlbI4Dyzv//JtA==}
     engines: {node: '>=18.0.0'}
 
   keyv@4.5.4:
@@ -7700,8 +7700,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@9.1.6:
-    resolution: {integrity: sha512-ZrtgRsJKtW3od36TVXtAnrNHOO3rqhsqfVut6IzyWyJeLLeLTqW66qej/0qB37GZd5jL06nHfAceTikkfnSqbA==}
+  mongoose@9.2.0:
+    resolution: {integrity: sha512-lc1uFbtZHp1FqP8UCzRs9JZLhbBEmDt1l6B2MYmbD07Lp99yppQUwg2yPPyB3NO18EE5nQAoGCRiTf5v6vuJBQ==}
     engines: {node: '>=20.19.0'}
 
   mpath@0.9.0:
@@ -8317,8 +8317,8 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-day-picker@9.13.0:
-    resolution: {integrity: sha512-euzj5Hlq+lOHqI53NiuNhCP8HWgsPf/bBAVijR50hNaY1XwjKjShAnIe8jm8RD2W9IJUvihDIZ+KrmqfFzNhFQ==}
+  react-day-picker@9.13.2:
+    resolution: {integrity: sha512-IMPiXfXVIAuR5Yk58DDPBC8QKClrhdXV+Tr/alBrwrHUw0qDDYB1m5zPNuTnnPIr/gmJ4ChMxmtqPdxm8+R4Eg==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=16.8.0'
@@ -12277,11 +12277,11 @@ snapshots:
       class-transformer: 0.5.1
       class-validator: 0.14.3
 
-  '@nestjs/mongoose@11.0.4(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(mongoose@9.1.6)(rxjs@7.8.2)':
+  '@nestjs/mongoose@11.0.4(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(mongoose@9.2.0)(rxjs@7.8.2)':
     dependencies:
       '@nestjs/common': 11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.13(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      mongoose: 9.1.6
+      mongoose: 9.2.0
       rxjs: 7.8.2
 
   '@nestjs/passport@11.0.5(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)':
@@ -17741,7 +17741,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  kareem@3.0.0: {}
+  kareem@3.2.0: {}
 
   keyv@4.5.4:
     dependencies:
@@ -18268,9 +18268,9 @@ snapshots:
       bson: 7.0.0
       mongodb-connection-string-url: 7.0.0
 
-  mongoose@9.1.6:
+  mongoose@9.2.0:
     dependencies:
-      kareem: 3.0.0
+      kareem: 3.2.0
       mongodb: 7.0.0
       mpath: 0.9.0
       mquery: 6.0.0
@@ -18960,7 +18960,7 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-day-picker@9.13.0(react@19.2.4):
+  react-day-picker@9.13.2(react@19.2.4):
     dependencies:
       '@date-fns/tz': 1.4.1
       date-fns: 4.1.0

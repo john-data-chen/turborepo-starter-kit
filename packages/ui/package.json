@@ -34,7 +34,7 @@
     "cmdk": "^1.1.1",
     "lucide-react": "catalog:",
     "radix-ui": "latest",
-    "react-day-picker": "^9.13.0",
+    "react-day-picker": "^9.13.2",
     "react-hook-form": "catalog:",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "catalog:"
