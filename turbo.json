@@ -106,6 +106,30 @@
       ],
       "outputs": []
     },
+    "mobile#ios": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "mobile#android": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "mobile#web": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "mobile#build:eas": {
+      "cache": false
+    },
     "mobile#expo:upgrade": {
       "cache": false
     },
@@ -124,7 +148,7 @@
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx,css,scss}",
         "__tests__/**/*.{ts,tsx,js,jsx,css,scss}",
-        "apps/mobile/**/*.{ts,tsx,js,jsx,css,scss}",
+        "apps/mobile/**/*.{ts,tsx,js,jsx,css,scss}"
       ]
     },
     "dev": {
