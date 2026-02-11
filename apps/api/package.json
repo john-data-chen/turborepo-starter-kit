@@ -44,13 +44,15 @@
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.13",
-    "@rspack/cli": "^1.7.6",
-    "@rspack/core": "^1.7.6",
+    "@rspack/cli": "2.0.0-beta.2",
+    "@rspack/core": "2.0.0-beta.2",
+    "@rspack/dev-server": "^1.2.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
     "cross-env": "^10.1.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "engines": {
     "node": ">=24.13.0"
