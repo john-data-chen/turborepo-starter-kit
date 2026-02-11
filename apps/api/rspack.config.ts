@@ -1,10 +1,9 @@
-/* eslint-disable typescript-eslint/no-require-imports -- Config file requires CommonJS modules */
-const { RunScriptWebpackPlugin } = require("run-script-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
+import type { Configuration } from "@rspack/cli";
+import { RunScriptWebpackPlugin } from "run-script-webpack-plugin";
+import nodeExternals from "webpack-node-externals";
 
-/** @type {import('@rspack/cli').Configuration} */
-const config = {
-  context: __dirname,
+const config: Configuration = {
+  context: import.meta.dirname,
   target: "node",
   entry: {
     main: ["@rspack/core/hot/poll?100", "./src/main.ts"]
@@ -43,7 +42,7 @@ const config = {
     ]
   },
   output: {
-    path: __dirname + "/dist",
+    path: import.meta.dirname + "/dist",
     filename: "main.js"
   },
   plugins: [
@@ -94,4 +93,4 @@ const config = {
   ]
 };
 
-module.exports = config;
+export default config;
