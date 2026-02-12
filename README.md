@@ -5,7 +5,7 @@
 [![CI](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml/badge.svg)](https://github.com/john-data-chen/turborepo-starter-kit/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> A production-grade multi-platform monorepo demonstrating shared business logic across Web and Mobile. Built with a write-once approach for state management, validation, and types — while each platform retains full control over its UI and navigation. Showcases engineering practices and decision-making for senior full-stack roles.
+> A production-grade multi-platform monorepo demonstrating shared business logic across Web and Mobile. Built with a write-once approach for state management, validation, and types — while each platform retains full control over its UI and navigation. Showcases engineering practices, decision-making and AI-assisted optimization for senior full-stack roles.
 
 ## Architecture & Engineering Decisions
 
@@ -377,12 +377,14 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 
 | Skill                                | Purpose                                        | When to Use                                                                |
 | :----------------------------------- | :--------------------------------------------- | :------------------------------------------------------------------------- |
+| `next-best-practices`                | Next.js best practices                         | Writing, reviewing, or refactoring Next.js code                            |
+| `next-cache-components`              | Next.js cache components                       | Writing, reviewing, or refactoring cache components                        |
 | `vercel-composition-patterns`        | React composition patterns                     | "Refactoring components", "Build reusable components", "Review components" |
-| `vercel-react-best-practices`        | 40+ React/Next.js performance rules            | Writing, reviewing, or refactoring React code                              |
+| `vercel-react-best-practices`        | 40+ React performance rules                    | Writing, reviewing, or refactoring React code                              |
 | `vercel-react-native-best-practices` | 16+ React Native performance rules             | Writing, reviewing, or refactoring React Native code                       |
 | `web-design-guidelines`              | 100+ rules covering UI/UX accessibility audits | "Review my UI", "Check accessibility", "Audit design"                      |
 
-Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills)
+Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills) and [next-skills](https://github.com/vercel-labs/next-skills)
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
