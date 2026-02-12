@@ -9,7 +9,7 @@
 - **Incremental Verification**: Run lint, type-check, test, and build commands after every significant change
 
 > [!TIP]
-> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `vercel-composition-patterns` (React patterns), `vercel-react-native-best-practices` (React Native performance rules).
+> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `vercel-composition-patterns` (React patterns), `next-best-practices` (Next.js best practices), `next-cache-components` (Next.js cache components), `vercel-react-native-best-practices` (React Native performance rules)
 > Use MCPs: `next-devtools-mcp`, `context7-mcp` if installed and enabled.
 
 ## Project Overview
