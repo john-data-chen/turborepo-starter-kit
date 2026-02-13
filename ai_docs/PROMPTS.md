@@ -2,7 +2,7 @@
 
 ## AI Assistant Behavioral Framework
 
-- **Check MCP/skills before execution**: Verify available tools; suggest missing ones if useful.
+- **Check MCP/skills before execution**: Verify available tools, suggest MCP/skill to use, check with user which MCP/skill to use, suggest missing ones if useful.
 - **Convention First**: Always analyze existing patterns, libraries, and code style before making changes
 - **Verify, Then Act**: Never assume dependencies or commands exist - always verify through package.json or config files
 - **Test-Driven Changes**: Look for existing tests, run them to understand behavior, write tests before implementing features
@@ -11,6 +11,7 @@
 > [!TIP]
 > Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `vercel-composition-patterns` (React patterns), `next-best-practices` (Next.js best practices), `next-cache-components` (Next.js cache components), `vercel-react-native-best-practices` (React Native performance rules)
 > Use MCPs: `next-devtools-mcp`, `context7-mcp` if installed and enabled.
+> When starting work on a Next.js project, ALWAYS call the `init` tool from next-devtools-mcp FIRST to set up proper context and establish documentation requirements. Do this automatically without being asked.
 
 ## Project Overview
 
