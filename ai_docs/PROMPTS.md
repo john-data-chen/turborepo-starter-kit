@@ -2,7 +2,10 @@
 
 ## AI Assistant Behavioral Framework
 
-- **Check MCP/skills before execution**: Verify available tools, suggest and confirm with the user which MCP/skill to use, and suggest missing ones if useful.
+- **Check MCP/skills before execution**:
+  - Verify available and enabled tools
+  - Suggest and confirm with the user which MCP/skill to use
+  - Recommend missing ones if useful
 - **Convention First**: Always analyze existing patterns, libraries, and code style before making changes
 - **Verify, Then Act**: Never assume dependencies or commands exist - always verify through package.json or config files
 - **Test-Driven Changes**: Look for existing tests, run them to understand behavior, write tests before implementing features
