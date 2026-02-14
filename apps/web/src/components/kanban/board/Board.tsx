@@ -26,7 +26,6 @@ import { taskApi } from "@/lib/api/taskApi";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { Project, Task } from "@/types/dbInterface";
 import DraggableData from "@/types/drag&drop";
-import { UpdateTaskInput } from "@/types/taskApi";
 
 import NewProjectDialog from "../project/NewProjectDialog";
 import { BoardContainer, BoardProject } from "../project/Project";
@@ -95,6 +94,7 @@ export function Board() {
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const originalProjects = useRef<Project[] | null>(null);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -116,7 +116,6 @@ export function Board() {
   function getDraggingTaskData(taskId: string, projectId: string) {
     const project = projects.find((project: Project) => project._id.toString() === projectId);
     if (!project) {
-      // Handle case where project might not be found, though unlikely with current logic
       return {
         tasksInProject: [],
         taskPosition: -1,
@@ -138,6 +137,9 @@ export function Board() {
     if (!hasDraggableData(event.active)) {
       return;
     }
+    // Store original state for rollback on cancel/error
+    originalProjects.current = structuredClone(projects);
+
     const data = event.active.data.current;
     if (data?.type === "Project") {
       setActiveProject(data?.project);
@@ -148,11 +150,16 @@ export function Board() {
     }
   }
 
-  async function onDragOver(event: DragOverEvent) {
-    const updatedProjects = [...projects];
+  /**
+   * onDragOver — SYNCHRONOUS. Only handles CROSS-PROJECT task moves.
+   *
+   * Same-project reordering is handled visually by SortableContext CSS transforms
+   * and finalized in onDragEnd. This prevents the infinite re-render loop that
+   * occurs when same-project index swaps trigger continuous state updates.
+   */
+  function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
 
-    // Early returns for invalid states
     if (!over) {
       return;
     }
@@ -167,200 +174,81 @@ export function Board() {
     }
 
     const activeTask = active.data.current!.task;
-    const activeProject = updatedProjects.find(
-      (project: Project) => project._id === activeTask.project
-    );
+    const overData = over.data.current!;
 
-    if (!activeProject) {
-      console.error("Active project not found");
+    // Find which project the active task is CURRENTLY in (from state, not stale drag data)
+    let activeProjectId: string | null = null;
+    for (const p of projects) {
+      if (p.tasks.some((t) => t._id === activeTask._id)) {
+        activeProjectId = p._id;
+        break;
+      }
+    }
+
+    // Find target project ID
+    const overProjectId =
+      overData.type === "Project"
+        ? overData.project._id
+        : overData.type === "Task"
+          ? overData.task.project
+          : null;
+
+    if (!activeProjectId || !overProjectId) {
       return;
     }
 
-    const activeTaskIdx = activeProject.tasks.findIndex(
-      (task: Task) => task._id === activeTask._id
-    );
-
-    // Handle task dragged over a project
-    if (over.data.current!.type === "Project") {
-      const overProject = updatedProjects.find(
-        (project: Project) => project._id === over.data.current!.project._id
-      );
-
-      if (!overProject) {
-        console.error("Target project not found");
-        return;
-      }
-
-      // Skip if it's the same project
-      if (overProject._id === activeTask.project) {
-        return;
-      }
-
-      try {
-        // Remove task from source project
-        activeProject.tasks.splice(activeTaskIdx, 1);
-
-        // Add task to target project at the end (bottom)
-        const newOrderInProject = overProject.tasks.length;
-        activeTask.project = overProject._id;
-        activeTask.orderInProject = newOrderInProject;
-        overProject.tasks.push(activeTask);
-
-        // Update local state optimistically
-        setProjects(updatedProjects);
-
-        // Update the backend - move task to new project
-        await taskApi.moveTask(activeTask._id, overProject._id, newOrderInProject);
-
-        toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`);
-      } catch (error) {
-        console.error("Failed to move task:", error);
-        toast.error(
-          `Failed to move task: ${error instanceof Error ? error.message : "unknown error"}`
-        );
-        // Revert local state on error
-        setProjects([...projects]);
-      }
+    // CRITICAL: Only handle cross-project moves.
+    // Same-project reordering is deferred to onDragEnd to prevent infinite loops.
+    if (activeProjectId === overProjectId) {
       return;
     }
 
-    // Handle task dragged over another task
-    if (over.data.current!.type === "Task") {
-      const overTask = over.data.current!.task;
-      const overProject = updatedProjects.find(
-        (project: Project) => project._id === overTask.project
-      );
+    // Cross-project move: splice task between projects
+    const updatedProjects = projects.map((project) => ({
+      ...project,
+      tasks: [...project.tasks]
+    }));
 
-      if (!overProject) {
-        console.error("Target project not found");
-        return;
-      }
+    const sourceProject = updatedProjects.find((p) => p._id === activeProjectId);
+    const targetProject = updatedProjects.find((p) => p._id === overProjectId);
 
-      const overTaskIdx = overProject.tasks.findIndex((task: Task) => task._id === overTask._id);
-
-      // If moving to a different project
-      if (overTask.project !== activeTask.project) {
-        try {
-          const userId = useWorkspaceStore.getState().userId;
-          if (!userId) {
-            throw new Error("User not authenticated");
-          }
-
-          // Remove task from source project
-          activeProject.tasks.splice(activeTaskIdx, 1);
-
-          // Insert task at the position of the over task
-          activeTask.project = overTask.project;
-          activeTask.orderInProject = overTaskIdx;
-          overProject.tasks.splice(overTaskIdx, 0, activeTask);
-
-          // Update orderInProject for all tasks in the target project
-          overProject.tasks.forEach((task, index) => {
-            task.orderInProject = index;
-          });
-
-          // Update local state optimistically
-          setProjects(updatedProjects);
-
-          // Update the backend - move task to new project at specific position
-          await taskApi.moveTask(activeTask._id, overTask.project, overTaskIdx);
-
-          toast.success(`Task: "${activeTask.title}" moved to Project: "${overProject.title}"`);
-        } catch (error) {
-          console.error("Failed to move task:", error);
-          toast.error(
-            `Failed to move task: ${error instanceof Error ? error.message : "unknown error"}`
-          );
-          setProjects([...projects]);
-        }
-      }
-      // Moving within the same project
-      else {
-        // Only proceed if the position actually changed
-        if (activeTaskIdx === overTaskIdx) {
-          return;
-        }
-
-        // Create a new array to avoid mutating the original
-        const newTasks = [...overProject.tasks];
-
-        // Remove the task from its original position
-        const [movedTask] = newTasks.splice(activeTaskIdx, 1);
-
-        // Calculate the new index after removal
-        const newIndex = overTaskIdx;
-
-        // Insert at the new position
-        newTasks.splice(newIndex, 0, movedTask);
-
-        // Create a backup of current projects for rollback
-        const previousProjects = structuredClone(projects);
-
-        // Update orderInProject for all tasks in the new order
-        const updatedTasks = newTasks.map((task, index) => ({
-          ...task,
-          orderInProject: index
-        }));
-
-        // Update local state optimistically
-        overProject.tasks = updatedTasks;
-        setProjects(updatedProjects);
-
-        try {
-          // Find tasks that actually changed position
-          const tasksToUpdate = updatedTasks.filter((task, newIndex) => {
-            const oldTask = previousProjects
-              .flatMap((p: Project) => p.tasks)
-              .find((t: Task) => t._id === task._id);
-            return oldTask?.orderInProject !== newIndex;
-          });
-
-          if (tasksToUpdate.length > 0) {
-            // Update the backend with the new order for changed tasks
-            const userId = useWorkspaceStore.getState().userId;
-            if (!userId) {
-              throw new Error("User ID not found");
-            }
-
-            // Process updates one by one to handle potential errors properly
-            for (const task of tasksToUpdate) {
-              // Create update data with required fields
-              const updateData: UpdateTaskInput = {
-                orderInProject: task.orderInProject,
-                lastModifier: userId // This is required by the UpdateTaskInput type
-              };
-
-              await taskApi.updateTask(task._id, updateData);
-            }
-          }
-        } catch (error) {
-          console.error("Failed to update task order:", error);
-          toast.error("Failed to update task order. Please try again.");
-          // Revert on error
-          setProjects(previousProjects);
-
-          // Refresh the data to ensure consistency
-          try {
-            const { fetchProjects } = useWorkspaceStore.getState();
-            if (overProject.board) {
-              const boardId =
-                typeof overProject.board === "string" ? overProject.board : overProject.board._id;
-              await fetchProjects(boardId);
-            }
-          } catch (refreshError) {
-            console.error("Failed to refresh projects:", refreshError);
-          }
-        }
-      }
+    if (!sourceProject || !targetProject) {
+      return;
     }
+
+    const activeIdx = sourceProject.tasks.findIndex((t) => t._id === activeTask._id);
+    if (activeIdx === -1) {
+      return;
+    }
+
+    const [movedTask] = sourceProject.tasks.splice(activeIdx, 1);
+    movedTask.project = targetProject._id;
+
+    if (overData.type === "Task") {
+      const overIdx = targetProject.tasks.findIndex((t) => t._id === overData.task._id);
+      targetProject.tasks.splice(overIdx >= 0 ? overIdx : targetProject.tasks.length, 0, movedTask);
+    } else {
+      targetProject.tasks.push(movedTask);
+    }
+
+    setProjects(updatedProjects);
   }
 
+  /**
+   * onDragEnd — Handles ALL persistence (API calls) and same-project reordering.
+   * Fires exactly once when the user drops the item.
+   */
   async function onDragEnd(event: DragEndEvent) {
     setActiveProject(null);
     setActiveTask(null);
 
     const { active, over } = event;
     if (!over) {
+      // No valid drop target — rollback
+      if (originalProjects.current) {
+        setProjects(originalProjects.current);
+      }
+      originalProjects.current = null;
       return;
     }
 
@@ -368,91 +256,143 @@ export function Board() {
     const overId = over.id;
 
     if (!hasDraggableData(active)) {
+      originalProjects.current = null;
       return;
     }
 
     const activeData = active.data.current;
 
-    if (activeId === overId) {
-      return;
-    }
+    // Handle Task moves (cross-project already applied in onDragOver, same-project needs arrayMove)
+    if (activeData?.type === "Task") {
+      const movedTask = activeData.task;
 
-    const isActiveAProject = activeData?.type === "Project";
-    if (!isActiveAProject) {
-      return;
-    }
+      // Find where the task currently is in the optimistic state
+      let currentProjectId = "";
+      let currentIdx = -1;
 
-    const activeProjectIndex = projectsId.indexOf(activeId as string);
-
-    const overProjectIndex = projectsId.indexOf(overId as string);
-
-    // Create backup for rollback
-    const previousProjects = [...rawProjects];
-
-    // Optimistically update the UI
-    const reorderedProjects = arrayMove(projects, activeProjectIndex, overProjectIndex);
-
-    // Update orderInBoard for all affected projects, ensuring it's a number
-    const updatedProjects = reorderedProjects.map((project, index) => ({
-      ...project,
-      orderInBoard: Number(index)
-    }));
-
-    // Update the store with new order
-    setProjects(updatedProjects);
-
-    try {
-      const userId = useWorkspaceStore.getState().userId;
-      if (!userId) {
-        throw new Error("User not authenticated");
+      for (const project of projects) {
+        const idx = project.tasks.findIndex((t) => t._id === movedTask._id);
+        if (idx !== -1) {
+          currentProjectId = project._id;
+          currentIdx = idx;
+          break;
+        }
       }
 
-      // Update backend for all projects that changed position
-      const updatePromises = updatedProjects.map(async (project, newIndex) => {
-        const oldProject = previousProjects.find((p) => p._id === project._id);
-        const oldIndex = oldProject?.orderInBoard ?? 0;
-
-        // Only update if the order actually changed
-        if (oldIndex !== newIndex) {
-          // Import projectApi dynamically to avoid circular dependency
-          const { projectApi } = await import("@/lib/api/projectApi");
-
-          // Ensure orderInBoard is a number
-          const order = typeof newIndex === "number" ? newIndex : Number(newIndex);
-          if (Number.isNaN(order)) {
-            console.error("Invalid orderInBoard value:", newIndex);
-            throw new Error("Invalid order value");
-          }
-
-          const updateData = {
-            orderInBoard: order
-          };
-
-          return projectApi.updateProject(project._id, updateData);
-        }
+      if (!currentProjectId || currentIdx === -1) {
+        originalProjects.current = null;
         return;
-      });
+      }
 
-      await Promise.all(updatePromises);
+      // Handle same-project reordering (not done in onDragOver)
+      if (hasDraggableData(over) && over.data.current!.type === "Task") {
+        const overTask = over.data.current!.task;
 
-      toast.success("Project order updated successfully");
-    } catch (error) {
-      console.error("Failed to update project order:", error);
-      toast.error("Failed to update project order. Please try again.");
-
-      // Revert to previous state on error
-      setProjects(previousProjects);
-
-      // Refresh data to ensure consistency
-      try {
-        const { fetchProjects, currentBoardId } = useWorkspaceStore.getState();
-        if (currentBoardId) {
-          await fetchProjects(currentBoardId);
+        // If in same project, apply the reorder now
+        if (currentProjectId === overTask.project) {
+          const project = projects.find((p) => p._id === currentProjectId);
+          if (project) {
+            const overIdx = project.tasks.findIndex((t) => t._id === overTask._id);
+            if (overIdx !== -1 && currentIdx !== overIdx) {
+              const newTasks = arrayMove([...project.tasks], currentIdx, overIdx);
+              const updatedProjects = projects.map((p) =>
+                p._id === currentProjectId ? { ...p, tasks: newTasks } : p
+              );
+              setProjects(updatedProjects);
+              currentIdx = overIdx;
+            }
+          }
         }
-      } catch (refreshError) {
-        console.error("Failed to refresh projects:", refreshError);
+      }
+
+      // Check if anything actually changed compared to original
+      const originalProject = originalProjects.current?.find((p) =>
+        p.tasks.some((t) => t._id === movedTask._id)
+      );
+      const originalIdx = originalProject?.tasks.findIndex((t) => t._id === movedTask._id) ?? -1;
+
+      if (originalProject?._id === currentProjectId && originalIdx === currentIdx) {
+        // No change — clean up
+        originalProjects.current = null;
+        return;
+      }
+
+      try {
+        // Single API call to move/reorder task
+        await taskApi.moveTask(movedTask._id, currentProjectId, currentIdx);
+        toast.success(`Task "${movedTask.title}" moved successfully`);
+        originalProjects.current = null;
+      } catch (error) {
+        console.error("Failed to move task:", error);
+        toast.error("Failed to move task. Reverting...");
+        if (originalProjects.current) {
+          setProjects(originalProjects.current);
+        }
+        originalProjects.current = null;
+      }
+      return;
+    }
+
+    // Handle Project reordering
+    if (activeData?.type === "Project") {
+      if (activeId === overId) {
+        originalProjects.current = null;
+        return;
+      }
+
+      const activeProjectIndex = projectsId.indexOf(activeId as string);
+      const overProjectIndex = projectsId.indexOf(overId as string);
+
+      if (activeProjectIndex === -1 || overProjectIndex === -1) {
+        originalProjects.current = null;
+        return;
+      }
+
+      // Create backup for rollback
+      const previousProjects = originalProjects.current || [...rawProjects];
+
+      // Optimistically update the UI
+      const reorderedProjects = arrayMove(projects, activeProjectIndex, overProjectIndex);
+      const updatedProjects = reorderedProjects.map((project, index) => ({
+        ...project,
+        orderInBoard: Number(index)
+      }));
+
+      setProjects(updatedProjects);
+
+      try {
+        const { projectApi } = await import("@/lib/api/projectApi");
+
+        // Update backend for all projects that changed position
+        const updatePromises = updatedProjects.map(async (project, newIndex) => {
+          const oldProject = previousProjects.find((p) => p._id === project._id);
+          const oldIndex = oldProject?.orderInBoard ?? 0;
+
+          if (oldIndex !== newIndex) {
+            return projectApi.updateProject(project._id, { orderInBoard: newIndex });
+          }
+          return;
+        });
+
+        await Promise.all(updatePromises);
+        toast.success("Project order updated successfully");
+        originalProjects.current = null;
+      } catch (error) {
+        console.error("Failed to update project order:", error);
+        toast.error("Failed to update project order. Reverting...");
+        setProjects(previousProjects);
+        originalProjects.current = null;
       }
     }
+  }
+
+  function onDragCancel() {
+    if (originalProjects.current) {
+      setProjects(originalProjects.current);
+    }
+    setActiveProject(null);
+    setActiveTask(null);
+    originalProjects.current = null;
   }
 
   const pickedUpTaskProject = useRef<string | null>(null);
@@ -568,6 +508,7 @@ export function Board() {
         onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
+        onDragCancel={onDragCancel}
       >
         <div className="mb-4 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
           <div className="w-full sm:w-[200px]">

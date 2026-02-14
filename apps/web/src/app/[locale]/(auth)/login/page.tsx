@@ -18,8 +18,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // This page is statically generated at build time
-export const dynamic = "force-static";
-
-export default function LoginPage() {
+// MIGRATED from: export const dynamic = 'force-static'
+// -> Add "use cache" to opt into caching (dynamic is now the default)
+export default async function LoginPage() {
+  "use cache";
   return <SignInView />;
 }
