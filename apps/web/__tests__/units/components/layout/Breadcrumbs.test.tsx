@@ -44,7 +44,7 @@ describe("Breadcrumbs", () => {
         { title: "Boards", link: "/boards" },
         { title: "Board 1", link: "/boards/1" }
       ],
-      rootLink: "/"
+      rootLink: "/boards"
     });
   });
 
@@ -64,7 +64,7 @@ describe("Breadcrumbs", () => {
     const { useBreadcrumbs } = await import("@/hooks/useBreadcrumbs");
     vi.mocked(useBreadcrumbs).mockReturnValue({
       items: [{ title: "Home", link: "/" }],
-      rootLink: "/"
+      rootLink: "/boards"
     });
 
     render(<Breadcrumbs />);
@@ -75,7 +75,7 @@ describe("Breadcrumbs", () => {
     const { useBreadcrumbs } = await import("@/hooks/useBreadcrumbs");
     vi.mocked(useBreadcrumbs).mockReturnValue({
       items: [{ title: "Home", link: "/" }],
-      rootLink: "/"
+      rootLink: "/boards"
     });
 
     const { container } = render(<Breadcrumbs />);
@@ -91,7 +91,7 @@ describe("Breadcrumbs", () => {
         { title: "Level 3", link: "/level1/level2/level3" },
         { title: "Level 4", link: "/level1/level2/level3/level4" }
       ],
-      rootLink: "/level1"
+      rootLink: "/boards"
     });
 
     const { container } = render(<Breadcrumbs />);
@@ -103,7 +103,7 @@ describe("Breadcrumbs", () => {
     const { useBreadcrumbs } = await import("@/hooks/useBreadcrumbs");
     vi.mocked(useBreadcrumbs).mockReturnValue({
       items: [{ title: "Board & Project", link: "/board-1" }],
-      rootLink: "/"
+      rootLink: "/boards"
     });
 
     render(<Breadcrumbs />);

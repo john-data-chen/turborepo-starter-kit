@@ -43,20 +43,21 @@ vi.mock("@/components/kanban/task/TaskAction", () => ({
 }));
 
 describe("TaskCard", () => {
+  const mockUserInfo: any = { _id: "user-1", name: "John", email: "john@example.com" };
   const mockTask: Task = {
     _id: "task-1",
     title: "Test Task",
     description: "Test Description",
     status: TaskStatus.TODO,
-    creator: { _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() },
-    lastModifier: { _id: "user-2", name: "Jane", email: "jane@example.com", createdAt: new Date() },
-    assignee: { _id: "user-3", name: "Bob", email: "bob@example.com", createdAt: new Date() },
+    creator: mockUserInfo,
+    lastModifier: { _id: "user-2", name: "Jane", email: "jane@example.com" },
+    assignee: { _id: "user-3", name: "Bob", email: "bob@example.com" },
     project: "project-1",
     board: "board-1",
     dueDate: new Date("2025-12-31"),
     orderInProject: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   beforeEach(() => {
@@ -187,11 +188,11 @@ describe("TaskCard", () => {
       status: TaskStatus.TODO,
       project: "project-1",
       board: "board-1",
-      creator: "user-1",
-      lastModifier: "user-1",
+      creator: { _id: "user-1", name: "John", email: "john@example.com" },
+      lastModifier: { _id: "user-1", name: "John", email: "john@example.com" },
       orderInProject: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     render(<TaskCard task={minimalTask} />);
     const titles = screen.getAllByText("Minimal Task");

@@ -46,10 +46,10 @@ describe("Board Query Hooks", () => {
 
   describe("useBoards", () => {
     it("should fetch boards successfully", async () => {
-      const mockBoards = [
-        { _id: "1", title: "Board 1" },
-        { _id: "2", title: "Board 2" }
-      ];
+      const mockBoards = {
+        myBoards: [{ _id: "1", title: "Board 1" } as any],
+        teamBoards: [{ _id: "2", title: "Board 2" } as any]
+      };
       (boardApi.getBoards as Mock).mockResolvedValue(mockBoards);
 
       const { result } = renderHook(() => useBoards(), { wrapper });
@@ -115,7 +115,7 @@ describe("Board Query Hooks", () => {
       const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
       await act(async () => {
-        await result.current.mutateAsync({ title: "New Board" });
+        await result.current.mutateAsync({ title: "New Board" } as any);
       });
 
       await waitFor(() => {

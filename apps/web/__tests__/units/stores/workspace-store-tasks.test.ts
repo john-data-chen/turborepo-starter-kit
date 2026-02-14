@@ -23,6 +23,8 @@ vi.mock("@/lib/api/taskApi", () => ({
 }));
 
 describe("workspace-store - Task actions", () => {
+  const mockUserInfo: any = { _id: "user-1", name: "John", email: "john@example.com" };
+
   beforeEach(() => {
     // Reset the store before each test
     useWorkspaceStore.setState({
@@ -52,11 +54,11 @@ describe("workspace-store - Task actions", () => {
           status: TaskStatus.TODO,
           project: "project-1",
           board: "board-1",
-          creator: "user-1",
-          lastModifier: "user-1",
+          creator: mockUserInfo,
+          lastModifier: mockUserInfo,
           orderInProject: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ];
 
@@ -66,6 +68,7 @@ describe("workspace-store - Task actions", () => {
         description: "Description 1",
         board: "board-1",
         owner: "user-1",
+        members: [],
         orderInBoard: 0,
         tasks: [],
         createdAt: new Date().toISOString(),
@@ -124,11 +127,11 @@ describe("workspace-store - Task actions", () => {
         status: TaskStatus.TODO,
         project: "project-1",
         board: "board-1",
-        creator: "user-1",
-        lastModifier: "user-1",
+        creator: mockUserInfo,
+        lastModifier: mockUserInfo,
         orderInProject: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       const mockProject: Project = {
@@ -137,6 +140,7 @@ describe("workspace-store - Task actions", () => {
         description: "Description 1",
         board: "board-1",
         owner: "user-1",
+        members: [],
         orderInBoard: 0,
         tasks: [],
         createdAt: new Date().toISOString(),
@@ -215,6 +219,7 @@ describe("workspace-store - Task actions", () => {
         description: "Description 1",
         board: "board-1",
         owner: "user-1",
+        members: [],
         orderInBoard: 0,
         tasks: [],
         createdAt: new Date().toISOString(),
@@ -273,11 +278,11 @@ describe("workspace-store - Task actions", () => {
         status: TaskStatus.TODO,
         project: "project-1",
         board: "board-1",
-        creator: "user-1",
-        lastModifier: "user-1",
+        creator: mockUserInfo,
+        lastModifier: mockUserInfo,
         orderInProject: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       const mockProject: Project = {
@@ -286,6 +291,7 @@ describe("workspace-store - Task actions", () => {
         description: "Description 1",
         board: "board-1",
         owner: "user-1",
+        members: [],
         orderInBoard: 0,
         tasks: [mockTask],
         createdAt: new Date().toISOString(),
@@ -319,11 +325,11 @@ describe("workspace-store - Task actions", () => {
         status: TaskStatus.TODO,
         project: "project-1",
         board: "board-1",
-        creator: "user-1",
-        lastModifier: "user-1",
+        creator: mockUserInfo,
+        lastModifier: mockUserInfo,
         orderInProject: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       useWorkspaceStore.setState({

@@ -38,7 +38,8 @@ describe("user queries", () => {
         _id: "user-1",
         email: "test@example.com",
         name: "Test User",
-        createdAt: new Date()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       vi.mocked(userApi.getUserById).mockResolvedValue(mockUser);
@@ -88,7 +89,8 @@ describe("user queries", () => {
         _id: userId,
         email: "test@example.com",
         name: "Test User",
-        createdAt: new Date()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       vi.mocked(userApi.getUserById).mockResolvedValue(mockUser);
@@ -111,13 +113,15 @@ describe("user queries", () => {
           _id: "user-1",
           email: "alice@example.com",
           name: "Alice",
-          createdAt: new Date()
+          createdAt: new Date(),
+          updatedAt: new Date()
         },
         {
           _id: "user-2",
           email: "bob@example.com",
           name: "Bob",
-          createdAt: new Date()
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ];
 
@@ -161,7 +165,8 @@ describe("user queries", () => {
           _id: "user-1",
           email: "test@example.com",
           name: "Test User",
-          createdAt: new Date()
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ];
 
@@ -186,10 +191,22 @@ describe("user queries", () => {
 
     it("should refetch when query changes", async () => {
       const mockUsers1: User[] = [
-        { _id: "user-1", email: "alice@example.com", name: "Alice", createdAt: new Date() }
+        {
+          _id: "user-1",
+          email: "alice@example.com",
+          name: "Alice",
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
       ];
       const mockUsers2: User[] = [
-        { _id: "user-2", email: "bob@example.com", name: "Bob", createdAt: new Date() }
+        {
+          _id: "user-2",
+          email: "bob@example.com",
+          name: "Bob",
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
       ];
 
       vi.mocked(userApi.searchUsers)

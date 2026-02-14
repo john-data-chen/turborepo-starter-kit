@@ -144,7 +144,7 @@ describe("Project Query Hooks", () => {
       const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
       await act(async () => {
-        await result.current.mutateAsync({ title: "New Project", board: "board1" });
+        await result.current.mutateAsync({ title: "New Project", board: "board1" } as any);
       });
 
       await waitFor(() => {
@@ -154,7 +154,7 @@ describe("Project Query Hooks", () => {
       });
 
       const callArgs = (projectApi.createProject as Mock).mock.calls[0];
-      expect(callArgs[0]).toEqual({ title: "New Project", board: "board1" });
+      expect(callArgs[0]).toEqual({ title: "New Project", board: "board1" } as any);
     });
 
     it("should handle board as object in created project", async () => {
@@ -166,7 +166,7 @@ describe("Project Query Hooks", () => {
       const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
       await act(async () => {
-        await result.current.mutateAsync({ title: "New Project", board: "board1" });
+        await result.current.mutateAsync({ title: "New Project", board: "board1" } as any);
       });
 
       await waitFor(() => {
@@ -187,7 +187,7 @@ describe("Project Query Hooks", () => {
       const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
       await act(async () => {
-        await result.current.mutateAsync({ id: "1", title: "Updated Project" });
+        await result.current.mutateAsync({ id: "1", title: "Updated Project" } as any);
       });
 
       await waitFor(() => {

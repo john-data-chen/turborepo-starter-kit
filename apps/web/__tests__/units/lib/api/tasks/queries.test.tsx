@@ -1,4 +1,3 @@
-import type { Task } from "@/types/dbInterface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
@@ -13,6 +12,7 @@ import {
   useUpdateTask
 } from "@/lib/api/tasks/queries";
 import { useWorkspaceStore } from "@/stores/workspace-store";
+import { TaskStatus, type Task } from "@/types/dbInterface";
 import { TASK_KEYS } from "@/types/taskApi";
 
 // Mock taskApi
@@ -267,12 +267,12 @@ describe("Task Query Hooks", () => {
         _id: "1",
         title: "Old Task",
         project: "project1",
-        status: "todo",
+        status: TaskStatus.TODO,
         creator: { _id: "user1", name: "User 1", email: "user1@example.com" },
         lastModifier: { _id: "user1", name: "User 1", email: "user1@example.com" },
         board: "board1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         orderInProject: 0
       });
 
@@ -297,7 +297,7 @@ describe("Task Query Hooks", () => {
         _id: "1",
         title: "Updated Task",
         description: "New description",
-        status: "in_progress" as const,
+        status: TaskStatus.IN_PROGRESS,
         project: "project1"
       };
       (taskApi.updateTask as Mock).mockResolvedValue(updatedTask);
@@ -309,7 +309,7 @@ describe("Task Query Hooks", () => {
           id: "1",
           title: "Updated Task",
           description: "New description",
-          status: "in_progress"
+          status: TaskStatus.IN_PROGRESS
         });
       });
 
@@ -320,7 +320,7 @@ describe("Task Query Hooks", () => {
       expect(taskApi.updateTask).toHaveBeenCalledWith("1", {
         title: "Updated Task",
         description: "New description",
-        status: "in_progress",
+        status: TaskStatus.IN_PROGRESS,
         lastModifier: "user-123"
       });
     });
@@ -355,12 +355,12 @@ describe("Task Query Hooks", () => {
         _id: "2",
         title: "Task to Delete",
         project: "project1",
-        status: "todo",
+        status: TaskStatus.TODO,
         creator: { _id: "user1", name: "User 1", email: "user1@example.com" },
         lastModifier: { _id: "user1", name: "User 1", email: "user1@example.com" },
         board: "board1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         orderInProject: 1
       };
 
@@ -371,12 +371,12 @@ describe("Task Query Hooks", () => {
           _id: "1",
           title: "Task 1",
           project: "project1",
-          status: "todo",
+          status: TaskStatus.TODO,
           creator: { _id: "user1", name: "User 1", email: "user1@example.com" },
           lastModifier: { _id: "user1", name: "User 1", email: "user1@example.com" },
           board: "board1",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
           orderInProject: 0
         },
         taskToDelete,
@@ -384,12 +384,12 @@ describe("Task Query Hooks", () => {
           _id: "3",
           title: "Task 3",
           project: "project1",
-          status: "todo",
+          status: TaskStatus.TODO,
           creator: { _id: "user1", name: "User 1", email: "user1@example.com" },
           lastModifier: { _id: "user1", name: "User 1", email: "user1@example.com" },
           board: "board1",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
           orderInProject: 2
         }
       ]);
@@ -419,12 +419,12 @@ describe("Task Query Hooks", () => {
           _id: "1",
           title: "Task 1",
           project: "project1",
-          status: "todo",
+          status: TaskStatus.TODO,
           creator: { _id: "user1", name: "User 1", email: "user1@example.com" },
           lastModifier: { _id: "user1", name: "User 1", email: "user1@example.com" },
           board: "board1",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
           orderInProject: 0
         }
       ]);

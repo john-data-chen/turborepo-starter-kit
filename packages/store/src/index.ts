@@ -9,16 +9,16 @@ export type {
   UpdateTaskInput,
   User,
   UserInfo
-} from "./types.ts";
-export { TaskStatus } from "./types.ts";
+} from "./types";
+export { TaskStatus } from "./types";
 
 // Storage adapter
-export type { StorageAdapter } from "./storage.ts";
-export { createStorage } from "./storage.ts";
+export type { StorageAdapter } from "./storage";
+export { createStorage } from "./storage";
 
 // Auth store
-export type { AuthState } from "./auth-store.ts";
-export { createAuthStore } from "./auth-store.ts";
+export type { AuthState } from "./auth-store";
+export { createAuthStore } from "./auth-store";
 
 // Workspace types (interface only — implementations live in each app)
-export type { WorkspaceState } from "./workspace-types.ts";
+export type { WorkspaceState } from "./workspace-types";

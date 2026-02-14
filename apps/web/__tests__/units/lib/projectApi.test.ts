@@ -26,6 +26,7 @@ describe("projectApi", () => {
     description: "Test Description",
     board: "board-1",
     owner: "user-1",
+    members: [],
     orderInBoard: 0,
     tasks: [],
     createdAt: new Date().toISOString(),

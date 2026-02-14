@@ -55,7 +55,7 @@ export default function NewProjectDialog({ onProjectAdd }: NewProjectDialogProps
         return;
       }
 
-      onProjectAdd?.(data.title, data.description);
+      onProjectAdd?.(data.title, data.description ?? undefined);
       toast.success(t("createSuccess"));
       setIsOpen(false);
       form.reset();

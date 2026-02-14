@@ -49,12 +49,12 @@ vi.mock("@hookform/resolvers/zod", () => ({
 }));
 
 vi.mock("react-hook-form", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<Record<string, any>>();
   return {
     ...actual,
     useForm: vi.fn(() => ({
       control: {},
-      handleSubmit: vi.fn((cb) => (e) => {
+      handleSubmit: vi.fn((cb) => (e: any) => {
         e.preventDefault();
         cb({ email: "test@example.com" });
       }),

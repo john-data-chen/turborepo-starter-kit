@@ -272,6 +272,7 @@ describe("workspace-store", () => {
         description: "Description 1",
         board: "board-1",
         owner: "user-1",
+        members: [],
         orderInBoard: 0,
         tasks: [],
         createdAt: new Date().toISOString(),

@@ -20,6 +20,7 @@ Object.defineProperty(global, "localStorage", {
 });
 
 describe("taskApi", () => {
+  const mockUserInfo: any = { _id: "user-1", name: "John", email: "john@example.com" };
   const mockTask: Task = {
     _id: "task-1",
     title: "Test Task",
@@ -27,11 +28,11 @@ describe("taskApi", () => {
     status: TaskStatus.TODO,
     project: "project-1",
     board: "board-1",
-    creator: "user-1",
-    lastModifier: "user-1",
+    creator: mockUserInfo,
+    lastModifier: mockUserInfo,
     orderInProject: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
   beforeEach(() => {
