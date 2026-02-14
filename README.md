@@ -445,7 +445,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Performance | Near-instant HMR, incremental compilation  |
 | Caching     | Filesystem caching persists artifacts      |
 
-[Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)
+[Turbopack](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)
 
 ### Rspack (Nest.js Backend)
 
@@ -455,7 +455,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Performance | 5-10x faster builds than Webpack                        |
 | Benefit     | Dramatic reduction in dev server startup and build time |
 
-[Rspack Docs](https://rspack.dev/guide/start/introduction)
+[Rspack](https://github.com/web-infra-dev/rspack)
 
 ### React Compiler
 
