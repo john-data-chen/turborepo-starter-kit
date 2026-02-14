@@ -372,18 +372,31 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 **AI Skills** (in `ai_docs/skills/`)
 
-Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use.
+Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use. Skills are organized by platform:
 
-| Skill                                | Purpose                        | When to Use                                                                |
-| :----------------------------------- | :----------------------------- | :------------------------------------------------------------------------- |
-| `next-best-practices`                | Next.js best practices         | Writing, reviewing, or refactoring Next.js code                            |
-| `next-cache-components`              | Next.js cache components       | Writing, reviewing, or refactoring Next.js cache components                |
-| `vercel-composition-patterns`        | React composition patterns     | "Refactoring components", "Build reusable components", "Review components" |
-| `vercel-react-best-practices`        | React performance rules        | Writing, reviewing, or refactoring React code                              |
-| `vercel-react-native-best-practices` | React Native performance rules | Writing, reviewing, or refactoring React Native code                       |
-| `web-design-guidelines`              | UI/UX accessibility audits     | "Review my UI", "Check accessibility", "Audit design"                      |
+**Web Skills** (`ai_docs/skills/web/`)
 
-Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills) and [next-skills](https://github.com/vercel-labs/next-skills)
+| Skill                         | Purpose                     | When to Use                                                                   |
+| :---------------------------- | :-------------------------- | :---------------------------------------------------------------------------- |
+| `next-best-practices`         | Next.js best practices      | Writing, reviewing, or refactoring Next.js code                               |
+| `next-cache-components`       | Next.js 16 cache components | Implementing `use cache`, PPR, cacheLife, cacheTag, or updateTag              |
+| `vercel-composition-patterns` | React composition patterns  | Refactoring components, building reusable component APIs, compound components |
+| `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance         |
+| `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                         |
+
+**Mobile Skills** (`ai_docs/skills/mobile/`)
+
+| Skill                  | Purpose                           | When to Use                                                            |
+| :--------------------- | :-------------------------------- | :--------------------------------------------------------------------- |
+| `building-native-ui`   | Expo Router UI guide              | Building screens, navigation, animations, native tabs, or styling      |
+| `expo-api-routes`      | Expo Router API routes            | Creating server-side API endpoints with EAS Hosting                    |
+| `expo-dev-client`      | Dev client builds & TestFlight    | Custom native code, Apple targets, or third-party native modules       |
+| `expo-tailwind-setup`  | Tailwind v4 + NativeWind v5 setup | Setting up or configuring Tailwind CSS styling in Expo                 |
+| `native-data-fetching` | Networking & data fetching        | Any API call, fetch, caching, offline support, or auth token handling  |
+| `upgrading-expo`       | Expo SDK upgrades                 | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
+| `use-dom`              | DOM components for web-in-native  | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
+
+Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills), [next-skills](https://github.com/vercel-labs/next-skills), and [expo-skills](https://github.com/expo/skills)
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
@@ -445,7 +458,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Performance | Near-instant HMR, incremental compilation  |
 | Caching     | Filesystem caching persists artifacts      |
 
-[Turbopack Docs](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)
+[Turbopack](https://nextjs.org/docs/app/api-reference/turbopack) | [FS Caching](https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)
 
 ### Rspack (Nest.js Backend)
 
@@ -455,7 +468,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Performance | 5-10x faster builds than Webpack                        |
 | Benefit     | Dramatic reduction in dev server startup and build time |
 
-[Rspack Docs](https://rspack.dev/guide/start/introduction)
+[Rspack](https://github.com/web-infra-dev/rspack)
 
 ### React Compiler
 

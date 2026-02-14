@@ -246,12 +246,16 @@ describe("Task Query Hooks", () => {
   });
 
   describe("useUpdateTask", () => {
-    it("should throw error if user is not authenticated", () => {
+    it("should throw error if user is not authenticated", async () => {
       (useWorkspaceStore as unknown as Mock).mockReturnValue(null);
 
-      expect(() => renderHook(() => useUpdateTask(), { wrapper })).toThrow(
-        "User must be authenticated to update a task"
-      );
+      const { result } = renderHook(() => useUpdateTask(), { wrapper });
+
+      await expect(
+        act(async () => {
+          await result.current.mutateAsync({ id: "1", title: "Test" });
+        })
+      ).rejects.toThrow("User must be authenticated to update a task");
     });
 
     it("should update task title", async () => {

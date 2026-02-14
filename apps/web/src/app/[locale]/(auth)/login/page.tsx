@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import SignInView from "@/components/auth/SignInView";
 
 interface Props {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

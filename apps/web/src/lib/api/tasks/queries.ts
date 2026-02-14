@@ -22,7 +22,7 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
 
 interface UseTaskOptions {
   enabled?: boolean;
-  retry?: boolean | ((failureCount: number, error: any) => boolean);
+  retry?: boolean | ((failureCount: number, error: unknown) => boolean);
 }
 
 export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
@@ -34,8 +34,8 @@ export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
     enabled: !!taskId && enabled,
     retry:
       retry ??
-      ((failureCount: number, error: any) => {
-        if (error?.response?.status === 404) {
+      ((failureCount: number, error: unknown) => {
+        if ((error as { response?: { status?: number } })?.response?.status === 404) {
           return false;
         }
         return failureCount < 3;
@@ -100,10 +100,6 @@ export const useUpdateTask = () => {
   // Get the current user's ID from the workspace store
   const userId = useWorkspaceStore((state: { userId: string | null }) => state.userId);
 
-  if (!userId) {
-    throw new Error("User must be authenticated to update a task");
-  }
-
   return useMutation({
     mutationFn: async ({
       id,
@@ -111,6 +107,10 @@ export const useUpdateTask = () => {
     }: { id: string } & Omit<UpdateTaskInput, "assigneeId" | "lastModifier"> & {
         assigneeId?: string | null;
       }) => {
+      if (!userId) {
+        throw new Error("User must be authenticated to update a task");
+      }
+
       // Create a clean update object with only the fields we want to send
       const apiUpdates: UpdateTaskInput = {
         lastModifier: userId // Use the current user's ID as the lastModifier

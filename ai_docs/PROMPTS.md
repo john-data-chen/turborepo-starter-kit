@@ -12,9 +12,34 @@
 - **Incremental Verification**: Run lint, type-check, test, and build commands after every significant change
 
 > [!TIP]
-> Use skills: `vercel-react-best-practices` (performance), `web-design-guidelines` (UI/UX), `vercel-composition-patterns` (React patterns), `next-best-practices` (Next.js best practices), `next-cache-components` (Next.js cache components), `vercel-react-native-best-practices` (React Native performance rules)
-> Use MCPs: `next-devtools-mcp`, `context7-mcp` if installed and enabled.
-> When starting work on a Next.js project, ALWAYS call the `init` tool from next-devtools-mcp FIRST to set up proper context and establish documentation requirements. Do this automatically without being asked.
+> If need to check package info, use `context7-mcp` if installed and enabled.
+> When starting work on a Next.js project, ALWAYS call the `init` tool from `next-devtools-mcp` FIRST to set up proper context and establish documentation requirements. Do this automatically without being asked.
+
+## Skill Dispatch Guide
+
+When a task matches conditions below, load the corresponding skill **before writing code**.
+
+### Web Skills (`ai_docs/skills/web/`)
+
+| Condition (when the task involves...)                                              | Skill to Use                  |
+| :--------------------------------------------------------------------------------- | :---------------------------- |
+| Next.js file conventions, RSC, data fetching, metadata, route handlers, async APIs | `next-best-practices`         |
+| `use cache` directive, PPR, cacheLife, cacheTag, updateTag, static/dynamic mix     | `next-cache-components`       |
+| Component API design, compound components, boolean prop cleanup, render props      | `vercel-composition-patterns` |
+| React/Next.js performance: re-renders, bundle size, waterfalls, memoization        | `vercel-react-best-practices` |
+| UI review, accessibility audit, UX compliance, design guidelines                   | `web-design-guidelines`       |
+
+### Mobile Skills (`ai_docs/skills/mobile/`)
+
+| Condition (when the task involves...)                                       | Skill to Use           |
+| :-------------------------------------------------------------------------- | :--------------------- |
+| Expo screens, navigation, animations, native tabs, styling, layout patterns | `building-native-ui`   |
+| Server-side API endpoints in Expo Router, EAS Hosting, Cloudflare Workers   | `expo-api-routes`      |
+| Custom dev client builds, TestFlight distribution, native modules           | `expo-dev-client`      |
+| Setting up or configuring Tailwind CSS / NativeWind in Expo                 | `expo-tailwind-setup`  |
+| Any network request, API call, fetch, caching, offline support, auth tokens | `native-data-fetching` |
+| Upgrading Expo SDK, fixing dependency conflicts, New Architecture migration | `upgrading-expo`       |
+| Running web code on native via webview, Canvas/WebGL, web library migration | `use-dom`              |
 
 ## Project Overview
 
