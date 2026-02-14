@@ -3,6 +3,7 @@
 ## AI Assistant Behavioral Framework
 
 - **Check MCP/skills before execution**:
+  - **MANDATORY**: Check for `karpathy-guidelines` skill for ANY coding task.
   - Verify available and enabled tools
   - Suggest and confirm with the user which MCP/skill to use
   - Recommend missing ones if useful
@@ -19,21 +20,17 @@
 
 When a task matches conditions below, load the corresponding skill **before writing code**.
 
-### Web Skills (`ai_docs/skills/web/`)
+### 🚨 Universal Optimization Skills (CHECK FIRST, in `ai_docs/skills/ai-optimization/`)
 
-| Condition (when the task involves...)                                              | Skill to Use                  |
-| :--------------------------------------------------------------------------------- | :---------------------------- |
-| Next.js file conventions, RSC, data fetching, metadata, route handlers, async APIs | `next-best-practices`         |
-| `use cache` directive, PPR, cacheLife, cacheTag, updateTag, static/dynamic mix     | `next-cache-components`       |
-| Component API design, compound components, boolean prop cleanup, render props      | `vercel-composition-patterns` |
-| React/Next.js performance: re-renders, bundle size, waterfalls, memoization        | `vercel-react-best-practices` |
-| UI review, accessibility audit, UX compliance, design guidelines                   | `web-design-guidelines`       |
+| Condition (when the task involves...)                                                                                               | Skill to Use          |
+| :---------------------------------------------------------------------------------------------------------------------------------- | :-------------------- |
+| **ANY coding task** (writing, refactoring, fixing bugs). **ALWAYS** load this skill first to ensure high-quality, surgical changes. | `karpathy-guidelines` |
 
 ### API Skills (`ai_docs/skills/api/`)
 
-| Condition (when the task involves...)                                                    | Skill to Use             |
-| :--------------------------------------------------------------------------------------- | :----------------------- |
-| NestJS modules, DI, guards, pipes, interceptors, Mongoose queries, testing, architecture | `nestjs-best-practices`  |
+| Condition (when the task involves...)                                                    | Skill to Use            |
+| :--------------------------------------------------------------------------------------- | :---------------------- |
+| NestJS modules, DI, guards, pipes, interceptors, Mongoose queries, testing, architecture | `nestjs-best-practices` |
 
 ### Mobile Skills (`ai_docs/skills/mobile/`)
 
@@ -46,6 +43,16 @@ When a task matches conditions below, load the corresponding skill **before writ
 | Any network request, API call, fetch, caching, offline support, auth tokens | `native-data-fetching` |
 | Upgrading Expo SDK, fixing dependency conflicts, New Architecture migration | `upgrading-expo`       |
 | Running web code on native via webview, Canvas/WebGL, web library migration | `use-dom`              |
+
+### Web Skills (`ai_docs/skills/web/`)
+
+| Condition (when the task involves...)                                              | Skill to Use                  |
+| :--------------------------------------------------------------------------------- | :---------------------------- |
+| Next.js file conventions, RSC, data fetching, metadata, route handlers, async APIs | `next-best-practices`         |
+| `use cache` directive, PPR, cacheLife, cacheTag, updateTag, static/dynamic mix     | `next-cache-components`       |
+| Component API design, compound components, boolean prop cleanup, render props      | `vercel-composition-patterns` |
+| React/Next.js performance: re-renders, bundle size, waterfalls, memoization        | `vercel-react-best-practices` |
+| UI review, accessibility audit, UX compliance, design guidelines                   | `web-design-guidelines`       |
 
 ## Project Overview
 

@@ -374,15 +374,11 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use. Skills are organized by platform:
 
-**Web Skills** (`ai_docs/skills/web/`)
+**AI Optimization Skills** (`ai_docs/skills/ai-optimization/`)
 
-| Skill                         | Purpose                     | When to Use                                                                   |
-| :---------------------------- | :-------------------------- | :---------------------------------------------------------------------------- |
-| `next-best-practices`         | Next.js best practices      | Writing, reviewing, or refactoring Next.js code                               |
-| `next-cache-components`       | Next.js 16 cache components | Implementing `use cache`, PPR, cacheLife, cacheTag, or updateTag              |
-| `vercel-composition-patterns` | React composition patterns  | Refactoring components, building reusable component APIs, compound components |
-| `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance         |
-| `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                         |
+| Skill                 | Purpose                                          | When to Use                                                                                                                                                                    |
+| :-------------------- | :----------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors | Writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
 
 **API Skills** (`ai_docs/skills/api/`)
 
@@ -403,6 +399,16 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 | `use-dom`              | DOM components for web-in-native  | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
 Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills), [next-skills](https://github.com/vercel-labs/next-skills), [expo-skills](https://github.com/expo/skills), and [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
+
+**Web Skills** (`ai_docs/skills/web/`)
+
+| Skill                         | Purpose                     | When to Use                                                                   |
+| :---------------------------- | :-------------------------- | :---------------------------------------------------------------------------- |
+| `next-best-practices`         | Next.js best practices      | Writing, reviewing, or refactoring Next.js code                               |
+| `next-cache-components`       | Next.js 16 cache components | Implementing `use cache`, PPR, cacheLife, cacheTag, or updateTag              |
+| `vercel-composition-patterns` | React composition patterns  | Refactoring components, building reusable component APIs, compound components |
+| `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance         |
+| `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                         |
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
@@ -445,7 +451,7 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | DX Improvement   | Clearer error messages, simpler config than ESLint 9+ |
 | Migration Impact | Removed 10 ESLint packages from dependency tree       |
 
-Type-aware rules are available but kept in evaluation for this project. [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)
+Type-aware rules are available but kept in evaluation for this project. [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) | [Type-Aware Linting](https://oxc.rs/docs/guide/usage/linter/type-aware.html)
 
 ### Oxfmt (Rust-based Formatter)
 
