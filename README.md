@@ -376,17 +376,23 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 
 **AI Optimization Skills** (`ai_docs/skills/ai-optimization/`)
 
+Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills)
+
 | Skill                 | Purpose                                          | When to Use                                                                                                                                                                    |
 | :-------------------- | :----------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors | Writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
 
 **API Skills** (`ai_docs/skills/api/`)
 
+Based on and refined from [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
+
 | Skill                   | Purpose                        | When to Use                                                                     |
 | :---------------------- | :----------------------------- | :------------------------------------------------------------------------------ |
 | `nestjs-best-practices` | NestJS architecture & patterns | Writing, reviewing, or refactoring NestJS code (Mongoose, Vitest, DI, security) |
 
 **Mobile Skills** (`ai_docs/skills/mobile/`)
+
+Based on [expo-skills](https://github.com/expo/skills)
 
 | Skill                  | Purpose                           | When to Use                                                            |
 | :--------------------- | :-------------------------------- | :--------------------------------------------------------------------- |
@@ -398,9 +404,9 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 | `upgrading-expo`       | Expo SDK upgrades                 | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
 | `use-dom`              | DOM components for web-in-native  | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
-Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills), [next-skills](https://github.com/vercel-labs/next-skills), [expo-skills](https://github.com/expo/skills), and [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
-
 **Web Skills** (`ai_docs/skills/web/`)
+
+Based on [next-skills](https://github.com/vercel-labs/next-skills) and [vercel agent-skills](https://github.com/vercel-labs/agent-skills)
 
 | Skill                         | Purpose                     | When to Use                                                                   |
 | :---------------------------- | :-------------------------- | :---------------------------------------------------------------------------- |
