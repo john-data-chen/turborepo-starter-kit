@@ -3,12 +3,13 @@ import "@repo/ui/styles.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Roboto } from "next/font/google";
 import { notFound } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
 
 import { routing } from "@/i18n/routing";
+import { getCachedMessages } from "@/lib/get-cached-messages";
 import { ClientProviders } from "@/providers/client-providers";
 
 const roboto = Roboto({
@@ -23,6 +24,10 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export async function generateMetadata({ params }: Omit<Props, "children">): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
@@ -35,11 +40,14 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
 
 export default async function LocaleLayout({ children, params }: Readonly<Props>) {
   const { locale } = await params;
+  // Enable static rendering
+  setRequestLocale(locale);
+
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
-  const messages = await getMessages();
+  const messages = await getCachedMessages(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
