@@ -384,6 +384,12 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 | `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance         |
 | `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                         |
 
+**API Skills** (`ai_docs/skills/api/`)
+
+| Skill                   | Purpose                        | When to Use                                                                     |
+| :---------------------- | :----------------------------- | :------------------------------------------------------------------------------ |
+| `nestjs-best-practices` | NestJS architecture & patterns | Writing, reviewing, or refactoring NestJS code (Mongoose, Vitest, DI, security) |
+
 **Mobile Skills** (`ai_docs/skills/mobile/`)
 
 | Skill                  | Purpose                           | When to Use                                                            |
@@ -396,7 +402,7 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 | `upgrading-expo`       | Expo SDK upgrades                 | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
 | `use-dom`              | DOM components for web-in-native  | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
-Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills), [next-skills](https://github.com/vercel-labs/next-skills), and [expo-skills](https://github.com/expo/skills)
+Based on [vercel agent-skills](https://github.com/vercel-labs/agent-skills), [next-skills](https://github.com/vercel-labs/next-skills), [expo-skills](https://github.com/expo/skills), and [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
