@@ -120,7 +120,7 @@ export function useAuth() {
 
         // If login returned user data directly, use it
         if (loginResult && typeof loginResult === "object" && "user" in loginResult) {
-          const user = (loginResult as any).user;
+          const user = (loginResult as { user: UserInfo }).user;
           const session = createSession(user);
           return { session };
         }
@@ -184,7 +184,6 @@ export function useAuth() {
       // Ensure we have both email and _id before updating
       if (user.email && user._id) {
         setUserInfo(user.name || user.email, user._id);
-      } else {
       }
     }
   }, [session, setUserInfo]);

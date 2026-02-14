@@ -22,12 +22,6 @@ vi.mock("@/lib/api/taskApi", () => ({
   }
 }));
 
-vi.mock("@/lib/api/tasks", () => ({
-  useDeleteTask: vi.fn(() => ({
-    mutateAsync: vi.fn()
-  }))
-}));
-
 describe("workspace-store - Task actions", () => {
   beforeEach(() => {
     // Reset the store before each test
@@ -269,7 +263,7 @@ describe("workspace-store - Task actions", () => {
     });
 
     it("should remove a task", async () => {
-      const { useDeleteTask } = await import("@/lib/api/tasks");
+      const { taskApi } = await import("@/lib/api/taskApi");
       const { projectApi } = await import("@/lib/api/projectApi");
 
       const mockTask: Task = {
@@ -303,14 +297,13 @@ describe("workspace-store - Task actions", () => {
         projects: [mockProject]
       });
 
-      const mockMutateAsync = vi.fn().mockResolvedValue(undefined);
-      vi.mocked(useDeleteTask).mockReturnValue({ mutateAsync: mockMutateAsync } as any);
+      vi.mocked(taskApi.deleteTask).mockResolvedValue(undefined);
       vi.mocked(projectApi.getProjects).mockResolvedValue([{ ...mockProject, tasks: [] }]);
 
       const store = useWorkspaceStore.getState();
       await store.removeTask("task-1");
 
-      expect(mockMutateAsync).toHaveBeenCalledWith("task-1", expect.any(Object));
+      expect(taskApi.deleteTask).toHaveBeenCalledWith("task-1");
       const state = useWorkspaceStore.getState();
       expect(state.projects[0].tasks).toHaveLength(0);
     });

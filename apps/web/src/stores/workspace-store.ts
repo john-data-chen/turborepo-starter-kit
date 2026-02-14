@@ -7,7 +7,6 @@ import { persist } from "zustand/middleware";
 import { boardApi } from "@/lib/api/boardApi";
 import { projectApi } from "@/lib/api/projectApi";
 import { taskApi } from "@/lib/api/taskApi";
-import { useDeleteTask } from "@/lib/api/tasks";
 
 interface State {
   // User state
@@ -405,7 +404,6 @@ export const useWorkspaceStore = create<State>()(
       removeTask: async (taskId: string) => {
         try {
           const { currentBoardId } = get();
-          const deleteTask = useDeleteTask();
 
           // Optimistically update the UI by removing the task from the store
           set((state) => ({
@@ -415,26 +413,22 @@ export const useWorkspaceStore = create<State>()(
             }))
           }));
 
-          // Execute the delete mutation
-          await deleteTask.mutateAsync(taskId, {
-            onError: (error) => {
-              console.error("Error in delete mutation:", error);
-              // Revert the optimistic update if the deletion fails
-              if (currentBoardId) {
-                const { fetchProjects } = get();
-                fetchProjects(currentBoardId);
-              }
-            },
-            onSettled: () => {
-              // Refresh the projects to ensure consistency
-              if (currentBoardId) {
-                const { fetchProjects } = get();
-                fetchProjects(currentBoardId);
-              }
-            }
-          });
+          // Call the API directly instead of using a React hook
+          await taskApi.deleteTask(taskId);
+
+          // Refresh the projects to ensure consistency
+          if (currentBoardId) {
+            const { fetchProjects } = get();
+            await fetchProjects(currentBoardId);
+          }
         } catch (error) {
           console.error("Error in removeTask:", error);
+          // Revert by refreshing projects on error
+          const { currentBoardId } = get();
+          if (currentBoardId) {
+            const { fetchProjects } = get();
+            fetchProjects(currentBoardId);
+          }
           throw error;
         }
       },

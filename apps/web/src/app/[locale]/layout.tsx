@@ -20,7 +20,7 @@ const roboto = Roboto({
 
 interface Props {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
 export async function generateMetadata({ params }: Omit<Props, "children">): Promise<Metadata> {
