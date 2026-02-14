@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { ProjectStatus } from "../dto/update-project.dto";
+export enum ProjectStatus {
+  TODO = "TODO",
+  IN_PROGRESS = "IN_PROGRESS",
+  DONE = "DONE",
+  ARCHIVED = "ARCHIVED"
+}
 
 export type ProjectDocument = Project & Document;
 

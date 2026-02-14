@@ -1,11 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from "class-validator";
 
-export enum TaskStatus {
-  TODO = "TODO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE"
-}
+import { TaskStatus } from "../schemas/tasks.schema";
+
+// Re-export for backward compatibility
+export { TaskStatus };
 
 export class CreateTaskDto {
   @ApiProperty({

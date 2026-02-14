@@ -7,13 +7,12 @@ import {
   Patch,
   Post,
   Query,
-  Req,
-  UnauthorizedException,
   UseGuards
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { ParseObjectIdPipe } from "../../common/pipes/parse-object-id.pipe";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
 import { CreateTaskDto } from "./dto/create-task.dto";
@@ -39,12 +38,9 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() req: { user: { _id: string } }
+    @CurrentUser() user: { _id: string }
   ): Promise<TaskResponseDto> {
-    if (!req.user?._id) {
-      throw new UnauthorizedException("User not authenticated");
-    }
-    return this.tasksService.create(createTaskDto, req.user._id);
+    return this.tasksService.create(createTaskDto, user._id);
   }
 
   @Get()
@@ -90,9 +86,9 @@ export class TasksController {
   async update(
     @Param("id", ParseObjectIdPipe) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Req() req
+    @CurrentUser() user: { _id: string }
   ): Promise<TaskResponseDto> {
-    return this.tasksService.update(id, updateTaskDto, req.user._id);
+    return this.tasksService.update(id, updateTaskDto, user._id);
   }
 
   @Delete(":id")
@@ -104,8 +100,11 @@ export class TasksController {
     status: 403,
     description: "Forbidden - Only the task creator can delete the task"
   })
-  async remove(@Param("id", ParseObjectIdPipe) id: string, @Req() req): Promise<void> {
-    return this.tasksService.remove(id, req.user._id);
+  async remove(
+    @Param("id", ParseObjectIdPipe) id: string,
+    @CurrentUser() user: { _id: string }
+  ): Promise<void> {
+    return this.tasksService.remove(id, user._id);
   }
 
   @Patch(":id/move")
@@ -121,16 +120,8 @@ export class TasksController {
   async moveTask(
     @Param("id", ParseObjectIdPipe) id: string,
     @Body() moveData: { projectId: string; orderInProject: number },
-    @Req() req
+    @CurrentUser() user: { _id: string }
   ): Promise<TaskResponseDto> {
-    if (!req.user || !req.user._id) {
-      throw new UnauthorizedException("User not authenticated");
-    }
-    return this.tasksService.moveTask(
-      id,
-      moveData.projectId,
-      moveData.orderInProject,
-      req.user._id
-    );
+    return this.tasksService.moveTask(id, moveData.projectId, moveData.orderInProject, user._id);
   }
 }

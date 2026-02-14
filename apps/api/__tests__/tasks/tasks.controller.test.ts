@@ -34,12 +34,12 @@ describe("TasksController", () => {
   describe("create", () => {
     it("should create a task", async () => {
       const createTaskDto = { title: "Test Task", projectId: "1" };
-      const req = { user: { _id: "1" } };
+      const user = { _id: "1" };
       const result = { ...createTaskDto, _id: "1", createdBy: "1" };
 
       vi.spyOn(service, "create").mockResolvedValue(result as any);
 
-      expect(await controller.create(createTaskDto, req as any)).toEqual(result);
+      expect(await controller.create(createTaskDto as any, user)).toEqual(result);
       expect(service.create).toHaveBeenCalledWith(createTaskDto, "1");
     });
   });
@@ -69,23 +69,23 @@ describe("TasksController", () => {
   describe("update", () => {
     it("should update a task", async () => {
       const updateTaskDto = { title: "Test Task Updated" };
-      const req = { user: { _id: "1" } };
+      const user = { _id: "1" };
       const result = { _id: "1", title: "Test Task Updated" };
 
       vi.spyOn(service, "update").mockResolvedValue(result as any);
 
-      expect(await controller.update("1", updateTaskDto, req)).toEqual(result);
+      expect(await controller.update("1", updateTaskDto as any, user)).toEqual(result);
       expect(service.update).toHaveBeenCalledWith("1", updateTaskDto, "1");
     });
   });
 
   describe("remove", () => {
     it("should remove a task", async () => {
-      const req = { user: { _id: "1" } };
+      const user = { _id: "1" };
 
       vi.spyOn(service, "remove").mockResolvedValue(undefined);
 
-      await controller.remove("1", req);
+      await controller.remove("1", user);
       expect(service.remove).toHaveBeenCalledWith("1", "1");
     });
   });
@@ -93,12 +93,12 @@ describe("TasksController", () => {
   describe("moveTask", () => {
     it("should move a task", async () => {
       const moveData = { projectId: "2", orderInProject: 1 };
-      const req = { user: { _id: "1" } };
+      const user = { _id: "1" };
       const result = { _id: "1", title: "Test Task", projectId: "2" };
 
       vi.spyOn(service, "moveTask").mockResolvedValue(result as any);
 
-      expect(await controller.moveTask("1", moveData, req)).toEqual(result);
+      expect(await controller.moveTask("1", moveData, user)).toEqual(result);
       expect(service.moveTask).toHaveBeenCalledWith("1", "2", 1, "1");
     });
   });

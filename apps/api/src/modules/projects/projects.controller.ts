@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -31,6 +32,8 @@ import { Project } from "./schemas/projects.schema";
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class ProjectsController {
+  private readonly logger = new Logger(ProjectsController.name);
+
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
@@ -92,8 +95,8 @@ export class ProjectsController {
       const updatedProject = await this.projectsService.update(id, updateProjectDto, user._id);
       return updatedProject;
     } catch (error) {
-      console.error("Error in update endpoint:", error);
-      throw error; // Let the global exception filter handle it
+      this.logger.error("Error in update endpoint:", error);
+      throw error;
     }
   }
 
@@ -112,7 +115,7 @@ export class ProjectsController {
       await this.projectsService.remove(id, user._id);
       return { success: true, message: "Project deleted successfully" };
     } catch (error) {
-      console.error("Error in delete endpoint:", error);
+      this.logger.error("Error in delete endpoint:", error);
       throw error;
     }
   }

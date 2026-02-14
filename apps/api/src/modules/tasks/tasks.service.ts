@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
+  Logger,
   NotFoundException
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -17,6 +19,8 @@ import { Task, TaskDocument, TaskStatus } from "./schemas/tasks.schema";
 
 @Injectable()
 export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(
     @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
     @Inject(forwardRef(() => ProjectsService))
@@ -30,7 +34,7 @@ export class TasksService {
    */
   async deleteTasksByProjectId(projectId: string): Promise<{ deletedCount: number }> {
     if (!Types.ObjectId.isValid(projectId)) {
-      throw new Error("Invalid project ID");
+      throw new BadRequestException("Invalid project ID");
     }
 
     const result = await this.taskModel
@@ -64,7 +68,7 @@ export class TasksService {
             { path: "lastModifier", select: "name email" }
           ]);
         } catch (populateError) {
-          console.error("Error during population:", populateError);
+          this.logger.error("Error during population:", populateError);
           throw populateError;
         }
       }
@@ -110,14 +114,14 @@ export class TasksService {
 
       return response as TaskResponseDto;
     } catch (error) {
-      console.error("Error in toTaskResponse:", error);
+      this.logger.error("Error in toTaskResponse:", error);
       throw error;
     }
   }
 
   async create(createTaskDto: CreateTaskDto, userId: string): Promise<TaskResponseDto> {
     if (!userId) {
-      throw new Error("User ID is required to create a task");
+      throw new BadRequestException("User ID is required to create a task");
     }
 
     try {
@@ -130,7 +134,7 @@ export class TasksService {
         try {
           await this.projectsService.addMemberIfNotExists(createTaskDto.project, userId);
         } catch (error) {
-          console.error("Error adding creator to project members:", error);
+          this.logger.error("Error adding creator to project members:", error);
           // Continue with task creation even if adding to members fails
         }
       }
@@ -158,7 +162,7 @@ export class TasksService {
 
       return await this.toTaskResponse(savedTask);
     } catch (error) {
-      console.error("Error creating task:", error);
+      this.logger.error("Error creating task:", error);
       throw error;
     }
   }
@@ -246,7 +250,7 @@ export class TasksService {
     // Use findByIdAndUpdate for an atomic operation and to get the updated doc
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(id, { $set: updateData }, { new: true })
-      .populate("lastModifier", "name email") // Explicitly populate lastModifier
+      .populate("lastModifier", "name email")
       .exec();
 
     if (!updatedTask) {
@@ -297,13 +301,13 @@ export class TasksService {
 
     // Validate inputs
     if (!Types.ObjectId.isValid(taskId)) {
-      throw new Error("Invalid task ID");
+      throw new BadRequestException("Invalid task ID");
     }
     if (!Types.ObjectId.isValid(newProjectId)) {
-      throw new Error("Invalid project ID");
+      throw new BadRequestException("Invalid project ID");
     }
     if (!Types.ObjectId.isValid(userId)) {
-      throw new Error("Invalid user ID");
+      throw new BadRequestException("Invalid user ID");
     }
 
     // Find the task
