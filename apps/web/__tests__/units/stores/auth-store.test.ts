@@ -52,9 +52,7 @@ describe("auth-store", () => {
     const mockUser: UserInfo = {
       _id: "123",
       email: "test@example.com",
-      name: "Test User",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      name: "Test User"
     };
 
     useAuthStore.getState().setUser(mockUser);
@@ -100,9 +98,7 @@ describe("auth-store", () => {
     const mockUser: UserInfo = {
       _id: "123",
       email: "test@example.com",
-      name: "Test User",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      name: "Test User"
     };
 
     useAuthStore.getState().setSession(mockSession);
@@ -124,9 +120,7 @@ describe("auth-store", () => {
     const mockUser: UserInfo = {
       _id: "123",
       email: "test@example.com",
-      name: "Test User",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      name: "Test User"
     };
 
     useAuthStore.getState().setUser(mockUser);
@@ -149,9 +143,7 @@ describe("auth-store", () => {
     const mockUser: UserInfo = {
       _id: "123",
       email: "test@example.com",
-      name: "Test User",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      name: "Test User"
     };
 
     useAuthStore.getState().setUser(mockUser);

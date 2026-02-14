@@ -54,15 +54,16 @@ vi.mock("@/components/kanban/project/ProjectAction", () => ({
 }));
 
 describe("BoardProject", () => {
+  const mockUserInfo: any = { _id: "user-1", name: "John Doe", email: "john@example.com" };
   const mockProject: Project = {
     _id: "project-1",
     title: "Test Project",
     description: "Test Description",
     board: "board-1",
-    owner: { _id: "user-1", name: "John Doe", email: "john@example.com", createdAt: new Date() },
+    owner: mockUserInfo,
     members: [
-      { _id: "user-2", name: "Jane Smith", email: "jane@example.com", createdAt: new Date() },
-      { _id: "user-3", name: "Bob Johnson", email: "bob@example.com", createdAt: new Date() }
+      { _id: "user-2", name: "Jane Smith", email: "jane@example.com" },
+      { _id: "user-3", name: "Bob Johnson", email: "bob@example.com" }
     ],
     orderInBoard: 0,
     tasks: [],
@@ -78,11 +79,11 @@ describe("BoardProject", () => {
       status: TaskStatus.TODO,
       project: "project-1",
       board: "board-1",
-      creator: "user-1",
-      lastModifier: "user-1",
+      creator: mockUserInfo,
+      lastModifier: mockUserInfo,
       orderInProject: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       _id: "task-2",
@@ -91,11 +92,11 @@ describe("BoardProject", () => {
       status: TaskStatus.IN_PROGRESS,
       project: "project-1",
       board: "board-1",
-      creator: "user-1",
-      lastModifier: "user-1",
+      creator: mockUserInfo,
+      lastModifier: mockUserInfo,
       orderInProject: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       _id: "task-3",
@@ -104,12 +105,12 @@ describe("BoardProject", () => {
       status: TaskStatus.DONE,
       project: "project-1",
       board: "board-1",
-      creator: "user-1",
-      lastModifier: "user-1",
+      creator: mockUserInfo,
+      lastModifier: mockUserInfo,
       orderInProject: 2,
       _deleted: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ];
 
@@ -354,7 +355,7 @@ describe("BoardProject", () => {
   it("should handle owner as UserInfo object with missing name", () => {
     const projectWithPartialOwner = {
       ...mockProject,
-      owner: { _id: "user-1", email: "john@example.com", createdAt: new Date() } as any
+      owner: { _id: "user-1", email: "john@example.com" } as any
     };
     render(
       <BoardProject

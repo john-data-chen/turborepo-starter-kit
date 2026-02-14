@@ -24,12 +24,16 @@ describe("useTaskForm", () => {
     {
       _id: "user-1",
       name: "John Doe",
-      email: "john@example.com"
+      email: "john@example.com",
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       _id: "user-2",
       name: "Jane Smith",
-      email: "jane@example.com"
+      email: "jane@example.com",
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ];
 
@@ -113,7 +117,7 @@ describe("useTaskForm", () => {
 
     const { result } = renderHook(() =>
       useTaskForm({
-        defaultValues,
+        defaultValues: defaultValues as any,
         onSubmit
       })
     );
@@ -405,7 +409,7 @@ describe("useTaskForm", () => {
 
     const { result } = renderHook(() =>
       useTaskForm({
-        defaultValues,
+        defaultValues: defaultValues as any,
         onSubmit
       })
     );
@@ -478,7 +482,7 @@ describe("useTaskForm", () => {
       useTaskForm({
         defaultValues: {
           assignee: undefined
-        },
+        } as any,
         onSubmit
       })
     );

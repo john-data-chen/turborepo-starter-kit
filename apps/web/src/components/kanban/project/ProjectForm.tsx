@@ -66,6 +66,7 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
                   placeholder={t("descriptionPlaceholder")}
                   className="resize-none"
                   {...field}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormMessage />

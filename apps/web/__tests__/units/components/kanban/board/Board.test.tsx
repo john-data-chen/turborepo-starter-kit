@@ -81,6 +81,7 @@ vi.mock("@/components/kanban/task/TaskCard", () => ({
 }));
 
 describe("Board", () => {
+  const mockUserInfo: any = { _id: "user-1", name: "John", email: "john@example.com" };
   const mockProjects: Project[] = [
     {
       _id: "project-1",
@@ -88,7 +89,7 @@ describe("Board", () => {
       description: "Description 1",
       board: "board-1",
       owner: "user-1",
-      members: [{ _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() }],
+      members: [mockUserInfo],
       orderInBoard: 0,
       tasks: [
         {
@@ -98,11 +99,11 @@ describe("Board", () => {
           status: TaskStatus.TODO,
           project: "project-1",
           board: "board-1",
-          creator: "user-1",
-          lastModifier: "user-1",
+          creator: mockUserInfo,
+          lastModifier: mockUserInfo,
           orderInProject: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ],
       createdAt: new Date().toISOString(),
@@ -128,7 +129,7 @@ describe("Board", () => {
       title: "My Board",
       description: "Board Description",
       owner: "user-1",
-      members: [{ _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() }],
+      members: [mockUserInfo],
       projects: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -142,12 +143,15 @@ describe("Board", () => {
     const { useWorkspaceStore } = await import("@/stores/workspace-store");
 
     vi.mocked(useAuth).mockReturnValue({
-      user: { _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() },
+      user: mockUserInfo,
       isAuthenticated: true,
       isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      login: vi.fn() as any,
+      loginWithEmail: vi.fn() as any,
+      logout: vi.fn() as any,
+      loginMutation: {} as any,
+      error: null,
+      session: null
     });
 
     const state = {
@@ -271,12 +275,15 @@ describe("Board", () => {
   it("should determine board owner correctly when user is not owner", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: { _id: "user-2", name: "Jane", email: "jane@example.com", createdAt: new Date() },
+      user: { _id: "user-2", name: "Jane", email: "jane@example.com" },
       isAuthenticated: true,
       isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      login: vi.fn() as any,
+      loginWithEmail: vi.fn() as any,
+      logout: vi.fn() as any,
+      loginMutation: {} as any,
+      error: null,
+      session: null
     });
 
     render(<Board />);
@@ -286,12 +293,15 @@ describe("Board", () => {
   it("should handle unauthenticated user", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: null,
+      user: undefined,
       isAuthenticated: false,
       isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      login: vi.fn() as any,
+      loginWithEmail: vi.fn() as any,
+      logout: vi.fn() as any,
+      loginMutation: {} as any,
+      error: null,
+      session: null
     });
 
     render(<Board />);
@@ -307,9 +317,7 @@ describe("Board", () => {
         title: "Team Board",
         description: "",
         owner: "user-2",
-        members: [
-          { _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() }
-        ],
+        members: [{ _id: "user-1", name: "John", email: "john@example.com" }],
         projects: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -438,7 +446,7 @@ describe("Board", () => {
     const boardsWithObjectOwner = [
       {
         ...mockMyBoards[0],
-        owner: { _id: "user-1", name: "John", email: "john@example.com", createdAt: new Date() }
+        owner: { _id: "user-1", name: "John", email: "john@example.com" }
       }
     ];
 

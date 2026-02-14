@@ -36,7 +36,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -72,11 +72,11 @@ describe("useBoards", () => {
     ];
 
     vi.mocked(useApiBoards).mockReturnValue({
-      data: mockBoards,
+      data: { myBoards: [mockBoards[0]], teamBoards: [mockBoards[1]] },
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -123,7 +123,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -152,11 +152,11 @@ describe("useBoards", () => {
     ];
 
     vi.mocked(useApiBoards).mockReturnValue({
-      data: mockBoards as Board[],
+      data: { myBoards: mockBoards as Board[], teamBoards: [] },
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -185,11 +185,11 @@ describe("useBoards", () => {
     ];
 
     vi.mocked(useApiBoards).mockReturnValue({
-      data: mockBoards,
+      data: { myBoards: mockBoards, teamBoards: [] },
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -221,7 +221,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     renderHook(() => useBoards());
 
@@ -240,7 +240,7 @@ describe("useBoards", () => {
       isLoading: true,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -257,7 +257,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: mockError,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -274,7 +274,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: mockRefetch
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -291,7 +291,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 
@@ -309,7 +309,7 @@ describe("useBoards", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn()
-    });
+    } as any);
 
     const { result } = renderHook(() => useBoards());
 

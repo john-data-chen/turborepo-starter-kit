@@ -18,25 +18,29 @@ vi.mock("next-intl", () => ({
 }));
 
 describe("UserNav", () => {
-  const mockUser = {
+  const mockUser: any = {
     _id: "user-1",
     email: "test@example.com",
-    name: "Test User",
-    createdAt: new Date()
+    name: "Test User"
+  };
+
+  const mockAuth: any = {
+    user: mockUser,
+    isAuthenticated: true,
+    isLoading: false,
+    login: vi.fn(),
+    loginWithEmail: vi.fn(),
+    logout: vi.fn(),
+    loginMutation: {},
+    error: null,
+    session: null
   };
 
   beforeEach(async () => {
     vi.clearAllMocks();
 
     const { useAuth } = await import("@/hooks/useAuth");
-    vi.mocked(useAuth).mockReturnValue({
-      user: mockUser,
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
-    });
+    vi.mocked(useAuth).mockReturnValue(mockAuth);
   });
 
   it("should render user nav when authenticated", () => {
@@ -53,12 +57,10 @@ describe("UserNav", () => {
   it("should show loading state", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: null,
+      ...mockAuth,
+      user: undefined,
       isAuthenticated: false,
-      isLoading: true,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      isLoading: true
     });
 
     const { container } = render(<UserNav />);
@@ -68,12 +70,10 @@ describe("UserNav", () => {
   it("should not render when not authenticated", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: null,
+      ...mockAuth,
+      user: undefined,
       isAuthenticated: false,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      isLoading: false
     });
 
     const { container } = render(<UserNav />);
@@ -83,12 +83,10 @@ describe("UserNav", () => {
   it("should not render when user is null", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: null,
+      ...mockAuth,
+      user: undefined,
       isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      isLoading: false
     });
 
     const { container } = render(<UserNav />);
@@ -98,12 +96,8 @@ describe("UserNav", () => {
   it("should handle email without @ symbol", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: { ...mockUser, email: "invalidemailformat" },
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      ...mockAuth,
+      user: { ...mockUser, email: "invalidemailformat" }
     });
 
     const { container } = render(<UserNav />);
@@ -113,12 +107,8 @@ describe("UserNav", () => {
   it("should handle uppercase email", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: { ...mockUser, email: "TEST@EXAMPLE.COM" },
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      ...mockAuth,
+      user: { ...mockUser, email: "TEST@EXAMPLE.COM" }
     });
 
     render(<UserNav />);
@@ -128,12 +118,8 @@ describe("UserNav", () => {
   it("should handle email with special characters", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: { ...mockUser, email: "test+special@example.com" },
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      ...mockAuth,
+      user: { ...mockUser, email: "test+special@example.com" }
     });
 
     const { container } = render(<UserNav />);
@@ -143,12 +129,8 @@ describe("UserNav", () => {
   it("should handle long email addresses", async () => {
     const { useAuth } = await import("@/hooks/useAuth");
     vi.mocked(useAuth).mockReturnValue({
-      user: { ...mockUser, email: "verylongemailaddress12345@example.com" },
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      checkSession: vi.fn()
+      ...mockAuth,
+      user: { ...mockUser, email: "verylongemailaddress12345@example.com" }
     });
 
     const { container } = render(<UserNav />);
