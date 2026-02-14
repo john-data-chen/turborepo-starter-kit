@@ -8,6 +8,7 @@ export async function getCachedMessages(locale: string) {
     return (await import(`../../messages/${locale}.json`)).default;
   } catch (error) {
     // Fallback to default locale (en) if specific locale messages not found
+    console.error("Failed to load messages for locale:", locale, error);
     return (await import(`../../messages/en.json`)).default;
   }
 }
