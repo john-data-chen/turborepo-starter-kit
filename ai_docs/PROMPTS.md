@@ -13,7 +13,7 @@
 
 > [!TIP]
 > If need to check package info, use `context7-mcp` if installed and enabled.
-> When starting work on a Next.js project, ALWAYS call the `init` tool from `next-devtools-mcp` FIRST to set up proper context and establish documentation requirements. Do this automatically without being asked.
+> When starting work on a Next.js project, call the `init` tool from next-devtools-mcp FIRST to set up proper context and establish documentation requirements. Ask user for confirmation before calling the tool.
 
 ## Skill Dispatch Guide
 
