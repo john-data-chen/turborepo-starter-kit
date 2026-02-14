@@ -53,7 +53,7 @@ function BoardProjectComponent({
   isOverlay = false,
   isBoardOwner,
   isBoardMember,
-  currentUserId: _currentUserId
+  currentUserId
 }: BoardProjectProps) {
   const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations("kanban.project");
@@ -238,14 +238,19 @@ function BoardProjectComponent({
               <div className="space-y-2">
                 {filteredTasks
                   .filter((task) => !task._deleted) // Ensure we don't render deleted tasks
-                  .map((task) => (
-                    <TaskCard
-                      key={task._id}
-                      task={task}
-                      onUpdate={handleTaskUpdate}
-                      isDragEnabled={isBoardOwner}
-                    />
-                  ))}
+                  .map((task) => {
+                    const isTaskCreator = task.creator?._id === currentUserId;
+                    const isTaskAssignee = task.assignee?._id === currentUserId;
+                    const canDrag = isBoardOwner || isTaskCreator || isTaskAssignee;
+                    return (
+                      <TaskCard
+                        key={task._id}
+                        task={task}
+                        onUpdate={handleTaskUpdate}
+                        isDragEnabled={canDrag}
+                      />
+                    );
+                  })}
               </div>
             </SortableContext>
           </div>
