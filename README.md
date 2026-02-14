@@ -439,7 +439,7 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | DX Improvement   | Clearer error messages, simpler config than ESLint 9+ |
 | Migration Impact | Removed 10 ESLint packages from dependency tree       |
 
-Type-aware rules are available but kept in evaluation for this project. [Oxlint Docs](https://oxc.rs/blog/2025-06-10-oxlint-stable.html)
+Type-aware rules are available but kept in evaluation for this project. [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)
 
 ### Oxfmt (Rust-based Formatter)
 
@@ -448,7 +448,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Status      | **Evaluation** - enabled for evaluation          |
 | Performance | 30x faster than Prettier with instant cold start |
 
-[Oxfmt Docs](https://oxc.rs/docs/guide/usage/formatter)
+[Oxfmt](https://oxc.rs/docs/guide/usage/formatter)
 
 ### Turbopack + Filesystem Caching
 
@@ -478,7 +478,7 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint 
 | Trade-off | +5-10% Lighthouse score vs +30-40% build time                              |
 | Decision  | Build time cost outweighs marginal performance gain for this project scope |
 
-[React Compiler Docs](https://react.dev/learn/react-compiler)
+[React Compiler](https://react.dev/learn/react-compiler)
 
 ---
 
