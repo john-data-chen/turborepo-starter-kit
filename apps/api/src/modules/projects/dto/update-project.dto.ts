@@ -1,11 +1,9 @@
 import { IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from "class-validator";
 
-export enum ProjectStatus {
-  TODO = "TODO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-  ARCHIVED = "ARCHIVED"
-}
+import { ProjectStatus } from "../schemas/projects.schema";
+
+// Re-export for backward compatibility
+export { ProjectStatus };
 
 export class UpdateProjectDto {
   @IsString()

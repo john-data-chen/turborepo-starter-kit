@@ -18,8 +18,20 @@ describe("AuthController", () => {
       debug: vi.fn()
     };
 
-    // Manually instantiate AuthController with the mock AuthService and Logger
-    controller = new AuthController(authService as any);
+    const configService = {
+      get: vi.fn((key: string) => {
+        if (key === "NODE_ENV") {
+          return "test";
+        }
+        if (key === "VERCEL") {
+          return undefined;
+        }
+        return undefined;
+      })
+    };
+
+    // Manually instantiate AuthController with the mock AuthService, ConfigService and Logger
+    controller = new AuthController(authService as any, configService as any);
     (controller as any).logger = logger; // Manually inject logger
   });
 

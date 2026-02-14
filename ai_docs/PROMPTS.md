@@ -29,6 +29,12 @@ When a task matches conditions below, load the corresponding skill **before writ
 | React/Next.js performance: re-renders, bundle size, waterfalls, memoization        | `vercel-react-best-practices` |
 | UI review, accessibility audit, UX compliance, design guidelines                   | `web-design-guidelines`       |
 
+### API Skills (`ai_docs/skills/api/`)
+
+| Condition (when the task involves...)                                                    | Skill to Use             |
+| :--------------------------------------------------------------------------------------- | :----------------------- |
+| NestJS modules, DI, guards, pipes, interceptors, Mongoose queries, testing, architecture | `nestjs-best-practices`  |
+
 ### Mobile Skills (`ai_docs/skills/mobile/`)
 
 | Condition (when the task involves...)                                       | Skill to Use           |

@@ -1,4 +1,5 @@
 import { UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 
@@ -17,20 +18,29 @@ describe("JwtStrategy", () => {
   };
 
   beforeEach(async () => {
-    // Mock JWT_SECRET environment variable
-    process.env.JWT_SECRET = "test-secret-key";
-
     const testingModule: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: JwtStrategy,
-          useFactory: (userService: UserService) => new JwtStrategy(userService),
-          inject: [UserService]
+          useFactory: (userService: UserService, configService: ConfigService) =>
+            new JwtStrategy(userService, configService),
+          inject: [UserService, ConfigService]
         },
         {
           provide: UserService,
           useValue: {
             findByEmail: vi.fn()
+          }
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: vi.fn((key: string) => {
+              if (key === "JWT_SECRET") {
+                return "test-secret-key";
+              }
+              return undefined;
+            })
           }
         }
       ]

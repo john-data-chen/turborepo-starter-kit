@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   UseGuards
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 import { AuthService } from "./auth.service";
 import { EmailAuthGuard } from "./guards/email-auth.guard";
@@ -16,7 +17,10 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 @Controller("auth")
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Post("login")
   @UseGuards(EmailAuthGuard)
@@ -34,14 +38,14 @@ export class AuthController {
       const result = await this.authService.login(req.user);
 
       // Set secure cookie settings
-      const isProduction = process.env.NODE_ENV === "production";
-      const isVercel = process.env.VERCEL === "1";
+      const isProduction = this.configService.get<string>("NODE_ENV") === "production";
+      const isVercel = this.configService.get<string>("VERCEL") === "1";
 
       // Cookie settings that match frontend
       const cookieOptions = {
         httpOnly: true,
-        secure: isProduction || isVercel, // Only secure in production HTTPS
-        sameSite: "lax" as const, // Try 'lax' instead of 'none' for cross-site
+        secure: isProduction || isVercel,
+        sameSite: "lax" as const,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: "/"
       };
@@ -58,7 +62,7 @@ export class AuthController {
       // Return user data AND token for Authorization header fallback
       return {
         user: result.user,
-        access_token: result.access_token // Include token for Authorization header
+        access_token: result.access_token
       };
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
@@ -80,14 +84,14 @@ export class AuthController {
   @Post("logout")
   @UseGuards(JwtAuthGuard)
   async logout(@Request() req, @Res({ passthrough: true }) res) {
-    const isProduction = process.env.NODE_ENV === "production";
+    const isProduction = this.configService.get<string>("NODE_ENV") === "production";
+    const isVercel = this.configService.get<string>("VERCEL") === "1";
 
     // Clear the JWT cookie with the same options used when setting it
-    const isVercel = process.env.VERCEL === "1";
     const cookieOptions = {
       httpOnly: true,
-      secure: isProduction || isVercel, // Only secure in production HTTPS
-      sameSite: "lax" as const, // Match login settings
+      secure: isProduction || isVercel,
+      sameSite: "lax" as const,
       path: "/",
       maxAge: 0 // Expire immediately
     };

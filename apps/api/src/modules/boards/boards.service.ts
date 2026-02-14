@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 
@@ -11,6 +11,8 @@ import { Board, BoardDocument } from "./schemas/boards.schema";
 
 @Injectable()
 export class BoardService {
+  private readonly logger = new Logger(BoardService.name);
+
   constructor(
     @InjectModel(Board.name) private boardModel: Model<BoardDocument>,
     @Inject(forwardRef(() => ProjectsService))
@@ -18,6 +20,100 @@ export class BoardService {
     @Inject(forwardRef(() => TasksService))
     private tasksService: TasksService
   ) {}
+
+  private getProjectPopulatePipeline() {
+    return [
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner"
+        }
+      },
+      { $unwind: "$owner" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "members",
+          foreignField: "_id",
+          as: "members"
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          description: 1,
+          owner: {
+            _id: 1,
+            name: 1,
+            email: 1
+          },
+          members: {
+            _id: 1,
+            name: 1,
+            email: 1
+          }
+        }
+      }
+    ];
+  }
+
+  private getBoardProjection() {
+    return {
+      $project: {
+        _id: 1,
+        title: 1,
+        description: 1,
+        owner: {
+          _id: 1,
+          name: 1,
+          email: 1
+        },
+        members: {
+          _id: 1,
+          name: 1,
+          email: 1
+        },
+        projects: 1,
+        createdAt: 1,
+        updatedAt: 1
+      }
+    };
+  }
+
+  private getBoardPopulateStages() {
+    return [
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner"
+        }
+      },
+      { $unwind: "$owner" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "members",
+          foreignField: "_id",
+          as: "members"
+        }
+      },
+      {
+        $lookup: {
+          from: "projects",
+          localField: "projects",
+          foreignField: "_id",
+          as: "projects",
+          pipeline: this.getProjectPopulatePipeline()
+        }
+      },
+      this.getBoardProjection()
+    ];
+  }
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
     // Convert owner string to ObjectId
@@ -41,104 +137,13 @@ export class BoardService {
       // Ensure userId is a valid ObjectId
       const isValidObjectId = Types.ObjectId.isValid(userId);
       if (!isValidObjectId) {
-        console.error(`[BoardService] Invalid user ID format: ${userId}`);
+        this.logger.warn(`Invalid user ID format: ${userId}`);
         return { myBoards: [], teamBoards: [] };
       }
       // First, find boards where user is the owner
       const ownedBoards = await this.boardModel.aggregate([
         { $match: { owner: new Types.ObjectId(userId) } },
-        {
-          $lookup: {
-            from: "users",
-            localField: "owner",
-            foreignField: "_id",
-            as: "owner"
-          }
-        },
-        { $unwind: "$owner" },
-        {
-          $project: {
-            title: 1,
-            description: 1,
-            owner: 1,
-            members: 1,
-            projects: 1,
-            createdAt: 1,
-            updatedAt: 1
-          }
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members"
-          }
-        },
-        {
-          $lookup: {
-            from: "projects",
-            localField: "projects",
-            foreignField: "_id",
-            as: "projects",
-            pipeline: [
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "owner",
-                  foreignField: "_id",
-                  as: "owner"
-                }
-              },
-              { $unwind: "$owner" },
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "members",
-                  foreignField: "_id",
-                  as: "members"
-                }
-              },
-              {
-                $project: {
-                  _id: 1,
-                  title: 1,
-                  description: 1,
-                  owner: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  },
-                  members: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            title: 1,
-            description: 1,
-            owner: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            members: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            projects: 1,
-            createdAt: 1,
-            updatedAt: 1
-          }
-        }
+        ...this.getBoardPopulateStages()
       ]);
 
       // Then find boards where user is a member but not the owner
@@ -149,92 +154,12 @@ export class BoardService {
             owner: { $ne: new Types.ObjectId(userId) }
           }
         },
-        {
-          $lookup: {
-            from: "users",
-            localField: "owner",
-            foreignField: "_id",
-            as: "owner"
-          }
-        },
-        { $unwind: "$owner" },
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members"
-          }
-        },
-        {
-          $lookup: {
-            from: "projects",
-            localField: "projects",
-            foreignField: "_id",
-            as: "projects",
-            pipeline: [
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "owner",
-                  foreignField: "_id",
-                  as: "owner"
-                }
-              },
-              { $unwind: "$owner" },
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "members",
-                  foreignField: "_id",
-                  as: "members"
-                }
-              },
-              {
-                $project: {
-                  _id: 1,
-                  title: 1,
-                  description: 1,
-                  owner: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  },
-                  members: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            title: 1,
-            description: 1,
-            owner: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            members: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            projects: 1,
-            createdAt: 1,
-            updatedAt: 1
-          }
-        }
+        ...this.getBoardPopulateStages()
       ]);
 
       return { myBoards: ownedBoards, teamBoards: memberBoards };
     } catch (error) {
-      console.error("[BoardService] Error finding boards:", error);
+      this.logger.error("Error finding boards:", error);
       throw error;
     }
   }
@@ -253,92 +178,12 @@ export class BoardService {
             $or: [{ owner: new Types.ObjectId(userId) }, { members: new Types.ObjectId(userId) }]
           }
         },
-        {
-          $lookup: {
-            from: "users",
-            localField: "owner",
-            foreignField: "_id",
-            as: "owner"
-          }
-        },
-        { $unwind: "$owner" },
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members"
-          }
-        },
-        {
-          $lookup: {
-            from: "projects",
-            localField: "projects",
-            foreignField: "_id",
-            as: "projects",
-            pipeline: [
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "owner",
-                  foreignField: "_id",
-                  as: "owner"
-                }
-              },
-              { $unwind: "$owner" },
-              {
-                $lookup: {
-                  from: "users",
-                  localField: "members",
-                  foreignField: "_id",
-                  as: "members"
-                }
-              },
-              {
-                $project: {
-                  _id: 1,
-                  title: 1,
-                  description: 1,
-                  owner: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  },
-                  members: {
-                    _id: 1,
-                    name: 1,
-                    email: 1
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            title: 1,
-            description: 1,
-            owner: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            members: {
-              _id: 1,
-              name: 1,
-              email: 1
-            },
-            projects: 1,
-            createdAt: 1,
-            updatedAt: 1
-          }
-        },
+        ...this.getBoardPopulateStages(),
         { $limit: 1 }
       ]);
       return board;
     } catch (error) {
-      console.error(`[BoardService] Error finding board ${id}:`, error);
+      this.logger.error(`Error finding board ${id}:`, error);
       throw error;
     }
   }
@@ -359,7 +204,7 @@ export class BoardService {
     const isMember = board.members.some((memberId) => memberId.toString() === userIdString);
 
     if (!isOwner && !isMember) {
-      console.error("[BoardService.update] User has no permission to update board");
+      this.logger.warn("User has no permission to update board");
       throw new NotFoundException(`Board with ID "${id}" not found or access denied`);
     }
 
@@ -385,8 +230,8 @@ export class BoardService {
     const isOwner = board.owner.toString() === userIdString;
 
     if (!isOwner) {
-      console.error(
-        `[BoardService] User ${userIdString} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
+      this.logger.warn(
+        `User ${userIdString} is not the owner of board ${id}. Board owner: ${board.owner.toString()}`
       );
       throw new NotFoundException(`Board with ID "${id}" not found`);
     }
@@ -400,7 +245,7 @@ export class BoardService {
         try {
           await this.tasksService.deleteTasksByProjectId(project._id.toString());
         } catch (error) {
-          console.error(`Error deleting tasks for project ${project._id}:`, error);
+          this.logger.error(`Error deleting tasks for project ${project._id}:`, error);
           // Continue with next project even if one fails
         }
       }
@@ -412,14 +257,13 @@ export class BoardService {
       const result = await this.boardModel.deleteOne({ _id: id }).exec();
 
       if (result.deletedCount === 0) {
-        // This should theoretically never happen because we already checked the board exists
-        console.error(`[BoardService] Failed to delete board ${id} for unknown reason`);
+        this.logger.error(`Failed to delete board ${id} for unknown reason`);
         throw new NotFoundException(`Failed to delete board with ID "${id}"`);
       }
       return { message: "Board deleted successfully" };
     } catch (error) {
-      console.error(`Error during board deletion for board ${id}:`, error);
-      throw error; // Re-throw to be handled by the controller
+      this.logger.error(`Error during board deletion for board ${id}:`, error);
+      throw error;
     }
   }
 

@@ -44,6 +44,7 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [editEnable, setEditEnable] = React.useState(false);
   const updateProject = useWorkspaceStore((state) => state.updateProject);
+  const removeProject = useWorkspaceStore((state) => state.removeProject);
   const deleteProjectMutation = useDeleteProject();
   const updateProjectMutation = useUpdateProject();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for controlling menu
@@ -79,10 +80,6 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
     } catch (error) {
       toast.error(t("updateFailed", { error: (error as Error).message }));
     }
-  }
-
-  function removeProject(id: string, _p0: (id: any) => Promise<void>) {
-    deleteProjectMutation.mutate(id);
   }
 
   return (
@@ -159,10 +156,16 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <Button
               variant="destructive"
-              onClick={() => {
+              onClick={async () => {
                 setShowDeleteDialog(false);
-                removeProject(id, async (id) => deleteProjectMutation.mutateAsync(id));
-                toast.success(t("deleteSuccess", { title }));
+                try {
+                  await removeProject(id,  async (projectId) =>
+                    deleteProjectMutation.mutateAsync(projectId)
+                  );
+                  toast.success(t("deleteSuccess", { title }));
+                } catch (error) {
+                  toast.error(t("deleteFailed", { error: (error as Error).message }));
+                }
               }}
             >
               {t("delete")}
