@@ -36,7 +36,7 @@
     "radix-ui": "latest",
     "react-day-picker": "^9.13.2",
     "react-hook-form": "catalog:",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.4.1",
     "tailwindcss": "catalog:"
   },
   "devDependencies": {

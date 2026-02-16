@@ -14,13 +14,13 @@
   "embeddedLanguageFormatting": "auto",
   "experimentalSortImports": {
     "groups": [
-      ["side-effect"],
+      ["side_effect"],
       ["builtin"],
-      ["external", "external-type"],
-      ["internal", "internal-type"],
-      ["parent", "parent-type"],
-      ["sibling", "sibling-type"],
-      ["index", "index-type"]
+      ["value-external", "type-external"],
+      ["value-internal", "type-internal"],
+      ["value-parent", "type-parent"],
+      ["value-sibling", "type-sibling"],
+      ["value-index", "type-index"]
     ]
   },
   "experimentalTailwindcss": {
