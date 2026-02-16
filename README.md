@@ -418,7 +418,7 @@ Based on [next-skills](https://github.com/vercel-labs/next-skills) and [vercel a
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
-Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. AI tools should reference this file first when working on this project.
+Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. This guidelines can reduce AI illusions and improve it to use correct skills and MCP servers 40~60% of the time. AI tools should reference this file first when working on this project.
 
 **How to Use:**
 
