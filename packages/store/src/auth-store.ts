@@ -1,8 +1,8 @@
-import type { Session, UserInfo } from "./types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { createStorage, type StorageAdapter } from "./storage";
+import type { Session, UserInfo } from "./types";
 
 export interface AuthState {
   session: Session | null;

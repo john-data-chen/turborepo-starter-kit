@@ -1,10 +1,10 @@
-import type { Board } from "@/types/dbInterface";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 /// <reference types="react" />
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BoardOverview } from "@/components/kanban/BoardOverview";
+import type { Board } from "@/types/dbInterface";
 
 // Ensure React is globally available
 globalThis.React = React;

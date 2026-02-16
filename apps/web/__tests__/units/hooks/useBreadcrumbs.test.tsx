@@ -1,10 +1,10 @@
-import type { Board } from "@/types/dbInterface";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useBreadcrumbs } from "@/hooks/useBreadcrumbs";
 import { useWorkspaceStore } from "@/stores/workspace-store";
+import type { Board } from "@/types/dbInterface";
 
 // Helper to create mock query results with proper typing
 function createMockQueryResult(

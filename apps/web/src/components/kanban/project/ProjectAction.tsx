@@ -159,7 +159,7 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
               onClick={async () => {
                 setShowDeleteDialog(false);
                 try {
-                  await removeProject(id,  async (projectId) =>
+                  await removeProject(id, async (projectId) =>
                     deleteProjectMutation.mutateAsync(projectId)
                   );
                   toast.success(t("deleteSuccess", { title }));
