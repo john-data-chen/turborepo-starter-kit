@@ -19,14 +19,14 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.13",
+    "@nestjs/common": "^11.1.14",
     "@nestjs/config": "^4.0.3",
-    "@nestjs/core": "^11.1.13",
+    "@nestjs/core": "^11.1.14",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^11.1.13",
+    "@nestjs/platform-express": "^11.1.14",
     "@nestjs/swagger": "^11.2.6",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.13",
+    "@nestjs/testing": "^11.1.14",
     "@rspack/cli": "2.0.0-beta.2",
     "@rspack/core": "2.0.0-beta.2",
     "@types/cookie-parser": "^1.4.10",
