@@ -363,12 +363,12 @@ I utilize a suite of specialized AI tools, each assigned specific roles to mimic
 
 MCP enables AI tools to interact directly with development infrastructure, eliminating context-switching overhead:
 
-| Server                                                                       | Integration Point     | Workflow Enhancement                                                |
-| ---------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------- |
-| [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Browser state         | Debug without leaving the editor                                    |
-| [context7-mcp](https://github.com/upstash/context7)                          | Documentation         | Current library docs during development                             |
-| [nextjs-mcp](https://nextjs.org/docs/app/guides/mcp)                         | Framework diagnostics | Direct access to build errors and routes                            |
-| [playwright-mcp](https://github.com/microsoft/playwright-mcp)                | E2E testing           | Add e2e tests by AI based on Behavior-Driven Development guidelines |
+| Server                                                                       | Integration Point     | Workflow Enhancement                                                                         |
+| ---------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------- |
+| [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Browser state         | Allows AI agents to directly inspect and manipulate browser state via the DevTools Protocol. |
+| [context7-mcp](https://github.com/upstash/context7)                          | Documentation         | Current library docs for AI agents during development                                        |
+| [nextjs-mcp](https://nextjs.org/docs/app/guides/mcp)                         | Framework diagnostics | Direct access to build errors and routes                                                     |
+| [playwright-mcp](https://github.com/microsoft/playwright-mcp)                | E2E testing           | Add e2e tests by AI based on Behavior-Driven Development guidelines                          |
 
 **AI Skills** (in `ai_docs/skills/`)
 
