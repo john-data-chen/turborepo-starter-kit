@@ -1,21 +1,15 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-
-import { ProjectsModule } from "../projects/projects.module";
-import { TasksModule } from "../tasks/tasks.module";
 
 import { BoardController } from "./boards.controller";
 import { BoardService } from "./boards.service";
+import { BoardRepository } from "./repositories/boards.repository";
 import { Board, BoardSchema } from "./schemas/boards.schema";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Board.name, schema: BoardSchema }]),
-    forwardRef(() => ProjectsModule),
-    forwardRef(() => TasksModule)
-  ],
+  imports: [MongooseModule.forFeature([{ name: Board.name, schema: BoardSchema }])],
   controllers: [BoardController],
-  providers: [BoardService],
+  providers: [BoardRepository, BoardService],
   exports: [BoardService]
 })
 export class BoardsModule {}

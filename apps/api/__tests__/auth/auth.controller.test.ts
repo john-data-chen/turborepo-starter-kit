@@ -5,17 +5,10 @@ import { AuthController } from "../../src/modules/auth/auth.controller";
 describe("AuthController", () => {
   let controller: AuthController;
   let authService: { login: Mock };
-  let logger: { log: Mock; error: Mock; warn: Mock; debug: Mock };
 
   beforeEach(() => {
     authService = {
       login: vi.fn()
-    };
-    logger = {
-      log: vi.fn(),
-      error: vi.fn(),
-      warn: vi.fn(),
-      debug: vi.fn()
     };
 
     const configService = {
@@ -30,9 +23,7 @@ describe("AuthController", () => {
       })
     };
 
-    // Manually instantiate AuthController with the mock AuthService, ConfigService and Logger
     controller = new AuthController(authService as any, configService as any);
-    (controller as any).logger = logger; // Manually inject logger
   });
 
   it("should be defined", () => {
@@ -49,12 +40,6 @@ describe("AuthController", () => {
         updatedAt: new Date()
       };
       const result = { user, access_token: "token" };
-      const req = {
-        user,
-        headers: { origin: "http://localhost:3000" },
-        method: "POST",
-        cookies: {}
-      };
       const res = {
         cookie: vi.fn(),
         clearCookie: vi.fn(),
@@ -63,7 +48,7 @@ describe("AuthController", () => {
 
       authService.login.mockResolvedValue(result as any);
 
-      expect(await controller.login(req, res)).toEqual(result);
+      expect(await controller.login(user as any, res as any)).toEqual(result);
       expect(res.cookie).toHaveBeenCalledTimes(2);
     });
   });
@@ -71,28 +56,18 @@ describe("AuthController", () => {
   describe("getProfile", () => {
     it("should return user from request", () => {
       const user = { _id: "1", email: "test@test.com", name: "Test User" };
-      const req = {
-        user,
-        headers: { origin: "http://localhost:3000" },
-        cookies: {}
-      };
 
-      expect(controller.getProfile(req)).toEqual(user);
+      expect(controller.getProfile(user as any)).toEqual(user);
     });
   });
 
   describe("logout", () => {
     it("should clear cookies and return a message", async () => {
-      const req = {
-        user: { _id: "1", email: "test@test.com" },
-        headers: { origin: "http://localhost:3000" },
-        cookies: {}
-      };
       const res = {
         clearCookie: vi.fn()
       };
 
-      expect(await controller.logout(req, res)).toEqual({ message: "Successfully logged out" });
+      expect(await controller.logout(res as any)).toEqual({ message: "Successfully logged out" });
       expect(res.clearCookie).toHaveBeenCalledTimes(2);
     });
   });

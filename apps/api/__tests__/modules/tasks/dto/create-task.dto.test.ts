@@ -1,4 +1,5 @@
 import { validate } from "class-validator";
+import { describe, expect, it } from "vitest";
 
 import { CreateTaskDto, TaskStatus } from "../../../../src/modules/tasks/dto/create-task.dto";
 
@@ -8,8 +9,6 @@ describe("CreateTaskDto", () => {
     dto.title = "Test Task";
     dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
     dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
     const errors = await validate(dto);
     expect(errors.length).toBe(0);
   });
@@ -18,8 +17,6 @@ describe("CreateTaskDto", () => {
     const dto = new CreateTaskDto();
     dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
     dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
     const errors = await validate(dto);
     expect(errors.length).toBeGreaterThan(0);
   });
@@ -28,8 +25,6 @@ describe("CreateTaskDto", () => {
     const dto = new CreateTaskDto();
     dto.title = "Test Task";
     dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
     const errors = await validate(dto);
     expect(errors.length).toBeGreaterThan(0);
   });
@@ -38,28 +33,6 @@ describe("CreateTaskDto", () => {
     const dto = new CreateTaskDto();
     dto.title = "Test Task";
     dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-  });
-
-  it("should be invalid if creator is missing", async () => {
-    const dto = new CreateTaskDto();
-    dto.title = "Test Task";
-    dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
-    dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-  });
-
-  it("should be invalid if lastModifier is missing", async () => {
-    const dto = new CreateTaskDto();
-    dto.title = "Test Task";
-    dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
-    dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
     const errors = await validate(dto);
     expect(errors.length).toBeGreaterThan(0);
   });
@@ -69,11 +42,9 @@ describe("CreateTaskDto", () => {
     dto.title = "Test Task";
     dto.board = "60f6e1b3b3f3b3b3b3f3b3b4";
     dto.project = "60f6e1b3b3f3b3b3b3f3b3b5";
-    dto.creator = "60f6e1b3b3f3b3b3b3f3b3b3";
-    dto.lastModifier = "60f6e1b3b3f3b3b3b3f3b3b3";
     dto.description = "Test description";
     dto.status = TaskStatus.IN_PROGRESS;
-    dto.dueDate = new Date().toISOString();
+    dto.dueDate = new Date().toISOString() as unknown as Date;
     dto.orderInProject = 1;
     dto.assignee = "60f6e1b3b3f3b3b3b3f3b3b6";
     const errors = await validate(dto);

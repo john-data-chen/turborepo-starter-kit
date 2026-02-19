@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Patch,
   Post,
@@ -32,8 +31,6 @@ import { Project } from "./schemas/projects.schema";
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class ProjectsController {
-  private readonly logger = new Logger(ProjectsController.name);
-
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
@@ -50,27 +47,16 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @CurrentUser() user: { _id: string; email: string }
   ) {
-    const projectData = {
-      ...createProjectDto,
-      owner: user._id
-    };
-    return this.projectsService.create(projectData);
+    return this.projectsService.create({ ...createProjectDto, owner: user._id });
   }
 
   @Get()
   @ApiOperation({ summary: "Get all projects for a board" })
   @ApiQuery({ name: "boardId", required: true, type: String })
-  @ApiResponse({
-    status: 200,
-    description: "List of projects",
-    type: [Project]
-  })
+  @ApiResponse({ status: 200, description: "List of projects", type: [Project] })
   @ApiResponse({ status: 400, description: "Invalid board ID" })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  async getProjectsByBoard(
-    @Query("boardId") boardId: string,
-    @CurrentUser() _user: { _id: string }
-  ) {
+  async getProjectsByBoard(@Query("boardId") boardId: string) {
     return this.projectsService.findByBoardId(boardId);
   }
 
@@ -91,32 +77,17 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: { _id: string }
   ) {
-    try {
-      const updatedProject = await this.projectsService.update(id, updateProjectDto, user._id);
-      return updatedProject;
-    } catch (error) {
-      this.logger.error("Error in update endpoint:", error);
-      throw error;
-    }
+    return this.projectsService.update(id, updateProjectDto, user._id);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Delete a project" })
-  @ApiResponse({
-    status: 200,
-    description: "The project has been successfully deleted."
-  })
+  @ApiResponse({ status: 200, description: "The project has been successfully deleted." })
   @ApiResponse({ status: 400, description: "Bad request" })
   @ApiResponse({ status: 401, description: "Unauthorized" })
   @ApiResponse({ status: 403, description: "Forbidden" })
   @ApiResponse({ status: 404, description: "Project not found" })
   async remove(@Param("id") id: string, @CurrentUser() user: { _id: string }) {
-    try {
-      await this.projectsService.remove(id, user._id);
-      return { success: true, message: "Project deleted successfully" };
-    } catch (error) {
-      this.logger.error("Error in delete endpoint:", error);
-      throw error;
-    }
+    return this.projectsService.remove(id, user._id);
   }
 }

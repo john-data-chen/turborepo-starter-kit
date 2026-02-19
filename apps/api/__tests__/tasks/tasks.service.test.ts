@@ -1,131 +1,38 @@
-/* eslint-disable max-lines */
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
-import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ProjectsService } from "../../src/modules/projects/projects.service";
-import { Task } from "../../src/modules/tasks/schemas/tasks.schema";
+import { TaskRepository } from "../../src/modules/tasks/repositories/tasks.repository";
 import { TasksService } from "../../src/modules/tasks/tasks.service";
-
-class MockTaskDocument {
-  _id: string;
-  project: string;
-  orderInProject: number;
-  save: Mock;
-  creator: { _id: Types.ObjectId; equals: Mock };
-  assignee: Types.ObjectId | null;
-  populate: Mock;
-
-  constructor(taskId: string, userId: string, projectId: string, order: number) {
-    this._id = taskId;
-    this.project = projectId;
-    this.orderInProject = order;
-    this.save = vi.fn();
-    this.creator = {
-      _id: new Types.ObjectId(userId),
-      equals: vi.fn().mockImplementation((id: Types.ObjectId) => id.toString() === userId)
-    };
-    this.assignee = null;
-    this.populate = vi.fn().mockReturnThis();
-  }
-
-  equals(id: Types.ObjectId): boolean {
-    return this._id === id.toString();
-  }
-}
-
-// Define a mock constructor for the TaskModel
-class MockTaskModel {
-  constructor(data: any) {
-    const mockTask = {
-      ...data,
-      _id: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b7"),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      save: vi.fn().mockResolvedValue({
-        ...data,
-        _id: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b7"),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        populate: vi.fn().mockResolvedValue({
-          ...data,
-          _id: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b7"),
-          creator: { _id: data.creator, name: "Test User", email: "test@example.com" },
-          assignee: data.assignee
-            ? { _id: data.assignee, name: "Assignee", email: "assignee@example.com" }
-            : null,
-          lastModifier: { _id: data.creator, name: "Test User", email: "test@example.com" }
-        })
-      }),
-      populate: vi.fn().mockReturnThis(),
-      exec: vi.fn().mockResolvedValue({
-        ...data,
-        _id: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b7")
-      })
-    };
-    return mockTask;
-  }
-
-  static find = vi.fn().mockReturnValue({
-    sort: vi.fn().mockReturnThis(),
-    populate: vi.fn().mockReturnThis(),
-    exec: vi.fn().mockResolvedValue([])
-  });
-  static findOne = vi.fn();
-  static findById = vi.fn().mockImplementation((id) => {
-    const mockTask = new MockTaskDocument(
-      id.toString(),
-      "60f6e1b3b3f3b3b3b3f3b3b3",
-      "60f6e1b3b3f3b3b3b3f3b3b4",
-      0
-    );
-    const query = {
-      populate: vi.fn().mockReturnThis(),
-      exec: vi.fn().mockResolvedValue(mockTask),
-      // oxlint-disable-next-line no-thenable
-      then: (resolve: any) => resolve(mockTask)
-    };
-    return query;
-  });
-  static findByIdAndUpdate = vi.fn().mockReturnValue({
-    populate: vi.fn().mockReturnThis(),
-    exec: vi.fn().mockResolvedValue({})
-  });
-  static create = vi.fn();
-  static save = vi.fn();
-  static exec = vi.fn();
-  static deleteMany = vi
-    .fn()
-    .mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) });
-  static deleteOne = vi
-    .fn()
-    .mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) });
-  static updateMany = vi.fn().mockReturnValue({ exec: vi.fn() });
-}
 
 describe("TasksService", () => {
   let service: TasksService;
-  let testingModule: TestingModule;
+  let taskRepository: Record<string, ReturnType<typeof vi.fn>>;
+  let projectsService: Record<string, ReturnType<typeof vi.fn>>;
 
-  beforeEach(async () => {
-    testingModule = await Test.createTestingModule({
-      providers: [
-        TasksService,
-        {
-          provide: getModelToken(Task.name),
-          useValue: MockTaskModel
-        },
-        {
-          provide: ProjectsService,
-          useValue: {
-            addMemberIfNotExists: vi.fn()
-          }
-        }
-      ]
-    }).compile();
+  beforeEach(() => {
+    taskRepository = {
+      create: vi.fn(),
+      findByQuery: vi.fn().mockResolvedValue([]),
+      findById: vi.fn(),
+      findByIdPopulated: vi.fn(),
+      updateById: vi.fn(),
+      deleteById: vi.fn().mockResolvedValue({ deletedCount: 1 }),
+      deleteByProjectId: vi.fn().mockResolvedValue({ deletedCount: 1 }),
+      decrementOrderAfter: vi.fn(),
+      reorderOnMoveWithinProject: vi.fn(),
+      incrementOrderFrom: vi.fn(),
+      save: vi.fn()
+    };
 
-    service = testingModule.get<TasksService>(TasksService);
+    projectsService = {
+      addMemberIfNotExists: vi.fn()
+    };
+
+    service = new TasksService(
+      taskRepository as unknown as TaskRepository,
+      projectsService as unknown as ProjectsService
+    );
   });
 
   it("should be defined", () => {
@@ -140,10 +47,54 @@ describe("TasksService", () => {
         board: "60f6e1b3b3f3b3b3b3f3b3b5"
       };
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const savedTask = {
+        _id: { toString: () => "t1" },
+        title: "Test Task",
+        status: "TODO",
+        board: { toString: () => createTaskDto.board },
+        project: { toString: () => createTaskDto.project },
+        creator: { _id: userId, name: "Test", email: "test@test.com" },
+        assignee: null,
+        lastModifier: { _id: userId, name: "Test", email: "test@test.com" },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        orderInProject: 0,
+        populate: vi.fn().mockReturnThis()
+      };
+      taskRepository.create.mockResolvedValue(savedTask);
 
       const result = await service.create(createTaskDto as any, userId);
 
-      // The constructor will create an instance with a save method that gets called
+      expect(result).toBeDefined();
+      expect(taskRepository.create).toHaveBeenCalled();
+    });
+
+    it("should create a task with an assignee", async () => {
+      const createTaskDto = {
+        title: "Test Task",
+        project: "60f6e1b3b3f3b3b3b3f3b3b4",
+        board: "60f6e1b3b3f3b3b3b3f3b3b5",
+        assignee: "60f6e1b3b3f3b3b3b3f3b3b6"
+      };
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const savedTask = {
+        _id: { toString: () => "t1" },
+        title: "Test Task",
+        status: "TODO",
+        board: { toString: () => createTaskDto.board },
+        project: { toString: () => createTaskDto.project },
+        creator: { _id: userId, name: "Test", email: "test@test.com" },
+        assignee: { _id: createTaskDto.assignee, name: "Assignee", email: "a@test.com" },
+        lastModifier: { _id: userId, name: "Test", email: "test@test.com" },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        orderInProject: 0,
+        populate: vi.fn().mockReturnThis()
+      };
+      taskRepository.create.mockResolvedValue(savedTask);
+
+      const result = await service.create(createTaskDto as any, userId);
+
       expect(result).toBeDefined();
     });
 
@@ -153,82 +104,40 @@ describe("TasksService", () => {
         project: "60f6e1b3b3f3b3b3b3f3b3b4",
         board: "60f6e1b3b3f3b3b3b3f3b3b5"
       };
-      let thrownError: Error | null = null;
-      try {
-        await service.create(createTaskDto as any, null as unknown as string);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("User ID is required to create a task");
+      await expect(service.create(createTaskDto as any, null as unknown as string)).rejects.toThrow(
+        "User ID is required to create a task"
+      );
     });
   });
 
-  describe("deleteTasksByProjectId", () => {
+  describe("handleProjectDeleted", () => {
     it("should delete tasks by project id", async () => {
-      const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.deleteMany.mockReturnValue({
-        exec: vi.fn().mockResolvedValue({ deletedCount: 1 })
-      });
+      await service.handleProjectDeleted({ projectId: "60f6e1b3b3f3b3b3b3f3b3b4" });
 
-      const result = await service.deleteTasksByProjectId(projectId);
-
-      expect(result.deletedCount).toEqual(1);
-    });
-
-    it("should throw an error if project id is invalid", async () => {
-      let thrownError: Error | null = null;
-      try {
-        await service.deleteTasksByProjectId("invalid-id");
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Invalid project ID");
+      expect(taskRepository.deleteByProjectId).toHaveBeenCalledWith("60f6e1b3b3f3b3b3b3f3b3b4");
     });
   });
 
   describe("findAll", () => {
     it("should find all tasks", async () => {
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.find.mockReturnValue({
-        sort: vi.fn().mockReturnThis(),
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue([])
-      });
-
       await service.findAll();
-
-      expect(taskModel.find).toHaveBeenCalled();
+      expect(taskRepository.findByQuery).toHaveBeenCalledWith({});
     });
 
     it("should find all tasks with projectId", async () => {
-      const taskModel = testingModule.get(getModelToken(Task.name));
       const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      taskModel.find.mockReturnValue({
-        sort: vi.fn().mockReturnThis(),
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue([])
-      });
-
       await service.findAll(projectId);
-
-      expect(taskModel.find).toHaveBeenCalledWith({ project: new Types.ObjectId(projectId) });
+      expect(taskRepository.findByQuery).toHaveBeenCalledWith({
+        project: new Types.ObjectId(projectId)
+      });
     });
 
     it("should find all tasks with assigneeId", async () => {
-      const taskModel = testingModule.get(getModelToken(Task.name));
       const assigneeId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      taskModel.find.mockReturnValue({
-        sort: vi.fn().mockReturnThis(),
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue([])
-      });
-
       await service.findAll(undefined, assigneeId);
-
-      expect(taskModel.find).toHaveBeenCalledWith({ assignee: new Types.ObjectId(assigneeId) });
+      expect(taskRepository.findByQuery).toHaveBeenCalledWith({
+        assignee: new Types.ObjectId(assigneeId)
+      });
     });
   });
 
@@ -239,27 +148,28 @@ describe("TasksService", () => {
         _id: { toString: () => taskId },
         title: "Test Task",
         status: "TODO",
-        project: "60f6e1b3b3f3b3b3b3f3b3b4",
-        board: "60f6e1b3b3f3b3b3b3f3b3b5",
-        creator: { _id: "60f6e1b3b3f3b3b3b3f3b3b3", name: "Test User", email: "test@example.com" },
+        project: { toString: () => "p1" },
+        board: { toString: () => "b1" },
+        creator: { _id: "u1", name: "Test", email: "test@test.com" },
         assignee: null,
-        lastModifier: {
-          _id: "60f6e1b3b3f3b3b3b3f3b3b3",
-          name: "Test User",
-          email: "test@example.com"
-        },
+        lastModifier: { _id: "u1", name: "Test", email: "test@test.com" },
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        orderInProject: 0,
+        populate: vi.fn().mockReturnThis()
       };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockReturnValue({
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue(task)
-      });
+      taskRepository.findByIdPopulated.mockResolvedValue(task);
 
       await service.findOne(taskId);
 
-      expect(taskModel.findById).toHaveBeenCalledWith(taskId);
+      expect(taskRepository.findByIdPopulated).toHaveBeenCalledWith(taskId);
+    });
+
+    it("should throw not found exception when task is not found", async () => {
+      taskRepository.findByIdPopulated.mockResolvedValue(null);
+      await expect(service.findOne("60f6e1b3b3f3b3b3b3f3b3b5")).rejects.toThrow(
+        "Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found"
+      );
     });
   });
 
@@ -269,28 +179,51 @@ describe("TasksService", () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateTaskDto = { title: "Test Task Updated", orderInProject: 0 };
       const task = {
-        _id: { toString: () => taskId },
-        title: "Test Task",
-        status: "TODO",
-        project: "60f6e1b3b3f3b3b3b3f3b3b4",
-        board: "60f6e1b3b3f3b3b3b3f3b3b5",
+        _id: taskId,
         creator: new Types.ObjectId(userId),
-        assignee: null,
-        lastModifier: { _id: userId, name: "Test User", email: "test@example.com" },
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assignee: null
       };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(task);
-      taskModel.findByIdAndUpdate.mockReturnValue({
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue(task)
-      });
+      const updatedTask = {
+        _id: { toString: () => taskId },
+        title: "Test Task Updated",
+        status: "TODO",
+        project: { toString: () => "p1" },
+        board: { toString: () => "b1" },
+        creator: { _id: userId, name: "Test", email: "test@test.com" },
+        assignee: null,
+        lastModifier: { _id: userId, name: "Test", email: "test@test.com" },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        orderInProject: 0,
+        populate: vi.fn().mockReturnThis()
+      };
+
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.updateById.mockResolvedValue(updatedTask);
 
       await service.update(taskId, updateTaskDto, userId);
 
-      expect(taskModel.findById).toHaveBeenCalledWith(taskId);
-      expect(taskModel.findByIdAndUpdate).toHaveBeenCalled();
+      expect(taskRepository.findById).toHaveBeenCalledWith(taskId);
+      expect(taskRepository.updateById).toHaveBeenCalled();
+    });
+
+    it("should throw not found exception when updating a non-existing task", async () => {
+      taskRepository.findById.mockResolvedValue(null);
+      await expect(
+        service.update("60f6e1b3b3f3b3b3b3f3b3b5", { title: "Updated" }, "60f6e1b3b3f3b3b3b3f3b3b3")
+      ).rejects.toThrow("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
+    });
+
+    it("should throw forbidden exception when updating a task without permission", async () => {
+      const task = {
+        _id: "60f6e1b3b3f3b3b3b3f3b3b5",
+        creator: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b4"),
+        assignee: null
+      };
+      taskRepository.findById.mockResolvedValue(task);
+      await expect(
+        service.update("60f6e1b3b3f3b3b3b3f3b3b5", { title: "Updated" }, "60f6e1b3b3f3b3b3b3f3b3b3")
+      ).rejects.toThrow("You do not have permission to modify this task");
     });
   });
 
@@ -301,181 +234,40 @@ describe("TasksService", () => {
       const task = {
         _id: taskId,
         creator: new Types.ObjectId(userId),
-        project: "1",
+        project: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b4"),
         orderInProject: 0
       };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(task);
-      taskModel.deleteOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({ deletedCount: 1 }) });
-      taskModel.updateMany.mockReturnValue({ exec: vi.fn() });
+      taskRepository.findById.mockResolvedValue(task);
 
       await service.remove(taskId, userId);
 
-      expect(taskModel.findById).toHaveBeenCalledWith(taskId);
-      expect(taskModel.deleteOne).toHaveBeenCalled();
+      expect(taskRepository.findById).toHaveBeenCalledWith(taskId);
+      expect(taskRepository.deleteById).toHaveBeenCalledWith(taskId);
+      expect(taskRepository.decrementOrderAfter).toHaveBeenCalled();
     });
 
     it("should throw not found exception when removing a non-existing task", async () => {
-      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(null);
-
-      let thrownError: Error | null = null;
-      try {
-        await service.remove(taskId, userId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
+      taskRepository.findById.mockResolvedValue(null);
+      await expect(
+        service.remove("60f6e1b3b3f3b3b3b3f3b3b5", "60f6e1b3b3f3b3b3b3f3b3b3")
+      ).rejects.toThrow("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
     });
 
     it("should throw forbidden exception when removing a task without being the creator", async () => {
-      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const differentUserId = "60f6e1b3b3f3b3b3b3f3b3b4";
       const task = {
-        _id: taskId,
-        creator: new Types.ObjectId(differentUserId),
-        project: "1",
-        orderInProject: 0
+        _id: "60f6e1b3b3f3b3b3b3f3b3b5",
+        creator: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b4"),
+        assignee: null
       };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(task);
-
-      let thrownError: Error | null = null;
-      try {
-        await service.remove(taskId, userId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Only the task creator can perform this action");
-    });
-  });
-
-  describe("deleteTasksByProjectId", () => {
-    it("should throw an error for an invalid project ID", async () => {
-      const invalidProjectId = "invalid-id";
-      let thrownError: Error | null = null;
-      try {
-        await service.deleteTasksByProjectId(invalidProjectId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Invalid project ID");
-    });
-  });
-
-  describe("findAll", () => {
-    it("should find all tasks with projectId", async () => {
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      taskModel.find.mockReturnValue({
-        sort: vi.fn().mockReturnThis(),
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue([])
-      });
-
-      await service.findAll(projectId);
-
-      expect(taskModel.find).toHaveBeenCalledWith({ project: new Types.ObjectId(projectId) });
-    });
-
-    it("should find all tasks with assigneeId", async () => {
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      const assigneeId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      taskModel.find.mockReturnValue({
-        sort: vi.fn().mockReturnThis(),
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue([])
-      });
-
-      await service.findAll(undefined, assigneeId);
-
-      expect(taskModel.find).toHaveBeenCalledWith({ assignee: new Types.ObjectId(assigneeId) });
-    });
-  });
-
-  describe("create", () => {
-    it("should create a task with an assignee", async () => {
-      const createTaskDto = {
-        title: "Test Task",
-        project: "60f6e1b3b3f3b3b3b3f3b3b4",
-        board: "60f6e1b3b3f3b3b3b3f3b3b5",
-        assignee: "60f6e1b3b3f3b3b3b3f3b3b6"
-      };
-      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-
-      const result = await service.create(createTaskDto as any, userId);
-
-      // The constructor will create an instance with a save method that gets called
-      expect(result).toBeDefined();
-    });
-  });
-
-  describe("update", () => {
-    it("should throw not found exception when updating a non-existing task", async () => {
-      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const updateTaskDto = { title: "Test Task Updated" };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(null);
-
-      let thrownError: Error | null = null;
-      try {
-        await service.update(taskId, updateTaskDto, userId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
-    });
-
-    it("should throw forbidden exception when updating a task without permission", async () => {
-      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const differentUserId = "60f6e1b3b3f3b3b3b3f3b3b4";
-      const updateTaskDto = { title: "Test Task Updated" };
-      const task = { _id: taskId, creator: new Types.ObjectId(differentUserId), assignee: null };
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockResolvedValue(task);
-
-      let thrownError: Error | null = null;
-      try {
-        await service.update(taskId, updateTaskDto, userId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("You do not have permission to modify this task");
-    });
-  });
-
-  describe("findOne", () => {
-    it("should throw not found exception when task is not found", async () => {
-      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
-      const taskModel = testingModule.get(getModelToken(Task.name));
-      taskModel.findById.mockReturnValue({
-        populate: vi.fn().mockReturnThis(),
-        exec: vi.fn().mockResolvedValue(null)
-      });
-
-      let thrownError: Error | null = null;
-      try {
-        await service.findOne(taskId);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Task with ID 60f6e1b3b3f3b3b3b3f3b3b5 not found");
+      taskRepository.findById.mockResolvedValue(task);
+      await expect(
+        service.remove("60f6e1b3b3f3b3b3b3f3b3b5", "60f6e1b3b3f3b3b3b3f3b3b3")
+      ).rejects.toThrow("Only the task creator can perform this action");
     });
   });
 
   describe("toUserResponse", () => {
-    it("should return null if user is null", async () => {
+    it("should return null if user is null", () => {
       const result = (service as any).toUserResponse(null);
       expect(result).toBeNull();
     });
@@ -487,14 +279,7 @@ describe("TasksService", () => {
         _id: { toString: () => "1" },
         populate: vi.fn().mockRejectedValue(new Error("Populate error"))
       };
-      let thrownError: Error | null = null;
-      try {
-        await (service as any).toTaskResponse(task);
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("Populate error");
+      await expect((service as any).toTaskResponse(task)).rejects.toThrow("Populate error");
     });
 
     it("should handle missing lastModifier", async () => {

@@ -42,20 +42,6 @@ export class Project {
 
   @Prop({ type: Types.ObjectId, ref: "User" })
   assignee?: Types.ObjectId;
-
-  @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
-
-  @Prop({ type: Date, default: Date.now })
-  updatedAt: Date;
 }
 
-// Create the schema
-const ProjectSchema = SchemaFactory.createForClass(Project);
-
-// Add pre-save hook to update the updatedAt timestamp
-ProjectSchema.pre<ProjectDocument>("save", async function () {
-  this.updatedAt = new Date();
-});
-
-export { ProjectSchema };
+export const ProjectSchema = SchemaFactory.createForClass(Project);
