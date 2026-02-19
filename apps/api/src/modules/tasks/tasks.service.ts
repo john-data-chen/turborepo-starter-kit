@@ -3,9 +3,10 @@ import {
   ForbiddenException,
   Injectable,
   Logger,
-  NotFoundException
+  NotFoundException,
+  OnModuleInit
 } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
+import { EventEmitter2 } from "eventemitter2";
 import { Types } from "mongoose";
 
 import { ProjectDeletedEvent } from "../../common/events";
@@ -18,15 +19,21 @@ import { TaskRepository } from "./repositories/tasks.repository";
 import { TaskDocument, TaskStatus } from "./schemas/tasks.schema";
 
 @Injectable()
-export class TasksService {
+export class TasksService implements OnModuleInit {
   private readonly logger = new Logger(TasksService.name);
 
   constructor(
     private readonly taskRepository: TaskRepository,
-    private readonly projectsService: ProjectsService
+    private readonly projectsService: ProjectsService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
-  @OnEvent("project.deleted")
+  onModuleInit(): void {
+    this.eventEmitter.on("project.deleted",  async (event: ProjectDeletedEvent) =>
+      this.handleProjectDeleted(event)
+    );
+  }
+
   async handleProjectDeleted(event: ProjectDeletedEvent): Promise<void> {
     await this.taskRepository.deleteByProjectId(event.projectId);
   }

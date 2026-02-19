@@ -10,6 +10,7 @@ describe("TasksService", () => {
   let service: TasksService;
   let taskRepository: Record<string, ReturnType<typeof vi.fn>>;
   let projectsService: Record<string, ReturnType<typeof vi.fn>>;
+  let eventEmitter: { on: ReturnType<typeof vi.fn>; emit: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     taskRepository = {
@@ -30,9 +31,15 @@ describe("TasksService", () => {
       addMemberIfNotExists: vi.fn()
     };
 
+    eventEmitter = {
+      on: vi.fn(),
+      emit: vi.fn()
+    };
+
     service = new TasksService(
       taskRepository as unknown as TaskRepository,
-      projectsService as unknown as ProjectsService
+      projectsService as unknown as ProjectsService,
+      eventEmitter as any
     );
   });
 
