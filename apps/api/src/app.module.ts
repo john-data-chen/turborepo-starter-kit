@@ -19,7 +19,7 @@ import { UsersModule } from "./modules/users/users.module";
       isGlobal: true,
       envFilePath: ".env"
     }),
-    EventEmitterModule.forRoot({ global: true }),
+    EventEmitterModule.forRoot(),
 
     DatabaseModule,
     AuthModule,
