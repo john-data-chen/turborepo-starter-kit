@@ -27,7 +27,7 @@ async function bootstrap() {
     // Explicit production frontend URL as fallback
     "https://turborepo-starter-kit-web.vercel.app",
     // Regex for Vercel preview URLs for this project
-    /^https:\/\/turborepo-starter-kit-web-*\.vercel\.app$/,
+    /^https:\/\/turborepo-starter-kit-web-.*\.vercel\.app$/,
     // Local development
     "http://localhost:3000"
   ].filter(Boolean); // Filter out any undefined/null values from env vars
