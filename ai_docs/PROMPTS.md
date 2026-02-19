@@ -141,9 +141,6 @@ import { ComponentName } from "@repo/ui/ComponentName";
 > [!CAUTION]
 > **Duplicate QueryClient**: `providers/client-providers.tsx` and `providers/auth-provider.tsx` both create separate `QueryClient` instances. This defeats TanStack Query's caching strategy. Only use the QueryClient from `client-providers.tsx`.
 
-> [!NOTE]
-> **Refactoring Roadmap**: See `.ai/architecture.md` for the comprehensive refactoring spec covering auth architecture, provider cleanup, error handling, component splitting, and store refactoring.
-
 ## Debugging Checklist
 
 > [!NOTE]
