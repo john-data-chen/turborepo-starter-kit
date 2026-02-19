@@ -1,3 +1,4 @@
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { Types } from "mongoose";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -108,6 +109,27 @@ describe("TasksService", () => {
         "User ID is required to create a task"
       );
     });
+
+    it("should handle error when adding creator to project members fails", async () => {
+      const createTaskDto = {
+        title: "Test Task",
+        project: "60f6e1b3b3f3b3b3b3f3b3b4",
+        board: "60f6e1b3b3f3b3b3b3f3b3b5"
+      };
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const savedTask = {
+        _id: { toString: () => "t1" },
+        title: "Test Task",
+        populate: vi.fn().mockReturnThis()
+      };
+      taskRepository.create.mockResolvedValue(savedTask);
+      projectsService.addMemberIfNotExists.mockRejectedValue(new Error("Failed to add member"));
+
+      // Should not throw
+      await service.create(createTaskDto as any, userId);
+
+      expect(projectsService.addMemberIfNotExists).toHaveBeenCalled();
+    });
   });
 
   describe("handleProjectDeleted", () => {
@@ -207,6 +229,31 @@ describe("TasksService", () => {
       expect(taskRepository.updateById).toHaveBeenCalled();
     });
 
+    it("should handle assigneeId in update", async () => {
+      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const updateTaskDto: any = { assigneeId: "60f6e1b3b3f3b3b3b3f3b3b6" };
+      const task = {
+        _id: taskId,
+        creator: new Types.ObjectId(userId),
+        assignee: null
+      };
+      const updatedTask = {
+        _id: { toString: () => taskId },
+        populate: vi.fn().mockReturnThis()
+      };
+
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.updateById.mockResolvedValue(updatedTask);
+
+      await service.update(taskId, updateTaskDto, userId);
+
+      expect(taskRepository.updateById).toHaveBeenCalledWith(
+        taskId,
+        expect.objectContaining({ assignee: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b6") })
+      );
+    });
+
     it("should throw not found exception when updating a non-existing task", async () => {
       taskRepository.findById.mockResolvedValue(null);
       await expect(
@@ -224,6 +271,24 @@ describe("TasksService", () => {
       await expect(
         service.update("60f6e1b3b3f3b3b3b3f3b3b5", { title: "Updated" }, "60f6e1b3b3f3b3b3b3f3b3b3")
       ).rejects.toThrow("You do not have permission to modify this task");
+    });
+
+    it("should throw not found exception if task disappeared during update", async () => {
+      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const updateTaskDto = { title: "Test Task Updated" };
+      const task = {
+        _id: taskId,
+        creator: new Types.ObjectId(userId),
+        assignee: null
+      };
+
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.updateById.mockResolvedValue(null);
+
+      await expect(service.update(taskId, updateTaskDto, userId)).rejects.toThrow(
+        NotFoundException
+      );
     });
   });
 
@@ -263,6 +328,89 @@ describe("TasksService", () => {
       await expect(
         service.remove("60f6e1b3b3f3b3b3b3f3b3b5", "60f6e1b3b3f3b3b3b3f3b3b3")
       ).rejects.toThrow("Only the task creator can perform this action");
+    });
+
+    it("should throw not found exception if deleteById returns count 0", async () => {
+      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const task = {
+        _id: taskId,
+        creator: new Types.ObjectId(userId),
+        project: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b4"),
+        orderInProject: 0
+      };
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.deleteById.mockResolvedValue({ deletedCount: 0 });
+
+      await expect(service.remove(taskId, userId)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe("moveTask", () => {
+    it("should move task within same project", async () => {
+      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
+      const projectId = "60f6e1b3b3f3b3b3b3f3b3b4";
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const task = {
+        _id: taskId,
+        project: new Types.ObjectId(projectId),
+        orderInProject: 0,
+        creator: new Types.ObjectId(userId),
+        assignee: null
+      };
+      const updatedTask = {
+        _id: { toString: () => taskId },
+        populate: vi.fn().mockReturnThis()
+      };
+
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.findByIdPopulated.mockResolvedValue(updatedTask);
+
+      await service.moveTask(taskId, projectId, 1, userId);
+
+      expect(taskRepository.save).toHaveBeenCalled();
+      expect(taskRepository.reorderOnMoveWithinProject).toHaveBeenCalled();
+    });
+
+    it("should move task to different project", async () => {
+      const taskId = "60f6e1b3b3f3b3b3b3f3b3b5";
+      const oldProjectId = "60f6e1b3b3f3b3b3b3f3b3b4";
+      const newProjectId = "60f6e1b3b3f3b3b3b3f3b3b9";
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      const task = {
+        _id: taskId,
+        project: new Types.ObjectId(oldProjectId),
+        orderInProject: 0,
+        creator: new Types.ObjectId(userId),
+        assignee: null
+      };
+      const updatedTask = {
+        _id: { toString: () => taskId },
+        populate: vi.fn().mockReturnThis()
+      };
+
+      taskRepository.findById.mockResolvedValue(task);
+      taskRepository.findByIdPopulated.mockResolvedValue(updatedTask);
+
+      await service.moveTask(taskId, newProjectId, 1, userId);
+
+      expect(taskRepository.save).toHaveBeenCalled();
+      expect(taskRepository.decrementOrderAfter).toHaveBeenCalled();
+      expect(taskRepository.incrementOrderFrom).toHaveBeenCalled();
+    });
+
+    it("should validate IDs", async () => {
+      const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
+      // Mock findById to ensure checkTaskPermission passes
+      taskRepository.findById.mockResolvedValue({
+        _id: "invalid",
+        creator: new Types.ObjectId(userId),
+        project: new Types.ObjectId()
+      });
+
+      await expect(service.moveTask("invalid", "valid", 0, userId)).rejects.toThrow(
+        BadRequestException
+      );
     });
   });
 

@@ -78,7 +78,7 @@ export class TasksService {
     }
 
     const tasks = await this.taskRepository.findByQuery(query);
-    return Promise.all(tasks.map( async (task) => this.toTaskResponse(task)));
+    return Promise.all(tasks.map(async (task) => this.toTaskResponse(task)));
   }
 
   async findOne(id: string): Promise<TaskResponseDto> {
