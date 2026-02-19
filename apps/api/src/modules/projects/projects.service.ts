@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+  OnModuleInit
+} from "@nestjs/common";
+import { EventEmitter2 } from "eventemitter2";
 import { Types } from "mongoose";
 
 import { BoardDeletedEvent, ProjectDeletedEvent } from "../../common/events";
@@ -11,7 +17,7 @@ import { ProjectRepository } from "./repositories/projects.repository";
 import { Project, ProjectDocument } from "./schemas/projects.schema";
 
 @Injectable()
-export class ProjectsService {
+export class ProjectsService implements OnModuleInit {
   private readonly logger = new Logger(ProjectsService.name);
 
   constructor(
@@ -20,7 +26,12 @@ export class ProjectsService {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
-  @OnEvent("board.deleted")
+  onModuleInit(): void {
+    this.eventEmitter.on("board.deleted",  async (event: BoardDeletedEvent) =>
+      this.handleBoardDeleted(event)
+    );
+  }
+
   async handleBoardDeleted(event: BoardDeletedEvent): Promise<void> {
     const projects = await this.projectRepository.findByBoardId(event.boardId);
 

@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EventEmitter2 } from "eventemitter2";
 import { Types } from "mongoose";
 
 import { BoardDeletedEvent } from "../../common/events";
