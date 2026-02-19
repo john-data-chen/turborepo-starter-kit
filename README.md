@@ -114,13 +114,15 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Backend
 
-| Type       | Choice             | Rationale                                   |
-| ---------- | ------------------ | ------------------------------------------- |
-| Framework  | Nest.js (Express)  | Structured, scalable architecture for APIs  |
-| Language   | TypeScript         | Strict typing, shared types with frontend   |
-| Database   | MongoDB + Mongoose | Flexible schema, rich querying capabilities |
-| Validation | class-validator    | Decorator-based validation for DTOs         |
-| Auth       | Passport + JWT     | Standard, secure authentication strategies  |
+| Type         | Choice                  | Rationale                                              |
+| ------------ | ----------------------- | ------------------------------------------------------ |
+| Framework    | Nest.js (Express)       | Structured, scalable architecture for APIs             |
+| Language     | TypeScript              | Strict typing, shared types with frontend              |
+| Database     | MongoDB + Mongoose      | Flexible schema, rich querying capabilities            |
+| Data Access  | Repository Pattern      | Abstracts Mongoose queries, improves testability       |
+| Decoupling   | Event-driven (EventEmitter2) | Cascade deletes via events, no circular dependencies |
+| Validation   | class-validator         | Decorator-based validation for DTOs                    |
+| Auth         | Passport + JWT          | Standard, secure authentication strategies             |
 
 ### Developer Experience
 
@@ -270,10 +272,20 @@ apps/
 │   ├── __tests__/          # Unit tests (by Vitest)
 │   ├── database/           # MongoDB docker-compose and initialization
 │   ├── src/
-│   │   ├── common/         # Nest pipe
-│   │   ├── constants/      # Nest constants
-│   │   ├── controllers/    # Nest controllers
-│   │   └── modules/        # Nest modules
+│   │   ├── common/
+│   │   │   ├── events/     # Domain events (BoardDeleted, ProjectDeleted)
+│   │   │   ├── filters/    # Global exception filter
+│   │   │   ├── interfaces/ # Shared interfaces
+│   │   │   └── pipes/      # Validation pipes (ParseObjectId)
+│   │   ├── constants/      # API constants and demo data
+│   │   └── modules/        # Feature modules (auth, boards, projects, tasks, users)
+│   │       └── */
+│   │           ├── repositories/  # Repository pattern (data access layer)
+│   │           ├── schemas/       # Mongoose schemas
+│   │           ├── dto/           # Request/response DTOs
+│   │           ├── *.service.ts   # Business logic
+│   │           ├── *.controller.ts
+│   │           └── *.module.ts
 │   └── env.example         # Environment variables example
 ├── mobile/                 # React Native (Expo) app
 │   ├── app/                # Expo Router file-based routes
