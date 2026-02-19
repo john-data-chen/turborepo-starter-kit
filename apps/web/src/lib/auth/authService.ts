@@ -31,12 +31,28 @@ export class AuthService {
       }
 
       // Get the response data
+      console.log(`[${requestId}] [AuthService] Login response OK, status: ${response.status}`);
       const data = await response.json();
+      console.log(`[${requestId}] [AuthService] Login data received:`, {
+        hasAccessToken: !!data.access_token,
+        hasUser: !!data.user,
+        userId: data.user?._id
+      });
 
       // Store the token for Authorization header
       if (data.access_token) {
         localStorage.setItem("auth_token", data.access_token);
       }
+
+      // Set isAuthenticated cookie on the web domain so the middleware can detect auth state.
+      // The API also sets this cookie, but on its own domain — which is invisible to the
+      // web middleware when API and web are on different Vercel subdomains.
+      Cookies.set("isAuthenticated", "true", {
+        path: "/",
+        secure: true,
+        sameSite: "lax",
+        expires: 7 // 7 days, matching the API cookie maxAge
+      });
 
       return {
         access_token: data.access_token || "http-only-cookie",
@@ -130,7 +146,9 @@ export class AuthService {
   static logout(): void {
     if (typeof window !== "undefined") {
       Cookies.remove("jwt", { path: "/" });
+      Cookies.remove("isAuthenticated", { path: "/" });
       localStorage.removeItem("auth_token");
+      console.log("[AuthService] Logged out — cookies and token cleared");
     }
   }
 }
