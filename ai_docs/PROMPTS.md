@@ -133,6 +133,17 @@ pnpm lint-staged                      # Run linter and formatter
 import { ComponentName } from "@repo/ui/ComponentName";
 ```
 
+## Known Pitfalls
+
+> [!CAUTION]
+> **next-intl Navigation**: `router.push()` / `router.replace()` from `@/i18n/navigation` (created by `createNavigation(routing)`) **automatically prepends the locale prefix**. Do NOT manually add locale to paths — pass locale-free paths like `"/boards"`, not `"/en/boards"`. Using `getLocalePath()` with next-intl router causes double-locale bugs (e.g. `/en/en/boards` → 404).
+
+> [!CAUTION]
+> **Duplicate QueryClient**: `providers/client-providers.tsx` and `providers/auth-provider.tsx` both create separate `QueryClient` instances. This defeats TanStack Query's caching strategy. Only use the QueryClient from `client-providers.tsx`.
+
+> [!NOTE]
+> **Refactoring Roadmap**: See `.ai/architecture.md` for the comprehensive refactoring spec covering auth architecture, provider cleanup, error handling, component splitting, and store refactoring.
+
 ## Debugging Checklist
 
 > [!NOTE]
