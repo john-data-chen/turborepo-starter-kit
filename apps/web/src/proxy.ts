@@ -1,13 +1,37 @@
 import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
 
 import { routing } from "@/i18n/routing";
 
-/**
- * This middleware is now only responsible for internationalization (i18n).
- * Authentication is handled on the client-side by AuthContext and the useAuth hook.
- * Server-side route protection via middleware has been removed.
- */
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export default async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip auth check for public routes
+  const isPublicRoute =
+    pathname.includes("/login") || pathname.startsWith("/api") || pathname.startsWith("/_next");
+
+  if (!isPublicRoute) {
+    const token =
+      request.cookies.get("jwt")?.value || request.cookies.get("isAuthenticated")?.value;
+
+    if (!token) {
+      // Extract locale from pathname or use default
+      const pathLocale = pathname.split("/")[1];
+      const locale =
+        pathLocale && routing.locales.includes(pathLocale as any)
+          ? pathLocale
+          : routing.defaultLocale;
+
+      const loginUrl = new URL(`/${locale}/login`, request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return intlMiddleware(request);
+}
 
 export const config = {
   // Match only internationalized pathnames

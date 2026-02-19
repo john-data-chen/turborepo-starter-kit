@@ -1,24 +1,14 @@
 "use client";
 
-import { getLocalePath } from "@repo/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
 import { ROUTES, URL_PARAMS } from "@/constants/routes";
-import { routing } from "@/i18n/routing";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { AuthService } from "@/lib/auth/authService";
 import { useAuthStore } from "@/stores/auth-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { Session, UserInfo } from "@/types/dbInterface";
-
-// Helper function to get current locale from pathname
-function getCurrentLocale(): string {
-  const currentLocale = globalThis.location.pathname.split("/").find(Boolean);
-
-  return currentLocale && routing.locales.includes(currentLocale as any)
-    ? currentLocale
-    : routing.defaultLocale;
-}
 
 // Helper function to create session from user data
 function createSession(user: UserInfo): Session {
@@ -51,6 +41,8 @@ export function useAuth() {
   const setUserInfo = useWorkspaceStore((state) => state.setUserInfo);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const authPathname = usePathname();
 
   // Session state
   const [session, setSession] = useState<Session | null>(null);
@@ -77,7 +69,7 @@ export function useAuth() {
   useEffect(() => {
     const initAuth = async () => {
       // Skip session check on auth pages where user is expected to not be authenticated
-      const isOnAuthPage = globalThis.location.pathname.includes("/login");
+      const isOnAuthPage = authPathname.includes("/login");
       if (isOnAuthPage) {
         setIsCheckingAuth(false);
         return;
@@ -107,7 +99,7 @@ export function useAuth() {
     };
 
     initAuth();
-  }, [checkSession]);
+  }, [checkSession, authPathname]);
 
   // Login mutation
   const loginMutation = useMutation<{ session: Session }, Error, string>({
@@ -168,14 +160,14 @@ export function useAuth() {
       useAuthStore.getState().clear();
       useWorkspaceStore.getState().setUserInfo("", "");
 
-      // Redirect to login page with a full page reload to ensure all state is cleared
-      globalThis.location.href = ROUTES.AUTH.LOGIN_PAGE;
+      // Redirect to login page
+      router.replace(ROUTES.AUTH.LOGIN_PAGE);
     } catch (error) {
       console.error("Error during logout:", error);
       // Still redirect even if there was an error
-      globalThis.location.href = ROUTES.AUTH.LOGIN_PAGE;
+      router.replace(ROUTES.AUTH.LOGIN_PAGE);
     }
-  }, []); // Removed router dependency since we're using globalThis.location
+  }, [router]);
 
   // Update user info in store when session changes
   useEffect(() => {
@@ -209,6 +201,7 @@ export function useAuth() {
 export function useAuthForm() {
   const { login, isLoading, error } = useAuth();
   const [isNavigating, setIsNavigating] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (email: string) => {
     try {
@@ -219,14 +212,13 @@ export function useAuthForm() {
         throw new Error("No user data received after login");
       }
 
-      // Get current locale and construct redirect path with login success parameter
-      const locale = getCurrentLocale();
-      const redirectPath = getLocalePath("/boards", locale);
-      const redirectUrl = `${redirectPath}?${URL_PARAMS.LOGIN_SUCCESS}`;
+      // next-intl's router.push() automatically prepends the locale,
+      // so pass the path WITHOUT locale prefix to avoid double-locale (e.g. /en/en/boards)
+      const redirectUrl = `/boards?${URL_PARAMS.LOGIN_SUCCESS}`;
 
       // Add a small delay to ensure the cookie is properly set before redirect
       setTimeout(() => {
-        globalThis.location.href = redirectUrl;
+        router.push(redirectUrl);
       }, 500);
     } catch (err) {
       // Error is already handled by useAuth hook
