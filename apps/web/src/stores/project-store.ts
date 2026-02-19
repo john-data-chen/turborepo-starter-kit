@@ -38,7 +38,9 @@ export const createProjectSlice: StateCreator<
   projects: [],
   isLoadingProjects: false,
 
-  setProjects: (projects: Project[]) =>{  set({ projects }); },
+  setProjects: (projects: Project[]) => {
+    set({ projects });
+  },
 
   fetchProjects: async (boardId: string) => {
     if (!boardId) {

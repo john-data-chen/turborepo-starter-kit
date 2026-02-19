@@ -27,6 +27,7 @@ import {
 } from "@repo/ui/components/dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -68,6 +69,7 @@ export function TaskActions({
 
   // Translations
   const t = useTranslations("kanban.task");
+  const router = useRouter();
 
   // Fetch task data to ensure we have the latest
   const { data: task, isLoading: isLoadingTask } = useTask(id, {
@@ -303,9 +305,7 @@ export function TaskActions({
             });
           } catch (invalidateError) {
             console.error("Error during query invalidation:", invalidateError);
-            if (typeof globalThis !== "undefined") {
-              globalThis.location.reload();
-            }
+            router.refresh();
           }
 
           toast.error(t("deleteError"));

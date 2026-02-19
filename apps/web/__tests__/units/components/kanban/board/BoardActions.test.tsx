@@ -14,11 +14,14 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key
 }));
 
-vi.mock("next/navigation", () => ({
+vi.mock("@/i18n/navigation", () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
     replace: vi.fn(),
-    refresh: vi.fn()
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn()
   }))
 }));
 

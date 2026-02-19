@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { TaskStatus, type Board, type Project } from "@/types/dbInterface";
 
-// Mock the API modules
 vi.mock("@/lib/api/boardApi", () => ({
   boardApi: {
     createBoard: vi.fn(),
@@ -38,15 +37,12 @@ vi.mock("@/lib/api/tasks", () => ({
 
 describe("workspace-store", () => {
   beforeEach(() => {
-    // Reset the store before each test
     useWorkspaceStore.setState({
       userEmail: null,
       userId: null,
       projects: [],
       isLoadingProjects: false,
       currentBoardId: null,
-      myBoards: [],
-      teamBoards: [],
       filter: {
         status: null,
         search: ""
@@ -115,17 +111,13 @@ describe("workspace-store", () => {
       vi.mocked(boardApi.createBoard).mockResolvedValue(mockBoard);
 
       useWorkspaceStore.setState({
-        userId: "user-1",
-        myBoards: []
+        userId: "user-1"
       });
 
       const store = useWorkspaceStore.getState();
       const boardId = await store.addBoard("New Board", "New Description");
 
       expect(boardId).toBe("board-new");
-      const state = useWorkspaceStore.getState();
-      expect(state.myBoards).toHaveLength(1);
-      expect(state.myBoards[0].title).toBe("New Board");
     });
 
     it("should throw error when adding board without user authenticated", async () => {
@@ -153,86 +145,21 @@ describe("workspace-store", () => {
         updatedAt: new Date().toISOString()
       };
 
-      useWorkspaceStore.setState({
-        myBoards: [mockBoard]
-      });
-
       vi.mocked(boardApi.updateBoard).mockResolvedValue({ ...mockBoard, title: "New Title" });
 
       const store = useWorkspaceStore.getState();
       await store.updateBoard("board-1", { title: "New Title" });
 
-      const state = useWorkspaceStore.getState();
-      expect(state.myBoards[0].title).toBe("New Title");
+      expect(boardApi.updateBoard).toHaveBeenCalledWith("board-1", { title: "New Title" });
     });
 
     it("should remove a board", async () => {
-      const mockBoard: Board = {
-        _id: "board-1",
-        title: "Board 1",
-        description: "Description 1",
-        owner: "user-1",
-        members: [],
-        projects: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      useWorkspaceStore.setState({
-        myBoards: [mockBoard],
-        currentBoardId: "board-1"
-      });
-
       const deleteFn = vi.fn().mockResolvedValue(undefined);
 
       const store = useWorkspaceStore.getState();
       await store.removeBoard("board-1", deleteFn);
 
-      const state = useWorkspaceStore.getState();
-      expect(state.myBoards).toHaveLength(0);
-      expect(state.currentBoardId).toBeNull();
-    });
-
-    it("should set my boards", () => {
-      const mockBoards: Board[] = [
-        {
-          _id: "board-1",
-          title: "Board 1",
-          description: "Description 1",
-          owner: "user-1",
-          members: [],
-          projects: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      ];
-
-      const store = useWorkspaceStore.getState();
-      store.setMyBoards(mockBoards);
-
-      const state = useWorkspaceStore.getState();
-      expect(state.myBoards).toEqual(mockBoards);
-    });
-
-    it("should set team boards", () => {
-      const mockBoards: Board[] = [
-        {
-          _id: "board-1",
-          title: "Board 1",
-          description: "Description 1",
-          owner: "user-2",
-          members: [],
-          projects: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      ];
-
-      const store = useWorkspaceStore.getState();
-      store.setTeamBoards(mockBoards);
-
-      const state = useWorkspaceStore.getState();
-      expect(state.teamBoards).toEqual(mockBoards);
+      expect(deleteFn).toHaveBeenCalledWith("board-1");
     });
   });
 

@@ -69,8 +69,8 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
 
       if (typeof window !== "undefined" && response.status === 401) {
         console.error("Authentication error - redirecting to login");
-        // Handle unauthorized (e.g., redirect to login)
-        window.location.href = "/login";
+        const locale = window.location.pathname.split("/")[1] || "en";
+        window.location.href = `/${locale}/login`;
       }
 
       throw new Error(errorMessage);
