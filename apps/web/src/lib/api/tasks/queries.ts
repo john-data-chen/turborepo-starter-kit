@@ -54,7 +54,6 @@ export const useCreateTask = () => {
       dueDate?: Date;
       board: string;
       project: string;
-      creator: string;
       assignee?: string | { _id: string };
       orderInProject?: number;
     }) => {
@@ -67,9 +66,7 @@ export const useCreateTask = () => {
         dueDate: input.dueDate,
         board: input.board,
         project: input.project,
-        creator: input.creator,
         assignee: assigneeId,
-        lastModifier: input.creator,
         orderInProject: input.orderInProject
       });
     },

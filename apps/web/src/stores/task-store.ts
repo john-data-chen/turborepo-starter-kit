@@ -76,8 +76,6 @@ export const createTaskSlice: StateCreator<
         status,
         project: projectId,
         board: currentBoardId,
-        creator: userId,
-        lastModifier: userId,
         orderInProject: calculatedOrderInProject,
         ...(dueDate && { dueDate }),
         ...(assigneeId && { assignee: assigneeId })
