@@ -171,8 +171,7 @@ describe("workspace-store - Task actions", () => {
           description: "New Description",
           status: TaskStatus.TODO,
           project: "project-1",
-          board: "board-1",
-          creator: "user-1"
+          board: "board-1"
         })
       );
     });

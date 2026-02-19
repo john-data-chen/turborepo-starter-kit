@@ -33,10 +33,10 @@ describe("UserSchema", () => {
     expect(emailPath.options.index).toBe(true);
   });
 
-  it("should have createdAt and updatedAt with default values", () => {
+  it("should have createdAt and updatedAt fields (managed by timestamps)", () => {
     const paths = UserSchema.paths;
-    expect(paths.createdAt.options.default).toBeDefined();
-    expect(paths.updatedAt.options.default).toBeDefined();
+    expect(paths.createdAt).toBeDefined();
+    expect(paths.updatedAt).toBeDefined();
   });
 
   it("should create User class instance", () => {

@@ -1,29 +1,24 @@
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { User } from "../../src/modules/users/schemas/users.schema";
+import { UserRepository } from "../../src/modules/users/repositories/users.repository";
 import { UserService } from "../../src/modules/users/users.service";
 
 describe("UserService", () => {
   let service: UserService;
-  let testingModule: TestingModule;
+  let userRepository: {
+    findByEmail: ReturnType<typeof vi.fn>;
+    findAll: ReturnType<typeof vi.fn>;
+    searchByName: ReturnType<typeof vi.fn>;
+  };
 
-  beforeEach(async () => {
-    testingModule = await Test.createTestingModule({
-      providers: [
-        UserService,
-        {
-          provide: getModelToken(User.name),
-          useValue: {
-            findOne: vi.fn(),
-            find: vi.fn()
-          }
-        }
-      ]
-    }).compile();
+  beforeEach(() => {
+    userRepository = {
+      findByEmail: vi.fn(),
+      findAll: vi.fn(),
+      searchByName: vi.fn()
+    };
 
-    service = testingModule.get<UserService>(UserService);
+    service = new UserService(userRepository as unknown as UserRepository);
   });
 
   it("should be defined", () => {
@@ -32,94 +27,69 @@ describe("UserService", () => {
 
   describe("findByEmail", () => {
     it("should find a user by email", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.findOne.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
+      const user = { email: "test@test.com", name: "Test" };
+      userRepository.findByEmail.mockResolvedValue(user);
 
-      await service.findByEmail("test@test.com");
+      const result = await service.findByEmail("test@test.com");
 
-      expect(userModel.findOne).toHaveBeenCalledWith({ email: "test@test.com" });
+      expect(result).toEqual(user);
+      expect(userRepository.findByEmail).toHaveBeenCalledWith("test@test.com");
     });
 
     it("should return null if no email is provided", async () => {
       const user = await service.findByEmail(null);
       expect(user).toBeNull();
+      expect(userRepository.findByEmail).not.toHaveBeenCalled();
     });
 
     it("should return null if user is not found", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.findOne.mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
+      userRepository.findByEmail.mockResolvedValue(null);
       const user = await service.findByEmail("test@test.com");
       expect(user).toBeNull();
     });
 
-    it("should throw an error if database throws an error", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.findOne.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      let thrownError: Error | null = null;
-      try {
-        await service.findByEmail("test@test.com");
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("An error occurred while processing your request");
+    it("should propagate repository errors", async () => {
+      userRepository.findByEmail.mockRejectedValue(new Error("DB Error"));
+      await expect(service.findByEmail("test@test.com")).rejects.toThrow("DB Error");
     });
   });
 
   describe("findAll", () => {
     it("should find all users", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
+      userRepository.findAll.mockResolvedValue([]);
 
-      await service.findAll();
+      const result = await service.findAll();
 
-      expect(userModel.find).toHaveBeenCalled();
+      expect(result).toEqual([]);
+      expect(userRepository.findAll).toHaveBeenCalled();
     });
 
-    it("should throw an error if database throws an error", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      let thrownError: Error | null = null;
-      try {
-        await service.findAll();
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("DB Error");
+    it("should propagate repository errors", async () => {
+      userRepository.findAll.mockRejectedValue(new Error("DB Error"));
+      await expect(service.findAll()).rejects.toThrow("DB Error");
     });
   });
 
   describe("searchByName", () => {
     it("should search users by name", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
+      userRepository.searchByName.mockResolvedValue([]);
 
       await service.searchByName("test");
 
-      expect(userModel.find).toHaveBeenCalledWith({ name: { $regex: "test", $options: "i" } });
+      expect(userRepository.searchByName).toHaveBeenCalledWith("test");
     });
 
-    it("should search with empty query if no name is provided", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.find.mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
+    it("should search with null name", async () => {
+      userRepository.searchByName.mockResolvedValue([]);
 
       await service.searchByName(null);
 
-      expect(userModel.find).toHaveBeenCalledWith({});
+      expect(userRepository.searchByName).toHaveBeenCalledWith(null);
     });
 
-    it("should throw an error if database throws an error", async () => {
-      const userModel = testingModule.get(getModelToken(User.name));
-      userModel.find.mockReturnValue({ exec: vi.fn().mockRejectedValue(new Error("DB Error")) });
-      let thrownError: Error | null = null;
-      try {
-        await service.searchByName("test");
-      } catch (error) {
-        thrownError = error as Error;
-      }
-      expect(thrownError).not.toBeNull();
-      expect(thrownError?.message).toBe("DB Error");
+    it("should propagate repository errors", async () => {
+      userRepository.searchByName.mockRejectedValue(new Error("DB Error"));
+      await expect(service.searchByName("test")).rejects.toThrow("DB Error");
     });
   });
 });

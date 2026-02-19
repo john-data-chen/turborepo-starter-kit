@@ -1,23 +1,20 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { BoardsModule } from "../boards/boards.module";
-import { TasksModule } from "../tasks/tasks.module";
-import { UsersModule } from "../users/users.module";
 
 import { ProjectsController } from "./projects.controller";
 import { ProjectsService } from "./projects.service";
+import { ProjectRepository } from "./repositories/projects.repository";
 import { Project, ProjectSchema } from "./schemas/projects.schema";
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Project.name, schema: ProjectSchema }]),
-    UsersModule, // Import UsersModule to enable population of owner and members
-    forwardRef(() => TasksModule), // Import TasksModule to enable task cleanup on project deletion
-    forwardRef(() => BoardsModule) // Import BoardsModule to check board membership for order updates
+    BoardsModule
   ],
   controllers: [ProjectsController],
-  providers: [ProjectsService],
+  providers: [ProjectRepository, ProjectsService],
   exports: [ProjectsService]
 })
 export class ProjectsModule {}

@@ -1,22 +1,16 @@
-import {
-  Controller,
-  Get,
-  Logger,
-  Post,
-  Request,
-  Res,
-  UnauthorizedException,
-  UseGuards
-} from "@nestjs/common";
+import { Controller, Get, Post, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Response } from "express";
+
+import { RequestWithUser } from "../../common/interfaces/request-with-user.interface";
 
 import { AuthService } from "./auth.service";
+import { CurrentUser } from "./decorators/current-user.decorator";
 import { EmailAuthGuard } from "./guards/email-auth.guard";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
 @Controller("auth")
 export class AuthController {
-  private readonly logger = new Logger(AuthController.name);
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService
@@ -24,79 +18,59 @@ export class AuthController {
 
   @Post("login")
   @UseGuards(EmailAuthGuard)
-  async login(@Request() req, @Res({ passthrough: true }) res) {
-    const requestId = Math.random().toString(36).substring(2, 8);
-
-    if (!req.user) {
-      const errorMsg = "No user object found in request after authentication";
-      this.logger.error(`[${requestId}] [AuthController] ${errorMsg}`);
-      throw new UnauthorizedException(errorMsg);
+  async login(
+    @CurrentUser() user: RequestWithUser["user"],
+    @Res({ passthrough: true }) res: Response
+  ) {
+    if (!user) {
+      throw new UnauthorizedException("No user object found in request after authentication");
     }
 
-    try {
-      // Generate JWT token
-      const result = await this.authService.login(req.user);
+    const result = await this.authService.login(user as any);
 
-      // Set secure cookie settings
-      const isProduction = this.configService.get<string>("NODE_ENV") === "production";
-      const isVercel = this.configService.get<string>("VERCEL") === "1";
+    const isProduction = this.configService.get<string>("NODE_ENV") === "production";
+    const isVercel = this.configService.get<string>("VERCEL") === "1";
 
-      // Cookie settings that match frontend
-      const cookieOptions = {
-        httpOnly: true,
-        secure: isProduction || isVercel,
-        sameSite: "lax" as const,
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: "/"
-      };
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProduction || isVercel,
+      sameSite: "lax" as const,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/"
+    };
 
-      // Set the JWT cookie (keep for local development)
-      res.cookie("jwt", result.access_token, cookieOptions);
+    res.cookie("jwt", result.access_token, cookieOptions);
+    res.cookie("isAuthenticated", "true", {
+      ...cookieOptions,
+      httpOnly: false
+    });
 
-      // Also set a non-httpOnly cookie for client-side access if needed
-      res.cookie("isAuthenticated", "true", {
-        ...cookieOptions,
-        httpOnly: false // Allow client-side access
-      });
-
-      // Return user data AND token for Authorization header fallback
-      return {
-        user: result.user,
-        access_token: result.access_token
-      };
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const stack = error instanceof Error ? error.stack : undefined;
-      this.logger.error(
-        `Login failed for user ${req.user?.email || "unknown"}: ${errorMessage}`,
-        stack
-      );
-      throw error;
-    }
+    return {
+      user: result.user,
+      access_token: result.access_token
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get("profile")
-  getProfile(@Request() req) {
-    return req.user;
+  getProfile(@CurrentUser() user: RequestWithUser["user"]) {
+    return user;
   }
 
   @Post("logout")
   @UseGuards(JwtAuthGuard)
-  async logout(@Request() req, @Res({ passthrough: true }) res) {
+  async logout(@Res({ passthrough: true }) res: Response) {
     const isProduction = this.configService.get<string>("NODE_ENV") === "production";
     const isVercel = this.configService.get<string>("VERCEL") === "1";
 
-    // Clear the JWT cookie with the same options used when setting it
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction || isVercel,
       sameSite: "lax" as const,
       path: "/",
-      maxAge: 0 // Expire immediately
+      maxAge: 0
     };
 
-    // Clear both possible cookie names
     res.clearCookie("jwt", cookieOptions);
     res.clearCookie("isAuthenticated", { ...cookieOptions, httpOnly: false });
 

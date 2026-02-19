@@ -249,8 +249,10 @@ describe("boardApi", () => {
     });
 
     it("should handle 401 unauthorized", async () => {
-      // Mock window.location
-      const mockLocation = { href: "" };
+      const mockLocation = {
+        href: "",
+        pathname: "/en/boards"
+      };
       Object.defineProperty(window, "location", {
         value: mockLocation,
         writable: true
@@ -266,7 +268,7 @@ describe("boardApi", () => {
       await expect(boardApi.getBoards()).rejects.toMatchObject({
         message: expect.stringContaining("Unauthorized")
       });
-      expect(mockLocation.href).toBe("/login");
+      expect(mockLocation.href).toBe("/en/login");
     });
 
     it("should handle empty response from server", async () => {

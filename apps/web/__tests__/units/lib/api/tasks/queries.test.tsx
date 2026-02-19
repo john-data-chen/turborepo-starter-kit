@@ -184,7 +184,6 @@ describe("Task Query Hooks", () => {
           title: "New Task",
           board: "board1",
           project: "project1",
-          creator: "user1",
           assignee: "user1"
         });
       });
@@ -202,9 +201,7 @@ describe("Task Query Hooks", () => {
         title: "New Task",
         board: "board1",
         project: "project1",
-        creator: "user1",
         assignee: "user1",
-        lastModifier: "user1",
         description: undefined,
         status: undefined,
         dueDate: undefined,
@@ -228,7 +225,6 @@ describe("Task Query Hooks", () => {
           title: "New Task",
           board: "board1",
           project: "project1",
-          creator: "user1",
           assignee: { _id: "user1" }
         });
       });

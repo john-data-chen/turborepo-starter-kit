@@ -83,8 +83,6 @@ export interface CreateTaskInput {
   dueDate?: Date;
   board: string;
   project: string;
-  creator: string;
-  lastModifier: string;
   assignee?: string;
   orderInProject?: number;
 }

@@ -91,15 +91,15 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Frontend (Web)
 
-| Type      | Choice                   | Rationale                                        |
-| --------- | ------------------------ | ------------------------------------------------ |
-| Framework | Next.js (App Router)     | SSG for static pages, SSR for dynamic content    |
-| State     | Zustand (shared)         | 40% less boilerplate than Redux, simpler testing |
-| Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas         |
-| Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy |
-| DnD       | dnd-kit                  | Lightweight, accessible, extensible              |
-| i18n      | next-intl                | App Router native support                        |
-| UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration        |
+| Type      | Choice                   | Rationale                                              |
+| --------- | ------------------------ | ------------------------------------------------------ |
+| Framework | Next.js 16 (App Router)  | Cache Components (PPR) for mixed static/dynamic content |
+| State     | Zustand (shared)         | 40% less boilerplate than Redux, simpler testing       |
+| Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas               |
+| Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy       |
+| DnD       | dnd-kit                  | Lightweight, accessible, extensible                    |
+| i18n      | next-intl                | App Router native support, auto locale routing         |
+| UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration              |
 
 ### Mobile
 
@@ -114,13 +114,15 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Backend
 
-| Type       | Choice             | Rationale                                   |
-| ---------- | ------------------ | ------------------------------------------- |
-| Framework  | Nest.js (Express)  | Structured, scalable architecture for APIs  |
-| Language   | TypeScript         | Strict typing, shared types with frontend   |
-| Database   | MongoDB + Mongoose | Flexible schema, rich querying capabilities |
-| Validation | class-validator    | Decorator-based validation for DTOs         |
-| Auth       | Passport + JWT     | Standard, secure authentication strategies  |
+| Type         | Choice                  | Rationale                                              |
+| ------------ | ----------------------- | ------------------------------------------------------ |
+| Framework    | Nest.js (Express)       | Structured, scalable architecture for APIs             |
+| Language     | TypeScript              | Strict typing, shared types with frontend              |
+| Database     | MongoDB + Mongoose      | Flexible schema, rich querying capabilities            |
+| Data Access  | Repository Pattern      | Abstracts Mongoose queries, improves testability       |
+| Decoupling   | Event-driven (EventEmitter2) | Cascade deletes via events, no circular dependencies |
+| Validation   | class-validator         | Decorator-based validation for DTOs                    |
+| Auth         | Passport + JWT          | Standard, secure authentication strategies             |
 
 ### Developer Experience
 
@@ -270,10 +272,20 @@ apps/
 │   ├── __tests__/          # Unit tests (by Vitest)
 │   ├── database/           # MongoDB docker-compose and initialization
 │   ├── src/
-│   │   ├── common/         # Nest pipe
-│   │   ├── constants/      # Nest constants
-│   │   ├── controllers/    # Nest controllers
-│   │   └── modules/        # Nest modules
+│   │   ├── common/
+│   │   │   ├── events/     # Domain events (BoardDeleted, ProjectDeleted)
+│   │   │   ├── filters/    # Global exception filter
+│   │   │   ├── interfaces/ # Shared interfaces
+│   │   │   └── pipes/      # Validation pipes (ParseObjectId)
+│   │   ├── constants/      # API constants and demo data
+│   │   └── modules/        # Feature modules (auth, boards, projects, tasks, users)
+│   │       └── */
+│   │           ├── repositories/  # Repository pattern (data access layer)
+│   │           ├── schemas/       # Mongoose schemas
+│   │           ├── dto/           # Request/response DTOs
+│   │           ├── *.service.ts   # Business logic
+│   │           ├── *.controller.ts
+│   │           └── *.module.ts
 │   └── env.example         # Environment variables example
 ├── mobile/                 # React Native (Expo) app
 │   ├── app/                # Expo Router file-based routes
@@ -285,22 +297,38 @@ apps/
 │   ├── stores/             # Platform-specific store bindings
 │   ├── types/              # Mobile-specific type extensions
 │   └── global.css          # NativeWind theme (Tailwind v4)
-├── web/                    # Next.js Web app
+├── web/                    # Next.js 16 Web app (Cache Components enabled)
 │   ├── __tests__/
 │   │   ├── e2e/            # End-to-end tests (by Playwright)
 │   │   └── unit/           # Unit tests (by Vitest)
-│   ├── messages/           # i18n translations
+│   ├── messages/           # i18n translations (en, de)
 │   ├── public/             # Static files such as images
 │   ├── src/
-│   │   └── app/            # Next.js App routes
-│   │       ├── [locale]    # i18n locale routers
-│   │       ├── (auth)/     # Authentication routes
-│   │       └── (workspace)/# Workspace routes
-│   ├── components/         # Custom React components
-│   ├── hooks/              # Custom React hooks
-│   ├── lib/                # API clients, auth, config
-│   ├── providers/          # React context providers
-│   ├── stores/             # Web-specific store bindings
+│   │   ├── app/
+│   │   │   ├── [locale]/           # i18n locale routers
+│   │   │   │   ├── (auth)/         # Authentication routes
+│   │   │   │   ├── (workspace)/    # Workspace routes (RSC layout)
+│   │   │   │   ├── error.tsx       # Locale-level error boundary
+│   │   │   │   └── not-found.tsx   # 404 page
+│   │   │   ├── actions/            # Server Actions (board, project, task)
+│   │   │   └── global-error.tsx    # Global error boundary
+│   │   ├── components/
+│   │   │   ├── auth/               # Auth components (SignIn, UserAuthForm)
+│   │   │   ├── kanban/
+│   │   │   │   ├── board/          # Board + BoardContext + DnD hooks
+│   │   │   │   ├── project/        # Project column components
+│   │   │   │   └── task/           # Task card components
+│   │   │   └── layout/             # App shell (Sidebar, Header, etc.)
+│   │   ├── hooks/                  # Custom React hooks
+│   │   ├── i18n/                   # i18n config (routing, navigation)
+│   │   ├── lib/
+│   │   │   ├── api/                # API clients + TanStack Query hooks
+│   │   │   ├── auth/               # Auth service
+│   │   │   └── config/             # Environment config
+│   │   ├── providers/              # React Query + Theme providers
+│   │   ├── stores/                 # Zustand stores (board, project, task slices)
+│   │   ├── types/                  # Type definitions + Zod schemas
+│   │   └── proxy.ts                # Middleware (i18n + auth guard)
 │   └── types/              # Type definitions
 packages/
 ├── global-tsconfig/        # Base TypeScript configuration

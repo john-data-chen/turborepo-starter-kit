@@ -1,66 +1,32 @@
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-import { Model } from "mongoose";
+import { Types } from "mongoose";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BoardService } from "../../src/modules/boards/boards.service";
-import { Board } from "../../src/modules/boards/schemas/boards.schema";
-import { ProjectsService } from "../../src/modules/projects/projects.service";
-import { TasksService } from "../../src/modules/tasks/tasks.service";
-
-// Define a mock constructor for the BoardModel
-class MockBoardModel {
-  constructor(data: any) {
-    return {
-      ...data,
-      save: vi.fn().mockResolvedValue(data),
-      populate: vi.fn().mockReturnThis(),
-      exec: vi.fn().mockResolvedValue(data)
-    };
-  }
-
-  static find = vi.fn().mockReturnThis();
-  static findOne = vi.fn().mockReturnThis();
-  static findById = vi.fn().mockReturnThis();
-  static create = vi.fn();
-  static findByIdAndUpdate = vi.fn().mockReturnThis();
-  static deleteOne = vi.fn().mockReturnThis();
-  static findOneAndUpdate = vi.fn().mockReturnThis();
-  static aggregate = vi.fn().mockReturnThis();
-}
+import { BoardRepository } from "../../src/modules/boards/repositories/boards.repository";
 
 describe("BoardService", () => {
   let service: BoardService;
-  let boardModel: Model<Board>;
-  let projectsService: ProjectsService;
+  let boardRepository: Record<string, ReturnType<typeof vi.fn>>;
+  let eventEmitter: { emit: ReturnType<typeof vi.fn> };
 
-  beforeEach(async () => {
-    const testingModule: TestingModule = await Test.createTestingModule({
-      providers: [
-        BoardService,
-        {
-          provide: getModelToken(Board.name),
-          useValue: MockBoardModel
-        },
-        {
-          provide: ProjectsService,
-          useValue: {
-            findByBoardId: vi.fn().mockResolvedValue([]),
-            deleteByBoardId: vi.fn().mockResolvedValue({ deletedCount: 1 }) // Mock deletedCount
-          }
-        },
-        {
-          provide: TasksService,
-          useValue: {
-            deleteTasksByProjectId: vi.fn()
-          }
-        }
-      ]
-    }).compile();
+  beforeEach(() => {
+    boardRepository = {
+      create: vi.fn(),
+      findByOwner: vi.fn().mockResolvedValue([]),
+      findByMemberNotOwner: vi.fn().mockResolvedValue([]),
+      findOneWithAccess: vi.fn(),
+      findById: vi.fn(),
+      updateById: vi.fn(),
+      deleteById: vi.fn(),
+      addMember: vi.fn(),
+      removeMember: vi.fn()
+    };
 
-    service = testingModule.get<BoardService>(BoardService);
-    boardModel = testingModule.get<typeof MockBoardModel & Model<Board>>(getModelToken(Board.name));
-    projectsService = testingModule.get<ProjectsService>(ProjectsService);
+    eventEmitter = {
+      emit: vi.fn()
+    };
+
+    service = new BoardService(boardRepository as unknown as BoardRepository, eventEmitter as any);
   });
 
   it("should be defined", () => {
@@ -70,29 +36,28 @@ describe("BoardService", () => {
   describe("create", () => {
     it("should create a board", async () => {
       const createBoardDto = { title: "Test Board", owner: "60f6e1b3b3f3b3b3b3f3b3b3" };
-      const expectedResult = {
+      const expectedBoard = {
         title: "Test Board",
-        owner: "60f6e1b3b3f3b3b3b3f3b3b3",
-        members: ["60f6e1b3b3f3b3b3b3f3b3b3"]
+        owner: new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b3"),
+        members: [new Types.ObjectId("60f6e1b3b3f3b3b3b3f3b3b3")]
       };
+      boardRepository.create.mockResolvedValue(expectedBoard);
 
       const result = await service.create(createBoardDto as any);
 
-      // Only check the relevant fields since the result includes additional fields
-      expect(result.title).toBe(expectedResult.title);
-      expect(result.owner.toString()).toBe(expectedResult.owner);
-      expect(result.members.map((id) => id.toString())).toEqual(expectedResult.members);
+      expect(result).toEqual(expectedBoard);
+      expect(boardRepository.create).toHaveBeenCalled();
     });
   });
 
   describe("findAll", () => {
     it("should find all boards for a user", async () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      (boardModel.aggregate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue([]) });
 
       await service.findAll(userId);
 
-      expect(boardModel.aggregate).toHaveBeenCalledTimes(2);
+      expect(boardRepository.findByOwner).toHaveBeenCalled();
+      expect(boardRepository.findByMemberNotOwner).toHaveBeenCalled();
     });
   });
 
@@ -100,11 +65,11 @@ describe("BoardService", () => {
     it("should find a board by id", async () => {
       const boardId = "60f6e1b3b3f3b3b3b3f3b3b4";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      (boardModel.aggregate as any).mockResolvedValue([{}]);
+      boardRepository.findOneWithAccess.mockResolvedValue({});
 
       await service.findOne(boardId, userId);
 
-      expect(boardModel.aggregate).toHaveBeenCalled();
+      expect(boardRepository.findOneWithAccess).toHaveBeenCalled();
     });
   });
 
@@ -113,44 +78,33 @@ describe("BoardService", () => {
       const boardId = "60f6e1b3b3f3b3b3b3f3b3b4";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const updateBoardDto = { title: "Test Board Updated" };
-      const board = { _id: boardId, owner: userId, members: [], save: vi.fn() };
+      const board = { _id: boardId, owner: { toString: () => userId }, members: [] };
 
-      (boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) });
-      (boardModel.findByIdAndUpdate as any).mockReturnValue({
-        exec: vi.fn().mockResolvedValue(board)
-      });
+      boardRepository.findById.mockResolvedValue(board);
+      boardRepository.updateById.mockResolvedValue(board);
+      boardRepository.findOneWithAccess.mockResolvedValue(board);
 
       await service.update(boardId, updateBoardDto, userId);
 
-      expect(boardModel.findById).toHaveBeenCalledWith(boardId);
-      expect(boardModel.findByIdAndUpdate).toHaveBeenCalledWith(
-        boardId,
-        { $set: updateBoardDto },
-        { new: true }
-      );
+      expect(boardRepository.findById).toHaveBeenCalledWith(boardId);
+      expect(boardRepository.updateById).toHaveBeenCalledWith(boardId, updateBoardDto);
     });
   });
 
   describe("remove", () => {
-    it("should remove a board", async () => {
+    it("should remove a board and emit event", async () => {
       const boardId = "60f6e1b3b3f3b3b3b3f3b3b4";
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
-      const board = {
-        _id: boardId,
-        owner: { toString: () => userId },
-        members: []
-      };
+      const board = { _id: boardId, owner: { toString: () => userId }, members: [] };
 
-      (boardModel.findById as any).mockReturnValue({ exec: vi.fn().mockResolvedValue(board) });
-      (boardModel.deleteOne as any).mockReturnValue({
-        exec: vi.fn().mockResolvedValue({ deletedCount: 1 })
-      });
-      (projectsService.deleteByBoardId as any).mockResolvedValue({ deletedCount: 0 });
+      boardRepository.findById.mockResolvedValue(board);
+      boardRepository.deleteById.mockResolvedValue({ deletedCount: 1 });
 
       await service.remove(boardId, userId);
 
-      expect(boardModel.findById).toHaveBeenCalledWith(boardId);
-      expect(boardModel.deleteOne).toHaveBeenCalledWith({ _id: boardId });
+      expect(boardRepository.findById).toHaveBeenCalledWith(boardId);
+      expect(eventEmitter.emit).toHaveBeenCalledWith("board.deleted", expect.any(Object));
+      expect(boardRepository.deleteById).toHaveBeenCalledWith(boardId);
     });
   });
 
@@ -160,15 +114,11 @@ describe("BoardService", () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const memberId = "60f6e1b3b3f3b3b3b3f3b3b5";
 
-      (boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
+      boardRepository.addMember.mockResolvedValue({});
 
       await service.addMember(boardId, userId, memberId);
 
-      expect(boardModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: boardId, owner: userId },
-        { $addToSet: { members: memberId } },
-        { new: true }
-      );
+      expect(boardRepository.addMember).toHaveBeenCalledWith(boardId, userId, memberId);
     });
   });
 
@@ -178,15 +128,11 @@ describe("BoardService", () => {
       const userId = "60f6e1b3b3f3b3b3b3f3b3b3";
       const memberId = "60f6e1b3b3f3b3b3b3f3b3b5";
 
-      (boardModel.findOneAndUpdate as any).mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
+      boardRepository.removeMember.mockResolvedValue({});
 
       await service.removeMember(boardId, userId, memberId);
 
-      expect(boardModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: boardId, owner: userId },
-        { $pull: { members: memberId } },
-        { new: true }
-      );
+      expect(boardRepository.removeMember).toHaveBeenCalledWith(boardId, userId, memberId);
     });
   });
 });

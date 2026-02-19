@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { ProjectStatus } from "../../../../src/modules/projects/dto/update-project.dto";
 import { Project, ProjectSchema } from "../../../../src/modules/projects/schemas/projects.schema";
@@ -64,36 +64,9 @@ describe("ProjectSchema", () => {
     expect(paths.updatedAt).toBeDefined();
   });
 
-  it("should have pre-save hook to update updatedAt", () => {
-    // Get the pre-save hooks
-    const hooks = (ProjectSchema as any).s.hooks._pres.get("save");
-    expect(hooks).toBeDefined();
-    expect(hooks.length).toBeGreaterThan(0);
-  });
-
-  it("should update updatedAt on save", async () => {
-    const oldDate = new Date("2020-01-01");
-    const mockDocument = {
-      updatedAt: oldDate,
-      save: vi.fn(),
-      ownerDocument: vi.fn().mockReturnThis(),
-      $__: {},
-      schema: ProjectSchema,
-      $isValid: vi.fn().mockReturnValue(true)
-    };
-
-    // Get the pre-save hook (the first hook is our custom hook)
-    const hooks = (ProjectSchema as any).s.hooks._pres.get("save");
-    expect(hooks).toBeDefined();
-    expect(hooks.length).toBeGreaterThan(0);
-
-    // Find and call our custom hook (not the timestamps hook)
-    const customHook = hooks.find((hook: any) => hook.fn.toString().includes("this.updatedAt"));
-    expect(customHook).toBeDefined();
-    await customHook.fn.call(mockDocument);
-
-    // Verify updatedAt was updated
-    expect(mockDocument.updatedAt.getTime()).toBeGreaterThan(oldDate.getTime());
+  it("should rely on timestamps option for updatedAt", () => {
+    // timestamps: true handles createdAt and updatedAt automatically
+    expect(ProjectSchema.options.timestamps).toBe(true);
   });
 
   it("should create Project class instance", () => {

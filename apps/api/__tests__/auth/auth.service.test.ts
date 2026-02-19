@@ -104,7 +104,6 @@ describe("AuthService", () => {
       }
       expect(thrownError).not.toBeNull();
       expect(thrownError?.message).toBe("JWT error");
-      expect(logger.error).toHaveBeenCalled();
     });
   });
 });

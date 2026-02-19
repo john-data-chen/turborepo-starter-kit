@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { User } from "../users/schemas/users.schema";
@@ -19,30 +19,18 @@ export class AuthService {
     }
 
     try {
-      const user = await this.userService.findByEmail(email);
-      return user;
+      return await this.userService.findByEmail(email);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const stack = error instanceof Error ? error.stack : undefined;
-      this.logger.error(`Error validating user: ${errorMessage}`, stack);
-      throw new Error("Authentication failed. Please try again.");
+      this.logger.error(`Error validating user: ${errorMessage}`);
+      throw new InternalServerErrorException("Authentication failed. Please try again.");
     }
   }
 
   async login(user: User) {
-    try {
-      const payload = { email: user.email, sub: user._id };
-      const access_token = this.jwtService.sign(payload);
+    const payload = { email: user.email, sub: user._id };
+    const access_token = this.jwtService.sign(payload);
 
-      return {
-        access_token,
-        user
-      };
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const stack = error instanceof Error ? error.stack : undefined;
-      this.logger.error(`Error generating JWT for user ${user.email}: ${errorMessage}`, stack);
-      throw error;
-    }
+    return { access_token, user };
   }
 }

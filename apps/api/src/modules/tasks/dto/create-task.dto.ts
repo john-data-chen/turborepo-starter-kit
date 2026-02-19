@@ -3,7 +3,6 @@ import { IsDateString, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from 
 
 import { TaskStatus } from "../schemas/tasks.schema";
 
-// Re-export for backward compatibility
 export { TaskStatus };
 
 export class CreateTaskDto {
@@ -65,13 +64,6 @@ export class CreateTaskDto {
   project: string;
 
   @ApiProperty({
-    description: "The ID of the user who created this task",
-    example: "507f1f77bcf86cd799439014"
-  })
-  @IsMongoId()
-  creator: string;
-
-  @ApiProperty({
     description: "The ID of the user assigned to this task",
     example: "507f1f77bcf86cd799439013",
     required: false
@@ -79,11 +71,4 @@ export class CreateTaskDto {
   @IsMongoId()
   @IsOptional()
   assignee?: string;
-
-  @ApiProperty({
-    description: "The ID of the user who last modified this task",
-    example: "507f1f77bcf86cd799439014"
-  })
-  @IsMongoId()
-  lastModifier: string;
 }

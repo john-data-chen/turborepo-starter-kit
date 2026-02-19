@@ -71,6 +71,49 @@ When a task matches conditions below, load the corresponding skill **before writ
 
 The Shadcn UI components are in `packages/ui/components/ui`. They are a UI library - modify `packages/ui/src/styles/globals.css` and `apps/web/src/components` first, only modify Shadcn components as a last resort.
 
+### API Architecture (`apps/api`)
+
+#### Repository Pattern
+
+Services do NOT inject Mongoose `Model<T>` directly. Each module has a `repositories/` folder:
+
+```
+Service → Repository → Model (Mongoose)
+```
+
+- `UserService` → `UserRepository`
+- `BoardService` → `BoardRepository` + `EventEmitter2`
+- `ProjectsService` → `ProjectRepository` + `BoardService` + `EventEmitter2`
+- `TasksService` → `TaskRepository` + `ProjectsService`
+
+#### Event-Driven Cascade Deletes
+
+Circular dependencies are avoided using `@nestjs/event-emitter`. Deletion cascades via events:
+
+```
+Board deleted → emit("board.deleted")
+  → ProjectsService.handleBoardDeleted() → emit("project.deleted") per project + deleteByBoardId
+    → TasksService.handleProjectDeleted() → deleteByProjectId
+```
+
+Dependency direction is unidirectional: `Tasks → Projects → Boards` (no `forwardRef`).
+
+#### Centralized Error Handling
+
+`AllExceptionsFilter` is registered as `APP_FILTER` in `app.module.ts`. Controllers do NOT use try-catch blocks.
+
+#### Testing Pattern
+
+Unit tests use **manual constructor instantiation** with `vi.fn()` mocks, NOT NestJS `TestingModule`:
+
+```typescript
+// Correct: mock repository directly
+const taskRepository = { create: vi.fn(), findById: vi.fn() };
+const service = new TasksService(taskRepository as any, projectsService as any);
+
+// Wrong: do NOT use getModelToken() — services no longer accept Model<T>
+```
+
 ## Essential Commands
 
 ### Daily Development
@@ -132,6 +175,14 @@ pnpm lint-staged                      # Run linter and formatter
 // Usage in apps
 import { ComponentName } from "@repo/ui/ComponentName";
 ```
+
+## Known Pitfalls
+
+> [!CAUTION]
+> **next-intl Navigation**: `router.push()` / `router.replace()` from `@/i18n/navigation` (created by `createNavigation(routing)`) **automatically prepends the locale prefix**. Do NOT manually add locale to paths — pass locale-free paths like `"/boards"`, not `"/en/boards"`. Using `getLocalePath()` with next-intl router causes double-locale bugs (e.g. `/en/en/boards` → 404).
+
+> [!CAUTION]
+> **Duplicate QueryClient**: `providers/client-providers.tsx` and `providers/auth-provider.tsx` both create separate `QueryClient` instances. This defeats TanStack Query's caching strategy. Only use the QueryClient from `client-providers.tsx`.
 
 ## Debugging Checklist
 

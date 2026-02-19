@@ -1,21 +1,26 @@
 import { render, screen } from "@testing-library/react";
-/// <reference types="react" />
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Board } from "@/components/kanban/board/Board";
 import { TaskStatus, type Project } from "@/types/dbInterface";
 
-// Ensure React is globally available
 globalThis.React = React;
 
-// Mock dependencies
+const mockUseAuth = vi.fn();
+const mockUseBoards = vi.fn();
+const mockUseWorkspaceStore = vi.fn();
+
 vi.mock("@/hooks/useAuth", () => ({
-  useAuth: vi.fn()
+  useAuth: () => mockUseAuth()
+}));
+
+vi.mock("@/hooks/useBoards", () => ({
+  useBoards: () => mockUseBoards()
 }));
 
 vi.mock("@/stores/workspace-store", () => ({
-  useWorkspaceStore: vi.fn()
+  useWorkspaceStore: (selector: any) => mockUseWorkspaceStore(selector)
 }));
 
 vi.mock("@/lib/api/taskApi", () => ({
@@ -136,42 +141,76 @@ describe("Board", () => {
     }
   ];
 
-  beforeEach(async () => {
-    vi.clearAllMocks();
+  const defaultWorkspaceState = {
+    projects: mockProjects,
+    isLoadingProjects: false,
+    filter: { status: null, search: "" },
+    setProjects: vi.fn(),
+    currentBoardId: "board-1",
+    userId: "user-1",
+    fetchProjects: vi.fn()
+  };
 
-    const { useAuth } = await import("@/hooks/useAuth");
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
+  const defaultAuthState = {
+    user: mockUserInfo,
+    isAuthenticated: true,
+    isLoading: false,
+    login: vi.fn(),
+    loginWithEmail: vi.fn(),
+    logout: vi.fn(),
+    loginMutation: {},
+    error: null,
+    session: null
+  };
 
-    vi.mocked(useAuth).mockReturnValue({
-      user: mockUserInfo,
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn() as any,
-      loginWithEmail: vi.fn() as any,
-      logout: vi.fn() as any,
-      loginMutation: {} as any,
-      error: null,
-      session: null
+  const defaultBoardsState = {
+    myBoards: mockMyBoards,
+    teamBoards: [],
+    loading: false,
+    error: null,
+    refresh: vi.fn()
+  };
+
+  const setupMocks = (overrides: any = {}) => {
+    const authState = { ...defaultAuthState, ...overrides.authState };
+    const boardsState = { ...defaultBoardsState, ...overrides.boardsState };
+    const workspaceState = { ...defaultWorkspaceState, ...overrides.workspaceState };
+
+    if (overrides.user !== undefined) {
+      authState.user = overrides.user;
+    }
+    if (overrides.isAuthenticated !== undefined) {
+      authState.isAuthenticated = overrides.isAuthenticated;
+    }
+    if (overrides.myBoards !== undefined) {
+      boardsState.myBoards = overrides.myBoards;
+    }
+    if (overrides.teamBoards !== undefined) {
+      boardsState.teamBoards = overrides.teamBoards;
+    }
+    if (overrides.projects !== undefined) {
+      workspaceState.projects = overrides.projects;
+    }
+    if (overrides.isLoadingProjects !== undefined) {
+      workspaceState.isLoadingProjects = overrides.isLoadingProjects;
+    }
+    if (overrides.filter !== undefined) {
+      workspaceState.filter = overrides.filter;
+    }
+    if (overrides.currentBoardId !== undefined) {
+      workspaceState.currentBoardId = overrides.currentBoardId;
+    }
+
+    mockUseAuth.mockReturnValue(authState);
+    mockUseBoards.mockReturnValue(boardsState);
+    mockUseWorkspaceStore.mockImplementation((selector: any) => {
+      return selector ? selector(workspaceState) : workspaceState;
     });
+  };
 
-    const state = {
-      projects: mockProjects,
-      isLoadingProjects: false,
-      filter: { status: null, search: "" },
-      setProjects: vi.fn(),
-      currentBoardId: "board-1",
-      myBoards: mockMyBoards,
-      teamBoards: [],
-      userId: "user-1",
-      fetchProjects: vi.fn()
-    };
-
-    const mockStoreWithGetState = Object.assign(
-      vi.fn((selector: any) => selector(state)),
-      { getState: () => state }
-    );
-
-    vi.mocked(useWorkspaceStore).mockImplementation(mockStoreWithGetState as any);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setupMocks();
   });
 
   it("should render board component", () => {
@@ -205,25 +244,8 @@ describe("Board", () => {
     expect(screen.getByTestId("project-project-2")).toBeInTheDocument();
   });
 
-  it("should show loading skeleton when loading projects", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: [],
-        isLoadingProjects: true,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: [],
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+  it("should show loading skeleton when loading projects", () => {
+    setupMocks({ isLoadingProjects: true });
 
     const { container } = render(<Board />);
     const skeleton = container.querySelector(".bg-secondary");
@@ -235,82 +257,39 @@ describe("Board", () => {
     expect(screen.getByTestId("drag-overlay")).toBeInTheDocument();
   });
 
-  it("should sort projects by orderInBoard", async () => {
+  it("should sort projects by orderInBoard", () => {
     const unsortedProjects = [
       { ...mockProjects[1], orderInBoard: 2 },
       { ...mockProjects[0], orderInBoard: 1 }
     ];
 
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: unsortedProjects,
-        isLoadingProjects: false,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: mockMyBoards,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+    setupMocks({ projects: unsortedProjects });
 
     render(<Board />);
-    // Projects should be rendered in sorted order
     expect(screen.getByTestId("project-project-1")).toBeInTheDocument();
     expect(screen.getByTestId("project-project-2")).toBeInTheDocument();
   });
 
-  it("should determine board owner correctly when user is owner", async () => {
+  it("should determine board owner correctly when user is owner", () => {
     render(<Board />);
-    // Board owner check is internal, so we just verify component renders
-    // The isBoardOwner logic is tested by rendering without errors
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should determine board owner correctly when user is not owner", async () => {
-    const { useAuth } = await import("@/hooks/useAuth");
-    vi.mocked(useAuth).mockReturnValue({
-      user: { _id: "user-2", name: "Jane", email: "jane@example.com" },
-      isAuthenticated: true,
-      isLoading: false,
-      login: vi.fn() as any,
-      loginWithEmail: vi.fn() as any,
-      logout: vi.fn() as any,
-      loginMutation: {} as any,
-      error: null,
-      session: null
-    });
+  it("should determine board owner correctly when user is not owner", () => {
+    setupMocks({ user: { _id: "user-2", name: "Jane", email: "jane@example.com" } });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should handle unauthenticated user", async () => {
-    const { useAuth } = await import("@/hooks/useAuth");
-    vi.mocked(useAuth).mockReturnValue({
-      user: undefined,
-      isAuthenticated: false,
-      isLoading: false,
-      login: vi.fn() as any,
-      loginWithEmail: vi.fn() as any,
-      logout: vi.fn() as any,
-      loginMutation: {} as any,
-      error: null,
-      session: null
-    });
+  it("should handle unauthenticated user", () => {
+    setupMocks({ user: undefined, isAuthenticated: false });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should determine board member correctly", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
+  it("should determine board member correctly", () => {
     const teamBoards = [
       {
         _id: "board-2",
@@ -324,125 +303,46 @@ describe("Board", () => {
       }
     ];
 
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: mockProjects,
-        isLoadingProjects: false,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-2",
-        myBoards: [],
-        teamBoards: teamBoards,
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+    setupMocks({
+      myBoards: [],
+      teamBoards: teamBoards,
+      currentBoardId: "board-2"
+    });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should handle empty projects list", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: [],
-        isLoadingProjects: false,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: mockMyBoards,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+  it("should handle empty projects list", () => {
+    setupMocks({ projects: [] });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
     expect(screen.queryByTestId("project-project-1")).not.toBeInTheDocument();
   });
 
-  it("should filter tasks by status", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: mockProjects,
-        isLoadingProjects: false,
-        filter: { status: TaskStatus.TODO, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: mockMyBoards,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+  it("should filter tasks by status", () => {
+    setupMocks({ filter: { status: TaskStatus.TODO, search: "" } });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should filter tasks by search term", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: mockProjects,
-        isLoadingProjects: false,
-        filter: { status: null, search: "Task 1" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: mockMyBoards,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+  it("should filter tasks by search term", () => {
+    setupMocks({ filter: { status: null, search: "Task 1" } });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should handle projects with no currentBoardId", async () => {
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: mockProjects,
-        isLoadingProjects: false,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: null,
-        myBoards: mockMyBoards,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+  it("should handle projects with no currentBoardId", () => {
+    setupMocks({ currentBoardId: null });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();
   });
 
-  it("should handle projects with board owner as object", async () => {
+  it("should handle projects with board owner as object", () => {
     const boardsWithObjectOwner = [
       {
         ...mockMyBoards[0],
@@ -450,24 +350,7 @@ describe("Board", () => {
       }
     ];
 
-    const { useWorkspaceStore } = await import("@/stores/workspace-store");
-
-    const mockSelector = (selector: any) => {
-      const state = {
-        projects: mockProjects,
-        isLoadingProjects: false,
-        filter: { status: null, search: "" },
-        setProjects: vi.fn(),
-        currentBoardId: "board-1",
-        myBoards: boardsWithObjectOwner as any,
-        teamBoards: [],
-        userId: "user-1"
-      };
-      return selector(state);
-    };
-
-    Object.assign(mockSelector, { getState: () => ({ userId: "user-1" }) });
-    vi.mocked(useWorkspaceStore).mockImplementation(mockSelector as any);
+    setupMocks({ myBoards: boardsWithObjectOwner });
 
     render(<Board />);
     expect(screen.getByTestId("board")).toBeInTheDocument();

@@ -148,5 +148,12 @@
     "light": "Hell",
     "dark": "Dunkel",
     "system": "System"
+  },
+  "error": {
+    "title": "Ein Fehler ist aufgetreten",
+    "workspaceError": "Arbeitsbereich-Fehler aufgetreten",
+    "tryAgain": "Erneut versuchen",
+    "notFound": "Seite nicht gefunden",
+    "goHome": "Zur Startseite"
   }
 }

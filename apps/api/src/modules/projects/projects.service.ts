@@ -1,19 +1,13 @@
-import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { Types } from "mongoose";
 
+import { BoardDeletedEvent, ProjectDeletedEvent } from "../../common/events";
 import { BoardService } from "../boards/boards.service";
-import { TasksService } from "../tasks/tasks.service";
 
 import { CreateProjectDto } from "./dto/create-project.dto";
 import { UpdateProjectDto } from "./dto/update-project.dto";
+import { ProjectRepository } from "./repositories/projects.repository";
 import { Project, ProjectDocument } from "./schemas/projects.schema";
 
 @Injectable()
@@ -21,29 +15,21 @@ export class ProjectsService {
   private readonly logger = new Logger(ProjectsService.name);
 
   constructor(
-    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
-    @Inject(forwardRef(() => TasksService))
-    private tasksService: TasksService,
-    @Inject(forwardRef(() => BoardService))
-    private boardService: BoardService
+    private readonly projectRepository: ProjectRepository,
+    private readonly boardService: BoardService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
-  /**
-   * Delete all projects associated with a board
-   * @param boardId The ID of the board whose projects should be deleted
-   * @returns Promise with the deletion result
-   */
-  async deleteByBoardId(boardId: string): Promise<{ deletedCount: number }> {
-    if (!Types.ObjectId.isValid(boardId)) {
-      throw new BadRequestException("Invalid board ID");
+  @OnEvent("board.deleted")
+  async handleBoardDeleted(event: BoardDeletedEvent): Promise<void> {
+    const projects = await this.projectRepository.findByBoardId(event.boardId);
+
+    // Emit project.deleted for each project so TasksService can clean up
+    for (const project of projects) {
+      this.eventEmitter.emit("project.deleted", new ProjectDeletedEvent(project._id.toString()));
     }
 
-    const result = await this.projectModel
-      .deleteMany({
-        board: new Types.ObjectId(boardId)
-      })
-      .exec();
-    return { deletedCount: result.deletedCount || 0 };
+    await this.projectRepository.deleteByBoardId(event.boardId);
   }
 
   async findByBoardId(boardId: string): Promise<ProjectDocument[]> {
@@ -51,18 +37,7 @@ export class ProjectsService {
       throw new NotFoundException("Invalid board ID");
     }
 
-    const projects = await this.projectModel
-      .find({ board: new Types.ObjectId(boardId) })
-      .populate("board", "title")
-      .populate("owner", "name email")
-      .populate("members", "name email")
-      .exec();
-
-    if (!projects || projects.length === 0) {
-      return [];
-    }
-
-    return projects;
+    return this.projectRepository.findByBoardId(boardId);
   }
 
   async update(
@@ -76,25 +51,105 @@ export class ProjectsService {
     await this.checkUpdatePermissions(project, userId, updateProjectDto);
     const updateData = this.prepareUpdateData(updateProjectDto);
 
-    return this.performUpdate(id, updateData);
+    const updatedProject = await this.projectRepository.updateById(id, updateData);
+    if (!updatedProject) {
+      throw new NotFoundException("Project not found after update");
+    }
+    return updatedProject;
   }
+
+  async remove(id: string, userId: string): Promise<{ message: string }> {
+    this.validateIds(id, userId);
+
+    const project = await this.findProjectById(id);
+
+    if (project.owner.toString() !== userId.toString()) {
+      throw new BadRequestException("You do not have permission to delete this project");
+    }
+
+    const { board: boardId, orderInBoard: deletedOrder } = project;
+
+    // Emit event for cascade task deletion
+    this.eventEmitter.emit("project.deleted", new ProjectDeletedEvent(id));
+
+    const result = await this.projectRepository.deleteById(id);
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException("Failed to delete project");
+    }
+
+    // Reorder remaining projects in the same board
+    if (deletedOrder !== undefined) {
+      await this.projectRepository.decrementOrderAfter(boardId, deletedOrder);
+    }
+
+    return { message: "Project deleted successfully" };
+  }
+
+  async addMemberIfNotExists(projectId: string, userId: string): Promise<void> {
+    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
+      return;
+    }
+
+    const userIdObj = new Types.ObjectId(userId);
+    const isMember = await this.projectRepository.isMember(projectId, userIdObj);
+
+    if (!isMember) {
+      await this.projectRepository.addMember(projectId, userIdObj);
+    }
+  }
+
+  async create(createProjectDto: CreateProjectDto & { owner: string }): Promise<ProjectDocument> {
+    const { title, description, boardId, owner } = createProjectDto;
+
+    if (!Types.ObjectId.isValid(boardId)) {
+      throw new BadRequestException(`Invalid board ID: ${boardId}`);
+    }
+
+    if (!Types.ObjectId.isValid(owner)) {
+      throw new BadRequestException(`Invalid owner ID: ${owner}`);
+    }
+
+    let order = createProjectDto.orderInBoard;
+    if (order === undefined) {
+      order = await this.projectRepository.getLastOrderInBoard(boardId);
+    }
+
+    const projectData: Partial<Project> = {
+      title,
+      description: description || null,
+      owner: new Types.ObjectId(owner),
+      board: new Types.ObjectId(boardId),
+      members: [new Types.ObjectId(owner)],
+      orderInBoard: order
+    };
+
+    const savedProject = await this.projectRepository.create(projectData);
+
+    const populatedProject = await this.projectRepository.findByIdPopulated(
+      savedProject._id.toString()
+    );
+
+    if (!populatedProject) {
+      throw new NotFoundException("Project not found after creation");
+    }
+
+    return populatedProject;
+  }
+
+  // --- Private helpers ---
 
   private validateIds(id: string, userId: string): void {
     if (!Types.ObjectId.isValid(id)) {
-      const error = "Invalid project ID";
-      this.logger.warn(error, { id });
-      throw new BadRequestException(error);
+      throw new BadRequestException("Invalid project ID");
     }
-
     if (!Types.ObjectId.isValid(userId)) {
-      const error = "Invalid user ID";
-      this.logger.warn(error, { userId });
-      throw new BadRequestException(error);
+      throw new BadRequestException("Invalid user ID");
     }
   }
 
   private async findProjectById(id: string): Promise<ProjectDocument> {
-    const project = await this.projectModel.findById(id);
+    const project = await this.projectRepository.findById(id);
     if (!project) {
       throw new NotFoundException("Project not found");
     }
@@ -106,17 +161,14 @@ export class ProjectsService {
     userId: string,
     updateProjectDto: UpdateProjectDto
   ): Promise<void> {
-    const userIdString = userId.toString();
-    const isOwner = project.owner.toString() === userIdString;
+    const isOwner = project.owner.toString() === userId.toString();
     const isOrderOnly = this.isOrderOnlyUpdate(updateProjectDto);
 
     if (!isOwner) {
       if (isOrderOnly) {
         await this.verifyBoardMembership(project, userId);
       } else {
-        const error = "You do not have permission to update this project";
-        this.logger.warn(error, { userId, projectId: project._id });
-        throw new BadRequestException(error);
+        throw new BadRequestException("You do not have permission to update this project");
       }
     }
   }
@@ -133,21 +185,10 @@ export class ProjectsService {
   }
 
   private async verifyBoardMembership(project: ProjectDocument, userId: string): Promise<void> {
-    try {
-      const boardId = project.board.toString();
-      const board = await this.boardService.findOne(boardId, userId);
-      if (!board) {
-        throw new Error("Board not found or user not member");
-      }
-    } catch (err) {
-      const error = "You do not have permission to reorder projects in this board";
-      this.logger.warn(error, {
-        userId,
-        projectId: project._id,
-        boardId: project.board.toString(),
-        originalError: err instanceof Error ? err.message : String(err)
-      });
-      throw new BadRequestException(error);
+    const boardId = project.board.toString();
+    const board = await this.boardService.findOne(boardId, userId);
+    if (!board) {
+      throw new BadRequestException("You do not have permission to reorder projects in this board");
     }
   }
 
@@ -169,7 +210,6 @@ export class ProjectsService {
     if (updateProjectDto.orderInBoard !== undefined) {
       updateData.orderInBoard = updateProjectDto.orderInBoard;
     }
-
     if (updateProjectDto.assigneeId !== undefined) {
       updateData.assignee = updateProjectDto.assigneeId
         ? new Types.ObjectId(updateProjectDto.assigneeId)
@@ -177,183 +217,5 @@ export class ProjectsService {
     }
 
     return updateData;
-  }
-
-  private async performUpdate(id: string, updateData: Partial<Project>): Promise<ProjectDocument> {
-    try {
-      const updatedProject = await this.projectModel
-        .findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
-        .populate("owner", "name email")
-        .populate("members", "name email")
-        .populate("assignee", "name email")
-        .exec();
-
-      if (!updatedProject) {
-        throw new NotFoundException("Project not found after update");
-      }
-      return updatedProject;
-    } catch (error) {
-      this.logger.error("Error updating project:", error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      if (error instanceof Error && error.name === "ValidationError") {
-        throw new BadRequestException(error.message);
-      }
-      throw new BadRequestException("Failed to update project");
-    }
-  }
-
-  async remove(id: string, userId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(id)) {
-      const error = "Invalid project ID";
-      this.logger.warn(error, { id });
-      throw new BadRequestException(error);
-    }
-
-    if (!Types.ObjectId.isValid(userId)) {
-      const error = "Invalid user ID";
-      this.logger.warn(error, { userId });
-      throw new BadRequestException(error);
-    }
-
-    const project = await this.projectModel.findById(id);
-    if (!project) {
-      throw new NotFoundException("Project not found");
-    }
-
-    // Convert userId to string to ensure consistent comparison
-    const userIdString = userId.toString();
-
-    // Check if the user is the owner of the project
-    if (project.owner.toString() !== userIdString) {
-      const error = "You do not have permission to delete this project";
-      this.logger.warn(error, { userId, projectId: id });
-      throw new BadRequestException(error);
-    }
-
-    // Store project info before deletion for reordering
-    const { board: boardId, orderInBoard: deletedOrder } = project;
-
-    // First delete all tasks associated with this project
-    try {
-      await this.tasksService.deleteTasksByProjectId(id);
-    } catch (error) {
-      this.logger.error("Error deleting tasks for project:", error);
-      // We'll continue with project deletion even if task deletion fails
-      // to prevent orphaned projects, but log the error
-    }
-
-    // Then delete the project itself
-    const result = await this.projectModel.deleteOne({ _id: id });
-
-    if (result.deletedCount === 0) {
-      const error = "Failed to delete project";
-      this.logger.error(error, { id });
-      throw new NotFoundException(error);
-    }
-
-    // Reorder remaining projects in the same board
-    // Decrease orderInBoard by 1 for all projects with order greater than deleted project
-    if (deletedOrder !== undefined) {
-      await this.projectModel
-        .updateMany(
-          {
-            board: boardId,
-            orderInBoard: { $gt: deletedOrder }
-          },
-          {
-            $inc: { orderInBoard: -1 }
-          }
-        )
-        .exec();
-    }
-    return { message: "Project deleted successfully" };
-  }
-
-  /**
-   * Add a user to project members if they're not already a member
-   * @param projectId Project ID
-   * @param userId User ID to add as member
-   */
-  async addMemberIfNotExists(projectId: string, userId: string): Promise<void> {
-    if (!Types.ObjectId.isValid(projectId) || !Types.ObjectId.isValid(userId)) {
-      this.logger.warn("Invalid project ID or user ID", { projectId, userId });
-      return;
-    }
-
-    const userIdObj = new Types.ObjectId(userId);
-
-    // Check if user is already a member
-    const isMember = await this.projectModel.exists({
-      _id: projectId,
-      members: userIdObj
-    });
-
-    if (isMember) {
-      return; // Already a member, nothing to do
-    }
-
-    // Add user to members array if not already a member
-    await this.projectModel.updateOne({ _id: projectId }, { $addToSet: { members: userIdObj } });
-  }
-
-  async create(createProjectDto: CreateProjectDto & { owner: string }): Promise<ProjectDocument> {
-    try {
-      const { title, description, boardId, owner } = createProjectDto;
-
-      if (!Types.ObjectId.isValid(boardId)) {
-        this.logger.warn("Invalid board ID:", boardId);
-        throw new BadRequestException(`Invalid board ID: ${boardId}`);
-      }
-
-      if (!Types.ObjectId.isValid(owner)) {
-        this.logger.warn("Invalid owner ID:", owner);
-        throw new BadRequestException(`Invalid owner ID: ${owner}`);
-      }
-
-      // Get the next orderInBoard value if not provided
-      let order = createProjectDto.orderInBoard;
-      if (order === undefined) {
-        const lastProject = await this.projectModel
-          .findOne({ board: boardId })
-          .sort({ orderInBoard: -1 })
-          .select("orderInBoard")
-          .lean();
-        order = lastProject ? lastProject.orderInBoard + 1 : 0;
-      }
-
-      // Create the project with only the fields defined in the schema
-      const projectData: Partial<Project> = {
-        title,
-        description: description || null,
-        owner: new Types.ObjectId(owner),
-        board: new Types.ObjectId(boardId),
-        members: [new Types.ObjectId(owner)],
-        orderInBoard: order,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      const project = new this.projectModel(projectData);
-
-      const savedProject = await project.save();
-
-      // Populate the owner and members before returning
-      const populatedProject = await this.projectModel
-        .findById(savedProject._id)
-        .populate("owner", "name email")
-        .populate("members", "name email")
-        .exec();
-
-      if (!populatedProject) {
-        throw new NotFoundException("Project not found after creation");
-      }
-
-      return populatedProject;
-    } catch (error) {
-      this.logger.error("Error creating project:", error);
-      throw error;
-    }
   }
 }

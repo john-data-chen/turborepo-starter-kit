@@ -148,5 +148,12 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "workspaceError": "Workspace error occurred",
+    "tryAgain": "Try again",
+    "notFound": "Page not found",
+    "goHome": "Go home"
   }
 }

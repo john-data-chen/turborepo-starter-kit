@@ -26,11 +26,11 @@ import {
   DropdownMenuTrigger
 } from "@repo/ui/components/dropdown-menu";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { useRouter } from "@/i18n/navigation";
 import { useDeleteBoard, useUpdateBoard } from "@/lib/api/boards/queries";
 import { boardSchema } from "@/types/boardForm";
 import { Board } from "@/types/dbInterface";
@@ -103,39 +103,31 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
     };
 
     const handleDelete = async (e: React.MouseEvent) => {
-      // Prevent any default behavior and stop propagation
       e.preventDefault();
       e.stopPropagation();
 
-      // Close the dialog immediately
       setShowDeleteDialog(false);
 
       try {
-        // Get current path before any async operations
-        const currentPath = globalThis.location.pathname;
+        const currentPath = window.location.pathname;
 
-        // Immediately redirect to /boards if we're on a board page
         if (currentPath.includes("/board/")) {
-          globalThis.location.href = "/boards";
-          // Continue with deletion in the background
+          router.push("/boards");
           setTimeout(() => {
             deleteBoard.mutate(board._id);
           }, 0);
           return;
         }
 
-        // For all other cases, perform the deletion first
         await deleteBoard.mutateAsync(board._id, {
           onSuccess: () => {
             toast.success(t("boardDeleted"));
-            // Call the onDelete callback if provided
             onDelete?.();
 
-            // Force a hard refresh to ensure clean state
-            if (globalThis.location.pathname.endsWith("/boards")) {
-              globalThis.location.reload();
+            if (window.location.pathname.endsWith("/boards")) {
+              router.refresh();
             } else {
-              globalThis.location.href = "/boards";
+              router.push("/boards");
             }
           },
           onError: (error: Error) => {

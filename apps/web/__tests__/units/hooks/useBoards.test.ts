@@ -5,19 +5,15 @@ import { useBoards } from "@/hooks/useBoards";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import type { Board } from "@/types/dbInterface";
 
-// Mock the API queries
 vi.mock("@/lib/api/boards/queries", () => ({
   useBoards: vi.fn()
 }));
 
 describe("useBoards", () => {
   beforeEach(() => {
-    // Reset the workspace store before each test
     useWorkspaceStore.setState({
       userId: "user-123",
       userEmail: "test@example.com",
-      myBoards: [],
-      teamBoards: [],
       projects: [],
       isLoadingProjects: false,
       currentBoardId: null,
@@ -145,7 +141,6 @@ describe("useBoards", () => {
         title: "My Board",
         description: "My board description",
         owner: "user-123",
-        // members and projects are missing
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
@@ -198,38 +193,6 @@ describe("useBoards", () => {
     });
 
     expect(result.current.myBoards[0]._id).toBe("board-1");
-  });
-
-  it("should update workspace store when boards change", async () => {
-    const { useBoards: useApiBoards } = await import("@/lib/api/boards/queries");
-
-    const mockMyBoards: Board[] = [
-      {
-        _id: "board-1",
-        title: "My Board",
-        description: "My board description",
-        owner: "user-123",
-        members: [],
-        projects: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ];
-
-    vi.mocked(useApiBoards).mockReturnValue({
-      data: { myBoards: mockMyBoards, teamBoards: [] },
-      isLoading: false,
-      error: null,
-      refetch: vi.fn()
-    } as any);
-
-    renderHook(() => useBoards());
-
-    await waitFor(() => {
-      const state = useWorkspaceStore.getState();
-      expect(state.myBoards).toHaveLength(1);
-      expect(state.myBoards[0]._id).toBe("board-1");
-    });
   });
 
   it("should return loading state", async () => {
@@ -317,5 +280,49 @@ describe("useBoards", () => {
       expect(result.current.myBoards).toEqual([]);
       expect(result.current.teamBoards).toEqual([]);
     });
+  });
+
+  it("should categorize boards by owner when receiving flat array", async () => {
+    const { useBoards: useApiBoards } = await import("@/lib/api/boards/queries");
+
+    const mockBoards: Board[] = [
+      {
+        _id: "board-1",
+        title: "My Board",
+        description: "My board description",
+        owner: "user-123",
+        members: [],
+        projects: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        _id: "board-2",
+        title: "Team Board",
+        description: "Team board description",
+        owner: "user-456",
+        members: [],
+        projects: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    vi.mocked(useApiBoards).mockReturnValue({
+      data: mockBoards,
+      isLoading: false,
+      error: null,
+      refetch: vi.fn()
+    } as any);
+
+    const { result } = renderHook(() => useBoards());
+
+    await waitFor(() => {
+      expect(result.current.myBoards).toHaveLength(1);
+      expect(result.current.teamBoards).toHaveLength(1);
+    });
+
+    expect(result.current.myBoards[0]._id).toBe("board-1");
+    expect(result.current.teamBoards[0]._id).toBe("board-2");
   });
 });
