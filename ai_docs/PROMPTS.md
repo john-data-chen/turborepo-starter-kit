@@ -58,18 +58,81 @@ When a task matches conditions below, load the corresponding skill **before writ
 
 ### Repository Structure
 
-| Type        | Package                    | Description                                          |
-| ----------- | -------------------------- | ---------------------------------------------------- |
-| **App**     | `apps/api`                 | Nest.js (Express)                                    |
-| **App**     | `apps/web`                 | Next.js AppRouter                                    |
-| **App**     | `apps/mobile`              | React Native (Expo) app                              |
-| **Package** | `packages/global-tsconfig` | TypeScript configurations                            |
-| **Package** | `packages/store`           | Domain types, Zustand stores, StorageAdapter pattern |
-| **Package** | `packages/ui`              | Shadcn UI Shared UI                                  |
+| Type        | Package                    | Description                                                    |
+| ----------- | -------------------------- | -------------------------------------------------------------- |
+| **App**     | `apps/api`                 | Nest.js (Express)                                              |
+| **App**     | `apps/web`                 | Next.js AppRouter                                              |
+| **App**     | `apps/mobile`              | React Native (Expo 54) app                                     |
+| **Package** | `packages/global-tsconfig` | TypeScript configurations                                      |
+| **Package** | `packages/i18n`            | Shared i18n translations (EN/DE), locale config, Messages type |
+| **Package** | `packages/store`           | Domain types, Zustand stores, StorageAdapter pattern           |
+| **Package** | `packages/ui`              | Shadcn UI Shared UI (web-only, not used by mobile)             |
 
 #### Shadcn UI Components
 
 The Shadcn UI components are in `packages/ui/components/ui`. They are a UI library - modify `packages/ui/src/styles/globals.css` and `apps/web/src/components` first, only modify Shadcn components as a last resort.
+
+#### Shared i18n Package (`packages/i18n`)
+
+Single source of truth for EN/DE translations. Uses `{appName}` interpolation for app-specific titles:
+- **Web** (next-intl): Resolves `{appName}` via `interpolateAppName()` in `get-cached-messages.ts` → `"Next Project Manager"`
+- **Mobile** (i18next): Resolves `{appName}` via `defaultVariables: { appName: "Project Manager" }` in i18n init
+- Both next-intl and i18next support `{variable}` single-brace syntax natively
+- Translations live in `packages/i18n/src/locales/en.json` and `de.json`
+- Exports: `messages`, `locales`, `defaultLocale`, `Locale` type, `Messages` type
+
+### Mobile Architecture (`apps/mobile`)
+
+#### Mobile Tech Stack
+
+| Category       | Technology                                                           |
+| -------------- | -------------------------------------------------------------------- |
+| Framework      | Expo 54, React Native 0.81.5                                        |
+| Navigation     | expo-router 6 (file-based routing)                                   |
+| Styling        | NativeWind 5 (preview) + TailwindCSS 4.1 + react-native-css         |
+| State          | Zustand 5 (via @repo/store) + TanStack Query v5                     |
+| Auth Storage   | expo-secure-store (NOT AsyncStorage)                                 |
+| i18n           | i18next + react-i18next + expo-localization (imports from @repo/i18n) |
+| DnD            | react-native-draggable-flatlist (within-column reorder only)         |
+| Animations     | react-native-reanimated 4                                            |
+
+#### NativeWind CSS Wrappers
+
+Mobile uses `useCssElement()` wrappers in `lib/tw/index.tsx` because `globalClassNamePolyfill: false` in Metro config. Import styled components from `@/lib/tw`:
+
+```typescript
+import { View, Text, ScrollView, Pressable, TextInput, Link } from "@/lib/tw";
+// These support className prop → maps to style via react-native-css
+<View className="flex-1 bg-background p-4 gap-2" />
+```
+
+Do NOT use `className` on bare React Native components — only the wrapped versions support it.
+
+#### StorageAdapter Pattern (Cross-Platform Auth)
+
+`@repo/store` exports `createAuthStore(adapter)` factory. Each platform provides its own adapter:
+- **Web**: `localStorage` adapter in `apps/web/src/stores/auth.ts`
+- **Mobile**: `expo-secure-store` adapter in `apps/mobile/stores/auth.ts`
+
+#### Mobile Interaction Design (Hybrid DnD)
+
+Mobile does NOT replicate web's full drag-and-drop kanban. Instead uses platform-appropriate interactions:
+
+| Action              | Web                    | Mobile                                                        |
+| ------------------- | ---------------------- | ------------------------------------------------------------- |
+| Reorder tasks       | Drag within column     | Long press + drag (react-native-draggable-flatlist)           |
+| Move across columns | Drag to other column   | Swipe left → ActionSheet project picker                       |
+| Change status       | Dropdown select        | Swipe right → auto-cycle status                               |
+| Edit/Delete         | Inline buttons         | Long press → context menu                                     |
+
+#### Mobile File Conventions
+
+- File names: **kebab-case** (e.g., `board-card.tsx`, `use-auth.ts`)
+- Routes in `app/` directory only — never co-locate components in `app/`
+- Inline styles with NativeWind, NOT `StyleSheet.create`
+- Use `borderCurve: "continuous"` for rounded corners
+- Use `contentInsetAdjustmentBehavior="automatic"` on ScrollView/FlatList
+- Use `process.env.EXPO_OS` instead of `Platform.OS`
 
 ### API Architecture (`apps/api`)
 
@@ -143,9 +206,9 @@ pnpm lint-staged                      # Run linter and formatter
 | **Runtime**            | Node.js latest (check with `node -v`)           |
 | **Frontend Framework** | Next.js (App Router) + React                    |
 | **Backend Framework**  | Nest.js (Express)                               |
-| **Mobile Framework**   | React Native (Expo)                             |
+| **Mobile Framework**   | React Native (Expo 54), expo-router 6           |
 | **Language**           | TypeScript (strict mode)                        |
-| **Styling**            | TailwindCSS                                     |
+| **Styling**            | TailwindCSS (web), NativeWind 5 + react-native-css (mobile) |
 | **Package Manager**    | PNPM (not npm/yarn)                             |
 | **Monorepo**           | Turborepo                                       |
 | **Unit Test**          | Vitest                                          |
@@ -155,12 +218,14 @@ pnpm lint-staged                      # Run linter and formatter
 
 ## Naming Conventions
 
-| Type       | Convention  | Example                   |
-| ---------- | ----------- | ------------------------- |
-| Components | PascalCase  | `DatePicker.tsx`          |
-| Utilities  | camelCase   | `dateUtils.ts`            |
-| Constants  | UPPER_SNAKE | `API_ENDPOINTS.ts`        |
-| Types      | PascalCase  | `UserData`, `ApiResponse` |
+| Type                  | Convention  | Example                   |
+| --------------------- | ----------- | ------------------------- |
+| Components (web)      | PascalCase  | `DatePicker.tsx`          |
+| Components (mobile)   | kebab-case  | `board-card.tsx`          |
+| Utilities             | camelCase   | `dateUtils.ts`            |
+| Constants             | UPPER_SNAKE | `API_ENDPOINTS.ts`        |
+| Types                 | PascalCase  | `UserData`, `ApiResponse` |
+| Hooks (mobile)        | kebab-case  | `use-auth.ts`             |
 
 ### Export Pattern
 
@@ -183,6 +248,12 @@ import { ComponentName } from "@repo/ui/ComponentName";
 
 > [!CAUTION]
 > **Duplicate QueryClient**: `providers/client-providers.tsx` and `providers/auth-provider.tsx` both create separate `QueryClient` instances. This defeats TanStack Query's caching strategy. Only use the QueryClient from `client-providers.tsx`.
+
+> [!CAUTION]
+> **Mobile className requires CSS wrappers**: Do NOT use `className` on bare React Native components (`View`, `Text`, etc.). Always import from `@/lib/tw` which wraps components with `useCssElement()`. Using `className` on unwrapped components silently fails — styles won't apply.
+
+> [!CAUTION]
+> **Mobile auth uses SecureStore, NOT AsyncStorage**: Token storage must use `expo-secure-store` for security. The `StorageAdapter` in `apps/mobile/stores/auth.ts` uses `SecureStore.getItemAsync/setItemAsync/deleteItemAsync`. Do NOT import or use `@react-native-async-storage/async-storage` for auth tokens.
 
 ## Debugging Checklist
 

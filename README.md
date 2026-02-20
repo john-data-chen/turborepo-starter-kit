@@ -29,24 +29,28 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 The monorepo shares business logic across platforms while keeping UI and navigation platform-specific:
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│                  Shared Packages                     │
-│                                                      │
-│  @repo/store         @repo/ui        global-tsconfig │
-│  ├── Types           ├── Shadcn UI    └── Base TS    │
-│  ├── Zustand Stores  └── Storybook       configs     │
-│  └── Storage Adapter                                 │
-│       (injectable)                                   │
-├──────────────────┬──────────────────┬────────────────┤
-│    apps/web      │   apps/mobile    │   apps/api     │
-│    Next.js       │   Expo (RN)      │   Nest.js      │
-│    App Router    │   Expo Router    │   Express      │
-│    Tailwind CSS  │   NativeWind     │   Rspack       │
-│    localStorage  │   AsyncStorage   │   MongoDB      │
-└──────────────────┴──────────────────┴────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                       Shared Packages                            │
+│                                                                  │
+│  @repo/store         @repo/i18n      @repo/ui     global-tsconfig│
+│  ├── Types           ├── en.json     ├── Shadcn UI └── Base TS   │
+│  ├── Zustand Stores  ├── de.json     └── Storybook    configs    │
+│  └── Storage Adapter └── Locale                                  │
+│       (injectable)       config                                  │
+├───────────────────┬──────────────────┬───────────────────────────┤
+│    apps/web       │   apps/mobile    │   apps/api                │
+│    Next.js        │   Expo (RN)      │   Nest.js                 │
+│    App Router     │   Expo Router    │   Express                 │
+│    Tailwind CSS   │   NativeWind     │   Rspack                  │
+│    localStorage   │   SecureStore    │   MongoDB                 │
+│    next-intl      │   i18next        │                           │
+└───────────────────┴──────────────────┴───────────────────────────┘
 ```
 
-`@repo/store` exports a `createAuthStore()` factory with an injectable `StorageAdapter`, allowing Web to use `localStorage` and Mobile to use `AsyncStorage` — same state logic, platform-appropriate persistence.
+**Shared packages** enable write-once logic across platforms:
+
+- `@repo/store` exports a `createAuthStore()` factory with an injectable `StorageAdapter`, allowing Web to use `localStorage` and Mobile to use `expo-secure-store` — same state logic, platform-appropriate persistence.
+- `@repo/i18n` provides a single source of truth for translation strings (EN/DE), consumed by `next-intl` on Web and `i18next` on Mobile. App-specific text (e.g., app name) uses `{appName}` interpolation resolved at runtime by each platform.
 
 ### Features
 
@@ -91,38 +95,41 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Frontend (Web)
 
-| Type      | Choice                   | Rationale                                              |
-| --------- | ------------------------ | ------------------------------------------------------ |
-| Framework | Next.js 16 (App Router)  | Cache Components (PPR) for mixed static/dynamic content |
-| State     | Zustand (shared)         | 40% less boilerplate than Redux, simpler testing       |
-| Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas               |
-| Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy       |
-| DnD       | dnd-kit                  | Lightweight, accessible, extensible                    |
-| i18n      | next-intl                | App Router native support, auto locale routing         |
-| UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration              |
+| Type      | Choice                   | Rationale                                               |
+| --------- | ------------------------ | ------------------------------------------------------- |
+| Framework | Next.js (App Router)     | Cache Components (PPR) for mixed static/dynamic content |
+| State     | Zustand (shared)         | 40% less boilerplate than Redux, simpler testing        |
+| Forms     | React Hook Form + Zod    | Type-safe validation, composable schemas                |
+| Database  | MongoDB + Mongoose       | Document model fits board/project/task hierarchy        |
+| DnD       | dnd-kit                  | Lightweight, accessible, extensible                     |
+| i18n      | next-intl                | App Router native support, auto locale routing          |
+| UI        | Tailwind CSS + Shadcn/ui | Consistent design system, rapid iteration               |
 
 ### Mobile
 
-| Type       | Choice                   | Rationale                                         |
-| ---------- | ------------------------ | ------------------------------------------------- |
-| Framework  | Expo (Managed)           | Rapid iteration, OTA updates, no native build env |
-| Navigation | Expo Router              | File-based routing, consistent with Next.js model |
-| Styling    | NativeWind (Tailwind v4) | Shared mental model with web Tailwind CSS         |
-| State      | Zustand (shared)         | Same stores as web via `@repo/store`              |
-| Animations | React Native Reanimated  | 60fps native-thread animations                    |
-| Storage    | AsyncStorage             | Platform-appropriate persistence adapter          |
+| Type       | Choice                          | Rationale                                          |
+| ---------- | ------------------------------- | -------------------------------------------------- |
+| Framework  | Expo                            | Rapid iteration, OTA updates, no native build env  |
+| Navigation | Expo Router                     | File-based routing, consistent with Next.js model  |
+| Styling    | NativeWind (Tailwind v4)        | Shared design tokens with web Tailwind CSS         |
+| State      | Zustand (shared)                | Same stores as web via `@repo/store`               |
+| Data Fetch | TanStack Query                  | Same caching strategy as web                       |
+| Animations | React Native Reanimated         | 60fps native-thread animations                     |
+| Storage    | expo-secure-store               | Secure token storage (encrypted keychain/keystore) |
+| i18n       | i18next + expo-localization     | Shared translations via `@repo/i18n`               |
+| Reordering | react-native-draggable-flatlist | Within-column drag; cross-column via ActionSheet   |
 
 ### Backend
 
-| Type         | Choice                  | Rationale                                              |
-| ------------ | ----------------------- | ------------------------------------------------------ |
-| Framework    | Nest.js (Express)       | Structured, scalable architecture for APIs             |
-| Language     | TypeScript              | Strict typing, shared types with frontend              |
-| Database     | MongoDB + Mongoose      | Flexible schema, rich querying capabilities            |
-| Data Access  | Repository Pattern      | Abstracts Mongoose queries, improves testability       |
-| Decoupling   | Event-driven (EventEmitter2) | Cascade deletes via events, no circular dependencies |
-| Validation   | class-validator         | Decorator-based validation for DTOs                    |
-| Auth         | Passport + JWT          | Standard, secure authentication strategies             |
+| Type        | Choice                       | Rationale                                            |
+| ----------- | ---------------------------- | ---------------------------------------------------- |
+| Framework   | Nest.js (Express)            | Structured, scalable architecture for APIs           |
+| Language    | TypeScript                   | Strict typing, shared types with frontend            |
+| Database    | MongoDB + Mongoose           | Flexible schema, rich querying capabilities          |
+| Data Access | Repository Pattern           | Abstracts Mongoose queries, improves testability     |
+| Decoupling  | Event-driven (EventEmitter2) | Cascade deletes via events, no circular dependencies |
+| Validation  | class-validator              | Decorator-based validation for DTOs                  |
+| Auth        | Passport + JWT               | Standard, secure authentication strategies           |
 
 ### Developer Experience
 
@@ -241,11 +248,38 @@ While this monorepo shares business logic across platforms, **React and React Na
 // Web: uses localStorage (default)
 const useAuthStore = createAuthStore();
 
-// Mobile: injects AsyncStorage adapter
-const useAuthStore = createAuthStore(asyncStorageAdapter);
+// Mobile: injects expo-secure-store adapter
+const useAuthStore = createAuthStore(secureStorageAdapter);
 ```
 
 This pattern enables shared state logic without platform-specific imports leaking across boundaries.
+
+### i18n Shared Package
+
+`@repo/i18n` provides a single source of truth for all translation strings:
+
+```typescript
+// packages/i18n — shared translations with {appName} interpolation
+import { messages, locales, defaultLocale } from "@repo/i18n";
+
+// Web (next-intl): replaces {appName} at build time in getCachedMessages()
+// Mobile (i18next): sets defaultVariables: { appName: "Project Manager" }
+```
+
+Both `next-intl` and `i18next` use `{variable}` interpolation syntax, enabling the same JSON files to work on both platforms without format conversion.
+
+### Mobile Interaction Design
+
+The mobile app deliberately uses **platform-appropriate interactions** instead of directly porting web drag-and-drop:
+
+| Action                      | Web                   | Mobile                   | Rationale                                                                         |
+| --------------------------- | --------------------- | ------------------------ | --------------------------------------------------------------------------------- |
+| Reorder tasks in column     | Drag & drop           | Long press + drag        | Small range, works well on touch                                                  |
+| Move task to another column | Drag across columns   | Swipe left → ActionSheet | Cross-column drag is poor UX on mobile (screen too small, finger occludes target) |
+| Change task status          | Click status dropdown | Swipe right to cycle     | One-gesture operation, similar to Apple Mail                                      |
+| Edit/delete task            | Click action menu     | Long press context menu  | iOS-native pattern                                                                |
+
+This follows the principle that good cross-platform development means **same goals, platform-appropriate means** — not 1:1 feature porting.
 
 ---
 
@@ -289,13 +323,17 @@ apps/
 │   └── env.example         # Environment variables example
 ├── mobile/                 # React Native (Expo) app
 │   ├── app/                # Expo Router file-based routes
-│   │   ├── (tabs)/         # Tab navigation
-│   │   └── modal.tsx       # Modal screen
-│   ├── components/         # React Native components
-│   ├── constants/          # App constants (colors, themes)
-│   ├── lib/                # Utilities and helpers
-│   ├── stores/             # Platform-specific store bindings
-│   ├── types/              # Mobile-specific type extensions
+│   │   ├── (auth)/         # Auth routes (login)
+│   │   ├── (tabs)/         # Tab navigation (boards, settings)
+│   │   ├── boards/         # Board detail & form screens
+│   │   ├── projects/       # Project form screens
+│   │   └── tasks/          # Task detail & form screens
+│   ├── components/         # React Native components (board-card, task-card, etc.)
+│   ├── constants/          # API routes, app constants
+│   ├── hooks/              # useAuth, useBoards, useTasks (TanStack Query)
+│   ├── lib/                # API clients, auth service, i18n config, NativeWind wrappers
+│   ├── stores/             # Auth store (SecureStore adapter)
+│   ├── types/              # Environment types
 │   └── global.css          # NativeWind theme (Tailwind v4)
 ├── web/                    # Next.js 16 Web app (Cache Components enabled)
 │   ├── __tests__/
@@ -332,6 +370,12 @@ apps/
 │   └── types/              # Type definitions
 packages/
 ├── global-tsconfig/        # Base TypeScript configuration
+├── i18n/                   # Shared translations (@repo/i18n)
+│   └── src/
+│       ├── locales/
+│       │   ├── en.json     # English translations (single source of truth)
+│       │   └── de.json     # German translations
+│       └── index.ts        # Locale config, Messages type export
 ├── store/                  # Shared state & types (@repo/store)
 │   └── src/
 │       ├── types.ts        # Domain types (Board, Task, User, etc.)

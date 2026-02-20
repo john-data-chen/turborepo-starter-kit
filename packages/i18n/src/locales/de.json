@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Next Projektmanager",
-    "description": "Next.js-Vorlage für Anfänger"
+    "title": "{appName}",
+    "description": "Projektmanagement-App"
   },
   "login": {
-    "title": "Next Projektmanager",
-    "description": "Next.js-Vorlage für Anfänger",
+    "title": "{appName}",
+    "description": "Projektmanagement-App",
     "formHint": "Bitte klicken Sie auf „Weiter“, eine Registrierung ist nicht erforderlich.",
     "emailLabel": "Email",
     "emailPlaceholder": "Geben Sie Ihre E-Mail-Adresse ein...",
@@ -15,7 +15,7 @@
     "invalidEmail": "Die Anmelde-E-Mail ist falsch, bitte korrigieren Sie sie"
   },
   "sidebar": {
-    "title": "Next Projektmanager",
+    "title": "{appName}",
     "overview": "Überblick",
     "myBoards": "Meine Boards",
     "teamBoards": "Team-Boards",

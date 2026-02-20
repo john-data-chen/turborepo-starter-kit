@@ -29,7 +29,10 @@ async function bootstrap() {
     // Regex for Vercel preview URLs for this project
     /^https:\/\/turborepo-starter-kit-web-.*\.vercel\.app$/,
     // Local development
-    "http://localhost:3000"
+    "http://localhost:3000",
+    // Mobile development (Expo)
+    "http://localhost:8081",
+    "http://localhost:19006"
   ].filter(Boolean); // Filter out any undefined/null values from env vars
 
   app.enableCors({

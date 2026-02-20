@@ -16,13 +16,14 @@ vi.mock("@/i18n/routing", () => ({
   }
 }));
 
-// Mock message files
-vi.mock("../../../messages/en.json", () => ({
-  default: { welcome: "Welcome" }
-}));
-
-vi.mock("../../../messages/zh.json", () => ({
-  default: { welcome: "欢迎" }
+// Mock @repo/i18n package
+vi.mock("@repo/i18n", () => ({
+  locales: ["en", "de"],
+  defaultLocale: "en",
+  messages: {
+    en: { welcome: "Welcome", login: { title: "{appName}" } },
+    de: { welcome: "Willkommen", login: { title: "{appName}" } }
+  }
 }));
 
 describe("i18n request config", () => {
@@ -52,6 +53,7 @@ describe("i18n request config", () => {
     const requestModule = await import("@/i18n/request");
     const config = await requestModule.default({ requestLocale: Promise.resolve("en") });
 
-    expect(config.messages).toEqual({ welcome: "Welcome" });
+    expect(config.messages).toBeDefined();
+    expect(config.messages!.welcome).toBe("Welcome");
   });
 });

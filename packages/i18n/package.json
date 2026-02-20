@@ -1,0 +1,19 @@
+{
+  "name": "@repo/i18n",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./locales/en": "./src/locales/en.json",
+    "./locales/de": "./src/locales/de.json"
+  },
+  "scripts": {
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "global-tsconfig": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
