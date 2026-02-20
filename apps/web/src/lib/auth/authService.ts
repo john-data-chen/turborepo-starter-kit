@@ -32,27 +32,48 @@ export class AuthService {
 
       // Get the response data
       console.log(`[${requestId}] [AuthService] Login response OK, status: ${response.status}`);
+      console.log(
+        `[${requestId}] [AuthService] Response headers:`,
+        Object.fromEntries(response.headers.entries())
+      );
+
       const data = await response.json();
       console.log(`[${requestId}] [AuthService] Login data received:`, {
         hasAccessToken: !!data.access_token,
+        tokenLength: data.access_token?.length,
         hasUser: !!data.user,
-        userId: data.user?._id
+        userId: data.user?._id,
+        userEmail: data.user?.email,
+        dataKeys: Object.keys(data)
       });
 
       // Store the token for Authorization header
       if (data.access_token) {
         localStorage.setItem("auth_token", data.access_token);
+        console.log(`[${requestId}] [AuthService] Token stored in localStorage`);
+      } else {
+        console.warn(`[${requestId}] [AuthService] No access_token in response!`);
       }
+
+      // Log cookie state BEFORE setting
+      console.log(`[${requestId}] [AuthService] Cookies BEFORE set:`, document.cookie);
 
       // Set isAuthenticated cookie on the web domain so the middleware can detect auth state.
       // The API also sets this cookie, but on its own domain — which is invisible to the
       // web middleware when API and web are on different Vercel subdomains.
       Cookies.set("isAuthenticated", "true", {
         path: "/",
-        secure: true,
+        secure: window.location.protocol === "https:",
         sameSite: "lax",
         expires: 7 // 7 days, matching the API cookie maxAge
       });
+
+      // Log cookie state AFTER setting
+      console.log(`[${requestId}] [AuthService] Cookies AFTER set:`, document.cookie);
+      console.log(
+        `[${requestId}] [AuthService] isAuthenticated cookie value:`,
+        Cookies.get("isAuthenticated")
+      );
 
       return {
         access_token: data.access_token || "http-only-cookie",

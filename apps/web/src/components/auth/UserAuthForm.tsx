@@ -48,7 +48,9 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log("[UserAuthForm] onSubmit triggered with:", values.email);
     await handleSubmit(values.email);
+    console.log("[UserAuthForm] handleSubmit completed");
   };
 
   return (

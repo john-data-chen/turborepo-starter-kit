@@ -107,22 +107,40 @@ export function useAuth() {
       setIsLoading(true);
       setError(null);
       try {
+        console.log("[useAuth mutationFn] Starting login for:", email);
+
         // Call the login endpoint which now returns user data and token
         const loginResult = await AuthService.login(email);
+        console.log("[useAuth mutationFn] AuthService.login returned:", {
+          hasResult: !!loginResult,
+          type: typeof loginResult,
+          keys: loginResult ? Object.keys(loginResult) : [],
+          hasUser: !!loginResult?.user,
+          userId: loginResult?.user?._id
+        });
 
         // If login returned user data directly, use it
-        if (loginResult && typeof loginResult === "object" && "user" in loginResult) {
-          const user = (loginResult as { user: UserInfo }).user;
+        if (loginResult?.user) {
+          const user = loginResult.user;
+          console.log("[useAuth mutationFn] Creating session from login user data:", {
+            _id: user._id,
+            email: user.email
+          });
           const session = createSession(user);
           return { session };
         }
 
         // Fallback: fetch the user profile using the session
+        console.log("[useAuth mutationFn] No user in loginResult, fetching profile...");
         const user = await AuthService.getProfile();
+        console.log("[useAuth mutationFn] Profile fetched:", {
+          _id: user._id,
+          email: user.email
+        });
         const session = createSession(user);
         return { session };
       } catch (err) {
-        console.error("Login error:", err);
+        console.error("[useAuth mutationFn] Login error:", err);
         const errorMessage = err instanceof Error ? err.message : "Login failed";
         setError(errorMessage);
         throw new Error(errorMessage);
@@ -131,6 +149,12 @@ export function useAuth() {
       }
     },
     onSuccess: (data) => {
+      console.log("[useAuth onSuccess] Mutation succeeded:", {
+        hasData: !!data,
+        hasSession: !!data?.session,
+        hasUser: !!data?.session?.user,
+        userId: data?.session?.user?._id
+      });
       if (data?.session?.user) {
         const { user } = data.session;
         // Update the local session state
@@ -139,10 +163,13 @@ export function useAuth() {
         setUserInfo(user.name || user.email, user._id);
         // Update the auth store
         useAuthStore.getState().setUser(user);
+        console.log("[useAuth onSuccess] Stores updated for user:", user._id);
       }
     },
     onError: (error) => {
-      console.error("Login mutation error:", error);
+      console.error("[useAuth onError] Login mutation error:", error);
+      console.error("[useAuth onError] Error message:", error.message);
+      console.error("[useAuth onError] Error stack:", error.stack);
       setError(error.message);
     }
   });
@@ -206,14 +233,22 @@ export function useAuthForm() {
   const handleSubmit = async (email: string) => {
     try {
       setIsNavigating(true);
-      console.log("[useAuthForm] Starting login for:", email);
+      console.log("[useAuthForm] === LOGIN FLOW START ===");
+      console.log("[useAuthForm] Email:", email);
+      console.log("[useAuthForm] Current URL:", window.location.href);
+      console.log("[useAuthForm] Cookies before login:", document.cookie);
+
       const result = await login(email);
-      console.log("[useAuthForm] Login result:", {
+      console.log("[useAuthForm] Login returned successfully:", {
+        hasResult: !!result,
+        resultType: typeof result,
         hasSession: !!result?.session,
-        hasUser: !!result?.session?.user
+        hasUser: !!result?.session?.user,
+        userId: result?.session?.user?._id
       });
 
       if (!result?.session?.user) {
+        console.error("[useAuthForm] No user data in result:", JSON.stringify(result));
         throw new Error("No user data received after login");
       }
 
@@ -224,17 +259,36 @@ export function useAuthForm() {
       const cleanCallback = callbackUrl?.replace(/^\/[a-z]{2}\//, "/");
       const redirectUrl = cleanCallback || `/boards?${URL_PARAMS.LOGIN_SUCCESS}`;
 
-      console.log("[useAuthForm] Redirecting to:", redirectUrl);
+      console.log("[useAuthForm] Redirect calculation:", {
+        rawCallbackUrl: callbackUrl,
+        cleanCallback,
+        finalRedirectUrl: redirectUrl
+      });
       console.log("[useAuthForm] Cookies after login:", document.cookie);
+      console.log(
+        "[useAuthForm] localStorage auth_token exists:",
+        !!localStorage.getItem("auth_token")
+      );
 
-      // Add a small delay to ensure the cookie is properly set before redirect
+      // Navigate after a short delay to ensure cookie is persisted
+      console.log("[useAuthForm] Scheduling router.push in 500ms...");
       setTimeout(() => {
+        console.log("[useAuthForm] Executing router.push to:", redirectUrl);
+        console.log("[useAuthForm] Cookies at push time:", document.cookie);
         router.push(redirectUrl);
+        console.log("[useAuthForm] router.push called successfully");
       }, 500);
     } catch (err) {
-      console.error("[useAuthForm] Login failed:", err);
+      console.error("[useAuthForm] === LOGIN FLOW ERROR ===");
+      console.error("[useAuthForm] Error type:", err?.constructor?.name);
+      console.error(
+        "[useAuthForm] Error message:",
+        err instanceof Error ? err.message : String(err)
+      );
+      console.error("[useAuthForm] Full error:", err);
     } finally {
       setIsNavigating(false);
+      console.log("[useAuthForm] === LOGIN FLOW END (finally) ===");
     }
   };
 
