@@ -73,10 +73,10 @@ export default defineConfig({
       "react-dom/client": path.resolve(reactDomPath, "client")
     }
   },
-  // Force zustand to be bundled (not externalized) so React aliases are applied.
-  // This prevents zustand from using its own node_modules/react copy
-  // which causes "Cannot read properties of null (reading 'useCallback')" errors.
+  // Force packages to be bundled (not externalized) so React aliases are applied.
+  // This prevents packages from using their own node_modules/react copy
+  // which causes "Invalid hook call" errors in tests.
   ssr: {
-    noExternal: [/zustand/]
+    noExternal: [/zustand/, /@tanstack\/react-query/, /@tanstack\/query-core/]
   }
 });
