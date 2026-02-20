@@ -7,46 +7,38 @@ const API_BASE = ROUTES.API;
 
 export class AuthService {
   static async login(email: string): Promise<{ access_token: string; user?: UserInfo }> {
-    try {
-      const response = await fetch(ROUTES.AUTH.LOGIN_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        credentials: "include", // This is crucial for receiving cookies
-        body: JSON.stringify({ email })
-      });
+    const response = await fetch(ROUTES.AUTH.LOGIN_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ email })
+    });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "Login failed");
-        throw new Error(errorText || "Login failed");
-      }
-
-      const data = await response.json();
-
-      // Store the token for Authorization header
-      if (data.access_token) {
-        localStorage.setItem("auth_token", data.access_token);
-      }
-
-      // Set isAuthenticated cookie on the web domain so the middleware can detect auth state.
-      // The API also sets this cookie, but on its own domain — which is invisible to the
-      // web middleware when API and web are on different Vercel subdomains.
-      Cookies.set("isAuthenticated", "true", {
-        path: "/",
-        secure: window.location.protocol === "https:",
-        sameSite: "lax",
-        expires: 7 // 7 days, matching the API cookie maxAge
-      });
-
-      return {
-        access_token: data.access_token || "http-only-cookie",
-        user: data.user // Include user data from backend response
-      };
-    } catch (error) {
-      throw error;
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "Login failed");
+      throw new Error(errorText || "Login failed");
     }
+
+    const data = await response.json();
+
+    if (data.access_token) {
+      localStorage.setItem("auth_token", data.access_token);
+    }
+
+    Cookies.set("isAuthenticated", "true", {
+      path: "/",
+      secure: window.location.protocol === "https:",
+      sameSite: "lax",
+      expires: 7
+    });
+
+    return {
+      access_token: data.access_token || "http-only-cookie",
+      user: data.user
+    };
   }
 
   static async getProfile(): Promise<UserInfo> {
@@ -73,7 +65,7 @@ export class AuthService {
     });
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "Failed to fetch profile");
+      await response.text().catch(() => "Failed to fetch profile");
 
       if (response.status === 401) {
         this.logout();
