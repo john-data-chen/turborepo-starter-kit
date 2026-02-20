@@ -206,23 +206,33 @@ export function useAuthForm() {
   const handleSubmit = async (email: string) => {
     try {
       setIsNavigating(true);
+      console.log("[useAuthForm] Starting login for:", email);
       const result = await login(email);
+      console.log("[useAuthForm] Login result:", {
+        hasSession: !!result?.session,
+        hasUser: !!result?.session?.user
+      });
 
       if (!result?.session?.user) {
         throw new Error("No user data received after login");
       }
 
-      // next-intl's router.push() automatically prepends the locale,
-      // so pass the path WITHOUT locale prefix to avoid double-locale (e.g. /en/en/boards)
-      const redirectUrl = `/boards?${URL_PARAMS.LOGIN_SUCCESS}`;
+      // Read callbackUrl from URL search params, fallback to /boards
+      const searchParams = new URLSearchParams(window.location.search);
+      const callbackUrl = searchParams.get("callbackUrl");
+      // Strip locale prefix if present (next-intl's router.push auto-prepends it)
+      const cleanCallback = callbackUrl?.replace(/^\/[a-z]{2}\//, "/");
+      const redirectUrl = cleanCallback || `/boards?${URL_PARAMS.LOGIN_SUCCESS}`;
+
+      console.log("[useAuthForm] Redirecting to:", redirectUrl);
+      console.log("[useAuthForm] Cookies after login:", document.cookie);
 
       // Add a small delay to ensure the cookie is properly set before redirect
       setTimeout(() => {
         router.push(redirectUrl);
       }, 500);
     } catch (err) {
-      // Error is already handled by useAuth hook
-      console.error("Login failed:", err);
+      console.error("[useAuthForm] Login failed:", err);
     } finally {
       setIsNavigating(false);
     }
