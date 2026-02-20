@@ -134,7 +134,9 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
             <Link.MenuAction
               title={t("common.edit") || "Edit"}
               icon="pencil"
-              onPress={() =>{  router.push(`/tasks/${task._id}`); }}
+              onPress={() => {
+                router.push(`/tasks/${task._id}`);
+              }}
             />
             <Link.MenuAction
               title={t("kanban.task.moveTo") || "Move to..."}

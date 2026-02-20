@@ -85,7 +85,12 @@ export function SortableTaskList({
       return (
         <ScaleDecorator>
           <Pressable onLongPress={drag} disabled={isActive} style={{ opacity: isActive ? 0.8 : 1 }}>
-            <TaskCard task={item} onMoveToProject={() =>{  handleMoveToProject(item._id); }} />
+            <TaskCard
+              task={item}
+              onMoveToProject={() => {
+                handleMoveToProject(item._id);
+              }}
+            />
           </Pressable>
         </ScaleDecorator>
       );

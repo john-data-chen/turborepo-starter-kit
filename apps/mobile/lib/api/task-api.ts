@@ -11,7 +11,7 @@ export interface TaskPermissions {
 }
 
 export const taskApi = {
-  getTasks:  async (projectId?: string, assigneeId?: string) => {
+  getTasks: async (projectId?: string, assigneeId?: string) => {
     const params = new URLSearchParams();
     if (projectId) {
       params.append("projectId", projectId);
@@ -24,18 +24,18 @@ export const taskApi = {
     const url = query ? `${API_ROUTES.TASKS}?${query}` : API_ROUTES.TASKS;
     return fetchWithAuth<Task[]>(url);
   },
-  getTaskById:  async (id: string) => fetchWithAuth<Task>(`${API_ROUTES.TASKS}/${id}`),
-  createTask:  async (input: CreateTaskInput) =>
+  getTaskById: async (id: string) => fetchWithAuth<Task>(`${API_ROUTES.TASKS}/${id}`),
+  createTask: async (input: CreateTaskInput) =>
     fetchWithAuth<Task>(API_ROUTES.TASKS, {
       method: "POST",
       body: JSON.stringify(input)
     }),
-  updateTask:  async (id: string, input: UpdateTaskInput) =>
+  updateTask: async (id: string, input: UpdateTaskInput) =>
     fetchWithAuth<Task>(`${API_ROUTES.TASKS}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(input)
     }),
-  deleteTask:  async (id: string) =>
+  deleteTask: async (id: string) =>
     fetchWithAuth<void>(
       `${API_ROUTES.TASKS}/${id}`,
       {
@@ -43,9 +43,9 @@ export const taskApi = {
       },
       true
     ),
-  getTaskPermissions:  async (taskId: string) =>
+  getTaskPermissions: async (taskId: string) =>
     fetchWithAuth<TaskPermissions>(`${API_ROUTES.TASKS}/${taskId}/permissions`),
-  moveTask:  async (taskId: string, projectId: string, orderInProject: number) =>
+  moveTask: async (taskId: string, projectId: string, orderInProject: number) =>
     fetchWithAuth<Task>(`${API_ROUTES.TASKS}/${taskId}/move`, {
       method: "PATCH",
       body: JSON.stringify({ projectId, orderInProject })

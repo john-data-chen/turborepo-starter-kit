@@ -13,7 +13,7 @@ export const BOARD_KEYS = {
 export const useBoards = () => {
   return useQuery({
     queryKey: BOARD_KEYS.list(),
-    queryFn:  async () => boardApi.getBoards(),
+    queryFn: async () => boardApi.getBoards(),
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000,
@@ -24,7 +24,7 @@ export const useBoards = () => {
 export const useBoard = (boardId?: string) => {
   return useQuery({
     queryKey: BOARD_KEYS.detail(boardId || ""),
-    queryFn:  async () => boardApi.getBoardById(boardId || ""),
+    queryFn: async () => boardApi.getBoardById(boardId || ""),
     enabled: !!boardId
   });
 };
@@ -42,7 +42,7 @@ export const useCreateBoard = () => {
 export const useUpdateBoard = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn:  async ({ id, ...updates }: { id: string } & UpdateBoardInput) =>
+    mutationFn: async ({ id, ...updates }: { id: string } & UpdateBoardInput) =>
       boardApi.updateBoard(id, updates),
     onSuccess: (updatedBoard) => {
       queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });

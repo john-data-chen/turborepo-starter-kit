@@ -92,7 +92,9 @@ export default function TaskDetailScreen() {
           onPress: () => {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             deleteTaskMutation.mutate(taskId, {
-              onSuccess: () =>{  router.back(); }
+              onSuccess: () => {
+                router.back();
+              }
             });
           }
         }
@@ -187,7 +189,9 @@ export default function TaskDetailScreen() {
             {t("kanban.task.assigneeLabel") || "Assignee"}
           </Text>
           <Pressable
-            onPress={() =>{  setShowAssigneeModal(true); }}
+            onPress={() => {
+              setShowAssigneeModal(true);
+            }}
             className="flex-row items-center justify-between rounded-lg border border-border bg-card p-3"
           >
             <Text className="text-foreground">{assigneeName}</Text>
@@ -201,7 +205,9 @@ export default function TaskDetailScreen() {
             {t("kanban.task.dueDateLabel") || "Due Date"}
           </Text>
           <Pressable
-            onPress={() =>{  setShowDatePicker(true); }}
+            onPress={() => {
+              setShowDatePicker(true);
+            }}
             className="flex-row items-center justify-between rounded-lg border border-border bg-card p-3"
           >
             <Text className="text-foreground">
@@ -222,7 +228,12 @@ export default function TaskDetailScreen() {
                     }
                   }}
                 />
-                <Pressable onPress={() =>{  setShowDatePicker(false); }} className="items-center p-2">
+                <Pressable
+                  onPress={() => {
+                    setShowDatePicker(false);
+                  }}
+                  className="items-center p-2"
+                >
                   <Text className="font-medium text-primary">Done</Text>
                 </Pressable>
               </View>
@@ -272,12 +283,18 @@ export default function TaskDetailScreen() {
         visible={showAssigneeModal}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() =>{  setShowAssigneeModal(false); }}
+        onRequestClose={() => {
+          setShowAssigneeModal(false);
+        }}
       >
         <View className="flex-1 bg-background">
           <View className="flex-row items-center justify-between border-b border-border p-4">
             <Text className="text-lg font-semibold text-foreground">Select Assignee</Text>
-            <Pressable onPress={() =>{  setShowAssigneeModal(false); }}>
+            <Pressable
+              onPress={() => {
+                setShowAssigneeModal(false);
+              }}
+            >
               <Text className="font-medium text-primary">Close</Text>
             </Pressable>
           </View>

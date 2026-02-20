@@ -36,14 +36,18 @@ export default function BoardFormScreen() {
       updateMutation.mutate(
         { id: boardId, title, description },
         {
-          onSuccess: () =>{  router.back(); }
+          onSuccess: () => {
+            router.back();
+          }
         }
       );
     } else {
       createMutation.mutate(
         { title, description },
         {
-          onSuccess: () =>{  router.back(); }
+          onSuccess: () => {
+            router.back();
+          }
         }
       );
     }
@@ -61,7 +65,11 @@ export default function BoardFormScreen() {
           title: isEdit ? t("kanban.actions.editBoardTitle") : t("kanban.actions.newBoardTitle"),
           presentation: "formSheet",
           headerLeft: () => (
-            <Pressable onPress={() =>{  router.back(); }}>
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+            >
               <Text className="text-lg text-primary">{t("kanban.actions.cancel")}</Text>
             </Pressable>
           ),

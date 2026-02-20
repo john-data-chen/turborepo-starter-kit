@@ -29,7 +29,9 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
         {
           text: t("common.delete") || "Delete",
           style: "destructive",
-          onPress: () =>{  deleteProjectMutation.mutate({ id: project._id, boardId }); }
+          onPress: () => {
+            deleteProjectMutation.mutate({ id: project._id, boardId });
+          }
         }
       ]
     );
@@ -58,9 +60,9 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
             <Link.MenuAction
               title={t("common.edit") || "Edit"}
               icon="pencil"
-              onPress={() =>{ 
-                router.push(`/projects/new?boardId=${boardId}&projectId=${project._id}`); }
-              }
+              onPress={() => {
+                router.push(`/projects/new?boardId=${boardId}&projectId=${project._id}`);
+              }}
             />
             <Link.MenuAction
               title={t("common.delete") || "Delete"}
@@ -78,7 +80,9 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
           tasks={tasks}
           projectId={project._id}
           boardId={boardId}
-          onTaskPress={(taskId) =>{  router.push(`/tasks/${taskId}`); }}
+          onTaskPress={(taskId) => {
+            router.push(`/tasks/${taskId}`);
+          }}
         />
       </View>
 

@@ -65,7 +65,11 @@ export default function NewTaskScreen() {
           title: t("kanban.task.createTitle") || "New Task",
           presentation: "formSheet",
           headerLeft: () => (
-            <Pressable onPress={() =>{  router.back(); }}>
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+            >
               <Text className="font-medium text-primary">{t("common.cancel") || "Cancel"}</Text>
             </Pressable>
           ),
@@ -130,7 +134,9 @@ export default function NewTaskScreen() {
             {t("kanban.task.assigneeLabel") || "Assignee"}
           </Text>
           <Pressable
-            onPress={() =>{  setShowAssigneeModal(true); }}
+            onPress={() => {
+              setShowAssigneeModal(true);
+            }}
             className="flex-row items-center justify-between rounded-lg border border-border bg-card p-3"
           >
             <Text className="text-foreground">{assigneeName}</Text>
@@ -144,7 +150,9 @@ export default function NewTaskScreen() {
             {t("kanban.task.dueDateLabel") || "Due Date"}
           </Text>
           <Pressable
-            onPress={() =>{  setShowDatePicker(true); }}
+            onPress={() => {
+              setShowDatePicker(true);
+            }}
             className="flex-row items-center justify-between rounded-lg border border-border bg-card p-3"
           >
             <Text className="text-foreground">
@@ -165,7 +173,12 @@ export default function NewTaskScreen() {
                     }
                   }}
                 />
-                <Pressable onPress={() =>{  setShowDatePicker(false); }} className="items-center p-2">
+                <Pressable
+                  onPress={() => {
+                    setShowDatePicker(false);
+                  }}
+                  className="items-center p-2"
+                >
                   <Text className="font-medium text-primary">Done</Text>
                 </Pressable>
               </View>
@@ -205,12 +218,18 @@ export default function NewTaskScreen() {
         visible={showAssigneeModal}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() =>{  setShowAssigneeModal(false); }}
+        onRequestClose={() => {
+          setShowAssigneeModal(false);
+        }}
       >
         <View className="flex-1 bg-background">
           <View className="flex-row items-center justify-between border-b border-border p-4">
             <Text className="text-lg font-semibold text-foreground">Select Assignee</Text>
-            <Pressable onPress={() =>{  setShowAssigneeModal(false); }}>
+            <Pressable
+              onPress={() => {
+                setShowAssigneeModal(false);
+              }}
+            >
               <Text className="font-medium text-primary">Close</Text>
             </Pressable>
           </View>

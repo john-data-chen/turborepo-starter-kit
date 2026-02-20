@@ -16,19 +16,20 @@ export interface UpdateBoardInput {
 }
 
 export const boardApi = {
-  getBoards:  async () => fetchWithAuth<{ myBoards: Board[]; teamBoards: Board[] }>(API_ROUTES.BOARDS),
-  getBoardById:  async (id: string) => fetchWithAuth<Board>(`${API_ROUTES.BOARDS}/${id}`),
-  createBoard:  async (input: CreateBoardInput) =>
+  getBoards: async () =>
+    fetchWithAuth<{ myBoards: Board[]; teamBoards: Board[] }>(API_ROUTES.BOARDS),
+  getBoardById: async (id: string) => fetchWithAuth<Board>(`${API_ROUTES.BOARDS}/${id}`),
+  createBoard: async (input: CreateBoardInput) =>
     fetchWithAuth<Board>(API_ROUTES.BOARDS, {
       method: "POST",
       body: JSON.stringify(input)
     }),
-  updateBoard:  async (id: string, input: UpdateBoardInput) =>
+  updateBoard: async (id: string, input: UpdateBoardInput) =>
     fetchWithAuth<Board>(`${API_ROUTES.BOARDS}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(input)
     }),
-  deleteBoard:  async (id: string) =>
+  deleteBoard: async (id: string) =>
     fetchWithAuth<void>(
       `${API_ROUTES.BOARDS}/${id}`,
       {
@@ -36,7 +37,7 @@ export const boardApi = {
       },
       true
     ),
-  addBoardMember:  async (boardId: string, memberId: string) =>
+  addBoardMember: async (boardId: string, memberId: string) =>
     fetchWithAuth<Board>(`${API_ROUTES.BOARDS}/${boardId}/members/${memberId}`, {
       method: "POST"
     })

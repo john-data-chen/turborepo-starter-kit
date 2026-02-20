@@ -20,7 +20,7 @@ export const TASK_KEYS = {
 export const useTasks = (projectId?: string, assigneeId?: string) => {
   return useQuery({
     queryKey: TASK_KEYS.list({ project: projectId, assignee: assigneeId }),
-    queryFn:  async () => taskApi.getTasks(projectId, assigneeId),
+    queryFn: async () => taskApi.getTasks(projectId, assigneeId),
     enabled: !!projectId || !!assigneeId,
     staleTime: 0,
     gcTime: 5 * 60 * 1000
@@ -30,7 +30,7 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
 export const useTask = (taskId?: string) => {
   return useQuery({
     queryKey: TASK_KEYS.detail(taskId || ""),
-    queryFn:  async () => taskApi.getTaskById(taskId || ""),
+    queryFn: async () => taskApi.getTaskById(taskId || ""),
     enabled: !!taskId
   });
 };
@@ -84,7 +84,7 @@ export const useDeleteTask = () => {
 export const useMoveTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn:  async ({
+    mutationFn: async ({
       taskId,
       projectId,
       orderInProject

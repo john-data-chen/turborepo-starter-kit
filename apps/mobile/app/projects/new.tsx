@@ -45,7 +45,9 @@ export default function ProjectFormScreen() {
           description: description || null
         },
         {
-          onSuccess: () =>{  router.back(); }
+          onSuccess: () => {
+            router.back();
+          }
         }
       );
     } else {
@@ -59,7 +61,9 @@ export default function ProjectFormScreen() {
           boardId
         },
         {
-          onSuccess: () =>{  router.back(); }
+          onSuccess: () => {
+            router.back();
+          }
         }
       );
     }
@@ -87,7 +91,11 @@ export default function ProjectFormScreen() {
             : t("kanban.project.createTitle") || "New Project",
           presentation: "formSheet",
           headerLeft: () => (
-            <Pressable onPress={() =>{  router.back(); }}>
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+            >
               <Text className="font-medium text-primary">{t("common.cancel") || "Cancel"}</Text>
             </Pressable>
           ),

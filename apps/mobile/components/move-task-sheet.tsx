@@ -77,7 +77,9 @@ export function MoveTaskSheet({
       <Pressable className="flex-1 justify-end bg-black/50" onPress={onClose}>
         <Pressable
           className="max-h-[50%] rounded-t-2xl bg-background"
-          onPress={(e) =>{  e.stopPropagation(); }}
+          onPress={(e) => {
+            e.stopPropagation();
+          }}
         >
           <View className="flex-row items-center justify-between border-b border-border p-4">
             <Text className="text-lg font-semibold text-foreground">
@@ -106,7 +108,9 @@ export function MoveTaskSheet({
               {availableProjects.map((project) => (
                 <Pressable
                   key={project._id}
-                  onPress={() =>{  handleMove(project._id); }}
+                  onPress={() => {
+                    handleMove(project._id);
+                  }}
                   disabled={moveTaskMutation.isPending}
                   className="flex-row items-center justify-between border-b border-border p-4 active:bg-secondary/50"
                 >

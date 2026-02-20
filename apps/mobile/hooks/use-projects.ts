@@ -13,7 +13,7 @@ export const PROJECT_KEYS = {
 export const useProjects = (boardId?: string) => {
   return useQuery({
     queryKey: PROJECT_KEYS.list(boardId || ""),
-    queryFn:  async () => {
+    queryFn: async () => {
       if (!boardId) {
         throw new Error("Board ID is required");
       }
@@ -40,7 +40,7 @@ export const useCreateProject = () => {
 export const useUpdateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn:  async ({ id, ...updates }: { id: string } & UpdateProjectInput) =>
+    mutationFn: async ({ id, ...updates }: { id: string } & UpdateProjectInput) =>
       projectApi.updateProject(id, updates),
     onSuccess: (updatedProject) => {
       const boardId =

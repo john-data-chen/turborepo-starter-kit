@@ -14,13 +14,13 @@ export function useAuth() {
 
   const sessionQuery = useQuery({
     queryKey: AUTH_KEYS.session,
-    queryFn:  async () => authService.getSession(),
+    queryFn: async () => authService.getSession(),
     staleTime: 5 * 60 * 1000,
     retry: false
   });
 
   const loginMutation = useMutation({
-    mutationFn:  async (email: string) => authService.login(email),
+    mutationFn: async (email: string) => authService.login(email),
     onSuccess: async (data) => {
       const user = data.user ?? (await authService.getProfile());
       setSession({ user, accessToken: data.access_token });
