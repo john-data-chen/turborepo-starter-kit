@@ -13,8 +13,19 @@ export default async function proxy(request: NextRequest) {
     pathname.includes("/login") || pathname.startsWith("/api") || pathname.startsWith("/_next");
 
   if (!isPublicRoute) {
-    const token =
-      request.cookies.get("jwt")?.value || request.cookies.get("isAuthenticated")?.value;
+    const jwtCookie = request.cookies.get("jwt")?.value;
+    const isAuthCookie = request.cookies.get("isAuthenticated")?.value;
+    const token = jwtCookie || isAuthCookie;
+
+    // Log all cookies the middleware sees for debugging
+    const allCookieNames = request.cookies.getAll().map((c) => c.name);
+    console.log("[Middleware] Path:", pathname, {
+      isPublicRoute,
+      hasJwt: !!jwtCookie,
+      hasIsAuthenticated: !!isAuthCookie,
+      hasToken: !!token,
+      allCookies: allCookieNames
+    });
 
     if (!token) {
       // Extract locale from pathname or use default
@@ -26,6 +37,7 @@ export default async function proxy(request: NextRequest) {
 
       const loginUrl = new URL(`/${locale}/login`, request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
+      console.log("[Middleware] No auth token — redirecting to:", loginUrl.toString());
       return NextResponse.redirect(loginUrl);
     }
   }

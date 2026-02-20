@@ -21,6 +21,7 @@ Object.defineProperty(global, "localStorage", {
 // Mock js-cookie
 vi.mock("js-cookie", () => ({
   default: {
+    set: vi.fn(),
     remove: vi.fn()
   }
 }));
@@ -331,7 +332,6 @@ describe("AuthService", () => {
 
     it("should handle logout when window is undefined", () => {
       const originalWindow = globalThis.window;
-      // @ts-expect-error - Testing undefined window
       delete (globalThis as any).window;
 
       expect(() => {
