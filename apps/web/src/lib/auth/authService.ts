@@ -7,8 +7,6 @@ const API_BASE = ROUTES.API;
 
 export class AuthService {
   static async login(email: string): Promise<{ access_token: string; user?: UserInfo }> {
-    const requestId = Math.random().toString(36).substring(2, 8);
-
     try {
       const response = await fetch(ROUTES.AUTH.LOGIN_API, {
         method: "POST",
@@ -22,41 +20,15 @@ export class AuthService {
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => "Login failed");
-        console.error(`[${requestId}] [AuthService] Login error:`, {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText
-        });
         throw new Error(errorText || "Login failed");
       }
 
-      // Get the response data
-      console.log(`[${requestId}] [AuthService] Login response OK, status: ${response.status}`);
-      console.log(
-        `[${requestId}] [AuthService] Response headers:`,
-        Object.fromEntries(response.headers.entries())
-      );
-
       const data = await response.json();
-      console.log(`[${requestId}] [AuthService] Login data received:`, {
-        hasAccessToken: !!data.access_token,
-        tokenLength: data.access_token?.length,
-        hasUser: !!data.user,
-        userId: data.user?._id,
-        userEmail: data.user?.email,
-        dataKeys: Object.keys(data)
-      });
 
       // Store the token for Authorization header
       if (data.access_token) {
         localStorage.setItem("auth_token", data.access_token);
-        console.log(`[${requestId}] [AuthService] Token stored in localStorage`);
-      } else {
-        console.warn(`[${requestId}] [AuthService] No access_token in response!`);
       }
-
-      // Log cookie state BEFORE setting
-      console.log(`[${requestId}] [AuthService] Cookies BEFORE set:`, document.cookie);
 
       // Set isAuthenticated cookie on the web domain so the middleware can detect auth state.
       // The API also sets this cookie, but on its own domain — which is invisible to the
@@ -68,26 +40,16 @@ export class AuthService {
         expires: 7 // 7 days, matching the API cookie maxAge
       });
 
-      // Log cookie state AFTER setting
-      console.log(`[${requestId}] [AuthService] Cookies AFTER set:`, document.cookie);
-      console.log(
-        `[${requestId}] [AuthService] isAuthenticated cookie value:`,
-        Cookies.get("isAuthenticated")
-      );
-
       return {
         access_token: data.access_token || "http-only-cookie",
         user: data.user // Include user data from backend response
       };
     } catch (error) {
-      console.error(`[${requestId}] [AuthService] Login request failed:`, error);
       throw error;
     }
   }
 
   static async getProfile(): Promise<UserInfo> {
-    const requestId = Math.random().toString(36).substring(2, 8);
-
     // Try to get token from localStorage for Authorization header
     const token = localStorage.getItem("auth_token");
 
@@ -112,11 +74,6 @@ export class AuthService {
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "Failed to fetch profile");
-      console.error(`[${requestId}] [AuthService] Profile fetch error:`, {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText
-      });
 
       if (response.status === 401) {
         this.logout();
@@ -169,7 +126,6 @@ export class AuthService {
       Cookies.remove("jwt", { path: "/" });
       Cookies.remove("isAuthenticated", { path: "/" });
       localStorage.removeItem("auth_token");
-      console.log("[AuthService] Logged out — cookies and token cleared");
     }
   }
 }

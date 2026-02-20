@@ -24,15 +24,6 @@ async function waitForAPI(url: string, timeout = 30000): Promise<void> {
         method: "GET",
         headers: { "Content-Type": "application/json" }
       });
-
-      if (response.ok) {
-        const elapsed = Date.now() - startTime;
-        console.log(`[Diagnostic] ✓ API server ready after ${elapsed}ms`);
-        console.log(`[Diagnostic]   Status: ${response.status}`);
-        console.log(`[Diagnostic]   Response: ${await response.text().catch(() => "N/A")}`);
-        return;
-      }
-
       lastError = new Error(`API returned ${response.status}`);
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
@@ -52,13 +43,6 @@ test.describe.serial("SignInPage", () => {
   // NOTE: This is a soft check with shorter timeout - tests will continue even if API is not ready
   test.beforeAll(async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-    const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
-    console.log("[Diagnostic] Environment:", {
-      NODE_ENV: process.env.NODE_ENV,
-      CI: process.env.CI,
-      NEXT_PUBLIC_API_URL: apiUrl,
-      NEXT_PUBLIC_WEB_URL: baseUrl
-    });
 
     // Use Promise.race to prevent timeout
     const healthCheckPromise = waitForAPI(`${apiUrl}/health`, 20000).then(
@@ -104,7 +88,6 @@ test.describe.serial("SignInPage", () => {
     page.on("request", (request) => {
       const url = request.url();
       requestStartTimes.set(url, Date.now());
-      console.log(`[Diagnostic] → Request: ${request.method()} ${url}`);
     });
 
     page.on("response", (response) => {
@@ -119,7 +102,6 @@ test.describe.serial("SignInPage", () => {
         status,
         duration
       });
-      console.log(`[Diagnostic] ← Response: ${status} ${url} (${duration}ms)`);
 
       // Log response body for auth-related requests
       if (url.includes("/auth/")) {
