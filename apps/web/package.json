@@ -24,6 +24,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-icons": "catalog:",
+    "@repo/i18n": "workspace:*",
     "@repo/store": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.2.0",

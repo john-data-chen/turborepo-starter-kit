@@ -1,14 +1,26 @@
+import { messages, type Locale } from "@repo/i18n";
 import { cacheLife } from "next/cache";
 
-export async function getCachedMessages(locale: string) {
+import { APP_NAME } from "@/constants/ui";
+
+function interpolateAppName(obj: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === "string") {
+      result[key] = value.replace(/\{appName\}/g, APP_NAME);
+    } else if (typeof value === "object" && value !== null) {
+      result[key] = interpolateAppName(value as Record<string, unknown>);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+export async function getCachedMessages(locale: Locale) {
   "use cache";
   cacheLife("days");
 
-  try {
-    return (await import(`../../messages/${locale}.json`)).default;
-  } catch (error) {
-    // Fallback to default locale (en) if specific locale messages not found
-    console.error("Failed to load messages for locale:", locale, error);
-    return (await import(`../../messages/en.json`)).default;
-  }
+  const localeMessages = messages[locale] ?? messages.en;
+  return interpolateAppName(localeMessages as unknown as Record<string, unknown>);
 }

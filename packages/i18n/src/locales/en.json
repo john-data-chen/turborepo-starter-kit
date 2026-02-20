@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Next Project Manager",
-    "description": "Next.js template for beginner"
+    "title": "{appName}",
+    "description": "Project management app"
   },
   "login": {
-    "title": "Next Project Manager",
-    "description": "Next.js template for beginner",
+    "title": "{appName}",
+    "description": "Project management app",
     "formHint": "Please press Continue button, you don't need to register.",
     "emailLabel": "Email",
     "emailPlaceholder": "Enter your email...",
@@ -15,7 +15,7 @@
     "invalidEmail": "The login email is incorrect, please correct it"
   },
   "sidebar": {
-    "title": "Next Project Manager",
+    "title": "{appName}",
     "overview": "Overview",
     "myBoards": "My Boards",
     "teamBoards": "Team Boards",
