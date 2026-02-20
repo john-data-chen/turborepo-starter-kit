@@ -15,14 +15,14 @@ A production-grade Kanban application demonstrating monorepo architecture, test-
 
 ### Architectural Evolution
 
-| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                            | Now (Multi-Platform)                                         | Trade-off Reasoning                                     |
-| --------------------- | ------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
-| **Team Structure**    | Full-stack developers required             | Specialized Frontend & Backend Teams                                  | **+ Mobile Team with shared domain knowledge**               | Teams share types/state; onboard faster via shared code |
-| **Development Cycle** | Tightly coupled; one change can impact all | Independent development cycles                                        | **Web & Mobile iterate independently on shared foundations** | Platform teams move at their own pace                   |
-| **Deployment**        | Single, monolithic deployment              | Independent Frontend/Backend deployment                               | **+ OTA updates for Mobile via Expo**                        | Three independent release channels                      |
-| **Scalability**       | Vertical scaling of the entire app         | Targeted horizontal scaling (e.g., scale only the API service)        | **Same API serves Web & Mobile clients**                     | Single backend; multiple frontends                      |
-| **Technology Stack**  | Locked into Next.js for backend            | Flexible backend choice (Nest.js); can add more services (Go, Python) | **+ React Native (Expo) with NativeWind**                    | Best tool per platform; shared logic layer              |
-| **Code Reusability**  | Limited to the Next.js app                 | Centralized `ui` & `config` packages                                  | **+ Shared `store` package (types, state, validation)**      | Write once for logic; platform-specific for UI          |
+| Aspect                | Before (Monolithic)                        | After (Decoupled Monorepo)                                            | Now (Multi-Platform)                                                | Trade-off Reasoning                                     |
+| --------------------- | ------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Team Structure**    | Full-stack developers required             | Specialized Frontend & Backend Teams                                  | **+ Mobile Team with shared domain knowledge**                      | Teams share types/state; onboard faster via shared code |
+| **Development Cycle** | Tightly coupled; one change can impact all | Independent development cycles                                        | **Web & Mobile iterate independently on shared foundations**        | Platform teams move at their own pace                   |
+| **Deployment**        | Single, monolithic deployment              | Independent Frontend/Backend deployment                               | **+ OTA updates for Mobile via Expo**                               | Three independent release channels                      |
+| **Scalability**       | Vertical scaling of the entire app         | Targeted horizontal scaling (e.g., scale only the API service)        | **Same API serves Web & Mobile clients**                            | Single backend; multiple frontends                      |
+| **Technology Stack**  | Locked into Next.js for backend            | Flexible backend choice (Nest.js); can add more services (Go, Python) | **+ React Native (Expo) with NativeWind**                           | Best tool per platform; shared logic layer              |
+| **Code Reusability**  | Limited to the Next.js app                 | Centralized `ui` & `config` packages                                  | **+ Shared `store` and `i18n` packages (types, state, validation)** | Write once for logic; platform-specific for UI          |
 
 ### Code Sharing Strategy
 
