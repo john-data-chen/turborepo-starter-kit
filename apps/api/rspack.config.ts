@@ -1,6 +1,10 @@
+import path from "path";
+
 import type { Configuration } from "@rspack/cli";
 import { RunScriptWebpackPlugin } from "run-script-webpack-plugin";
 import nodeExternals from "webpack-node-externals";
+
+const monorepoRoot = path.resolve(import.meta.dirname, "../..");
 
 const config: Configuration = {
   context: import.meta.dirname,
@@ -11,7 +15,8 @@ const config: Configuration = {
   devtool: "source-map",
   externals: [
     nodeExternals({
-      allowlist: ["@rspack/core/hot/poll?100"]
+      allowlist: ["@rspack/core/hot/poll?100"],
+      additionalModuleDirs: [path.join(monorepoRoot, "node_modules")]
     })
   ],
   resolve: {
