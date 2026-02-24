@@ -17,10 +17,10 @@
   --color-accent-foreground: hsl(180 10% 98%);
   --color-destructive: hsl(0 85% 60%);
   --color-destructive-foreground: hsl(0 10% 98%);
-  --color-border: hsl(180 20% 18%);
-  --color-input: hsl(180 20% 18%);
+  --color-border: hsl(180 20% 25%);
+  --color-input: hsl(180 20% 25%);
   --color-ring: hsl(180 75% 45%);
-  --color-card: hsl(180 35% 8%);
+  --color-card: hsl(180 35% 12%);
   --color-card-foreground: hsl(180 20% 98%);
 
   --radius-lg: 0.5rem;

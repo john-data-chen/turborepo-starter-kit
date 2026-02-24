@@ -22,12 +22,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: t("theme.toggleTheme"),
+          title: "Settings",
           tabBarIcon: ({ color, size }) => (
             <Image source="sf:gearshape" style={{ width: size, height: size, tintColor: color }} />
           )
         }}
       />
+      <Tabs.Screen name="error" options={{ href: null }} />
+      <Tabs.Screen name="loading" options={{ href: null }} />
     </Tabs>
   );
 }
