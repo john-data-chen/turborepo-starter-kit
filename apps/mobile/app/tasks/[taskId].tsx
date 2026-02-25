@@ -82,8 +82,9 @@ export default function TaskDetailScreen() {
     }
 
     Alert.alert(
-      t("kanban.task.deleteTitle") || "Delete Task",
-      t("kanban.task.deleteDescription") || "Are you sure you want to delete this task?",
+      t("kanban.task.confirmDeleteTitle", { title: task?.title }) || "Delete Task",
+      t("kanban.task.confirmDeleteDescription", { title: task?.title }) ||
+        "Are you sure you want to delete this task?",
       [
         { text: t("common.cancel") || "Cancel", style: "cancel" },
         {
@@ -127,7 +128,7 @@ export default function TaskDetailScreen() {
     >
       <Stack.Screen
         options={{
-          title: t("kanban.task.editTitle") || "Edit Task",
+          title: t("kanban.task.editTaskTitle") || "Edit Task",
           headerRight: () => (
             <Pressable onPress={handleSave} disabled={updateTaskMutation.isPending}>
               <Text
@@ -176,7 +177,9 @@ export default function TaskDetailScreen() {
                     status === s ? "text-primary-foreground" : "text-foreground"
                   }`}
                 >
-                  {t(`kanban.task.status${s.replace("_", "")}`) || s.replace("_", " ")}
+                  {t(
+                    `kanban.task.${({ TODO: "statusTodo", IN_PROGRESS: "statusInProgress", DONE: "statusDone" } as Record<string, string>)[s]}`
+                  ) || s.replace("_", " ")}
                 </Text>
               </Pressable>
             ))}
@@ -186,7 +189,7 @@ export default function TaskDetailScreen() {
         {/* Assignee */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">
-            {t("kanban.task.assigneeLabel") || "Assignee"}
+            {t("kanban.task.assignToLabel") || "Assignee"}
           </Text>
           <Pressable
             onPress={() => {
@@ -273,7 +276,7 @@ export default function TaskDetailScreen() {
           className="mt-4 items-center rounded-lg bg-destructive/10 p-4"
         >
           <Text className="font-semibold text-destructive">
-            {t("kanban.task.deleteButton") || "Delete Task"}
+            {t("kanban.task.delete") || "Delete Task"}
           </Text>
         </Pressable>
       </ScrollView>

@@ -87,8 +87,8 @@ export default function ProjectFormScreen() {
       <Stack.Screen
         options={{
           title: isEditMode
-            ? t("kanban.project.editTitle") || "Edit Project"
-            : t("kanban.project.createTitle") || "New Project",
+            ? t("kanban.project.editProjectTitle") || "Edit Project"
+            : t("kanban.project.addNewProjectTitle") || "New Project",
           presentation: "formSheet",
           headerLeft: () => (
             <Pressable

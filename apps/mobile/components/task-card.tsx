@@ -139,7 +139,7 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
               }}
             />
             <Link.MenuAction
-              title={t("kanban.task.moveTo") || "Move to..."}
+              title={t("kanban.task.moveTask") || "Move task"}
               icon="arrow.right.square"
               onPress={handleMoveTo}
             />

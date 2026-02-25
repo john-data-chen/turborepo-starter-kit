@@ -1,12 +1,12 @@
 import { Image } from "expo-image";
 import { Link, Stack } from "expo-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
 
 import { BoardCard } from "@/components/board-card";
 import { useBoards } from "@/hooks/use-boards";
-import { View, Text, ScrollView, Pressable, TextInput, ActivityIndicator } from "@/lib/tw";
+import { View, Text, ScrollView, Pressable } from "@/lib/tw";
 
 type FilterType = "all" | "my" | "team";
 
@@ -17,6 +17,10 @@ export default function BoardsScreen() {
   const { data, isLoading, refetch, isRefetching } = useBoards();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
+
+  const handleSearchChange = useCallback((text: string) => {
+    setSearch(text);
+  }, []);
 
   const filteredMyBoards = useMemo(
     () =>
@@ -50,35 +54,33 @@ export default function BoardsScreen() {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl=<RefreshControl refreshing={isRefetching} onRefresh={refetch} />
     >
-      <Stack.Screen options={{ title: t("sidebar.overview") }} />
+      <Stack.Screen
+        options={{
+          title: t("sidebar.overview"),
+          headerLargeTitle: true,
+          headerSearchBarOptions: {
+            placeholder: t("kanban.searchBoards"),
+            onChangeText: (event) =>{  handleSearchChange(event.nativeEvent.text); },
+            onCancelButtonPress: () =>{  handleSearchChange(""); }
+          }
+        }}
+      />
 
-      {/* Header Section — matches web sticky header layout */}
+      {/* Header Section */}
       <View className="gap-3 pt-4 pb-4">
-        {/* New Board Button — inline styles per native UI best practice */}
+        {/* New Board Button */}
         <Link href="/boards/form" asChild>
-          <Pressable
-            className="items-center justify-center rounded-lg bg-primary px-4 py-3"
-            style={{ borderCurve: "continuous" }}
-          >
-            <Text className="text-sm font-medium text-primary-foreground">
-              {t("kanban.newBoard")}
-            </Text>
+          <Pressable>
+            <View
+              className="items-center justify-center rounded-lg bg-primary px-4 py-3"
+              style={{ borderCurve: "continuous" }}
+            >
+              <Text className="text-sm font-medium text-primary-foreground">
+                {t("kanban.newBoard")}
+              </Text>
+            </View>
           </Pressable>
         </Link>
-
-        {/* Search Bar — matches web Input with magnifying glass icon */}
-        <View className="flex-row items-center rounded-md border border-border bg-card px-3">
-          <Image source="sf:magnifyingglass" style={{ width: 16, height: 16, tintColor: "#888" }} />
-          <TextInput
-            className="flex-1 py-2.5 pl-2 text-sm text-foreground"
-            placeholder={t("kanban.searchBoards")}
-            placeholderTextColor="#888"
-            value={search}
-            onChangeText={setSearch}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
 
         {/* Filter Pills */}
         <View className="flex-row gap-2">
@@ -101,7 +103,17 @@ export default function BoardsScreen() {
       </View>
 
       {/* Loading State */}
-      {isLoading && !isRefetching ? <ActivityIndicator size="large" className="mt-8" /> : null}
+      {isLoading && !isRefetching ? (
+        <View className="mt-8 items-center">
+          <View style={{ width: 36, height: 36 }}>
+            <Image
+              source="sf:progress.indicator"
+              style={{ width: 36, height: 36 }}
+              tintColor="gray"
+            />
+          </View>
+        </View>
+      ) : null}
 
       {/* Board Sections */}
       {!isLoading && !isEmpty ? (
