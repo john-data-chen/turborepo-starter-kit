@@ -96,10 +96,12 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
         <Link href={`/tasks/${task._id}`} asChild>
           <Link.Trigger>
             <Pressable
-              className="mb-2 gap-2 rounded-xl border border-border bg-card p-3"
+              className="mb-4 gap-3 rounded-xl bg-card p-4"
               style={{
                 borderCurve: "continuous",
-                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)"
+                borderWidth: 1,
+                borderColor: "rgba(255, 255, 255, 0.15)",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)"
               }}
             >
               <View className="flex-row items-start justify-between">

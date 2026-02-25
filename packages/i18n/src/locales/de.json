@@ -145,6 +145,7 @@
     }
   },
   "common": {
+    "back": "Zurück",
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "edit": "Bearbeiten",

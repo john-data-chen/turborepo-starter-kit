@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { Link, useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, RefreshControl, useWindowDimensions } from "react-native";
+import { RefreshControl } from "react-native";
 
 import { BoardActions } from "@/components/board-actions";
 import { ProjectColumn } from "@/components/project-column";
@@ -35,7 +35,6 @@ export default function BoardDetailScreen() {
   } = useProjects(boardId);
   const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState<TaskStatus | null>(null);
-  const { width: screenWidth } = useWindowDimensions();
 
   const isLoading = isBoardLoading || isProjectsLoading;
   const isRefetching = isBoardRefetching || isProjectsRefetching;
@@ -57,10 +56,8 @@ export default function BoardDetailScreen() {
     DONE: t("kanban.task.statusDone")
   };
 
-  // Column width: use 85% of screen or minimum 300
-  const columnWidth = Math.max(300, screenWidth * 0.85);
-
   const primaryColor = useCSSVariable("--color-primary");
+  const foregroundColor = useCSSVariable("--color-foreground");
 
   return (
     <View className="flex-1 bg-background">
@@ -73,13 +70,16 @@ export default function BoardDetailScreen() {
                 router.back();
               }}
               hitSlop={12}
-              style={{ marginRight: 8 }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 4, marginRight: 8 }}
             >
               <Image
                 source="sf:chevron.left"
-                style={{ width: 20, height: 20 }}
-                tintColor={primaryColor}
+                style={{ width: 18, height: 18 }}
+                tintColor={foregroundColor}
               />
+              <Text style={{ fontSize: 17, color: foregroundColor }}>
+                {t("common.back") || "Back"}
+              </Text>
             </Pressable>
           ),
           headerRight: () =>
@@ -108,17 +108,22 @@ export default function BoardDetailScreen() {
                   onPress={() => {
                     setStatusFilter(status);
                   }}
-                  className={isActive ? "bg-primary" : "border border-border"}
+                  className={isActive ? "bg-primary" : "bg-card"}
                   style={{
                     paddingHorizontal: 14,
                     paddingVertical: 6,
                     borderRadius: 16,
-                    borderCurve: "continuous"
+                    borderCurve: "continuous",
+                    borderWidth: 1,
+                    borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.2)"
                   }}
                 >
                   <Text
-                    className={isActive ? "text-primary-foreground" : "text-muted-foreground"}
-                    style={{ fontSize: 13, fontWeight: "600" }}
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: isActive ? "white" : "white"
+                    }}
                   >
                     {label}
                   </Text>
@@ -129,26 +134,28 @@ export default function BoardDetailScreen() {
             {/* New Project Button */}
             <Link href={`/projects/new?boardId=${boardId}`} asChild>
               <Pressable
-                className="border border-border"
+                className="bg-card"
                 style={{
                   paddingHorizontal: 14,
                   paddingVertical: 6,
                   borderRadius: 16,
                   borderCurve: "continuous",
+                  borderWidth: 1,
+                  borderColor: "rgba(255, 255, 255, 0.2)",
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 4
                 }}
               >
-                <Image source="sf:plus" style={{ width: 12, height: 12 }} tintColor="gray" />
-                <Text className="text-muted-foreground" style={{ fontSize: 13, fontWeight: "600" }}>
+                <Image source="sf:plus" style={{ width: 12, height: 12 }} tintColor="white" />
+                <Text style={{ fontSize: 13, fontWeight: "600", color: "white" }}>
                   {t("kanban.project.addProject")}
                 </Text>
               </Pressable>
             </Link>
           </ScrollView>
 
-          {/* Projects Horizontal Scroll */}
+          {/* Projects Vertical List — matches web mobile view layout */}
           {sortedProjects.length === 0 ? (
             <View className="flex-1 items-center justify-center p-5">
               <Text className="text-muted-foreground" style={{ fontSize: 16, textAlign: "center" }}>
@@ -156,21 +163,19 @@ export default function BoardDetailScreen() {
               </Text>
             </View>
           ) : (
-            <FlatList
-              data={sortedProjects}
-              keyExtractor={(item) => item._id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 12 }}
+            <ScrollView
+              contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 16 }}
               refreshControl=<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
-              snapToInterval={columnWidth + 12}
-              decelerationRate="fast"
-              renderItem={({ item: project }) => (
-                <View style={{ width: columnWidth, marginRight: 12 }}>
-                  <ProjectColumn project={project} boardId={boardId} statusFilter={statusFilter} />
-                </View>
-              )}
-            />
+            >
+              {sortedProjects.map((project) => (
+                <ProjectColumn
+                  key={project._id}
+                  project={project}
+                  boardId={boardId}
+                  statusFilter={statusFilter}
+                />
+              ))}
+            </ScrollView>
           )}
         </View>
       )}

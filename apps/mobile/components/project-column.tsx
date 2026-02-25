@@ -41,7 +41,7 @@ export function ProjectColumn({ project, boardId, statusFilter }: ProjectColumnP
   };
 
   return (
-    <View className="mr-4 flex h-full w-[300px] flex-col overflow-hidden rounded-xl border border-border bg-secondary">
+    <View className="flex flex-col overflow-hidden rounded-xl border border-border bg-secondary">
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-border bg-card p-3">
         <View className="flex-1 flex-row items-center gap-2">
@@ -82,8 +82,27 @@ export function ProjectColumn({ project, boardId, statusFilter }: ProjectColumnP
         </Link>
       </View>
 
+      {/* Add Task — positioned above task list for easy access */}
+      <View className="border-b border-border bg-card px-2 py-1.5">
+        <Link href={`/tasks/new?boardId=${boardId}&projectId=${project._id}`} asChild>
+          <Pressable
+            className="flex-row items-center justify-center gap-1 rounded-lg bg-primary/10 p-2"
+            style={{ borderCurve: "continuous" }}
+          >
+            <Image
+              source="sf:plus.circle.fill"
+              style={{ width: 16, height: 16 }}
+              tintColor="gray"
+            />
+            <Text className="text-sm font-medium text-foreground">
+              {t("kanban.task.addNewTask") || "+ Add New Task"}
+            </Text>
+          </Pressable>
+        </Link>
+      </View>
+
       {/* Tasks List */}
-      <View className="flex-1 p-2">
+      <View className="p-4">
         <SortableTaskList
           tasks={tasks}
           projectId={project._id}
@@ -92,17 +111,6 @@ export function ProjectColumn({ project, boardId, statusFilter }: ProjectColumnP
             router.push(`/tasks/${taskId}`);
           }}
         />
-      </View>
-
-      {/* Footer / Add Task */}
-      <View className="border-t border-border bg-card p-2">
-        <Link href={`/tasks/new?boardId=${boardId}&projectId=${project._id}`} asChild>
-          <Pressable className="flex-row items-center justify-center rounded-lg p-2 hover:bg-secondary/50">
-            <Text className="text-sm font-medium text-muted-foreground">
-              {t("kanban.task.addNewTask") || "＋ Add New Task"}
-            </Text>
-          </Pressable>
-        </Link>
       </View>
     </View>
   );

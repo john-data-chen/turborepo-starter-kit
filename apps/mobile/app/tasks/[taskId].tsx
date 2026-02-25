@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -76,6 +76,9 @@ export default function TaskDetailScreen() {
     );
   };
 
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
+
   const handleDelete = () => {
     if (!taskId) {
       return;
@@ -129,8 +132,25 @@ export default function TaskDetailScreen() {
       <Stack.Screen
         options={{
           title: t("kanban.task.editTaskTitle") || "Edit Task",
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+              hitSlop={12}
+              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+            >
+              <Image source="sf:chevron.left" style={{ width: 18, height: 18 }} tintColor="white" />
+              <Text style={{ fontSize: 17, color: "white" }}>{t("common.back") || "Back"}</Text>
+            </Pressable>
+          ),
           headerRight: () => (
-            <Pressable onPress={handleSave} disabled={updateTaskMutation.isPending}>
+            <Pressable
+              onPress={() => {
+                handleSaveRef.current();
+              }}
+              disabled={updateTaskMutation.isPending}
+            >
               <Text
                 className={`font-semibold ${updateTaskMutation.isPending ? "text-muted-foreground" : "text-primary"}`}
               >
@@ -225,6 +245,7 @@ export default function TaskDetailScreen() {
                   value={dueDate || new Date()}
                   mode="date"
                   display="inline"
+                  minimumDate={new Date()}
                   onChange={(event, date) => {
                     if (date) {
                       setDueDate(date);
@@ -245,6 +266,7 @@ export default function TaskDetailScreen() {
                 value={dueDate || new Date()}
                 mode="date"
                 display="default"
+                minimumDate={new Date()}
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (date) {
