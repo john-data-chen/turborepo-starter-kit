@@ -40,15 +40,15 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.2.10",
-    "@storybook/addon-docs": "^10.2.10",
-    "@storybook/addon-links": "^10.2.10",
-    "@storybook/addon-themes": "^10.2.10",
-    "@storybook/react": "^10.2.10",
-    "@storybook/react-vite": "^10.2.10",
+    "@storybook/addon-a11y": "^10.2.12",
+    "@storybook/addon-docs": "^10.2.12",
+    "@storybook/addon-links": "^10.2.12",
+    "@storybook/addon-themes": "^10.2.12",
+    "@storybook/react": "^10.2.12",
+    "@storybook/react-vite": "^10.2.12",
     "@storybook/test-runner": "^0.24.2",
     "global-tsconfig": "workspace:*",
-    "storybook": "^10.2.10"
+    "storybook": "^10.2.12"
   },
   "peerDependencies": {
     "react": "catalog:",

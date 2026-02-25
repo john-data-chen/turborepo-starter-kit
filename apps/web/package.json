@@ -56,8 +56,5 @@
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:",
     "vitest": "catalog:"
-  },
-  "engines": {
-    "node": ">=24.13.1"
   }
 }
