@@ -57,23 +57,10 @@ export default function BoardsScreen() {
         {/* New Board Button — inline styles per native UI best practice */}
         <Link href="/boards/form" asChild>
           <Pressable
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 8,
-              borderCurve: "continuous",
-              backgroundColor: "hsl(180, 75%, 45%)",
-              paddingHorizontal: 16,
-              paddingVertical: 12
-            }}
+            className="items-center justify-center rounded-lg bg-primary px-4 py-3"
+            style={{ borderCurve: "continuous" }}
           >
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: "500",
-                color: "hsl(180, 10%, 98%)"
-              }}
-            >
+            <Text className="text-sm font-medium text-primary-foreground">
               {t("kanban.newBoard")}
             </Text>
           </Pressable>

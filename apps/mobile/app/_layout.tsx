@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient } from "@/lib/query-client";
+import { applyThemePreference, loadThemePreference } from "@/lib/theme";
 import { View, ActivityIndicator } from "@/lib/tw";
 
 export { ErrorBoundary } from "expo-router";
@@ -22,6 +23,13 @@ function RootLayoutNav() {
 
   useEffect(() => {
     setIsNavigationReady(true);
+  }, []);
+
+  // Restore persisted theme preference on mount
+  useEffect(() => {
+    loadThemePreference().then((pref) => {
+      applyThemePreference(pref);
+    });
   }, []);
 
   useEffect(() => {

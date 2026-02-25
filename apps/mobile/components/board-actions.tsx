@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Alert, Pressable, Text } from "react-native";
+import { Alert } from "react-native";
 
 import { useDeleteBoard } from "@/hooks/use-boards";
+import { Pressable, Text } from "@/lib/tw";
 
 interface BoardActionsProps {
   boardId: string;
@@ -55,7 +56,9 @@ export function BoardActions({ boardId, boardTitle }: BoardActionsProps) {
       hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       style={{ padding: 4 }}
     >
-      <Text style={{ fontSize: 20, color: "hsl(180, 25%, 65%)", letterSpacing: 2 }}>···</Text>
+      <Text className="text-muted-foreground" style={{ fontSize: 20, letterSpacing: 2 }}>
+        ···
+      </Text>
     </Pressable>
   );
 }

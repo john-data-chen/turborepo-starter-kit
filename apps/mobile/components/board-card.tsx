@@ -37,16 +37,10 @@ export function BoardCard({ board, showOwner }: BoardCardProps) {
   return (
     <Link href={`/boards/${board._id}`} asChild>
       <Pressable
+        className={`rounded-xl border bg-card px-4 pt-3.5 pb-4 ${pressed ? "border-primary" : "border-border"}`}
         style={{
-          borderRadius: 12,
           borderCurve: "continuous",
-          borderWidth: 1,
-          borderColor: pressed ? "hsl(180, 75%, 45%)" : "hsl(180, 20%, 28%)",
-          backgroundColor: "hsl(180, 35%, 13%)",
-          paddingHorizontal: 16,
-          paddingTop: 14,
-          paddingBottom: 16,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)"
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)"
         }}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}

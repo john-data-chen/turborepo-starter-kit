@@ -4,6 +4,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import { APP_NAME } from "@/constants/app";
+import { loadLanguagePreference } from "@/lib/language";
 
 const deviceLocale = getLocales()[0]?.languageCode ?? "en";
 const resolvedLocale = locales.includes(deviceLocale as (typeof locales)[number])
@@ -23,6 +24,13 @@ i18n.use(initReactI18next).init({
     prefix: "{",
     suffix: "}",
     defaultVariables: { appName: APP_NAME }
+  }
+});
+
+// Load persisted language preference (async, overrides device locale if set)
+loadLanguagePreference().then((lang) => {
+  if (lang && lang !== i18n.language) {
+    i18n.changeLanguage(lang);
   }
 });
 

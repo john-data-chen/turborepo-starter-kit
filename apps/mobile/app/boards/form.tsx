@@ -1,18 +1,10 @@
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  ActivityIndicator
-} from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
 
 import { useCreateBoard, useUpdateBoard, useBoard } from "@/hooks/use-boards";
+import { View, Text, Pressable, TextInput, useCSSVariable } from "@/lib/tw";
 import { useAuthStore } from "@/stores/auth";
 
 export default function BoardFormScreen() {
@@ -29,6 +21,11 @@ export default function BoardFormScreen() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  // Theme-aware colors for KeyboardAvoidingView and inputs
+  const bgColor = useCSSVariable("--color-background");
+  const primaryColor = useCSSVariable("--color-primary");
+  const mutedFgColor = useCSSVariable("--color-muted-foreground");
 
   useEffect(() => {
     if (board && isEdit) {
@@ -74,7 +71,7 @@ export default function BoardFormScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "hsl(180, 35%, 5%)" }}
+      style={{ flex: 1, backgroundColor: bgColor }}
     >
       <Stack.Screen
         options={{
@@ -90,7 +87,7 @@ export default function BoardFormScreen() {
               <Text
                 style={{
                   fontSize: 17,
-                  color: "hsl(180, 75%, 45%)"
+                  color: primaryColor
                 }}
               >
                 {t("kanban.actions.cancel")}
@@ -106,7 +103,7 @@ export default function BoardFormScreen() {
                   style={{
                     fontSize: 17,
                     fontWeight: "600",
-                    color: !title ? "hsl(180, 25%, 40%)" : "hsl(180, 75%, 45%)"
+                    color: !title ? mutedFgColor : primaryColor
                   }}
                 >
                   {isEdit ? t("kanban.actions.save") : t("kanban.actions.create")}
@@ -120,58 +117,30 @@ export default function BoardFormScreen() {
       {isEdit && isBoardLoading ? (
         <ActivityIndicator style={{ marginTop: 40 }} />
       ) : (
-        <View style={{ padding: 16, gap: 16 }}>
-          <View style={{ gap: 8 }}>
-            <Text
-              style={{
-                fontWeight: "600",
-                color: "hsl(180, 20%, 100%)"
-              }}
-            >
+        <View className="gap-4 p-4">
+          <View className="gap-2">
+            <Text className="font-semibold text-foreground">
               {t("kanban.actions.boardTitleLabel")}
             </Text>
             <TextInput
-              style={{
-                borderRadius: 8,
-                borderCurve: "continuous",
-                borderWidth: 1,
-                borderColor: "hsl(180, 20%, 25%)",
-                backgroundColor: "hsl(180, 20%, 25%)",
-                padding: 12,
-                color: "hsl(180, 20%, 100%)",
-                fontSize: 16
-              }}
+              className="rounded-lg border border-input bg-input p-3 text-base text-foreground"
+              style={{ borderCurve: "continuous" }}
               placeholder={t("kanban.actions.boardTitlePlaceholder")}
-              placeholderTextColor="hsl(180, 25%, 50%)"
+              placeholderTextColor={mutedFgColor}
               value={title}
               onChangeText={setTitle}
             />
           </View>
 
-          <View style={{ gap: 8 }}>
-            <Text
-              style={{
-                fontWeight: "600",
-                color: "hsl(180, 20%, 100%)"
-              }}
-            >
+          <View className="gap-2">
+            <Text className="font-semibold text-foreground">
               {t("kanban.actions.descriptionLabel")}
             </Text>
             <TextInput
-              style={{
-                height: 128,
-                borderRadius: 8,
-                borderCurve: "continuous",
-                borderWidth: 1,
-                borderColor: "hsl(180, 20%, 25%)",
-                backgroundColor: "hsl(180, 20%, 25%)",
-                padding: 12,
-                color: "hsl(180, 20%, 100%)",
-                fontSize: 16,
-                textAlignVertical: "top"
-              }}
+              className="h-32 rounded-lg border border-input bg-input p-3 text-base text-foreground"
+              style={{ borderCurve: "continuous", textAlignVertical: "top" }}
               placeholder={t("kanban.actions.descriptionPlaceholder")}
-              placeholderTextColor="hsl(180, 25%, 50%)"
+              placeholderTextColor={mutedFgColor}
               value={description}
               onChangeText={setDescription}
               multiline

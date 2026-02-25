@@ -4,21 +4,21 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "android": "expo start --android",
+    "android": "expo start --android --clear",
     "build": "tsc --noEmit",
     "build:eas": "eas build",
-    "dev": "expo start --ios",
+    "dev": "expo start --ios --clear",
     "expo:fix": "npx expo install --fix",
     "expo:upgrade": "npx expo install expo@latest && npx expo install --fix",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/mobile",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
-    "web": "expo start --web"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/datetimepicker": "^8.4.4",
+    "@react-native-segmented-control/segmented-control": "^2.5.7",
     "@react-navigation/native": "^7.1.8",
     "@repo/i18n": "workspace:*",
     "@repo/store": "workspace:*",
