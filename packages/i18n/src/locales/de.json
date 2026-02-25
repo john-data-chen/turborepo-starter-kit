@@ -41,6 +41,7 @@
     "noTeamBoardsFound": "Keine Team-Boards gefunden.",
     "owner": "Eigentümer",
     "actions": {
+      "error": "Fehler",
       "editBoardTitle": "Board bearbeiten",
       "editBoardDescription": "Nehmen Sie hier Änderungen an Ihrem Board vor. Klicken Sie auf „Speichern“, wenn Sie fertig sind.",
       "cancel": "Abbrechen",
@@ -137,8 +138,20 @@
       "searchPlaceholder": "Titel oder Beschreibung suchen...",
       "filterByStatus": "Nach Status filtern",
       "total": "Gesamt",
-      "clearFilter": "Filter löschen"
+      "clearFilter": "Filter löschen",
+      "moveToTitle": "Zu Projekt verschieben",
+      "moveToDescription": "Wählen Sie ein Projekt, um diese Aufgabe zu verschieben",
+      "noProjectsAvailable": "Keine anderen Projekte verfügbar"
     }
+  },
+  "common": {
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "save": "Speichern",
+    "create": "Erstellen",
+    "loading": "Wird geladen..."
   },
   "user": {
     "logOut": "Abmelden"

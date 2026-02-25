@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, Alert } from "react-native";
 
+import { DEFAULT_EMAIL } from "@/constants/app";
 import { useAuth } from "@/hooks/use-auth";
 import { View, Text, Pressable, TextInput, ActivityIndicator } from "@/lib/tw";
 
 export default function LoginScreen() {
   const { t } = useTranslation();
   const { login, loginMutation } = useAuth();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(DEFAULT_EMAIL);
 
   const handleLogin = () => {
     if (!email) {

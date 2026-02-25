@@ -1,22 +1,21 @@
 import "../global.css";
 import "@/lib/i18n";
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient } from "@/lib/query-client";
+import { applyThemePreference, loadThemePreference } from "@/lib/theme";
 import { View, ActivityIndicator } from "@/lib/tw";
 
 export { ErrorBoundary } from "expo-router";
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   const segments = useSegments();
   const router = useRouter();
   const { session, isLoading } = useAuth();
@@ -24,6 +23,13 @@ function RootLayoutNav() {
 
   useEffect(() => {
     setIsNavigationReady(true);
+  }, []);
+
+  // Restore persisted theme preference on mount
+  useEffect(() => {
+    loadThemePreference().then((pref) => {
+      applyThemePreference(pref);
+    });
   }, []);
 
   useEffect(() => {
@@ -49,7 +55,7 @@ function RootLayoutNav() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -57,7 +63,7 @@ function RootLayoutNav() {
         <Stack.Screen name="tasks" options={{ headerShown: false }} />
         <Stack.Screen name="projects" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </ThemeProvider>
   );
 }

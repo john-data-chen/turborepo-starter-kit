@@ -6,7 +6,12 @@ export default function TabLayout() {
   const { t } = useTranslation();
 
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerTitleStyle: { fontSize: 18 },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: "500" }
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -22,12 +27,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: t("theme.toggleTheme"),
+          title: t("settings.title", { defaultValue: "Settings" }),
           tabBarIcon: ({ color, size }) => (
             <Image source="sf:gearshape" style={{ width: size, height: size, tintColor: color }} />
           )
         }}
       />
+      <Tabs.Screen name="error" options={{ href: null }} />
+      <Tabs.Screen name="loading" options={{ href: null }} />
     </Tabs>
   );
 }

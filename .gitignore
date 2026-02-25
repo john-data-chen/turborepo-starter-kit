@@ -49,6 +49,9 @@ apps/web/next-env.d.ts
 # Turborepo
 .turbo
 
+# React Native
+.expo
+
 # files of AI
 GEMINI.md
 CLAUDE.md

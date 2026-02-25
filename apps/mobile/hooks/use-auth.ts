@@ -34,7 +34,6 @@ export function useAuth() {
     await authService.logout();
     clear();
     queryClient.clear();
-    router.replace("/(auth)/login");
   };
 
   return {

@@ -9,6 +9,12 @@ import {
   ActivityIndicator as RNActivityIndicator
 } from "react-native";
 import { useCssElement } from "react-native-css";
+import { useNativeVariable } from "react-native-css";
+
+// Hook to read CSS custom properties at runtime (theme-aware)
+// Usage: const bg = useCSSVariable("--color-background");
+export const useCSSVariable =
+  process.env.EXPO_OS !== "web" ? useNativeVariable : (variable: string) => `var(${variable})`;
 
 export type ViewProps = React.ComponentProps<typeof RNView> & {
   className?: string;

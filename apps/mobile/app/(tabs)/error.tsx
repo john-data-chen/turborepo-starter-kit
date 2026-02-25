@@ -18,3 +18,5 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
     </View>
   );
 }
+
+export default ErrorBoundary;

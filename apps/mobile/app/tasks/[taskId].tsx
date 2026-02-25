@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -76,14 +76,18 @@ export default function TaskDetailScreen() {
     );
   };
 
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
+
   const handleDelete = () => {
     if (!taskId) {
       return;
     }
 
     Alert.alert(
-      t("kanban.task.deleteTitle") || "Delete Task",
-      t("kanban.task.deleteDescription") || "Are you sure you want to delete this task?",
+      t("kanban.task.confirmDeleteTitle", { title: task?.title }) || "Delete Task",
+      t("kanban.task.confirmDeleteDescription", { title: task?.title }) ||
+        "Are you sure you want to delete this task?",
       [
         { text: t("common.cancel") || "Cancel", style: "cancel" },
         {
@@ -127,9 +131,26 @@ export default function TaskDetailScreen() {
     >
       <Stack.Screen
         options={{
-          title: t("kanban.task.editTitle") || "Edit Task",
+          title: t("kanban.task.editTaskTitle") || "Edit Task",
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+              hitSlop={12}
+              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+            >
+              <Image source="sf:chevron.left" style={{ width: 18, height: 18 }} tintColor="white" />
+              <Text style={{ fontSize: 17, color: "white" }}>{t("common.back") || "Back"}</Text>
+            </Pressable>
+          ),
           headerRight: () => (
-            <Pressable onPress={handleSave} disabled={updateTaskMutation.isPending}>
+            <Pressable
+              onPress={() => {
+                handleSaveRef.current();
+              }}
+              disabled={updateTaskMutation.isPending}
+            >
               <Text
                 className={`font-semibold ${updateTaskMutation.isPending ? "text-muted-foreground" : "text-primary"}`}
               >
@@ -176,7 +197,9 @@ export default function TaskDetailScreen() {
                     status === s ? "text-primary-foreground" : "text-foreground"
                   }`}
                 >
-                  {t(`kanban.task.status${s.replace("_", "")}`) || s.replace("_", " ")}
+                  {t(
+                    `kanban.task.${({ TODO: "statusTodo", IN_PROGRESS: "statusInProgress", DONE: "statusDone" } as Record<string, string>)[s]}`
+                  ) || s.replace("_", " ")}
                 </Text>
               </Pressable>
             ))}
@@ -186,7 +209,7 @@ export default function TaskDetailScreen() {
         {/* Assignee */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">
-            {t("kanban.task.assigneeLabel") || "Assignee"}
+            {t("kanban.task.assignToLabel") || "Assignee"}
           </Text>
           <Pressable
             onPress={() => {
@@ -222,6 +245,7 @@ export default function TaskDetailScreen() {
                   value={dueDate || new Date()}
                   mode="date"
                   display="inline"
+                  minimumDate={new Date()}
                   onChange={(event, date) => {
                     if (date) {
                       setDueDate(date);
@@ -242,6 +266,7 @@ export default function TaskDetailScreen() {
                 value={dueDate || new Date()}
                 mode="date"
                 display="default"
+                minimumDate={new Date()}
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (date) {
@@ -273,7 +298,7 @@ export default function TaskDetailScreen() {
           className="mt-4 items-center rounded-lg bg-destructive/10 p-4"
         >
           <Text className="font-semibold text-destructive">
-            {t("kanban.task.deleteButton") || "Delete Task"}
+            {t("kanban.task.delete") || "Delete Task"}
           </Text>
         </Pressable>
       </ScrollView>

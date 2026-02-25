@@ -218,9 +218,8 @@ pnpm storybook:test        # Run Storybook interaction tests
 pnpm build                 # Production build
 
 # Run Mobile
-pnpm mobile                # Start Expo dev server
-pnpm mobile:ios            # Start on iOS Simulator
-pnpm mobile:android        # Start on Android Emulator
+pnpm mobile                # Start Expo dev server on ios simulator
+pnpm mobile:android        # Start Expo dev server on android emulator
 ```
 
 ---

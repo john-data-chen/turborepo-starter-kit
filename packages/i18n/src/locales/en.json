@@ -41,6 +41,7 @@
     "noTeamBoardsFound": "No team boards found.",
     "owner": "Owner",
     "actions": {
+      "error": "Error",
       "editBoardTitle": "Edit Board",
       "editBoardDescription": "Make changes to your board here. Click save when you're done.",
       "cancel": "Cancel",
@@ -137,8 +138,20 @@
       "searchPlaceholder": "Search title or description...",
       "filterByStatus": "Filter by status",
       "total": "Total",
-      "clearFilter": "Clear Filter"
+      "clearFilter": "Clear Filter",
+      "moveToTitle": "Move to Project",
+      "moveToDescription": "Select a project to move this task to",
+      "noProjectsAvailable": "No other projects available"
     }
+  },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "create": "Create",
+    "loading": "Loading..."
   },
   "user": {
     "logOut": "Log out"

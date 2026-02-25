@@ -46,15 +46,18 @@ export function BoardActions({ boardId, boardTitle }: BoardActionsProps) {
 
   return (
     <Pressable
-      onPress={() => {
+      onPress={(e) => {
+        e.stopPropagation();
         Alert.alert(t("kanban.actions.actions"), undefined, [
           { text: t("kanban.actions.edit"), onPress: handleEdit },
           { text: t("kanban.actions.delete"), onPress: handleDelete, style: "destructive" },
           { text: t("kanban.actions.cancel"), style: "cancel" }
         ]);
       }}
+      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+      style={{ padding: 4 }}
     >
-      <Image source="sf:ellipsis" style={{ width: 24, height: 24 }} tintColor="#007AFF" />
+      <Image source="sf:ellipsis.circle" style={{ width: 24, height: 24 }} tintColor="white" />
     </Pressable>
   );
 }

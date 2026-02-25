@@ -62,7 +62,7 @@ export default function NewTaskScreen() {
     >
       <Stack.Screen
         options={{
-          title: t("kanban.task.createTitle") || "New Task",
+          title: t("kanban.task.addNewTaskTitle") || "New Task",
           presentation: "formSheet",
           headerLeft: () => (
             <Pressable
@@ -121,7 +121,9 @@ export default function NewTaskScreen() {
                     status === s ? "text-primary-foreground" : "text-foreground"
                   }`}
                 >
-                  {t(`kanban.task.status${s.replace("_", "")}`) || s.replace("_", " ")}
+                  {t(
+                    `kanban.task.${({ TODO: "statusTodo", IN_PROGRESS: "statusInProgress", DONE: "statusDone" } as Record<string, string>)[s]}`
+                  ) || s.replace("_", " ")}
                 </Text>
               </Pressable>
             ))}
@@ -131,7 +133,7 @@ export default function NewTaskScreen() {
         {/* Assignee */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">
-            {t("kanban.task.assigneeLabel") || "Assignee"}
+            {t("kanban.task.assignToLabel") || "Assignee"}
           </Text>
           <Pressable
             onPress={() => {

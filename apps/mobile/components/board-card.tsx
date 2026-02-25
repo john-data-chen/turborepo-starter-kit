@@ -1,52 +1,78 @@
 import type { Board } from "@repo/store";
 import * as Haptics from "expo-haptics";
-import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Platform } from "react-native";
 
+import { BoardActions } from "@/components/board-actions";
 import { View, Text, Pressable } from "@/lib/tw";
 
 interface BoardCardProps {
   board: Board;
+  showOwner?: boolean;
 }
 
-export function BoardCard({ board }: BoardCardProps) {
+export function BoardCard({ board, showOwner }: BoardCardProps) {
   const { t } = useTranslation();
+  const [pressed, setPressed] = useState(false);
+
+  const projectNames =
+    board.projects?.length > 0 ? board.projects.map((p) => p.title).join(" / ") : "0";
+
+  const memberNames = board.members?.length > 0 ? board.members.map((m) => m.name).join(", ") : "";
+
+  const ownerName = typeof board.owner === "string" ? board.owner : board.owner?.name || "Unknown";
+
+  const handlePressIn = useCallback(() => {
+    setPressed(true);
+    if (process.env.EXPO_OS === "ios") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, []);
+
+  const handlePressOut = useCallback(() => {
+    setPressed(false);
+  }, []);
 
   return (
     <Link href={`/boards/${board._id}`} asChild>
       <Pressable
-        className="gap-2 rounded-xl border border-border bg-card p-4"
-        onPressIn={() => {
-          if (Platform.OS === "ios") {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          }
+        className={`rounded-xl border bg-card px-4 pt-3.5 pb-4 ${pressed ? "border-primary" : "border-border"}`}
+        style={{
+          borderCurve: "continuous",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)"
         }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
       >
-        <View className="flex-row items-start justify-between">
+        {/* Header: title + actions — matches web CardHeader layout */}
+        <View className="mb-1 flex-row items-center justify-between">
           <Text className="flex-1 pr-4 text-lg font-semibold text-foreground" numberOfLines={1}>
             {board.title}
           </Text>
+          <BoardActions boardId={board._id} boardTitle={board.title} />
         </View>
 
-        <Text className="text-sm text-muted-foreground" numberOfLines={2}>
+        {/* Description */}
+        <Text className="mb-3 text-sm text-muted-foreground" numberOfLines={2}>
           {board.description || t("kanban.noDescription")}
         </Text>
 
-        <View className="mt-2 flex-row gap-4">
-          <View className="flex-row items-center gap-1">
-            <Image source="sf:folder" style={{ width: 14, height: 14 }} tintColor="gray" />
-            <Text className="text-xs text-muted-foreground">
-              {board.projects?.length || 0} {t("kanban.projects")}
+        {/* Metadata — matches web CardContent layout */}
+        <View className="gap-1">
+          {showOwner ? (
+            <Text className="text-sm text-foreground">
+              {t("kanban.owner")}: {ownerName}
             </Text>
-          </View>
-          <View className="flex-row items-center gap-1">
-            <Image source="sf:person.2" style={{ width: 14, height: 14 }} tintColor="gray" />
-            <Text className="text-xs text-muted-foreground">
-              {board.members?.length || 0} {t("kanban.members")}
-            </Text>
-          </View>
+          ) : null}
+
+          <Text className="text-sm text-foreground">
+            {t("kanban.projects")}: {projectNames}
+          </Text>
+
+          <Text className="text-sm text-foreground">
+            {t("kanban.members")}: {memberNames}
+          </Text>
         </View>
       </Pressable>
     </Link>

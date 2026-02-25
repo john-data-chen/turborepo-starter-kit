@@ -1,4 +1,4 @@
-import { Project } from "@repo/store";
+import { Project, TaskStatus } from "@repo/store";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -13,17 +13,20 @@ import { SortableTaskList } from "./sortable-task-list";
 interface ProjectColumnProps {
   project: Project;
   boardId: string;
+  statusFilter?: TaskStatus | null;
 }
 
-export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
+export function ProjectColumn({ project, boardId, statusFilter }: ProjectColumnProps) {
   const { t } = useTranslation();
-  const { data: tasks = [] } = useTasks(project._id);
+  const { data: allTasks = [] } = useTasks(project._id);
+  const tasks = statusFilter ? allTasks.filter((task) => task.status === statusFilter) : allTasks;
   const deleteProjectMutation = useDeleteProject();
 
   const handleDelete = () => {
     Alert.alert(
-      t("kanban.project.deleteTitle") || "Delete Project",
-      t("kanban.project.deleteDescription") || "Are you sure you want to delete this project?",
+      t("kanban.project.confirmDeleteTitle", { title: project.title }) || "Delete Project",
+      t("kanban.project.confirmDeleteDescription") ||
+        "Are you sure you want to delete this project?",
       [
         { text: t("common.cancel") || "Cancel", style: "cancel" },
         {
@@ -38,7 +41,7 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
   };
 
   return (
-    <View className="mr-4 flex h-full w-[300px] flex-col overflow-hidden rounded-xl border border-border bg-secondary/10">
+    <View className="flex flex-col overflow-hidden rounded-xl border border-border bg-secondary">
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-border bg-card p-3">
         <View className="flex-1 flex-row items-center gap-2">
@@ -46,7 +49,12 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
             {project.title}
           </Text>
           <View className="rounded-full bg-secondary px-2 py-0.5">
-            <Text className="text-xs text-muted-foreground">{tasks.length}</Text>
+            <Text
+              className="text-xs text-muted-foreground"
+              style={{ fontVariant: ["tabular-nums"] }}
+            >
+              {statusFilter ? `${tasks.length}/${allTasks.length}` : tasks.length}
+            </Text>
           </View>
         </View>
 
@@ -74,8 +82,27 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
         </Link>
       </View>
 
+      {/* Add Task — positioned above task list for easy access */}
+      <View className="border-b border-border bg-card px-2 py-1.5">
+        <Link href={`/tasks/new?boardId=${boardId}&projectId=${project._id}`} asChild>
+          <Pressable
+            className="flex-row items-center justify-center gap-1 rounded-lg bg-primary/10 p-2"
+            style={{ borderCurve: "continuous" }}
+          >
+            <Image
+              source="sf:plus.circle.fill"
+              style={{ width: 16, height: 16 }}
+              tintColor="gray"
+            />
+            <Text className="text-sm font-medium text-foreground">
+              {t("kanban.task.addNewTask") || "+ Add New Task"}
+            </Text>
+          </Pressable>
+        </Link>
+      </View>
+
       {/* Tasks List */}
-      <View className="flex-1 p-2">
+      <View className="p-4">
         <SortableTaskList
           tasks={tasks}
           projectId={project._id}
@@ -84,22 +111,6 @@ export function ProjectColumn({ project, boardId }: ProjectColumnProps) {
             router.push(`/tasks/${taskId}`);
           }}
         />
-      </View>
-
-      {/* Footer / Add Task */}
-      <View className="border-t border-border bg-card p-2">
-        <Link href={`/tasks/new?boardId=${boardId}&projectId=${project._id}`} asChild>
-          <Pressable className="flex-row items-center justify-center rounded-lg p-2 hover:bg-secondary/50">
-            <Image
-              source="sf:plus"
-              style={{ width: 16, height: 16, marginRight: 8 }}
-              tintColor="gray"
-            />
-            <Text className="text-sm font-medium text-muted-foreground">
-              {t("kanban.project.addTask") || "Add Task"}
-            </Text>
-          </Pressable>
-        </Link>
       </View>
     </View>
   );
