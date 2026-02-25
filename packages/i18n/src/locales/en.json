@@ -41,6 +41,7 @@
     "noTeamBoardsFound": "No team boards found.",
     "owner": "Owner",
     "actions": {
+      "error": "Error",
       "editBoardTitle": "Edit Board",
       "editBoardDescription": "Make changes to your board here. Click save when you're done.",
       "cancel": "Cancel",

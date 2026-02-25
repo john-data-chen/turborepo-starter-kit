@@ -46,57 +46,82 @@ export default function BoardsScreen() {
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerClassName="p-4 gap-5"
+      contentContainerClassName="px-4 pb-8"
       contentInsetAdjustmentBehavior="automatic"
       refreshControl=<RefreshControl refreshing={isRefetching} onRefresh={refetch} />
     >
       <Stack.Screen options={{ title: t("sidebar.overview") }} />
 
-      {/* New Board Button */}
-      <Link href="/boards/form" asChild>
-        <Pressable className="items-center rounded-lg bg-primary py-3">
-          <Text className="font-semibold text-primary-foreground">{t("kanban.newBoard")}</Text>
-        </Pressable>
-      </Link>
-
-      {/* Search Bar */}
-      <View className="flex-row items-center rounded-lg border border-border bg-card px-3">
-        <Image source="sf:magnifyingglass" style={{ width: 18, height: 18, tintColor: "#888" }} />
-        <TextInput
-          className="flex-1 py-3 pl-2 text-foreground"
-          placeholder={t("kanban.searchBoards")}
-          placeholderTextColor="#888"
-          value={search}
-          onChangeText={setSearch}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-      </View>
-
-      {/* Filter Pills */}
-      <View className="flex-row gap-2">
-        {FILTERS.map((f) => (
+      {/* Header Section — matches web sticky header layout */}
+      <View className="gap-3 pt-4 pb-4">
+        {/* New Board Button — inline styles per native UI best practice */}
+        <Link href="/boards/form" asChild>
           <Pressable
-            key={f}
-            className={`flex-1 items-center rounded-lg py-2 ${f === filter ? "bg-primary" : "border border-border bg-card"}`}
-            onPress={() =>{  setFilter(f); }}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 8,
+              borderCurve: "continuous",
+              backgroundColor: "hsl(180, 75%, 45%)",
+              paddingHorizontal: 16,
+              paddingVertical: 12
+            }}
           >
             <Text
-              className={`text-sm font-medium ${f === filter ? "text-primary-foreground" : "text-muted-foreground"}`}
+              style={{
+                fontSize: 14,
+                fontWeight: "500",
+                color: "hsl(180, 10%, 98%)"
+              }}
             >
-              {filterLabels[f]}
+              {t("kanban.newBoard")}
             </Text>
           </Pressable>
-        ))}
+        </Link>
+
+        {/* Search Bar — matches web Input with magnifying glass icon */}
+        <View className="flex-row items-center rounded-md border border-border bg-card px-3">
+          <Image source="sf:magnifyingglass" style={{ width: 16, height: 16, tintColor: "#888" }} />
+          <TextInput
+            className="flex-1 py-2.5 pl-2 text-sm text-foreground"
+            placeholder={t("kanban.searchBoards")}
+            placeholderTextColor="#888"
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+
+        {/* Filter Pills */}
+        <View className="flex-row gap-2">
+          {FILTERS.map((f) => (
+            <Pressable
+              key={f}
+              className={`flex-1 items-center rounded-md py-2 ${f === filter ? "bg-primary" : "border border-border bg-card"}`}
+              onPress={() => {
+                setFilter(f);
+              }}
+            >
+              <Text
+                className={`text-sm font-medium ${f === filter ? "text-primary-foreground" : "text-muted-foreground"}`}
+              >
+                {filterLabels[f]}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
       </View>
 
+      {/* Loading State */}
       {isLoading && !isRefetching ? <ActivityIndicator size="large" className="mt-8" /> : null}
 
+      {/* Board Sections */}
       {!isLoading && !isEmpty ? (
-        <>
+        <View className="gap-6">
           {showMy && filteredMyBoards.length > 0 ? (
             <View className="gap-3">
-              <View className="gap-1 px-1">
+              <View className="gap-1">
                 <Text className="text-2xl font-bold text-foreground">{t("kanban.myBoards")}</Text>
                 <Text className="text-sm text-muted-foreground">
                   {t("kanban.myBoardsDescription")}
@@ -112,7 +137,7 @@ export default function BoardsScreen() {
 
           {showTeam && filteredTeamBoards.length > 0 ? (
             <View className="gap-3">
-              <View className="gap-1 px-1">
+              <View className="gap-1">
                 <Text className="text-2xl font-bold text-foreground">{t("kanban.teamBoards")}</Text>
                 <Text className="text-sm text-muted-foreground">
                   {t("kanban.teamBoardsDescription")}
@@ -125,9 +150,10 @@ export default function BoardsScreen() {
               </View>
             </View>
           ) : null}
-        </>
+        </View>
       ) : null}
 
+      {/* Empty State */}
       {!isLoading && isEmpty ? (
         <View className="flex-1 items-center justify-center gap-4 py-20">
           <Text className="text-center text-lg text-muted-foreground">

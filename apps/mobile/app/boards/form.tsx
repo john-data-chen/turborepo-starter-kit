@@ -1,10 +1,19 @@
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  ActivityIndicator
+} from "react-native";
 
 import { useCreateBoard, useUpdateBoard, useBoard } from "@/hooks/use-boards";
-import { View, Text, Pressable, TextInput, ActivityIndicator } from "@/lib/tw";
+import { useAuthStore } from "@/stores/auth";
 
 export default function BoardFormScreen() {
   const { t } = useTranslation();
@@ -13,6 +22,7 @@ export default function BoardFormScreen() {
   const boardId = params.boardId;
   const isEdit = !!boardId;
 
+  const { session } = useAuthStore();
   const { data: board, isLoading: isBoardLoading } = useBoard(boardId);
   const createMutation = useCreateBoard();
   const updateMutation = useUpdateBoard();
@@ -38,15 +48,21 @@ export default function BoardFormScreen() {
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("kanban.actions.error"), error.message);
           }
         }
       );
     } else {
       createMutation.mutate(
-        { title, description },
+        { title, description, owner: session?.user._id },
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("kanban.actions.error"), error.message);
           }
         }
       );
@@ -58,19 +74,27 @@ export default function BoardFormScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-background"
+      style={{ flex: 1, backgroundColor: "hsl(180, 35%, 5%)" }}
     >
       <Stack.Screen
         options={{
           title: isEdit ? t("kanban.actions.editBoardTitle") : t("kanban.actions.newBoardTitle"),
           presentation: "formSheet",
+          sheetGrabberVisible: true,
           headerLeft: () => (
             <Pressable
               onPress={() => {
                 router.back();
               }}
             >
-              <Text className="text-lg text-primary">{t("kanban.actions.cancel")}</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: "hsl(180, 75%, 45%)"
+                }}
+              >
+                {t("kanban.actions.cancel")}
+              </Text>
             </Pressable>
           ),
           headerRight: () => (
@@ -78,8 +102,14 @@ export default function BoardFormScreen() {
               {isPending ? (
                 <ActivityIndicator />
               ) : (
-                <Text className={`text-lg font-semibold ${!title ? "text-muted" : "text-primary"}`}>
-                  {t("kanban.actions.saveChanges")}
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "600",
+                    color: !title ? "hsl(180, 25%, 40%)" : "hsl(180, 75%, 45%)"
+                  }}
+                >
+                  {isEdit ? t("kanban.actions.save") : t("kanban.actions.create")}
                 </Text>
               )}
             </Pressable>
@@ -88,32 +118,63 @@ export default function BoardFormScreen() {
       />
 
       {isEdit && isBoardLoading ? (
-        <ActivityIndicator className="mt-10" />
+        <ActivityIndicator style={{ marginTop: 40 }} />
       ) : (
-        <View className="gap-4 p-4">
-          <View className="gap-2">
-            <Text className="font-semibold text-foreground">
+        <View style={{ padding: 16, gap: 16 }}>
+          <View style={{ gap: 8 }}>
+            <Text
+              style={{
+                fontWeight: "600",
+                color: "hsl(180, 20%, 100%)"
+              }}
+            >
               {t("kanban.actions.boardTitleLabel")}
             </Text>
             <TextInput
-              className="rounded-lg border border-border bg-input p-3 text-foreground"
+              style={{
+                borderRadius: 8,
+                borderCurve: "continuous",
+                borderWidth: 1,
+                borderColor: "hsl(180, 20%, 25%)",
+                backgroundColor: "hsl(180, 20%, 25%)",
+                padding: 12,
+                color: "hsl(180, 20%, 100%)",
+                fontSize: 16
+              }}
               placeholder={t("kanban.actions.boardTitlePlaceholder")}
+              placeholderTextColor="hsl(180, 25%, 50%)"
               value={title}
               onChangeText={setTitle}
             />
           </View>
 
-          <View className="gap-2">
-            <Text className="font-semibold text-foreground">
+          <View style={{ gap: 8 }}>
+            <Text
+              style={{
+                fontWeight: "600",
+                color: "hsl(180, 20%, 100%)"
+              }}
+            >
               {t("kanban.actions.descriptionLabel")}
             </Text>
             <TextInput
-              className="h-32 rounded-lg border border-border bg-input p-3 text-foreground"
+              style={{
+                height: 128,
+                borderRadius: 8,
+                borderCurve: "continuous",
+                borderWidth: 1,
+                borderColor: "hsl(180, 20%, 25%)",
+                backgroundColor: "hsl(180, 20%, 25%)",
+                padding: 12,
+                color: "hsl(180, 20%, 100%)",
+                fontSize: 16,
+                textAlignVertical: "top"
+              }}
               placeholder={t("kanban.actions.descriptionPlaceholder")}
+              placeholderTextColor="hsl(180, 25%, 50%)"
               value={description}
               onChangeText={setDescription}
               multiline
-              textAlignVertical="top"
             />
           </View>
         </View>

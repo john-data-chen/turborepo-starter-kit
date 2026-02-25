@@ -41,6 +41,7 @@
     "noTeamBoardsFound": "Keine Team-Boards gefunden.",
     "owner": "Eigentümer",
     "actions": {
+      "error": "Fehler",
       "editBoardTitle": "Board bearbeiten",
       "editBoardDescription": "Nehmen Sie hier Änderungen an Ihrem Board vor. Klicken Sie auf „Speichern“, wenn Sie fertig sind.",
       "cancel": "Abbrechen",
