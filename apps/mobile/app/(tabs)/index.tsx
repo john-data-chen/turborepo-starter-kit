@@ -60,8 +60,12 @@ export default function BoardsScreen() {
           headerLargeTitle: true,
           headerSearchBarOptions: {
             placeholder: t("kanban.searchBoards"),
-            onChangeText: (event) =>{  handleSearchChange(event.nativeEvent.text); },
-            onCancelButtonPress: () =>{  handleSearchChange(""); }
+            onChangeText: (event) => {
+              handleSearchChange(event.nativeEvent.text);
+            },
+            onCancelButtonPress: () => {
+              handleSearchChange("");
+            }
           }
         }}
       />

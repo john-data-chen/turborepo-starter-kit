@@ -68,7 +68,13 @@ export default function BoardDetailScreen() {
         options={{
           title: board?.title || t("kanban.title"),
           headerLeft: () => (
-            <Pressable onPress={() =>{  router.back(); }} hitSlop={12} style={{ marginRight: 8 }}>
+            <Pressable
+              onPress={() => {
+                router.back();
+              }}
+              hitSlop={12}
+              style={{ marginRight: 8 }}
+            >
               <Image
                 source="sf:chevron.left"
                 style={{ width: 20, height: 20 }}
@@ -99,7 +105,9 @@ export default function BoardDetailScreen() {
               return (
                 <Pressable
                   key={status ?? "ALL"}
-                  onPress={() =>{  setStatusFilter(status); }}
+                  onPress={() => {
+                    setStatusFilter(status);
+                  }}
                   className={isActive ? "bg-primary" : "border border-border"}
                   style={{
                     paddingHorizontal: 14,
