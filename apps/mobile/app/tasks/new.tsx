@@ -169,6 +169,7 @@ export default function NewTaskScreen() {
                   value={dueDate || new Date()}
                   mode="date"
                   display="inline"
+                  minimumDate={new Date()}
                   onChange={(event, date) => {
                     if (date) {
                       setDueDate(date);
@@ -189,6 +190,7 @@ export default function NewTaskScreen() {
                 value={dueDate || new Date()}
                 mode="date"
                 display="default"
+                minimumDate={new Date()}
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (date) {

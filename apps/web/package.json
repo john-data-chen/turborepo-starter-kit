@@ -27,7 +27,7 @@
     "@repo/i18n": "workspace:*",
     "@repo/store": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "catalog:",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@vercel/analytics": "^1.6.1",

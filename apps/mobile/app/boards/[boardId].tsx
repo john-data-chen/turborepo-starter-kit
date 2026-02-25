@@ -56,8 +56,9 @@ export default function BoardDetailScreen() {
     DONE: t("kanban.task.statusDone")
   };
 
-  const primaryColor = useCSSVariable("--color-primary");
   const foregroundColor = useCSSVariable("--color-foreground");
+  const primaryColor = useCSSVariable("--color-primary");
+  const cardColor = useCSSVariable("--color-card");
 
   return (
     <View className="flex-1 bg-background">
@@ -70,16 +71,13 @@ export default function BoardDetailScreen() {
                 router.back();
               }}
               hitSlop={12}
-              style={{ flexDirection: "row", alignItems: "center", gap: 4, marginRight: 8 }}
+              style={{ marginRight: 8 }}
             >
               <Image
                 source="sf:chevron.left"
-                style={{ width: 18, height: 18 }}
+                style={{ width: 20, height: 20 }}
                 tintColor={foregroundColor}
               />
-              <Text style={{ fontSize: 17, color: foregroundColor }}>
-                {t("common.back") || "Back"}
-              </Text>
             </Pressable>
           ),
           headerRight: () =>
@@ -97,7 +95,12 @@ export default function BoardDetailScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 8, gap: 8 }}
+            contentContainerStyle={{
+              paddingHorizontal: 12,
+              paddingRight: 24,
+              paddingVertical: 8,
+              gap: 6
+            }}
           >
             {STATUS_FILTERS.map((status) => {
               const isActive = statusFilter === status;
@@ -108,21 +111,21 @@ export default function BoardDetailScreen() {
                   onPress={() => {
                     setStatusFilter(status);
                   }}
-                  className={isActive ? "bg-primary" : "bg-card"}
                   style={{
-                    paddingHorizontal: 14,
+                    paddingHorizontal: 12,
                     paddingVertical: 6,
                     borderRadius: 16,
                     borderCurve: "continuous",
                     borderWidth: 1,
-                    borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.2)"
+                    borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.15)",
+                    backgroundColor: isActive ? primaryColor : cardColor
                   }}
                 >
                   <Text
                     style={{
                       fontSize: 13,
                       fontWeight: "600",
-                      color: isActive ? "white" : "white"
+                      color: "white"
                     }}
                   >
                     {label}
@@ -134,14 +137,14 @@ export default function BoardDetailScreen() {
             {/* New Project Button */}
             <Link href={`/projects/new?boardId=${boardId}`} asChild>
               <Pressable
-                className="bg-card"
                 style={{
-                  paddingHorizontal: 14,
+                  paddingHorizontal: 12,
                   paddingVertical: 6,
                   borderRadius: 16,
                   borderCurve: "continuous",
                   borderWidth: 1,
-                  borderColor: "rgba(255, 255, 255, 0.2)",
+                  borderColor: "rgba(255, 255, 255, 0.15)",
+                  backgroundColor: cardColor,
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 4

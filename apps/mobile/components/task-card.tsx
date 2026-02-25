@@ -96,11 +96,14 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
         <Link href={`/tasks/${task._id}`} asChild>
           <Link.Trigger>
             <Pressable
-              className="mb-4 gap-3 rounded-xl bg-card p-4"
+              className="rounded-xl bg-card"
               style={{
+                padding: 16,
+                marginBottom: 12,
+                gap: 12,
                 borderCurve: "continuous",
                 borderWidth: 1,
-                borderColor: "rgba(255, 255, 255, 0.15)",
+                borderColor: "rgba(255, 255, 255, 0.25)",
                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)"
               }}
             >
@@ -114,7 +117,7 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
                 <StatusBadge status={task.status || "TODO"} />
               </View>
 
-              <View className="mt-1 flex-row items-center justify-between">
+              <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-1">
                   {task.assignee && (
                     <Text className="text-xs text-muted-foreground">
