@@ -9,7 +9,13 @@
 
 ## Architecture & Engineering Decisions
 
+### web
+
 <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Screen Recording" width="270" height="579">
+
+### mobile
+
+<img src="./apps/mobile/assets/images/simulator-screenshot.png" alt="Screen Recording" width="270" height="579">
 
 A production-grade Kanban application demonstrating monorepo architecture, test-driven development, and modern tooling practices. Originally built as a monolithic Next.js app ([next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit)), then strategically re-architected to a decoupled frontend/backend system, and now expanded to a **multi-platform solution** with shared business logic across Web and Mobile by AI-assisted development.
 
@@ -39,11 +45,11 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 │       (injectable)       config                                  │
 ├───────────────────┬──────────────────┬───────────────────────────┤
 │    apps/web       │   apps/mobile    │   apps/api                │
-│    Next.js        │   Expo (RN)      │   Nest.js                 │
+│    Next.js        │   Expo latest    │   Nest.js                 │
 │    App Router     │   Expo Router    │   Express                 │
-│    Tailwind CSS   │   NativeWind     │   Rspack                  │
+│    Tailwind CSS   │   Nativewind    │   Rspack                  │
 │    localStorage   │   SecureStore    │   MongoDB                 │
-│    next-intl      │   i18next        │                           │
+│    next-intl      │   i18next        │   EventEmitter2           │
 └───────────────────┴──────────────────┴───────────────────────────┘
 ```
 
@@ -54,14 +60,15 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Features
 
-- Drag-and-drop Kanban with multi-project support
-- Custom sorting and synchronization for projects (new)
+- Drag-and-drop Kanban with multi-project support (web) / gesture-driven interactions (mobile)
+- Custom sorting and synchronization for projects and tasks
 - Role-based permissions (Owner / Member)
-- Task assignment with audit tracking
-- Search and filter
-- Theme switching (light/dark)
-- Responsive design (mobile → desktop)
-- i18n (English, German)
+- Task assignment with audit tracking (lastModifier)
+- Search, filter by board ownership (my/team), and status filter (TODO/IN_PROGRESS/DONE)
+- Theme switching (light/dark/system) with persisted preferences on both platforms
+- Native UX patterns: haptic feedback, context menus, formSheet modals, ActionSheet pickers
+- Pull-to-refresh, native search bar (`headerSearchBarOptions`), and platform-specific date pickers
+- i18n (English, German) with device locale detection and persisted language preference
 
 ### Engineering Metrics
 
@@ -90,6 +97,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 **Testing Strategy:**
 
 - Unit tests target store logic, validations, and isolated components
+- **Mobile**: test files covering hooks, API clients, auth service, i18n, theme, and store — with monorepo-aware Vitest config that aliases `react-native` to `react-native-web` and deduplicates React across workspaces
 - E2E tests validate critical flows (auth)
 - Every PR triggers the full pipeline before merge
 
@@ -107,17 +115,18 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 ### Mobile
 
-| Type       | Choice                          | Rationale                                          |
-| ---------- | ------------------------------- | -------------------------------------------------- |
-| Framework  | Expo                            | Rapid iteration, OTA updates, no native build env  |
-| Navigation | Expo Router                     | File-based routing, consistent with Next.js model  |
-| Styling    | NativeWind (Tailwind v4)        | Shared design tokens with web Tailwind CSS         |
-| State      | Zustand (shared)                | Same stores as web via `@repo/store`               |
-| Data Fetch | TanStack Query                  | Same caching strategy as web                       |
-| Animations | React Native Reanimated         | 60fps native-thread animations                     |
-| Storage    | expo-secure-store               | Secure token storage (encrypted keychain/keystore) |
-| i18n       | i18next + expo-localization     | Shared translations via `@repo/i18n`               |
-| Reordering | react-native-draggable-flatlist | Within-column drag; cross-column via ActionSheet   |
+| Type         | Choice                                         | Rationale                                                              |
+| ------------ | ---------------------------------------------- | ---------------------------------------------------------------------- |
+| Framework    | Expo latest                                    | Rapid iteration, OTA updates, New Architecture                         |
+| Navigation   | Expo Router (typed routes)                     | File-based routing, consistent with Next.js model                      |
+| Styling      | Tailwind v4 + react-native-css                 | CSS-native theming with `useCssElement` wrappers, dark/light mode      |
+| State        | Zustand (shared via `@repo/store`)             | Same auth store as web with injectable StorageAdapter                  |
+| Data Fetch   | TanStack Query                                 | Same caching strategy as web, query key factories                      |
+| Gestures     | Gesture Handler + Reanimated                   | Swipe-to-cycle-status, swipe-to-move, spring animations                |
+| Storage      | expo-secure-store                              | Encrypted keychain/keystore for auth tokens                            |
+| i18n         | i18next + expo-localization                    | Shared translations via `@repo/i18n`, persisted language pref          |
+| UX Patterns  | Haptics, Context Menus, FormSheet, ActionSheet | iOS-native interactions: `Link.Menu`, `expo-haptics`, formSheet modals |
+| Optimization | React Compiler (experimental)                  | Enabled via `experiments.reactCompiler` in app.json                    |
 
 ### Backend
 
@@ -230,12 +239,12 @@ pnpm mobile:android        # Start Expo dev server on android emulator
 
 While this monorepo shares business logic across platforms, **React and React Native maintain independent version life cycles**. This is a deliberate architectural choice:
 
-| Concern              | Web (Next.js)                    | Mobile (Expo)                       |
-| -------------------- | -------------------------------- | ----------------------------------- |
-| **React Version**    | Latest stable (via PNPM catalog) | Pinned to Expo SDK requirements     |
-| **Update Cadence**   | Immediate adoption               | Follows Expo SDK release cycle      |
-| **Bundler**          | Turbopack                        | Metro                               |
-| **Version Coupling** | None — independent               | Locked to Expo SDK 54 compatibility |
+| Concern              | Web (Next.js)                    | Mobile (Expo)                           |
+| -------------------- | -------------------------------- | --------------------------------------- |
+| **React Version**    | Latest stable (via PNPM catalog) | Pinned to Expo SDK requirements         |
+| **Update Cadence**   | Immediate adoption               | Follows Expo SDK release cycle          |
+| **Bundler**          | Turbopack                        | Metro                                   |
+| **Version Coupling** | None — independent               | Locked to Expo SDK latest compatibility |
 
 **Why:** Expo SDK releases are tightly coupled to specific React Native and React versions. Attempting to unify versions across platforms would create constant breakage. Turborepo's workspace isolation ensures each app resolves the correct dependency versions without conflict, while `@repo/store` remains version-agnostic (pure TypeScript, no React dependency).
 
@@ -252,6 +261,24 @@ const useAuthStore = createAuthStore(secureStorageAdapter);
 ```
 
 This pattern enables shared state logic without platform-specific imports leaking across boundaries.
+
+### Mobile CSS Wrapper Pattern
+
+The mobile app uses `react-native-css`'s `useCssElement` to bridge Tailwind CSS `className` props to React Native `style` objects. All UI components are imported from `lib/tw/` — never bare React Native:
+
+```typescript
+// lib/tw/index.tsx — wraps RN components with CSS-in-JS support
+import { useCssElement, useNativeVariable } from "react-native-css";
+
+export const View = (props) => useCssElement(RNView, props, { className: "style" });
+export const useCSSVariable = useNativeVariable; // theme-aware CSS custom properties
+
+// Usage in screens:
+import { View, Text, Pressable } from "@/lib/tw";
+<View className="flex-1 items-center justify-center bg-background">
+```
+
+This pattern enables the same Tailwind utility classes on both web and native, with dark mode reactively driven by `Appearance.setColorScheme()` and CSS `@media (prefers-color-scheme)` overrides. Theme colors defined once in `global.css` are consumed by both the Tailwind class engine and `useCSSVariable()` for inline style access.
 
 ### i18n Shared Package
 
@@ -271,12 +298,14 @@ Both `next-intl` and `i18next` use `{variable}` interpolation syntax, enabling t
 
 The mobile app deliberately uses **platform-appropriate interactions** instead of directly porting web drag-and-drop:
 
-| Action                      | Web                   | Mobile                   | Rationale                                                                         |
-| --------------------------- | --------------------- | ------------------------ | --------------------------------------------------------------------------------- |
-| Reorder tasks in column     | Drag & drop           | Long press + drag        | Small range, works well on touch                                                  |
-| Move task to another column | Drag across columns   | Swipe left → ActionSheet | Cross-column drag is poor UX on mobile (screen too small, finger occludes target) |
-| Change task status          | Click status dropdown | Swipe right to cycle     | One-gesture operation, similar to Apple Mail                                      |
-| Edit/delete task            | Click action menu     | Long press context menu  | iOS-native pattern                                                                |
+| Action                      | Web                   | Mobile                                           | Rationale                                                                         |
+| --------------------------- | --------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------- |
+| Reorder tasks in column     | Drag & drop           | Sortable list with `orderInProject`              | Server-synced ordering, no complex drag on small screens                          |
+| Move task to another column | Drag across columns   | Swipe left → iOS ActionSheet / Android Modal     | Cross-column drag is poor UX on mobile (screen too small, finger occludes target) |
+| Change task status          | Click status dropdown | Swipe right → auto-cycle (TODO→IN_PROGRESS→DONE) | One-gesture with haptic feedback, similar to Apple Mail                           |
+| Edit/delete task            | Click action menu     | `Link.Menu` native context menu + haptics        | iOS-native pattern via Expo Router's context menu API                             |
+| Filter tasks by status      | Dropdown/sidebar      | Horizontal scrollable pill bar                   | Touch-friendly filter chips at board detail level                                 |
+| Create board/project/task   | Dialog / inline form  | FormSheet presentation with sheet grabber        | iOS-native modal pattern with keyboard avoidance                                  |
 
 This follows the principle that good cross-platform development means **same goals, platform-appropriate means** — not 1:1 feature porting.
 
@@ -320,20 +349,25 @@ apps/
 │   │           ├── *.controller.ts
 │   │           └── *.module.ts
 │   └── env.example         # Environment variables example
-├── mobile/                 # React Native (Expo) app
-│   ├── app/                # Expo Router file-based routes
-│   │   ├── (auth)/         # Auth routes (login)
-│   │   ├── (tabs)/         # Tab navigation (boards, settings)
-│   │   ├── boards/         # Board detail & form screens
-│   │   ├── projects/       # Project form screens
-│   │   └── tasks/          # Task detail & form screens
-│   ├── components/         # React Native components (board-card, task-card, etc.)
-│   ├── constants/          # API routes, app constants
-│   ├── hooks/              # useAuth, useBoards, useTasks (TanStack Query)
-│   ├── lib/                # API clients, auth service, i18n config, NativeWind wrappers
-│   ├── stores/             # Auth store (SecureStore adapter)
-│   ├── types/              # Environment types
-│   └── global.css          # NativeWind theme (Tailwind v4)
+├── mobile/                 # React Native (Expo SDK 55) app
+│   ├── __tests__/          # Test files: hooks, API clients, auth, i18n, theme (Vitest)
+│   ├── app/                # Expo Router file-based routes (typed routes enabled)
+│   │   ├── (auth)/         # Auth routes (login) — Stack, headerShown: false
+│   │   ├── (tabs)/         # Tab navigation (boards, settings) + error/loading boundaries
+│   │   ├── boards/         # Board detail & form screens (formSheet presentation)
+│   │   ├── projects/       # Project create/edit (formSheet presentation)
+│   │   └── tasks/          # Task detail & new task (formSheet presentation)
+│   ├── components/         # board-card, task-card (swipe gestures), project-column, move-task-sheet
+│   ├── constants/          # API_ROUTES (configurable via EXPO_PUBLIC_API_URL), APP_NAME
+│   ├── hooks/              # useAuth, useBoards, useProjects, useTasks, useUsers (TanStack Query)
+│   ├── lib/                # API clients (fetchWithAuth), auth service, i18n, theme, CSS wrappers
+│   │   ├── api/            # board-api, project-api, task-api, user-api, fetch-with-auth
+│   │   ├── auth/           # auth-service (SecureStore token management)
+│   │   ├── i18n/           # i18next init with @repo/i18n shared translations
+│   │   └── tw/             # CSS wrapper components (View, Text, etc.) via react-native-css
+│   ├── stores/             # Auth store (SecureStore adapter via @repo/store factory)
+│   ├── types/              # Environment types (EXPO_PUBLIC_API_URL)
+│   └── global.css          # Tailwind v4 theme (light/dark CSS custom properties)
 ├── web/                    # Next.js 16 Web app (Cache Components enabled)
 │   ├── __tests__/
 │   │   ├── e2e/            # End-to-end tests (by Playwright)
@@ -561,11 +595,11 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint]
 
 ### React Compiler
 
-| Aspect    | Details                                                                    |
-| --------- | -------------------------------------------------------------------------- |
-| Status    | **Evaluated, deferred**                                                    |
-| Trade-off | +5-10% Lighthouse score vs +30-40% build time                              |
-| Decision  | Build time cost outweighs marginal performance gain for this project scope |
+| Aspect    | Details                                                                                        |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| Status    | **Production on Mobile** (Expo `experiments.reactCompiler`), **deferred on Web**               |
+| Trade-off | Web: +5-10% Lighthouse score vs +30-40% build time; Mobile: no measurable penalty              |
+| Decision  | Enabled on mobile where Metro handles compilation; deferred on web due to Turbopack build cost |
 
 [React Compiler](https://react.dev/learn/react-compiler)
 
