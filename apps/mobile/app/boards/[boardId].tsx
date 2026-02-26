@@ -1,6 +1,6 @@
 import { TaskStatus } from "@repo/store";
 import { Image } from "expo-image";
-import { Link, useLocalSearchParams, Stack } from "expo-router";
+import { Link, useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
@@ -20,6 +20,7 @@ const STATUS_FILTERS: (TaskStatus | null)[] = [
 
 export default function BoardDetailScreen() {
   const { boardId } = useLocalSearchParams<{ boardId: string }>();
+  const router = useRouter();
   const {
     data: board,
     isLoading: isBoardLoading,
@@ -63,6 +64,25 @@ export default function BoardDetailScreen() {
       <Stack.Screen
         options={{
           title: board?.title || t("kanban.title"),
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace("/(tabs)");
+                }
+              }}
+              className="flex-row items-center pr-4 pl-2"
+              hitSlop={8}
+            >
+              <Image
+                source="sf:chevron.left"
+                style={{ width: 18, height: 22 }}
+                tintColor="hsl(180, 20%, 100%)"
+              />
+            </Pressable>
+          ),
           headerRight: () =>
             board ? <BoardActions boardId={board._id} boardTitle={board.title} /> : null
         }}
@@ -81,7 +101,8 @@ export default function BoardDetailScreen() {
             contentContainerStyle={{
               paddingHorizontal: 12,
               paddingVertical: 8,
-              alignItems: "center"
+              alignItems: "center",
+              gap: 8
             }}
           >
             {STATUS_FILTERS.map((status) => {
@@ -95,7 +116,6 @@ export default function BoardDetailScreen() {
                   }}
                   style={{
                     flexShrink: 0,
-                    marginRight: 8,
                     height: 34,
                     justifyContent: "center",
                     paddingHorizontal: 14,
@@ -124,7 +144,6 @@ export default function BoardDetailScreen() {
               <Pressable
                 style={{
                   flexShrink: 0,
-                  marginRight: 12,
                   height: 34,
                   justifyContent: "center",
                   paddingHorizontal: 14,

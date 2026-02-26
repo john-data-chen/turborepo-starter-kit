@@ -6,11 +6,13 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, Alert } from "react-
 
 import { useCreateProject, useUpdateProject, useProjects } from "@/hooks/use-projects";
 import { View, Text, TextInput, Pressable, ScrollView } from "@/lib/tw";
+import { useAuthStore } from "@/stores/auth";
 
 export default function ProjectFormScreen() {
   const { boardId, projectId } = useLocalSearchParams<{ boardId: string; projectId?: string }>();
   const { t } = useTranslation();
   const router = useRouter();
+  const { session } = useAuthStore();
 
   const { data: projects = [], isLoading: isLoadingProjects } = useProjects(boardId);
   const createProjectMutation = useCreateProject();
@@ -47,6 +49,9 @@ export default function ProjectFormScreen() {
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("common.error") || "Error", error.message);
           }
         }
       );
@@ -58,11 +63,15 @@ export default function ProjectFormScreen() {
         {
           title,
           description: description || null,
-          boardId
+          boardId,
+          owner: session?.user._id
         },
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("common.error") || "Error", error.message);
           }
         }
       );
