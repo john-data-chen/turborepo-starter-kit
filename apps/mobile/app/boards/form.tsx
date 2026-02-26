@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
 
 import { useCreateBoard, useUpdateBoard, useBoard } from "@/hooks/use-boards";
-import { View, Text, Pressable, TextInput, useCSSVariable } from "@/lib/tw";
+import { View, Text, Pressable, TextInput, ScrollView, useCSSVariable } from "@/lib/tw";
 import { useAuthStore } from "@/stores/auth";
 
 export default function BoardFormScreen() {
@@ -117,7 +117,11 @@ export default function BoardFormScreen() {
       {isEdit && isBoardLoading ? (
         <ActivityIndicator style={{ marginTop: 40 }} />
       ) : (
-        <View className="gap-4 p-4">
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{ padding: 16, gap: 16 }}
+          keyboardShouldPersistTaps="handled"
+        >
           <View className="gap-2">
             <Text className="font-semibold text-foreground">
               {t("kanban.actions.boardTitleLabel")}
@@ -146,7 +150,7 @@ export default function BoardFormScreen() {
               multiline
             />
           </View>
-        </View>
+        </ScrollView>
       )}
     </KeyboardAvoidingView>
   );

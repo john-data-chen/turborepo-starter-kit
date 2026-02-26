@@ -85,7 +85,12 @@ export default function NewTaskScreen() {
         }}
       />
 
-      <ScrollView className="flex-1 bg-background" contentContainerClassName="p-4 gap-6">
+      <ScrollView
+        className="flex-1 bg-background"
+        contentContainerClassName="p-4 gap-6"
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Title */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">
@@ -169,6 +174,7 @@ export default function NewTaskScreen() {
                   value={dueDate || new Date()}
                   mode="date"
                   display="inline"
+                  minimumDate={new Date()}
                   onChange={(event, date) => {
                     if (date) {
                       setDueDate(date);
@@ -189,6 +195,7 @@ export default function NewTaskScreen() {
                 value={dueDate || new Date()}
                 mode="date"
                 display="default"
+                minimumDate={new Date()}
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (date) {

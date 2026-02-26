@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
 import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { Alert } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -11,7 +12,7 @@ import Animated, {
   runOnJS
 } from "react-native-reanimated";
 
-import { useUpdateTask } from "@/hooks/use-tasks";
+import { useUpdateTask, useDeleteTask } from "@/hooks/use-tasks";
 import { View, Text, Pressable } from "@/lib/tw";
 
 interface TaskCardProps {
@@ -49,6 +50,7 @@ const StatusBadge = ({ status }: { status: TaskStatus }) => {
 export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
   const { t } = useTranslation();
   const updateTaskMutation = useUpdateTask();
+  const deleteTaskMutation = useDeleteTask();
   const translateX = useSharedValue(0);
   const context = useSharedValue(0);
 
@@ -66,6 +68,25 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
     if (onMoveToProject) {
       onMoveToProject();
     }
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      t("kanban.task.confirmDeleteTitle", { title: task.title }) || "Delete Task",
+      t("kanban.task.confirmDeleteDescription", { title: task.title }) ||
+        "Are you sure you want to delete this task?",
+      [
+        { text: t("common.cancel") || "Cancel", style: "cancel" },
+        {
+          text: t("common.delete") || "Delete",
+          style: "destructive",
+          onPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            deleteTaskMutation.mutate(task._id);
+          }
+        }
+      ]
+    );
   };
 
   const pan = Gesture.Pan()
@@ -96,11 +117,14 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
         <Link href={`/tasks/${task._id}`} asChild>
           <Link.Trigger>
             <Pressable
-              className="mb-4 gap-3 rounded-xl bg-card p-4"
+              className="rounded-xl bg-card"
               style={{
+                padding: 16,
+                marginBottom: 12,
+                gap: 12,
                 borderCurve: "continuous",
                 borderWidth: 1,
-                borderColor: "rgba(255, 255, 255, 0.15)",
+                borderColor: "rgba(255, 255, 255, 0.25)",
                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)"
               }}
             >
@@ -114,7 +138,7 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
                 <StatusBadge status={task.status || "TODO"} />
               </View>
 
-              <View className="mt-1 flex-row items-center justify-between">
+              <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-1">
                   {task.assignee && (
                     <Text className="text-xs text-muted-foreground">
@@ -145,7 +169,12 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
               icon="arrow.right.square"
               onPress={handleMoveTo}
             />
-            {/* Delete is handled in detail view or could be added here if we had a delete mutation exposed directly without hook wrapper needing args */}
+            <Link.MenuAction
+              title={t("common.delete") || "Delete"}
+              icon="trash"
+              destructive
+              onPress={handleDelete}
+            />
           </Link.Menu>
         </Link>
       </Animated.View>

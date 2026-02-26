@@ -30,13 +30,13 @@ export const Text = (props: React.ComponentProps<typeof RNText> & { className?: 
 };
 Text.displayName = "CSS(Text)";
 
-export const ScrollView = (
-  props: React.ComponentProps<typeof RNScrollView> & {
-    className?: string;
-    contentContainerClassName?: string;
-  }
-) => {
-  return useCssElement(RNScrollView, props, {
+export type ScrollViewProps = React.ComponentProps<typeof RNScrollView> & {
+  className?: string;
+  contentContainerClassName?: string;
+};
+
+export const ScrollView = (props: ScrollViewProps) => {
+  return (useCssElement as any)(RNScrollView, props, {
     className: "style",
     contentContainerClassName: "contentContainerStyle"
   });
@@ -46,25 +46,25 @@ ScrollView.displayName = "CSS(ScrollView)";
 export const Pressable = (
   props: React.ComponentProps<typeof RNPressable> & { className?: string }
 ) => {
-  return useCssElement(RNPressable, props, { className: "style" });
+  return (useCssElement as any)(RNPressable, props, { className: "style" });
 };
 Pressable.displayName = "CSS(Pressable)";
 
 export const TextInput = (
   props: React.ComponentProps<typeof RNTextInput> & { className?: string }
 ) => {
-  return useCssElement(RNTextInput, props, { className: "style" });
+  return (useCssElement as any)(RNTextInput, props, { className: "style" });
 };
 TextInput.displayName = "CSS(TextInput)";
 
 export const Link = (props: React.ComponentProps<typeof RouterLink> & { className?: string }) => {
-  return useCssElement(RouterLink, props, { className: "style" });
+  return (useCssElement as any)(RouterLink, props, { className: "style" });
 };
 Link.displayName = "CSS(Link)";
 
 export const ActivityIndicator = (
   props: React.ComponentProps<typeof RNActivityIndicator> & { className?: string }
 ) => {
-  return useCssElement(RNActivityIndicator, props, { className: "style" });
+  return (useCssElement as any)(RNActivityIndicator, props, { className: "style" });
 };
 ActivityIndicator.displayName = "CSS(ActivityIndicator)";

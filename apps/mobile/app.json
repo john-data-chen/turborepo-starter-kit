@@ -28,7 +28,14 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "@react-native-community/datetimepicker"],
+    "plugins": [
+      "expo-router",
+      "@react-native-community/datetimepicker",
+      "expo-image",
+      "expo-localization",
+      "expo-secure-store",
+      "expo-web-browser"
+    ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

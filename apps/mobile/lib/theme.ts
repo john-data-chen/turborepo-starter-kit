@@ -18,5 +18,6 @@ export async function saveThemePreference(pref: ThemePreference): Promise<void> 
 }
 
 export function applyThemePreference(pref: ThemePreference): void {
-  Appearance.setColorScheme(pref === "system" ? null : pref);
+  const colorScheme: "light" | "dark" | null = pref === "system" ? null : pref;
+  Appearance.setColorScheme(colorScheme as Parameters<typeof Appearance.setColorScheme>[0]);
 }

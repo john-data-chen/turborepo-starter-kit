@@ -1,6 +1,6 @@
 import { TaskStatus } from "@repo/store";
 import { Image } from "expo-image";
-import { Link, useLocalSearchParams, useRouter, Stack } from "expo-router";
+import { Link, useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
@@ -9,7 +9,7 @@ import { BoardActions } from "@/components/board-actions";
 import { ProjectColumn } from "@/components/project-column";
 import { useBoard } from "@/hooks/use-boards";
 import { useProjects } from "@/hooks/use-projects";
-import { useCSSVariable, View, Text, ScrollView, Pressable, ActivityIndicator } from "@/lib/tw";
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from "@/lib/tw";
 
 const STATUS_FILTERS: (TaskStatus | null)[] = [
   null,
@@ -56,8 +56,8 @@ export default function BoardDetailScreen() {
     DONE: t("kanban.task.statusDone")
   };
 
-  const primaryColor = useCSSVariable("--color-primary");
-  const foregroundColor = useCSSVariable("--color-foreground");
+  const primaryColor = "hsl(180, 75%, 45%)";
+  const cardColor = "hsl(180, 35%, 8%)";
 
   return (
     <View className="flex-1 bg-background">
@@ -67,19 +67,20 @@ export default function BoardDetailScreen() {
           headerLeft: () => (
             <Pressable
               onPress={() => {
-                router.back();
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace("/(tabs)");
+                }
               }}
-              hitSlop={12}
-              style={{ flexDirection: "row", alignItems: "center", gap: 4, marginRight: 8 }}
+              className="flex-row items-center pr-4 pl-2"
+              hitSlop={8}
             >
               <Image
                 source="sf:chevron.left"
-                style={{ width: 18, height: 18 }}
-                tintColor={foregroundColor}
+                style={{ width: 18, height: 22 }}
+                tintColor="hsl(180, 20%, 100%)"
               />
-              <Text style={{ fontSize: 17, color: foregroundColor }}>
-                {t("common.back") || "Back"}
-              </Text>
             </Pressable>
           ),
           headerRight: () =>
@@ -97,7 +98,12 @@ export default function BoardDetailScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 8, gap: 8 }}
+            contentContainerStyle={{
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              alignItems: "center",
+              gap: 8
+            }}
           >
             {STATUS_FILTERS.map((status) => {
               const isActive = statusFilter === status;
@@ -108,21 +114,23 @@ export default function BoardDetailScreen() {
                   onPress={() => {
                     setStatusFilter(status);
                   }}
-                  className={isActive ? "bg-primary" : "bg-card"}
                   style={{
+                    flexShrink: 0,
+                    height: 34,
+                    justifyContent: "center",
                     paddingHorizontal: 14,
-                    paddingVertical: 6,
-                    borderRadius: 16,
+                    borderRadius: 17,
                     borderCurve: "continuous",
                     borderWidth: 1,
-                    borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.2)"
+                    borderColor: isActive ? primaryColor : "rgba(255, 255, 255, 0.15)",
+                    backgroundColor: isActive ? primaryColor : cardColor
                   }}
                 >
                   <Text
                     style={{
                       fontSize: 13,
                       fontWeight: "600",
-                      color: isActive ? "white" : "white"
+                      color: isActive ? "hsl(180, 10%, 98%)" : "hsl(180, 25%, 85%)"
                     }}
                   >
                     {label}
@@ -134,21 +142,27 @@ export default function BoardDetailScreen() {
             {/* New Project Button */}
             <Link href={`/projects/new?boardId=${boardId}`} asChild>
               <Pressable
-                className="bg-card"
                 style={{
+                  flexShrink: 0,
+                  height: 34,
+                  justifyContent: "center",
                   paddingHorizontal: 14,
-                  paddingVertical: 6,
-                  borderRadius: 16,
+                  borderRadius: 17,
                   borderCurve: "continuous",
                   borderWidth: 1,
-                  borderColor: "rgba(255, 255, 255, 0.2)",
+                  borderColor: "rgba(255, 255, 255, 0.15)",
+                  backgroundColor: cardColor,
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 4
                 }}
               >
-                <Image source="sf:plus" style={{ width: 12, height: 12 }} tintColor="white" />
-                <Text style={{ fontSize: 13, fontWeight: "600", color: "white" }}>
+                <Image
+                  source="sf:plus"
+                  style={{ width: 12, height: 12 }}
+                  tintColor="hsl(180, 25%, 85%)"
+                />
+                <Text style={{ fontSize: 13, fontWeight: "600", color: "hsl(180, 25%, 85%)" }}>
                   {t("kanban.project.addProject")}
                 </Text>
               </Pressable>

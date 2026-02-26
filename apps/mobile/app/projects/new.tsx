@@ -1,16 +1,18 @@
 import * as Haptics from "expo-haptics";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Alert } from "react-native";
 
 import { useCreateProject, useUpdateProject, useProjects } from "@/hooks/use-projects";
 import { View, Text, TextInput, Pressable, ScrollView } from "@/lib/tw";
+import { useAuthStore } from "@/stores/auth";
 
 export default function ProjectFormScreen() {
   const { boardId, projectId } = useLocalSearchParams<{ boardId: string; projectId?: string }>();
   const { t } = useTranslation();
   const router = useRouter();
+  const { session } = useAuthStore();
 
   const { data: projects = [], isLoading: isLoadingProjects } = useProjects(boardId);
   const createProjectMutation = useCreateProject();
@@ -47,6 +49,9 @@ export default function ProjectFormScreen() {
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("common.error") || "Error", error.message);
           }
         }
       );
@@ -58,11 +63,15 @@ export default function ProjectFormScreen() {
         {
           title,
           description: description || null,
-          boardId
+          boardId,
+          owner: session?.user._id
         },
         {
           onSuccess: () => {
             router.back();
+          },
+          onError: (error) => {
+            Alert.alert(t("common.error") || "Error", error.message);
           }
         }
       );
@@ -78,6 +87,9 @@ export default function ProjectFormScreen() {
   }
 
   const isPending = createProjectMutation.isPending || updateProjectMutation.isPending;
+
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
 
   return (
     <KeyboardAvoidingView
@@ -100,7 +112,12 @@ export default function ProjectFormScreen() {
             </Pressable>
           ),
           headerRight: () => (
-            <Pressable onPress={handleSave} disabled={isPending}>
+            <Pressable
+              onPress={() => {
+                handleSaveRef.current();
+              }}
+              disabled={isPending}
+            >
               <Text
                 className={`font-semibold ${isPending ? "text-muted-foreground" : "text-primary"}`}
               >
@@ -111,7 +128,12 @@ export default function ProjectFormScreen() {
         }}
       />
 
-      <ScrollView className="flex-1 bg-background" contentContainerClassName="p-4 gap-6">
+      <ScrollView
+        className="flex-1 bg-background"
+        contentContainerClassName="p-4 gap-6"
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Title */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">

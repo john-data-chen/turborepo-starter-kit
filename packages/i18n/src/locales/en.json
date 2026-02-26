@@ -16,7 +16,7 @@
   },
   "sidebar": {
     "title": "{appName}",
-    "overview": "Overview",
+    "overview": "Board Overview",
     "myBoards": "My Boards",
     "teamBoards": "Team Boards",
     "loading": "Loading..."
@@ -41,6 +41,7 @@
     "noTeamBoardsFound": "No team boards found.",
     "owner": "Owner",
     "actions": {
+      "actions": "Actions",
       "error": "Error",
       "editBoardTitle": "Edit Board",
       "editBoardDescription": "Make changes to your board here. Click save when you're done.",
