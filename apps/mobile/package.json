@@ -12,7 +12,9 @@
     "expo:upgrade": "npx expo install expo@latest && npx expo install --fix",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/mobile",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
@@ -54,10 +56,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react": "catalog:",
+    "@testing-library/react-native": "^13.3.3",
     "@types/i18next": "^13.0.0",
     "@types/react": "~19.2.14",
-    "react-test-renderer": "19.2.0",
+    "@vitest/coverage-v8": "catalog:",
+    "happy-dom": "^20.7.0",
     "tailwindcss": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }
