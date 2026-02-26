@@ -345,7 +345,7 @@ apps/
 │   │           ├── *.controller.ts
 │   │           └── *.module.ts
 │   └── env.example         # Environment variables example
-├── mobile/                 # React Native (Expo SDK 55) app
+├── mobile/                 # React Native (Expo SDK) app
 │   ├── __tests__/          # Test files: hooks, API clients, auth, i18n, theme (Vitest)
 │   ├── app/                # Expo Router file-based routes (typed routes enabled)
 │   │   ├── (auth)/         # Auth routes (login) — Stack, headerShown: false
@@ -363,8 +363,8 @@ apps/
 │   │   └── tw/             # CSS wrapper components (View, Text, etc.) via react-native-css
 │   ├── stores/             # Auth store (SecureStore adapter via @repo/store factory)
 │   ├── types/              # Environment types (EXPO_PUBLIC_API_URL)
-│   └── global.css          # Tailwind v4 theme (light/dark CSS custom properties)
-├── web/                    # Next.js 16 Web app (Cache Components enabled)
+│   └── global.css          # Tailwind theme (light/dark CSS custom properties)
+├── web/                    # Next.js Web app (Cache Components enabled)
 │   ├── __tests__/
 │   │   ├── e2e/            # End-to-end tests (by Playwright)
 │   │   └── unit/           # Unit tests (by Vitest)
@@ -495,15 +495,15 @@ Based on and refined from [nestjs-best-practices](https://github.com/davila7/cla
 
 Based on [expo-skills](https://github.com/expo/skills)
 
-| Skill                  | Purpose                           | When to Use                                                            |
-| :--------------------- | :-------------------------------- | :--------------------------------------------------------------------- |
-| `building-native-ui`   | Expo Router UI guide              | Building screens, navigation, animations, native tabs, or styling      |
-| `expo-api-routes`      | Expo Router API routes            | Creating server-side API endpoints with EAS Hosting                    |
-| `expo-dev-client`      | Dev client builds & TestFlight    | Custom native code, Apple targets, or third-party native modules       |
-| `expo-tailwind-setup`  | Tailwind v4 + NativeWind v5 setup | Setting up or configuring Tailwind CSS styling in Expo                 |
-| `native-data-fetching` | Networking & data fetching        | Any API call, fetch, caching, offline support, or auth token handling  |
-| `upgrading-expo`       | Expo SDK upgrades                 | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
-| `use-dom`              | DOM components for web-in-native  | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
+| Skill                  | Purpose                          | When to Use                                                            |
+| :--------------------- | :------------------------------- | :--------------------------------------------------------------------- |
+| `building-native-ui`   | Expo Router UI guide             | Building screens, navigation, animations, native tabs, or styling      |
+| `expo-api-routes`      | Expo Router API routes           | Creating server-side API endpoints with EAS Hosting                    |
+| `expo-dev-client`      | Dev client builds & TestFlight   | Custom native code, Apple targets, or third-party native modules       |
+| `expo-tailwind-setup`  | Tailwind + NativeWind setup      | Setting up or configuring Tailwind CSS styling in Expo                 |
+| `native-data-fetching` | Networking & data fetching       | Any API call, fetch, caching, offline support, or auth token handling  |
+| `upgrading-expo`       | Expo SDK upgrades                | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
+| `use-dom`              | DOM components for web-in-native | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
 **Web Skills** (`ai_docs/skills/web/`)
 
