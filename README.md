@@ -119,7 +119,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 | ------------ | ---------------------------------------------- | ---------------------------------------------------------------------- |
 | Framework    | Expo latest                                    | Rapid iteration, OTA updates, New Architecture                         |
 | Navigation   | Expo Router (typed routes)                     | File-based routing, consistent with Next.js model                      |
-| Styling      | Tailwind v4 + react-native-css                 | CSS-native theming with `useCssElement` wrappers, dark/light mode      |
+| Styling      | Nativewind + react-native-css                  | CSS-native theming with `useCssElement` wrappers, dark/light mode      |
 | State        | Zustand (shared via `@repo/store`)             | Same auth store as web with injectable StorageAdapter                  |
 | Data Fetch   | TanStack Query                                 | Same caching strategy as web, query key factories                      |
 | Gestures     | Gesture Handler + Reanimated                   | Swipe-to-cycle-status, swipe-to-move, spring animations                |
@@ -217,18 +217,14 @@ docker-compose up -d
 # initialize mongodb in root folder
 pnpm init-db
 
-# Run Web + API
-pnpm dev                   # Development (all apps)
-pnpm test                  # Unit tests
-pnpm playwright:install    # Install browsers before E2E tests
-pnpm playwright            # E2E tests
-pnpm storybook             # Execute Storybook
-pnpm storybook:test        # Run Storybook interaction tests
-pnpm build                 # Production build
-
-# Run Mobile
-pnpm mobile                # Start Expo dev server on ios simulator
-pnpm mobile:android        # Start Expo dev server on android emulator
+# Basic Commands
+pnpm dev                   # Development (including api, web and ios simulator)
+pnpm test                  # Unit tests (including api, web and mobile)
+pnpm playwright:install    # Install browsers before E2E tests for web
+pnpm playwright            # E2E tests for web
+pnpm storybook             # Execute Storybook for web UI components
+pnpm storybook:test        # Run Storybook interaction tests for web UI components
+pnpm build                 # Production build (including api, web and mobile)
 ```
 
 ---
