@@ -84,7 +84,8 @@ describe("useAuth", () => {
     await result.current.logout();
 
     expect(authService.logout).toHaveBeenCalled();
-    const { clear } = vi.mocked(useAuthStore).mock.results[0]?.value;
+    const mockValue = vi.mocked(useAuthStore).mock.results[0]?.value;
+    const { clear } = mockValue ?? {};
     expect(clear).toHaveBeenCalled();
   });
 
