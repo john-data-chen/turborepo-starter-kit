@@ -1,6 +1,6 @@
 import * as Haptics from "expo-haptics";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Alert } from "react-native";
 
@@ -79,6 +79,9 @@ export default function ProjectFormScreen() {
 
   const isPending = createProjectMutation.isPending || updateProjectMutation.isPending;
 
+  const handleSaveRef = useRef(handleSave);
+  handleSaveRef.current = handleSave;
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -100,7 +103,12 @@ export default function ProjectFormScreen() {
             </Pressable>
           ),
           headerRight: () => (
-            <Pressable onPress={handleSave} disabled={isPending}>
+            <Pressable
+              onPress={() => {
+                handleSaveRef.current();
+              }}
+              disabled={isPending}
+            >
               <Text
                 className={`font-semibold ${isPending ? "text-muted-foreground" : "text-primary"}`}
               >
@@ -111,7 +119,12 @@ export default function ProjectFormScreen() {
         }}
       />
 
-      <ScrollView className="flex-1 bg-background" contentContainerClassName="p-4 gap-6">
+      <ScrollView
+        className="flex-1 bg-background"
+        contentContainerClassName="p-4 gap-6"
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Title */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">

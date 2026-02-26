@@ -85,7 +85,12 @@ export default function NewTaskScreen() {
         }}
       />
 
-      <ScrollView className="flex-1 bg-background" contentContainerClassName="p-4 gap-6">
+      <ScrollView
+        className="flex-1 bg-background"
+        contentContainerClassName="p-4 gap-6"
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Title */}
         <View className="gap-2">
           <Text className="text-sm font-medium text-muted-foreground">

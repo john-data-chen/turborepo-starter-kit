@@ -9,7 +9,7 @@ import { BoardActions } from "@/components/board-actions";
 import { ProjectColumn } from "@/components/project-column";
 import { useBoard } from "@/hooks/use-boards";
 import { useProjects } from "@/hooks/use-projects";
-import { useCSSVariable, View, Text, ScrollView, Pressable, ActivityIndicator } from "@/lib/tw";
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from "@/lib/tw";
 
 const STATUS_FILTERS: (TaskStatus | null)[] = [
   null,
@@ -55,16 +55,14 @@ export default function BoardDetailScreen() {
     DONE: t("kanban.task.statusDone")
   };
 
-  const primaryColor = useCSSVariable("--color-primary");
-  const cardColor = useCSSVariable("--color-card");
+  const primaryColor = "hsl(180, 75%, 45%)";
+  const cardColor = "hsl(180, 35%, 8%)";
 
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
           title: board?.title || t("kanban.title"),
-          headerBackButtonDisplayMode: "minimal",
-          headerLeft: undefined,
           headerRight: () =>
             board ? <BoardActions boardId={board._id} boardTitle={board.title} /> : null
         }}
@@ -104,7 +102,7 @@ export default function BoardDetailScreen() {
                     borderRadius: 17,
                     borderCurve: "continuous",
                     borderWidth: 1,
-                    borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.15)",
+                    borderColor: isActive ? primaryColor : "rgba(255, 255, 255, 0.15)",
                     backgroundColor: isActive ? primaryColor : cardColor
                   }}
                 >
