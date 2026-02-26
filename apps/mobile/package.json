@@ -4,10 +4,10 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "android": "expo start --android --clear",
+    "android": "expo start --android",
     "build": "tsc --noEmit",
     "build:eas": "eas build",
-    "dev": "expo start --ios --clear",
+    "dev": "expo start --ios",
     "expo:fix": "npx expo install --fix",
     "expo:upgrade": "npx expo install expo@latest && npx expo install --fix",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/mobile",

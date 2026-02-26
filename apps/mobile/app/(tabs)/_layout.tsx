@@ -8,7 +8,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerTitleStyle: { fontSize: 18 },
+        headerStyle: { backgroundColor: "hsl(180, 35%, 5%)" },
+        headerTitleStyle: { fontSize: 18, color: "hsl(180, 20%, 100%)" },
+        headerTintColor: "hsl(180, 20%, 100%)",
+        tabBarStyle: { backgroundColor: "hsl(180, 35%, 5%)", borderTopColor: "hsl(180, 20%, 18%)" },
+        tabBarActiveTintColor: "hsl(180, 75%, 45%)",
+        tabBarInactiveTintColor: "hsl(180, 25%, 85%)",
         tabBarLabelStyle: { fontSize: 12, fontWeight: "500" }
       }}
     >

@@ -16,7 +16,7 @@
   },
   "sidebar": {
     "title": "{appName}",
-    "overview": "Overview",
+    "overview": "Board Overview",
     "myBoards": "My Boards",
     "teamBoards": "Team Boards",
     "loading": "Loading..."

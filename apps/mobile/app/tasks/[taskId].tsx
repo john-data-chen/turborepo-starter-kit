@@ -132,18 +132,8 @@ export default function TaskDetailScreen() {
       <Stack.Screen
         options={{
           title: t("kanban.task.editTaskTitle") || "Edit Task",
-          headerLeft: () => (
-            <Pressable
-              onPress={() => {
-                router.back();
-              }}
-              hitSlop={12}
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            >
-              <Image source="sf:chevron.left" style={{ width: 18, height: 18 }} tintColor="white" />
-              <Text style={{ fontSize: 17, color: "white" }}>{t("common.back") || "Back"}</Text>
-            </Pressable>
-          ),
+          headerBackButtonDisplayMode: "minimal",
+          headerLeft: undefined,
           headerRight: () => (
             <Pressable
               onPress={() => {

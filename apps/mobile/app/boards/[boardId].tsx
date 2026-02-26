@@ -1,6 +1,6 @@
 import { TaskStatus } from "@repo/store";
 import { Image } from "expo-image";
-import { Link, useLocalSearchParams, useRouter, Stack } from "expo-router";
+import { Link, useLocalSearchParams, Stack } from "expo-router";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
@@ -20,7 +20,6 @@ const STATUS_FILTERS: (TaskStatus | null)[] = [
 
 export default function BoardDetailScreen() {
   const { boardId } = useLocalSearchParams<{ boardId: string }>();
-  const router = useRouter();
   const {
     data: board,
     isLoading: isBoardLoading,
@@ -56,7 +55,6 @@ export default function BoardDetailScreen() {
     DONE: t("kanban.task.statusDone")
   };
 
-  const foregroundColor = useCSSVariable("--color-foreground");
   const primaryColor = useCSSVariable("--color-primary");
   const cardColor = useCSSVariable("--color-card");
 
@@ -65,21 +63,8 @@ export default function BoardDetailScreen() {
       <Stack.Screen
         options={{
           title: board?.title || t("kanban.title"),
-          headerLeft: () => (
-            <Pressable
-              onPress={() => {
-                router.back();
-              }}
-              hitSlop={12}
-              style={{ marginRight: 8 }}
-            >
-              <Image
-                source="sf:chevron.left"
-                style={{ width: 20, height: 20 }}
-                tintColor={foregroundColor}
-              />
-            </Pressable>
-          ),
+          headerBackButtonDisplayMode: "minimal",
+          headerLeft: undefined,
           headerRight: () =>
             board ? <BoardActions boardId={board._id} boardTitle={board.title} /> : null
         }}
@@ -97,9 +82,8 @@ export default function BoardDetailScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               paddingHorizontal: 12,
-              paddingRight: 24,
               paddingVertical: 8,
-              gap: 6
+              alignItems: "center"
             }}
           >
             {STATUS_FILTERS.map((status) => {
@@ -112,9 +96,12 @@ export default function BoardDetailScreen() {
                     setStatusFilter(status);
                   }}
                   style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 16,
+                    flexShrink: 0,
+                    marginRight: 8,
+                    height: 34,
+                    justifyContent: "center",
+                    paddingHorizontal: 14,
+                    borderRadius: 17,
                     borderCurve: "continuous",
                     borderWidth: 1,
                     borderColor: isActive ? "transparent" : "rgba(255, 255, 255, 0.15)",
@@ -125,7 +112,7 @@ export default function BoardDetailScreen() {
                     style={{
                       fontSize: 13,
                       fontWeight: "600",
-                      color: "white"
+                      color: isActive ? "hsl(180, 10%, 98%)" : "hsl(180, 25%, 85%)"
                     }}
                   >
                     {label}
@@ -138,9 +125,12 @@ export default function BoardDetailScreen() {
             <Link href={`/projects/new?boardId=${boardId}`} asChild>
               <Pressable
                 style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  borderRadius: 16,
+                  flexShrink: 0,
+                  marginRight: 12,
+                  height: 34,
+                  justifyContent: "center",
+                  paddingHorizontal: 14,
+                  borderRadius: 17,
                   borderCurve: "continuous",
                   borderWidth: 1,
                   borderColor: "rgba(255, 255, 255, 0.15)",
@@ -150,8 +140,12 @@ export default function BoardDetailScreen() {
                   gap: 4
                 }}
               >
-                <Image source="sf:plus" style={{ width: 12, height: 12 }} tintColor="white" />
-                <Text style={{ fontSize: 13, fontWeight: "600", color: "white" }}>
+                <Image
+                  source="sf:plus"
+                  style={{ width: 12, height: 12 }}
+                  tintColor="hsl(180, 25%, 85%)"
+                />
+                <Text style={{ fontSize: 13, fontWeight: "600", color: "hsl(180, 25%, 85%)" }}>
                   {t("kanban.project.addProject")}
                 </Text>
               </Pressable>

@@ -57,7 +57,11 @@ export function BoardActions({ boardId, boardTitle }: BoardActionsProps) {
       hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       style={{ padding: 4 }}
     >
-      <Image source="sf:ellipsis" style={{ width: 22, height: 22 }} tintColor="white" />
+      <Image
+        source="sf:ellipsis"
+        style={{ width: 22, height: 22 }}
+        tintColor="hsl(180, 20%, 100%)"
+      />
     </Pressable>
   );
 }
