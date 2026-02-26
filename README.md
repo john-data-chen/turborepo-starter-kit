@@ -47,7 +47,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 │    apps/web       │   apps/mobile    │   apps/api                │
 │    Next.js        │   Expo latest    │   Nest.js                 │
 │    App Router     │   Expo Router    │   Express                 │
-│    Tailwind CSS   │   Nativewind    │   Rspack                  │
+│    Tailwind CSS   │   Nativewind     │   Rspack                  │
 │    localStorage   │   SecureStore    │   MongoDB                 │
 │    next-intl      │   i18next        │   EventEmitter2           │
 └───────────────────┴──────────────────┴───────────────────────────┘
