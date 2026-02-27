@@ -34,21 +34,21 @@
     "cmdk": "^1.1.1",
     "lucide-react": "catalog:",
     "radix-ui": "latest",
-    "react-day-picker": "^9.13.2",
+    "react-day-picker": "^9.14.0",
     "react-hook-form": "catalog:",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.2.12",
-    "@storybook/addon-docs": "^10.2.12",
-    "@storybook/addon-links": "^10.2.12",
-    "@storybook/addon-themes": "^10.2.12",
-    "@storybook/react": "^10.2.12",
-    "@storybook/react-vite": "^10.2.12",
+    "@storybook/addon-a11y": "^10.2.13",
+    "@storybook/addon-docs": "^10.2.13",
+    "@storybook/addon-links": "^10.2.13",
+    "@storybook/addon-themes": "^10.2.13",
+    "@storybook/react": "^10.2.13",
+    "@storybook/react-vite": "^10.2.13",
     "@storybook/test-runner": "^0.24.2",
     "global-tsconfig": "workspace:*",
-    "storybook": "^10.2.12"
+    "storybook": "^10.2.13"
   },
   "peerDependencies": {
     "react": "catalog:",
