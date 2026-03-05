@@ -166,7 +166,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 Local Development:
 
-Create a `.env (.env.test for testing)` file in the project root with the following variables:
+Create a `.env (.env.test for testing)` file in the `apps/api` with the following variables:
 
 ```text
 # Application Environment
@@ -204,11 +204,14 @@ JWT_SECRET=[your_secret]
 ```bash
 pnpm install
 
-# Environment
+# API Environment
 cp apps/api/env.example apps/api/.env
 
 # Generate Secret and replace NEXTAUTH_SECRET in .env
 openssl rand -base64 32
+
+# Web Environment
+cp apps/web/env.example apps/webs/.env
 
 # start mongodb by docker-compose
 cd /apps/api/database
