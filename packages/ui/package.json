@@ -46,8 +46,10 @@
     "@storybook/addon-themes": "^10.2.15",
     "@storybook/react": "^10.2.15",
     "@storybook/react-vite": "^10.2.15",
-    "@storybook/test-runner": "^0.24.2",
+    "@storybook/test-runner": "0.24.2",
     "global-tsconfig": "workspace:*",
+    "playwright": "1.58.2",
+    "playwright-core": "1.58.2",
     "storybook": "^10.2.15"
   },
   "peerDependencies": {
