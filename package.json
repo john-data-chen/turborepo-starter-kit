@@ -47,9 +47,9 @@
     }
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.3",
-    "@commitlint/config-conventional": "^20.4.3",
-    "@commitlint/cz-commitlint": "^20.4.3",
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
+    "@commitlint/cz-commitlint": "^20.4.4",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
@@ -61,11 +61,11 @@
     "husky": "^9.1.7",
     "jsdom": "catalog:",
     "lint-staged": "^16.3.3",
-    "oxfmt": "^0.37.0",
-    "oxlint": "^1.52.0",
+    "oxfmt": "^0.39.0",
+    "oxlint": "^1.54.0",
     "oxlint-tsgolint": "^0.16.0",
     "start-server-and-test": "^2.1.5",
-    "turbo": "^2.8.15",
+    "turbo": "^2.8.16",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
