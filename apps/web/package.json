@@ -30,7 +30,7 @@
     "@tailwindcss/postcss": "catalog:",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-query-devtools": "^5.91.3",
-    "@vercel/analytics": "^1.6.1",
+    "@vercel/analytics": "^2.0.1",
     "class-variance-authority": "catalog:",
     "date-fns": "^4.1.0",
     "js-cookie": "^3.0.5",

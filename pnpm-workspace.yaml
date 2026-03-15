@@ -9,7 +9,7 @@ catalog:
   "@types/node": ^24.12.0
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
-  "@vitest/coverage-v8": ^4.0.18
+  "@vitest/coverage-v8": ^4.1.0
   class-variance-authority: ^0.7.1
   dotenv: ^17.3.1
   jsdom: ^28.1.0
@@ -20,7 +20,7 @@ catalog:
   tailwindcss: ^4.2.1
   "@tailwindcss/postcss": ^4.2.1
   typescript: ^5.9.3
-  vitest: ^4.0.18
+  vitest: ^4.1.0
   zod: ^4.3.6
   zustand: ^5.0.11
 
