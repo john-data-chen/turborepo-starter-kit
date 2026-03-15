@@ -29,7 +29,7 @@
     "test": "turbo test",
     "test:watch": "turbo run test:watch"
   },
-  "packageManager": "pnpm@10.32.0",
+  "packageManager": "pnpm@10.32.1",
   "engines": {
     "node": ">=24.14.0"
   },
@@ -60,12 +60,12 @@
     "dotenv": "catalog:",
     "husky": "^9.1.7",
     "jsdom": "catalog:",
-    "lint-staged": "^16.3.3",
-    "oxfmt": "^0.39.0",
-    "oxlint": "^1.54.0",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.40.0",
+    "oxlint": "^1.55.0",
     "oxlint-tsgolint": "^0.16.0",
     "start-server-and-test": "^2.1.5",
-    "turbo": "^2.8.16",
+    "turbo": "^2.8.17",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
