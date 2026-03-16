@@ -11317,7 +11317,7 @@ snapshots:
       terminal-link: 2.1.1
       toqr: 0.1.1
       wrap-ansi: 7.0.0
-      ws: 8.18.3
+      ws: 8.19.0
       zod: 3.25.76
     optionalDependencies:
       expo-router: 55.0.5(bc258b725aecfe6593a87e02c9a55ee3)
