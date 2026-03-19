@@ -65,7 +65,7 @@
     "oxlint": "^1.56.0",
     "oxlint-tsgolint": "^0.17.0",
     "start-server-and-test": "^2.1.5",
-    "turbo": "^2.8.17",
+    "turbo": "^2.8.19",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
