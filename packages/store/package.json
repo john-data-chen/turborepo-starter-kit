@@ -12,7 +12,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsgo --noEmit",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json packages/store",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
