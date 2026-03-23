@@ -55,6 +55,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@typescript/native-preview": "7.0.0-dev.20260323.1",
     "@vitest/coverage-v8": "catalog:",
     "commitizen": "^4.3.1",
     "dotenv": "catalog:",

@@ -5,7 +5,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "android": "expo start --android",
-    "build": "tsc --noEmit",
+    "build": "tsgo --noEmit",
     "build:eas": "eas build",
     "dev": "expo start --ios",
     "expo:fix": "npx expo install --fix",

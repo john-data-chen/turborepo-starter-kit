@@ -10,7 +10,7 @@
     "./locales/de": "./src/locales/de.json"
   },
   "scripts": {
-    "build": "tsc --noEmit"
+    "build": "tsgo --noEmit"
   },
   "devDependencies": {
     "global-tsconfig": "workspace:*",
