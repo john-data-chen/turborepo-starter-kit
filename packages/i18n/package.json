@@ -13,7 +13,7 @@
     "build": "tsgo --noEmit"
   },
   "devDependencies": {
-    "global-tsconfig": "workspace:*",
-    "typescript": "catalog:"
+    "@typescript/native-preview": "catalog:",
+    "global-tsconfig": "workspace:*"
   }
 }

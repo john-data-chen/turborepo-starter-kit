@@ -55,7 +55,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@typescript/native-preview": "7.0.0-dev.20260323.1",
+    "@typescript/native-preview": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "commitizen": "^4.3.1",
     "dotenv": "catalog:",
@@ -67,7 +67,6 @@
     "oxlint-tsgolint": "^0.17.1",
     "start-server-and-test": "^2.1.5",
     "turbo": "^2.8.20",
-    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "pnpm": {

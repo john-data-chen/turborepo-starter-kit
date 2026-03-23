@@ -21,6 +21,7 @@
     "zustand": "catalog:"
   },
   "devDependencies": {
+    "@typescript/native-preview": "catalog:",
     "global-tsconfig": "workspace:*"
   }
 }
