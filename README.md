@@ -592,7 +592,7 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 
 [Rspack](https://github.com/web-infra-dev/rspack)
 
-### TypeScript 7 (Native Port)
+### TypeScript 7
 
 | Aspect    | Details                                                                                   |
 | --------- | ----------------------------------------------------------------------------------------- |
