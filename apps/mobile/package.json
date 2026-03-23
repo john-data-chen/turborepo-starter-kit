@@ -61,10 +61,10 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/i18next": "^13.0.0",
     "@types/react": "~19.2.14",
+    "@typescript/native-preview": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "happy-dom": "^20.7.0",
     "tailwindcss": "catalog:",
-    "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }

@@ -556,18 +556,18 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 
 | Aspect           | Details                                               |
 | ---------------- | ----------------------------------------------------- |
-| Status           | **Production** - core linting enabled                 |
+| Status           | **Production** - core and type-aware linting enabled  |
 | Performance      | 50-100x faster than ESLint                            |
 | DX Improvement   | Clearer error messages, simpler config than ESLint 9+ |
 | Migration Impact | Removed 10 ESLint packages from dependency tree       |
 
-Type-aware rules are available but kept in evaluation for this project. [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) | [Type-Aware Linting](https://oxc.rs/docs/guide/usage/linter/type-aware.html)
+[Oxlint](https://oxc.rs/docs/guide/usage/linter.html) | [Type-Aware Linting](https://oxc.rs/docs/guide/usage/linter/type-aware.html)
 
 ### Oxfmt (Rust-based Formatter)
 
 | Aspect      | Details                                          |
 | ----------- | ------------------------------------------------ |
-| Status      | **Evaluation** - enabled for evaluation          |
+| Status      | **Production** - enabled                         |
 | Performance | 30x faster than Prettier with instant cold start |
 
 [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)
@@ -592,17 +592,16 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint]
 
 [Rspack](https://github.com/web-infra-dev/rspack)
 
-### TypeScript 7 (Native Port)
+### TypeScript 7
 
-| Aspect    | Details                                                                                              |
-| --------- | ---------------------------------------------------------------------------------------------------- |
-| Status    | **Monitoring** - tracking for future adoption                                                        |
-| What      | A native port of the TypeScript compiler from JavaScript to Go, releasing as TypeScript 7            |
-| Build     | ~10x faster `tsc` builds across popular codebases (VS Code, Playwright, TypeORM, etc.)               |
-| Editor    | ~8x faster project load time (e.g. VS Code codebase: 9.6s → 1.2s) with LSP migration                 |
-| Memory    | ~50% reduction in memory usage compared to the JS-based compiler                                     |
-| Roadmap   | TS 6 (JS) continues maintenance; TS 7 (native, codename "Corsa") releases when feature parity is met |
-| Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness                    |
+| Aspect    | Details                                                                                   |
+| --------- | ----------------------------------------------------------------------------------------- |
+| Status    | **Evaluation** - tracking for future adoption                                             |
+| What      | A native port of the TypeScript compiler from JavaScript to Go, releasing as TypeScript 7 |
+| Build     | ~10x faster `tsc` builds across popular codebases (VS Code, Playwright, TypeORM, etc.)    |
+| Editor    | ~8x faster project load time (e.g. VS Code codebase: 9.6s → 1.2s) with LSP migration      |
+| Memory    | ~50% reduction in memory usage compared to the JS-based compiler                          |
+| Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness         |
 
 [TypeScript Native Port](https://devblogs.microsoft.com/typescript/typescript-native-port/) | [typescript-go repo](https://github.com/microsoft/typescript-go)
 
