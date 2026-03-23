@@ -592,6 +592,20 @@ Type-aware rules are available but kept in evaluation for this project. [Oxlint]
 
 [Rspack](https://github.com/web-infra-dev/rspack)
 
+### TypeScript 7 (Native Port)
+
+| Aspect    | Details                                                                                              |
+| --------- | ---------------------------------------------------------------------------------------------------- |
+| Status    | **Monitoring** - tracking for future adoption                                                        |
+| What      | A native port of the TypeScript compiler from JavaScript to Go, releasing as TypeScript 7            |
+| Build     | ~10x faster `tsc` builds across popular codebases (VS Code, Playwright, TypeORM, etc.)               |
+| Editor    | ~8x faster project load time (e.g. VS Code codebase: 9.6s → 1.2s) with LSP migration                 |
+| Memory    | ~50% reduction in memory usage compared to the JS-based compiler                                     |
+| Roadmap   | TS 6 (JS) continues maintenance; TS 7 (native, codename "Corsa") releases when feature parity is met |
+| Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness                    |
+
+[TypeScript Native Port](https://devblogs.microsoft.com/typescript/typescript-native-port/) | [typescript-go repo](https://github.com/microsoft/typescript-go)
+
 ### React Compiler
 
 | Aspect    | Details                                                                                        |
