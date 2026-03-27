@@ -64,8 +64,8 @@
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.42.0",
     "oxlint": "^1.57.0",
-    "oxlint-tsgolint": "^0.17.3",
-    "start-server-and-test": "^2.1.5",
+    "oxlint-tsgolint": "^0.17.4",
+    "start-server-and-test": "^3.0.0",
     "turbo": "^2.8.20",
     "vitest": "catalog:"
   },
