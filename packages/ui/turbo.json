@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [],
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        ".storybook/**/*"
+      ]
+    },
+    "build-storybook": {
+      "outputs": ["storybook-static/**"]
+    },
+    "test-storybook": {
+      "cache": false
+    }
+  }
+}

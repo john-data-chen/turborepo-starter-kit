@@ -5,8 +5,6 @@
     "ENABLE_EXPERIMENTAL_COREPACK"
   ],
   "globalDependencies": [
-    "**/.env.*",
-    "packages/linter-config/*",
     "packages/global-tsconfig/*"
   ],
   "tasks": {
@@ -15,8 +13,6 @@
         "^build"
       ],
       "outputs": [
-        ".next/**",
-        "!.next/cache/**",
         "dist/**"
       ]
     },
@@ -44,97 +40,6 @@
       "dependsOn": [
         "^build"
       ]
-    },
-    "@repo/store#build": {
-      "dependsOn": [],
-      "outputs": []
-    },
-    "@repo/ui#build": {
-      "dependsOn": [],
-      "outputs": []
-    },
-    "@repo/ui#storybook": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": [],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        ".storybook/**/*"
-      ]
-    },
-    "@repo/ui#build-storybook": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "storybook-static/**"
-      ]
-    },
-    "@repo/ui#test-storybook": {
-      "cache": false,
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "web#build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ]
-    },
-    "api#build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
-    },
-    "mobile#dev": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "mobile#build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": []
-    },
-    "mobile#ios": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "mobile#android": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "mobile#web": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "mobile#build:eas": {
-      "cache": false
-    },
-    "mobile#expo:upgrade": {
-      "cache": false
-    },
-    "mobile#expo:fix": {
-      "cache": false
     },
     "lint": {
       "inputs": [
