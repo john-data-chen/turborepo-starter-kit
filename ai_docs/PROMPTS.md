@@ -53,6 +53,7 @@ When a task matches conditions below, load the corresponding skill **before writ
 | Component API design, compound components, boolean prop cleanup, render props      | `vercel-composition-patterns` |
 | React/Next.js performance: re-renders, bundle size, waterfalls, memoization        | `vercel-react-best-practices` |
 | UI review, accessibility audit, UX compliance, design guidelines                   | `web-design-guidelines`       |
+| Turborepo best practices                                                           | `turborepo`                   |
 
 ## Project Overview
 

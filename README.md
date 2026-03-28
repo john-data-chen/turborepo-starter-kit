@@ -510,15 +510,16 @@ Based on [expo-skills](https://github.com/expo/skills)
 
 **Web Skills** (`ai_docs/skills/web/`)
 
-Based on [next-skills](https://github.com/vercel-labs/next-skills) and [vercel agent-skills](https://github.com/vercel-labs/agent-skills)
+Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 
-| Skill                         | Purpose                     | When to Use                                                                   |
-| :---------------------------- | :-------------------------- | :---------------------------------------------------------------------------- |
-| `next-best-practices`         | Next.js best practices      | Writing, reviewing, or refactoring Next.js code                               |
-| `next-cache-components`       | Next.js 16 cache components | Implementing `use cache`, PPR, cacheLife, cacheTag, or updateTag              |
-| `vercel-composition-patterns` | React composition patterns  | Refactoring components, building reusable component APIs, compound components |
-| `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance         |
-| `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                         |
+| Skill                         | Purpose                     | When to Use                                                                                         |
+| :---------------------------- | :-------------------------- | :-------------------------------------------------------------------------------------------------- |
+| `next-best-practices`         | Next.js best practices      | Writing, reviewing, or refactoring Next.js code                                                     |
+| `next-cache-components`       | Next.js 16 cache components | Implementing `use cache`, PPR, cacheLife, cacheTag, or updateTag                                    |
+| `vercel-composition-patterns` | React composition patterns  | Refactoring components, building reusable component APIs, compound components                       |
+| `vercel-react-best-practices` | React performance rules     | Writing, reviewing, or refactoring React/Next.js code for performance                               |
+| `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                                               |
+| `turborepo`                   | Turborepo best practices    | Build system guide for JavaScript and TypeScript monorepos with task caching and parallel execution |
 
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
@@ -598,8 +599,8 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | --------- | ----------------------------------------------------------------------------------------- |
 | Status    | **Evaluation** - tracking for future adoption                                             |
 | What      | A native port of the TypeScript compiler from JavaScript to Go, releasing as TypeScript 7 |
-| Build     | ~10x faster `tsc` builds across popular codebases (VS Code, Playwright, TypeORM, etc.)    |
-| Editor    | ~8x faster project load time (e.g. VS Code codebase: 9.6s → 1.2s) with LSP migration      |
+| Build     | ~10x faster `tsc` builds                                                                  |
+| Editor    | ~8x faster project load time with LSP migration                                           |
 | Memory    | ~50% reduction in memory usage compared to the JS-based compiler                          |
 | Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness         |
 

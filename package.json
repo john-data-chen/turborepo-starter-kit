@@ -9,7 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "commit": "git-cz",
-    "dev": "turbo dev",
+    "dev": "turbo run dev",
     "format": "turbo run format",
     "init-db": "turbo run init-db",
     "init-db:force": "turbo run init-db:force",
@@ -26,7 +26,7 @@
     "mobile:build:eas": "turbo run build:eas --filter=mobile",
     "mobile:expo:fix": "turbo run expo:fix --filter=mobile",
     "mobile:expo:upgrade": "turbo run expo:upgrade --filter=mobile",
-    "test": "turbo test",
+    "test": "turbo run test",
     "test:watch": "turbo run test:watch"
   },
   "packageManager": "pnpm@10.33.0",
@@ -64,7 +64,7 @@
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.42.0",
     "oxlint": "^1.57.0",
-    "oxlint-tsgolint": "^0.17.4",
+    "oxlint-tsgolint": "^0.18.1",
     "start-server-and-test": "^3.0.0",
     "turbo": "^2.8.20",
     "vitest": "catalog:"
