@@ -599,8 +599,8 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | --------- | ----------------------------------------------------------------------------------------- |
 | Status    | **Evaluation** - tracking for future adoption                                             |
 | What      | A native port of the TypeScript compiler from JavaScript to Go, releasing as TypeScript 7 |
-| Build     | ~10x faster `tsc` builds across popular codebases (VS Code, Playwright, TypeORM, etc.)    |
-| Editor    | ~8x faster project load time (e.g. VS Code codebase: 9.6s → 1.2s) with LSP migration      |
+| Build     | ~10x faster `tsc` builds                                                                  |
+| Editor    | ~8x faster project load time with LSP migration                                           |
 | Memory    | ~50% reduction in memory usage compared to the JS-based compiler                          |
 | Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness         |
 
