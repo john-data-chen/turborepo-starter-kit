@@ -14,37 +14,20 @@
     "init-db": "turbo run init-db",
     "init-db:force": "turbo run init-db:force",
     "lint": "turbo run lint",
-    "playwright": "turbo run playwright --filter=./apps/web",
-    "playwright:install": "pnpm --filter=./apps/web exec playwright install --with-deps",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
-    "storybook": "turbo run storybook --filter=@repo/ui",
-    "storybook:build": "turbo run storybook:build --filter=@repo/ui",
-    "storybook:test": "turbo run storybook:test --filter=@repo/ui",
     "mobile": "turbo run dev --filter=mobile",
     "mobile:android": "turbo run android --filter=mobile",
     "mobile:build": "turbo run build --filter=mobile",
     "mobile:build:eas": "turbo run build:eas --filter=mobile",
     "mobile:expo:fix": "turbo run expo:fix --filter=mobile",
     "mobile:expo:upgrade": "turbo run expo:upgrade --filter=mobile",
+    "playwright": "turbo run playwright --filter=./apps/web",
+    "playwright:install": "pnpm --filter=./apps/web exec playwright install --with-deps",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
+    "storybook": "turbo run storybook --filter=@repo/ui",
+    "storybook:build": "turbo run storybook:build --filter=@repo/ui",
+    "storybook:test": "turbo run storybook:test --filter=@repo/ui",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch"
-  },
-  "packageManager": "pnpm@10.33.0",
-  "engines": {
-    "node": ">=24.14.1"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,css,scss}": [
-      "oxfmt --no-error-on-unmatched-pattern --config ./.oxfmtrc.json"
-    ],
-    "**/*.{js,jsx,ts,tsx}": [
-      "npx oxlint --config ./.oxlintrc.json --type-aware --fix"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "@commitlint/cz-commitlint"
-    }
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -66,9 +49,26 @@
     "oxlint": "^1.57.0",
     "oxlint-tsgolint": "^0.18.1",
     "start-server-and-test": "^3.0.0",
-    "turbo": "^2.8.20",
+    "turbo": "^2.9.1",
     "vitest": "catalog:"
   },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,css,scss}": [
+      "oxfmt --no-error-on-unmatched-pattern --config ./.oxfmtrc.json"
+    ],
+    "**/*.{js,jsx,ts,tsx}": [
+      "npx oxlint --config ./.oxlintrc.json --type-aware --fix"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "engines": {
+    "node": ">=24.14.1"
+  },
+  "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",
