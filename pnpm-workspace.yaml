@@ -9,18 +9,18 @@ catalog:
   "@types/node": ^24.12.2
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
-  "@vitest/coverage-v8": ^4.1.2
+  "@vitest/coverage-v8": ^4.1.4
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.1
-  jsdom: ^29.0.1
-  lucide-react: ^1.7.0
-  react: ^19.2.4
-  react-dom: ^19.2.4
+  jsdom: ^29.0.2
+  lucide-react: ^1.8.0
+  react: ^19.2.5
+  react-dom: ^19.2.5
   react-hook-form: ^7.72.1
   tailwindcss: ^4.2.2
   "@tailwindcss/postcss": ^4.2.2
   "@typescript/native-preview": latest
-  vitest: ^4.1.2
+  vitest: ^4.1.4
   zod: ^4.3.6
   zustand: ^5.0.12
 
