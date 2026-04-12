@@ -48,8 +48,8 @@
     "oxfmt": "^0.44.0",
     "oxlint": "^1.59.0",
     "oxlint-tsgolint": "^0.20.0",
-    "start-server-and-test": "^3.0.0",
-    "turbo": "^2.9.5",
+    "start-server-and-test": "^3.0.2",
+    "turbo": "^2.9.6",
     "vitest": "catalog:"
   },
   "lint-staged": {
