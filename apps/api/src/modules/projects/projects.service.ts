@@ -32,6 +32,9 @@ export class ProjectsService implements OnModuleInit {
     );
   }
 
+  // Cascade step: triggered by 'board.deleted' event.
+  // Finds all projects belonging to the deleted board and emits 'project.deleted' for each,
+  // which TasksService then listens to for final cleanup.
   async handleBoardDeleted(event: BoardDeletedEvent): Promise<void> {
     const projects = await this.projectRepository.findByBoardId(event.boardId);
 

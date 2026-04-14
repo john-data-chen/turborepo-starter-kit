@@ -8,6 +8,8 @@ import { Board, BoardDocument } from "../schemas/boards.schema";
 export class BoardRepository {
   constructor(@InjectModel(Board.name) private readonly boardModel: Model<BoardDocument>) {}
 
+  // RISK: this pipeline is used by getBoardPopulateStages() and affects every board list query.
+  // Changes here impact all board listing pages. See also: getBoardProjection(), getBoardPopulateStages().
   private getProjectPopulatePipeline() {
     return [
       {
@@ -39,6 +41,8 @@ export class BoardRepository {
     ];
   }
 
+  // RISK: controls which fields are returned in every board list query.
+  // Changes here affect all board listing pages.
   private getBoardProjection() {
     return {
       $project: {
@@ -54,6 +58,8 @@ export class BoardRepository {
     };
   }
 
+  // RISK: core stage builder for the board list aggregation pipeline.
+  // Changes here affect all board listing pages. Called by findAll() and findOne().
   private getBoardPopulateStages() {
     return [
       {

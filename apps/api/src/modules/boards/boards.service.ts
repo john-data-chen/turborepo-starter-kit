@@ -75,6 +75,8 @@ export class BoardService {
     return this.findOne(id, userId);
   }
 
+  // NOTE: caller must verify board ownership before invoking remove().
+  // BoardService does NOT re-check permissions — it trusts the caller.
   async remove(id: string, userId: string): Promise<{ message: string }> {
     const userIdString = userId.toString();
     const board = await this.boardRepository.findById(id);
