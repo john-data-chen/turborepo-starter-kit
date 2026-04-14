@@ -20,19 +20,19 @@
 
 When a task matches conditions below, load the corresponding skill **before writing code**.
 
-### Universal (CHECK FIRST, `ai_docs/skills/ai-optimization/`)
+### Universal (CHECK FIRST)
 
 | Condition                                               | Skill                 |
 | :------------------------------------------------------ | :-------------------- |
 | **ANY coding task** (writing, refactoring, fixing bugs) | `karpathy-guidelines` |
 
-### API (`ai_docs/skills/api/`)
+### API
 
 | Condition                                                                                | Skill                   |
 | :--------------------------------------------------------------------------------------- | :---------------------- |
 | NestJS modules, DI, guards, pipes, interceptors, Mongoose queries, testing, architecture | `nestjs-best-practices` |
 
-### Mobile (`ai_docs/skills/mobile/`)
+### Mobile
 
 | Condition                                                                   | Skill                  |
 | :-------------------------------------------------------------------------- | :--------------------- |
@@ -44,7 +44,7 @@ When a task matches conditions below, load the corresponding skill **before writ
 | Upgrading Expo SDK, fixing dependency conflicts, New Architecture migration | `upgrading-expo`       |
 | Running web code on native via webview, Canvas/WebGL, web library migration | `use-dom`              |
 
-### Web (`ai_docs/skills/web/`)
+### Web
 
 | Condition                                                                          | Skill                         |
 | :--------------------------------------------------------------------------------- | :---------------------------- |
