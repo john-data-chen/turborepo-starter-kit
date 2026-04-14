@@ -2,6 +2,7 @@ import { Task, TaskStatus } from "@repo/store";
 import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
 import { Link, router } from "expo-router";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -54,23 +55,23 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
   const translateX = useSharedValue(0);
   const context = useSharedValue(0);
 
-  const cycleStatus = () => {
+  const cycleStatus = useCallback(() => {
     const currentIndex = STATUS_ORDER.indexOf(task.status || TaskStatus.TODO);
     const nextIndex = (currentIndex + 1) % STATUS_ORDER.length;
     const nextStatus = STATUS_ORDER[nextIndex];
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     updateTaskMutation.mutate({ id: task._id, status: nextStatus });
-  };
+  }, [task._id, task.status, updateTaskMutation]);
 
-  const handleMoveTo = () => {
+  const handleMoveTo = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (onMoveToProject) {
       onMoveToProject();
     }
-  };
+  }, [onMoveToProject]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     Alert.alert(
       t("kanban.task.confirmDeleteTitle", { title: task.title }) || "Delete Task",
       t("kanban.task.confirmDeleteDescription", { title: task.title }) ||
@@ -87,7 +88,7 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
         }
       ]
     );
-  };
+  }, [t, task.title, task._id, deleteTaskMutation]);
 
   const pan = Gesture.Pan()
     .onBegin(() => {

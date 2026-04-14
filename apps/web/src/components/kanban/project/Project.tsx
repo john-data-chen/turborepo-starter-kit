@@ -35,11 +35,18 @@ interface BoardProjectProps {
 // Memoize the component to prevent unnecessary re-renders
 export const BoardProject = memo(BoardProjectComponent, (prevProps, nextProps) => {
   // Only re-render if these props change
+  // Efficient comparison: check task IDs array instead of JSON.stringify
+  const prevTaskIds = prevProps.tasks.map((t) => t._id);
+  const nextTaskIds = nextProps.tasks.map((t) => t._id);
+  const tasksMatch =
+    prevTaskIds.length === nextTaskIds.length &&
+    prevTaskIds.every((id, i) => id === nextTaskIds[i]);
+
   return (
     prevProps.project._id === nextProps.project._id &&
     prevProps.project.title === nextProps.project.title &&
     prevProps.project.description === nextProps.project.description &&
-    JSON.stringify(prevProps.tasks) === JSON.stringify(nextProps.tasks) &&
+    tasksMatch &&
     prevProps.isOverlay === nextProps.isOverlay
   );
 });
@@ -57,7 +64,7 @@ function BoardProjectComponent({
 }: BoardProjectProps) {
   const { filter, fetchTasksByProject } = useWorkspaceStore();
   const t = useTranslations("kanban.project");
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState(initialTasks);
   const [_isLoading, setIsLoading] = useState(false);
   const [_error, setError] = useState<string | null>(null);
 

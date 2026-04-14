@@ -13,7 +13,7 @@ import {
 } from "@repo/ui/components/select";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { useBoards } from "@/hooks/useBoards";
@@ -37,9 +37,15 @@ export function BoardOverview() {
   const searchParams = useSearchParams();
   const t = useTranslations("kanban");
   const tLogin = useTranslations("login");
-  const { setUserInfo } = useWorkspaceStore();
+  const { userId, setUserInfo } = useWorkspaceStore();
   const { setSession } = useAuthStore();
-  const [recentlyDeleted, setRecentlyDeleted] = useState<Set<string>>(new Set());
+  const [recentlyDeleted, setRecentlyDeleted] = useState(new Set());
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure consistent SSR/client hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Handle board click with proper event handling
   const handleBoardClick = useCallback(
@@ -138,13 +144,11 @@ export function BoardOverview() {
 
   // Ensure boards data is fetched when user is authenticated
   useEffect(() => {
-    const { userId } = useWorkspaceStore.getState();
-
     // If user is authenticated but we don't have boards data, fetch it
     if (userId && !boardsLoading && !myBoards?.length && !teamBoards?.length) {
       refresh();
     }
-  }, [refresh, myBoards, teamBoards, boardsLoading]);
+  }, [userId, refresh, myBoards, teamBoards, boardsLoading]);
 
   // Handle data refresh on tab visibility change
   useEffect(() => {
@@ -160,8 +164,23 @@ export function BoardOverview() {
     };
   }, [refresh]);
 
+  // Memoized filtered boards - must be before early return to maintain hooks order
+  const filteredMyBoards = useMemo(
+    () => myBoards?.filter((board) => board.title.toLowerCase().includes(search.toLowerCase())),
+    [myBoards, search]
+  );
+
+  const filteredTeamBoards = useMemo(
+    () => teamBoards?.filter((board) => board.title.toLowerCase().includes(search.toLowerCase())),
+    [teamBoards, search]
+  );
+
+  const shouldShowMyBoards = filter === "all" || filter === "my";
+  const shouldShowTeamBoards = filter === "all" || filter === "team";
+
   // Show loading state while processing login or loading boards
-  if (isProcessingLogin || boardsLoading) {
+  // Also check !mounted to ensure consistent SSR/client hydration
+  if (!mounted || isProcessingLogin || boardsLoading) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -171,17 +190,6 @@ export function BoardOverview() {
       </div>
     );
   }
-
-  const filteredMyBoards = myBoards?.filter((board) =>
-    board.title.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const filteredTeamBoards = teamBoards?.filter((board) =>
-    board.title.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const shouldShowMyBoards = filter === "all" || filter === "my";
-  const shouldShowTeamBoards = filter === "all" || filter === "team";
 
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col">

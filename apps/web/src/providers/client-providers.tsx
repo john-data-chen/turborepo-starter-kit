@@ -19,8 +19,14 @@ function makeQueryClient() {
   });
 }
 
+// SyncAuthStore ensures auth store is hydrated from persistence on mount
+// Without subscribing to any state, it just triggers hydration once
 function SyncAuthStore() {
-  useAuthStore();
+  // Trigger hydration by accessing getState, but don't subscribe to updates
+  React.useEffect(() => {
+    // Access getState to ensure persistence is hydrated
+    useAuthStore.getState();
+  }, []);
   return null;
 }
 
