@@ -54,6 +54,12 @@
     "zod": "catalog:",
     "zustand": "catalog:"
   },
+  "pnpm": {
+    "overrides": {
+      "react@*": "19.2.0",
+      "react-native@*": "0.83.4"
+    }
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:",
     "@testing-library/jest-native": "^5.4.3",

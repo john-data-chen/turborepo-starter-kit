@@ -3,6 +3,7 @@
     "name": "mobile",
     "slug": "mobile",
     "version": "1.0.0",
+    "app": "expo-router/entry",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mobile",
