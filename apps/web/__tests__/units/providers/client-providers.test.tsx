@@ -1,13 +1,24 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ClientProviders } from "@/providers/client-providers";
 import { useAuthStore } from "@/stores/auth-store";
 
 // Mock auth store
 vi.mock("@/stores/auth-store", () => ({
-  useAuthStore: vi.fn()
+  useAuthStore: Object.assign(
+    vi.fn((selector) => {
+      const state = { user: null, isLoading: false, error: null };
+      return selector ? selector(state) : state;
+    }),
+    {
+      getState: vi.fn(() => ({ user: null, isLoading: false, error: null })),
+      setState: vi.fn(),
+      subscribe: vi.fn(),
+      destroy: vi.fn()
+    }
+  )
 }));
 
 // Mock ReactQueryDevtools
@@ -23,11 +34,6 @@ vi.mock("next-themes", () => ({
 describe("ClientProviders", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuthStore as unknown as Mock).mockReturnValue({
-      user: null,
-      isLoading: false,
-      error: null
-    });
   });
 
   it("should render children", () => {
@@ -40,14 +46,14 @@ describe("ClientProviders", () => {
     expect(screen.getByText("Test Child")).toBeInTheDocument();
   });
 
-  it("should call useAuthStore hook on mount", () => {
+  it("should call useAuthStore.getState on mount to ensure hydration", () => {
     render(
       <ClientProviders>
         <div>Test Child</div>
       </ClientProviders>
     );
 
-    expect(useAuthStore).toHaveBeenCalled();
+    expect(useAuthStore.getState).toHaveBeenCalled();
   });
 
   it("should wrap children with QueryClientProvider and ThemeProvider", () => {

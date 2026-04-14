@@ -69,9 +69,6 @@ async function handleErrorResponse(response: Response): Promise<never> {
     }
   }
 
-  if (typeof globalThis.window !== "undefined" && response.status === 401) {
-    // Handle unauthorized (e.g., redirect to login)
-  }
   throw new Error(errorMessage);
 }
 

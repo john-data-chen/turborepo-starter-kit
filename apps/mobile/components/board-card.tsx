@@ -1,7 +1,7 @@
 import type { Board } from "@repo/store";
 import * as Haptics from "expo-haptics";
 import { Link } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { BoardActions } from "@/components/board-actions";
@@ -16,12 +16,20 @@ export function BoardCard({ board, showOwner }: BoardCardProps) {
   const { t } = useTranslation();
   const [pressed, setPressed] = useState(false);
 
-  const projectNames =
-    board.projects?.length > 0 ? board.projects.map((p) => p.title).join(" / ") : "0";
+  const projectNames = useMemo(
+    () => (board.projects?.length > 0 ? board.projects.map((p) => p.title).join(" / ") : "0"),
+    [board.projects]
+  );
 
-  const memberNames = board.members?.length > 0 ? board.members.map((m) => m.name).join(", ") : "";
+  const memberNames = useMemo(
+    () => (board.members?.length > 0 ? board.members.map((m) => m.name).join(", ") : ""),
+    [board.members]
+  );
 
-  const ownerName = typeof board.owner === "string" ? board.owner : board.owner?.name || "Unknown";
+  const ownerName = useMemo(
+    () => (typeof board.owner === "string" ? board.owner : board.owner?.name || "Unknown"),
+    [board.owner]
+  );
 
   const handlePressIn = useCallback(() => {
     setPressed(true);

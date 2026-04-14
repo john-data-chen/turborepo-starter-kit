@@ -141,8 +141,8 @@ export class BoardRepository {
   async addMember(boardId: string, ownerId: string, memberId: string): Promise<Board | null> {
     return this.boardModel
       .findOneAndUpdate(
-        { _id: boardId, owner: ownerId },
-        { $addToSet: { members: memberId } },
+        { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
+        { $addToSet: { members: new Types.ObjectId(memberId) } },
         { new: true }
       )
       .exec();
@@ -151,8 +151,8 @@ export class BoardRepository {
   async removeMember(boardId: string, ownerId: string, memberId: string): Promise<Board | null> {
     return this.boardModel
       .findOneAndUpdate(
-        { _id: boardId, owner: ownerId },
-        { $pull: { members: memberId } },
+        { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
+        { $pull: { members: new Types.ObjectId(memberId) } },
         { new: true }
       )
       .exec();

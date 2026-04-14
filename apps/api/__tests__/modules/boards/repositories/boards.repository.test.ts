@@ -148,18 +148,22 @@ describe("BoardRepository", () => {
 
   describe("addMember", () => {
     it("should add a member to a board", async () => {
-      const boardId = new Types.ObjectId().toHexString();
-      const ownerId = new Types.ObjectId().toHexString();
-      const memberId = new Types.ObjectId().toHexString();
-      const mockBoard = { _id: boardId, members: [memberId] };
+      const boardId = new Types.ObjectId();
+      const ownerId = new Types.ObjectId();
+      const memberId = new Types.ObjectId();
+      const mockBoard = { _id: boardId.toHexString(), members: [memberId.toHexString()] };
 
       mockModel.findOneAndUpdate.mockReturnValue({ exec: vi.fn().mockResolvedValue(mockBoard) });
 
-      const result = await repository.addMember(boardId, ownerId, memberId);
+      const result = await repository.addMember(
+        boardId.toHexString(),
+        ownerId.toHexString(),
+        memberId.toHexString()
+      );
 
       expect(mockModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: boardId, owner: ownerId },
-        { $addToSet: { members: memberId } },
+        { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
+        { $addToSet: { members: new Types.ObjectId(memberId) } },
         { new: true }
       );
       expect(result).toEqual(mockBoard);
@@ -168,18 +172,22 @@ describe("BoardRepository", () => {
 
   describe("removeMember", () => {
     it("should remove a member from a board", async () => {
-      const boardId = new Types.ObjectId().toHexString();
-      const ownerId = new Types.ObjectId().toHexString();
-      const memberId = new Types.ObjectId().toHexString();
-      const mockBoard = { _id: boardId, members: [] };
+      const boardId = new Types.ObjectId();
+      const ownerId = new Types.ObjectId();
+      const memberId = new Types.ObjectId();
+      const mockBoard = { _id: boardId.toHexString(), members: [] };
 
       mockModel.findOneAndUpdate.mockReturnValue({ exec: vi.fn().mockResolvedValue(mockBoard) });
 
-      const result = await repository.removeMember(boardId, ownerId, memberId);
+      const result = await repository.removeMember(
+        boardId.toHexString(),
+        ownerId.toHexString(),
+        memberId.toHexString()
+      );
 
       expect(mockModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { _id: boardId, owner: ownerId },
-        { $pull: { members: memberId } },
+        { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
+        { $pull: { members: new Types.ObjectId(memberId) } },
         { new: true }
       );
       expect(result).toEqual(mockBoard);
