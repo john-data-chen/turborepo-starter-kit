@@ -1,61 +1,51 @@
 import { create } from "zustand";
+import type { StoreApi } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { createBoardSlice, type BoardSlice } from "./board-store";
-import { createProjectSlice, type ProjectSlice } from "./project-store";
-import { createTaskSlice, type TaskSlice } from "./task-store";
+import { createBoardSlice } from "./board-store";
+import { createProjectSlice } from "./project-store";
+import { createTaskSlice } from "./task-store";
+import type { BoardSliceState, ProjectSliceState, TaskSliceState, WorkspaceState } from "./types";
 
-interface UserSlice {
-  userId: string | null;
-  userEmail: string | null;
-  setUserInfo: (email: string, userId: string) => void;
-}
-
-interface FilterSlice {
-  filter: { status: string | null; search: string };
-  setFilter: (filter: Partial<FilterSlice["filter"]>) => void;
-}
-
-interface ResetSlice {
-  resetInBoards: () => void;
-}
-
-type WorkspaceState = UserSlice & FilterSlice & ResetSlice & BoardSlice & ProjectSlice & TaskSlice;
+export type { BoardSliceState, ProjectSliceState, TaskSliceState };
 
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
-    (set, get, api) => ({
-      // User slice (inline - too small for separate file)
-      userId: null,
-      userEmail: null,
-      setUserInfo: (email: string, userId: string) => {
-        if (!email || !userId) {
-          throw new Error("Email and userId are required");
-        }
-        set((state) =>
-          state.userEmail === email && state.userId === userId
-            ? state
-            : { ...state, userEmail: email, userId }
-        );
-      },
+    (set, get, api) => {
+      const storeApi = api as unknown as StoreApi<WorkspaceState>;
+      return {
+        // User slice (inline - too small for separate file)
+        userId: null,
+        userEmail: null,
+        setUserInfo: (email: string, userId: string) => {
+          if (!email || !userId) {
+            throw new Error("Email and userId are required");
+          }
+          set((state) =>
+            state.userEmail === email && state.userId === userId
+              ? state
+              : { ...state, userEmail: email, userId }
+          );
+        },
 
-      // Filter slice (inline - too small for separate file)
-      filter: { status: null, search: "" },
-      setFilter: (filter) => set((state) => ({ filter: { ...state.filter, ...filter } })),
+        // Filter slice (inline - too small for separate file)
+        filter: { status: null, search: "" },
+        setFilter: (filter) => set((state) => ({ filter: { ...state.filter, ...filter } })),
 
-      // Reset slice (inline - too small for separate file)
-      resetInBoards: () =>
-        set({
-          projects: [],
-          currentBoardId: null,
-          filter: { status: null, search: "" }
-        }),
+        // Reset slice (inline - too small for separate file)
+        resetInBoards: () =>
+          set({
+            projects: [],
+            currentBoardId: null,
+            filter: { status: null, search: "" }
+          }),
 
-      // Composed slices
-      ...createBoardSlice(set, get, api as any),
-      ...createProjectSlice(set, get, api as any),
-      ...createTaskSlice(set, get, api as any)
-    }),
+        // Composed slices
+        ...createBoardSlice(set, get, storeApi),
+        ...createProjectSlice(set, get, storeApi),
+        ...createTaskSlice(set, get, storeApi)
+      };
+    },
     {
       name: "workspace-store",
       partialize: (state) => ({
@@ -65,5 +55,3 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     }
   )
 );
-
-export type { BoardSlice, ProjectSlice, TaskSlice };

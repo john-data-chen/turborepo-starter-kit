@@ -1,6 +1,7 @@
 "use client";
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import type { Task } from "@repo/store";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -26,6 +27,7 @@ import {
   DropdownMenuTrigger
 } from "@repo/ui/components/dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
+import type { QueryKey } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -209,17 +211,17 @@ export function TaskActions({
       const previousTask = queryClient.getQueryData(TASK_KEYS.detail(id));
 
       // 2. Create a function to safely update queries
-      const updateQueries = (queryKey: readonly (string | readonly string[])[], taskId: string) => {
-        queryClient.setQueryData(queryKey, (old: any) => {
+      const updateQueries = (queryKey: QueryKey, taskId: string) => {
+        queryClient.setQueryData<Task[] | undefined>(queryKey, (old) => {
           if (!old || !Array.isArray(old)) {
             return old;
           }
-          return old.filter((task: any) => task._id !== taskId);
+          return old.filter((task) => task._id !== taskId);
         });
       };
 
       // 3. Create a function to safely cancel and remove queries
-      const cancelAndRemoveQueries = (queryKey: any) => {
+      const cancelAndRemoveQueries = (queryKey: QueryKey) => {
         queryClient.cancelQueries({ queryKey });
         queryClient.removeQueries({ queryKey });
       };

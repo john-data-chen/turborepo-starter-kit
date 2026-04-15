@@ -6,7 +6,7 @@ import { Skeleton } from "@repo/ui/components/skeleton";
 import { Fragment, useMemo } from "react";
 
 import { useWorkspaceStore } from "@/stores/workspace-store";
-import { Project } from "@/types/dbInterface";
+import { Project, Task } from "@/types/dbInterface";
 
 import NewProjectDialog from "../project/NewProjectDialog";
 import { BoardContainer, BoardProject } from "../project/Project";
@@ -44,7 +44,7 @@ function BoardContent() {
     onDragCancel
   } = useBoardDnd(projects, projectsId, setProjects, rawProjects);
 
-  const filterTasks = (tasks: any[] = []) => {
+  const filterTasks = (tasks: Task[] = []) => {
     if (!Array.isArray(tasks)) {
       return [];
     }

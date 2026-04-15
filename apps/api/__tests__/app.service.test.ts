@@ -1,4 +1,3 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { AppService } from "../src/app.service";
@@ -6,12 +5,8 @@ import { AppService } from "../src/app.service";
 describe("AppService", () => {
   let service: AppService;
 
-  beforeEach(async () => {
-    const testingModule: TestingModule = await Test.createTestingModule({
-      providers: [AppService]
-    }).compile();
-
-    service = testingModule.get<AppService>(AppService);
+  beforeEach(() => {
+    service = new AppService();
   });
 
   it("should be defined", () => {

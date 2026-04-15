@@ -1,4 +1,5 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { TaskStatus } from "@repo/store";
 import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
@@ -21,7 +22,7 @@ export default function NewTaskScreen() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("TODO");
+  const [status, setStatus] = useState(TaskStatus.TODO);
   const [assigneeId, setAssigneeId] = useState<string | null>(null);
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
@@ -39,7 +40,7 @@ export default function NewTaskScreen() {
       {
         title,
         description,
-        status: status as any,
+        status,
         assignee: assigneeId || undefined,
         dueDate: dueDate || undefined,
         project: projectId,
@@ -115,7 +116,7 @@ export default function NewTaskScreen() {
                 key={s}
                 onPress={() => {
                   Haptics.selectionAsync();
-                  setStatus(s);
+                  setStatus(s as TaskStatus);
                 }}
                 className={`flex-1 items-center rounded-lg border p-3 ${
                   status === s ? "border-primary bg-primary" : "border-border bg-card"

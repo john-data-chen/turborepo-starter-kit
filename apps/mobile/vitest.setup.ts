@@ -1,6 +1,7 @@
 import { vi, afterEach } from "vitest";
 
-// Define __DEV__
+// Define __DEV__ — use type assertion to avoid conflict with global var declaration
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).__DEV__ = true;
 
 // Mock expo-modules-core

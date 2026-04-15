@@ -3,17 +3,14 @@ import type { StateCreator } from "zustand";
 
 import { boardApi } from "@/lib/api/boardApi";
 
-export interface BoardSlice {
-  currentBoardId: string | null;
-  myBoards: Board[];
-  teamBoards: Board[];
-  setCurrentBoardId: (boardId: string) => void;
-  addBoard: (title: string, description?: string) => Promise<string>;
-  updateBoard: (id: string, data: Partial<Board>) => Promise<void>;
-  removeBoard: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>;
-}
+import type { BoardSliceState, UserSliceState } from "./types";
 
-export const createBoardSlice: StateCreator<BoardSlice, [], [], BoardSlice> = (set, get) => ({
+export const createBoardSlice: StateCreator<
+  BoardSliceState & Pick<UserSliceState, "userId">,
+  [],
+  [],
+  BoardSliceState
+> = (set, get) => ({
   currentBoardId: null,
   myBoards: [],
   teamBoards: [],
@@ -24,7 +21,7 @@ export const createBoardSlice: StateCreator<BoardSlice, [], [], BoardSlice> = (s
 
   addBoard: async (title: string, description?: string) => {
     try {
-      const userId = (get() as any).userId;
+      const { userId } = get();
       if (!userId) {
         throw new Error("User not authenticated");
       }
@@ -71,7 +68,7 @@ export const createBoardSlice: StateCreator<BoardSlice, [], [], BoardSlice> = (s
       await deleteFn(id);
 
       set((state) => ({
-        myBoards: state.myBoards.filter((board) => board._id !== id),
+        myBoards: state.myBoards.filter((board) => board._id === id),
         teamBoards: state.teamBoards.filter((board) => board._id !== id),
         currentBoardId: state.currentBoardId === id ? null : state.currentBoardId
       }));

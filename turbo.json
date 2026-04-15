@@ -13,7 +13,10 @@
         "^build"
       ],
       "outputs": [
-        "dist/**"
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "storybook-static/**"
       ]
     },
     "storybook": {
@@ -43,17 +46,19 @@
     },
     "lint": {
       "inputs": [
+        "$TURBO_DEFAULT$",
         "src/**/*.{ts,tsx,js,jsx}",
-        "__tests__/**/*.{ts,tsx,js,jsx}",
-        "apps/mobile/**/*.{ts,tsx,js,jsx}"
+        "app/**/*.{ts,tsx,js,jsx}",
+        "__tests__/**/*.{ts,tsx,js,jsx}"
       ]
     },
     "format": {
       "cache": false,
       "inputs": [
+        "$TURBO_DEFAULT$",
         "src/**/*.{ts,tsx,js,jsx,css,scss}",
-        "__tests__/**/*.{ts,tsx,js,jsx,css,scss}",
-        "apps/mobile/**/*.{ts,tsx,js,jsx,css,scss}"
+        "app/**/*.{ts,tsx,js,jsx,css,scss}",
+        "__tests__/**/*.{ts,tsx,js,jsx,css,scss}"
       ]
     },
     "dev": {
