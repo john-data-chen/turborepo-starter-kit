@@ -6,17 +6,17 @@ import { Types } from "mongoose";
  * or pass through if it's already an ObjectId
  */
 @Injectable()
-export class ParseObjectIdPipe implements PipeTransform<any, Types.ObjectId> {
-  transform(value: any): Types.ObjectId {
+export class ParseObjectIdPipe implements PipeTransform<unknown, Types.ObjectId> {
+  transform(value: unknown): Types.ObjectId {
     if (!value) {
       throw new BadRequestException("ID is required");
     }
-
-    // If it's already an ObjectId or can be converted to one, return it
-    if (Types.ObjectId.isValid(value)) {
-      return typeof value === "string" ? new Types.ObjectId(value) : value;
+    if (typeof value !== "string" && !(value instanceof Types.ObjectId)) {
+      throw new BadRequestException("Invalid ID format");
     }
-
+    if (Types.ObjectId.isValid(value)) {
+      return typeof value === "string" ? new Types.ObjectId(value) : (value);
+    }
     throw new BadRequestException("Invalid ID format");
   }
 }

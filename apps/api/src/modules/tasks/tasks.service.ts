@@ -18,6 +18,12 @@ import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TaskRepository } from "./repositories/tasks.repository";
 import { TaskDocument, TaskStatus } from "./schemas/tasks.schema";
 
+interface PopulatedUserRef {
+  _id: Types.ObjectId | string;
+  name?: string | null;
+  email?: string | null;
+}
+
 @Injectable()
 export class TasksService implements OnModuleInit {
   private readonly logger = new Logger(TasksService.name);
@@ -236,14 +242,14 @@ export class TasksService implements OnModuleInit {
     return task;
   }
 
-  private toUserResponse(user: any) {
+  private toUserResponse(user: PopulatedUserRef | null | undefined) {
     if (!user) {
       return null;
     }
     return {
       _id: user._id?.toString() || "",
-      name: user.name,
-      email: user.email
+      name: user.name ?? null,
+      email: user.email ?? undefined
     };
   }
 
@@ -257,7 +263,7 @@ export class TasksService implements OnModuleInit {
       ]);
     }
 
-    const response: any = {
+    const response: Partial<TaskResponseDto> & Pick<TaskResponseDto, "_id" | "title" | "status"> = {
       _id: populatedTask._id.toString(),
       title: populatedTask.title,
       status: populatedTask.status,
@@ -266,11 +272,11 @@ export class TasksService implements OnModuleInit {
       createdAt: populatedTask.createdAt,
       updatedAt: populatedTask.updatedAt,
       orderInProject: populatedTask.orderInProject ?? 0,
-      creator: this.toUserResponse(populatedTask.creator),
-      assignee: this.toUserResponse(populatedTask.assignee),
+      creator: this.toUserResponse(populatedTask.creator as PopulatedUserRef | null),
+      assignee: this.toUserResponse(populatedTask.assignee as PopulatedUserRef | null),
       lastModifier: populatedTask.lastModifier
-        ? this.toUserResponse(populatedTask.lastModifier)
-        : this.toUserResponse(populatedTask.creator)
+        ? this.toUserResponse(populatedTask.lastModifier as PopulatedUserRef | null)
+        : this.toUserResponse(populatedTask.creator as PopulatedUserRef | null)
     };
 
     if (populatedTask.description) {

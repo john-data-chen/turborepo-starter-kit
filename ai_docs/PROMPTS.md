@@ -200,8 +200,8 @@ pnpm lint-staged      # Run linter and formatter (stage files first)
 > [!CAUTION]
 > **next-intl Navigation**: `router.push()`/`router.replace()` from `@/i18n/navigation` auto-prepends locale. Pass locale-free paths like `"/boards"`, NOT `"/en/boards"`.
 
-> [!CAUTION]
-> **Duplicate QueryClient**: `providers/client-providers.tsx` and `providers/auth-provider.tsx` both create separate instances. Only use the one from `client-providers.tsx`.
+> [!NOTE]
+> **Single QueryClient**: Only `providers/client-providers.tsx` creates the QueryClient. Do not create a second instance elsewhere.
 
 > [!CAUTION]
 > **Mobile className requires CSS wrappers**: Import from `@/lib/tw`, NOT bare React Native components. `className` on unwrapped components silently fails.

@@ -1,7 +1,11 @@
+import type { Locale } from "@repo/i18n";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 import { routing } from "@/i18n/routing";
+
+const isLocale = (value: string | undefined): value is Locale =>
+  !!value && (routing.locales as readonly string[]).includes(value);
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -20,10 +24,7 @@ export default async function proxy(request: NextRequest) {
     if (!token) {
       // Extract locale from pathname or use default
       const pathLocale = pathname.split("/")[1];
-      const locale =
-        pathLocale && routing.locales.includes(pathLocale as any)
-          ? pathLocale
-          : routing.defaultLocale;
+      const locale = isLocale(pathLocale) ? pathLocale : routing.defaultLocale;
 
       const loginUrl = new URL(`/${locale}/login`, request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);

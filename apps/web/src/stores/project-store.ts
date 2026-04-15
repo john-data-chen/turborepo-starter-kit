@@ -3,37 +3,13 @@ import type { StateCreator } from "zustand";
 
 import { projectApi } from "@/lib/api/projectApi";
 
-export interface ProjectSlice {
-  projects: Project[];
-  isLoadingProjects: boolean;
-  setProjects: (projects: Project[]) => void;
-  fetchProjects: (boardId: string) => Promise<void>;
-  fetchTasksByProject: (projectId: string) => Promise<any[]>;
-  addProject: (
-    title: string,
-    description: string,
-    createProject: (project: {
-      title: string;
-      description: string;
-      boardId: string;
-      owner: string;
-      orderInBoard?: number;
-    }) => Promise<Project>
-  ) => Promise<string>;
-  updateProject: (
-    id: string,
-    newTitle: string,
-    newDescription: string | undefined,
-    updateFn: (id: string, data: { title: string; description?: string }) => Promise<Project>
-  ) => Promise<void>;
-  removeProject: (id: string, deleteFn: (id: string) => Promise<void>) => Promise<void>;
-}
+import type { BoardSliceState, ProjectSliceState, UserSliceState } from "./types";
 
 export const createProjectSlice: StateCreator<
-  ProjectSlice & { userId: string | null; currentBoardId: string | null },
+  ProjectSliceState & Pick<UserSliceState, "userId"> & Pick<BoardSliceState, "currentBoardId">,
   [],
   [],
-  ProjectSlice
+  ProjectSliceState
 > = (set, get) => ({
   projects: [],
   isLoadingProjects: false,
@@ -109,7 +85,7 @@ export const createProjectSlice: StateCreator<
     }) => Promise<Project>
   ) => {
     try {
-      const { currentBoardId, userId, projects } = get() as any;
+      const { currentBoardId, userId, projects } = get();
       if (!currentBoardId) {
         throw new Error("No board selected");
       }
@@ -117,14 +93,14 @@ export const createProjectSlice: StateCreator<
         throw new Error("User not authenticated");
       }
 
-      const currentBoardProjects = projects.filter((p: Project) => {
+      const currentBoardProjects = projects.filter((p) => {
         const projectBoardId = typeof p.board === "string" ? p.board : p.board?._id;
         return projectBoardId === currentBoardId;
       });
 
       const maxOrder =
         currentBoardProjects.length > 0
-          ? Math.max(...currentBoardProjects.map((p: Project) => p.orderInBoard ?? 0), -1)
+          ? Math.max(...currentBoardProjects.map((p) => p.orderInBoard ?? 0), -1)
           : -1;
 
       const orderInBoard = maxOrder + 1;
@@ -171,7 +147,7 @@ export const createProjectSlice: StateCreator<
         )
       }));
 
-      const userId = (get() as any).userId;
+      const userId = get().userId;
       if (!userId) {
         throw new Error("User not authenticated");
       }

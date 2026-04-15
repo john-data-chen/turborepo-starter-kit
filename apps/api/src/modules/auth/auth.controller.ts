@@ -26,7 +26,7 @@ export class AuthController {
       throw new UnauthorizedException("No user object found in request after authentication");
     }
 
-    const result = await this.authService.login(user as any);
+    const result = await this.authService.login(user);
 
     const isProduction = this.configService.get<string>("NODE_ENV") === "production";
     const isVercel = this.configService.get<string>("VERCEL") === "1";
