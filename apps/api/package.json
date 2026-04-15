@@ -47,7 +47,7 @@
     "@nestjs/testing": "^11.1.19",
     "@rspack/cli": "2.0.0-rc.2",
     "@rspack/core": "2.0.0-rc.2",
-    "@rspack/dev-server": "2.0.0-rc.2",
+    "@rspack/dev-server": "2.0.0-rc.3",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",

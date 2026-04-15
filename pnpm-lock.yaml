@@ -215,13 +215,13 @@ importers:
         version: 11.1.19(@nestjs/common@11.1.19(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(@nestjs/platform-express@11.1.19)
       '@rspack/cli':
         specifier: 2.0.0-rc.2
-        version: 2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))(@rspack/dev-server@2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15)))
+        version: 2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))(@rspack/dev-server@2.0.0-rc.3(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15)))
       '@rspack/core':
         specifier: 2.0.0-rc.2
         version: 2.0.0-rc.2(@swc/helpers@0.5.15)
       '@rspack/dev-server':
-        specifier: 2.0.0-rc.2
-        version: 2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
+        specifier: 2.0.0-rc.3
+        version: 2.0.0-rc.3(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
       '@types/cookie-parser':
         specifier: ^1.4.10
         version: 1.4.10(@types/express@5.0.6)
@@ -4143,8 +4143,8 @@ packages:
       '@swc/helpers':
         optional: true
 
-  '@rspack/dev-middleware@2.0.0':
-    resolution: {integrity: sha512-XYyUgvdNV6Fiom6fYNibvLtg9EbqMvgdpnx2CaO4RacDe0yEIYJgAFAdKjWoqKH+3GhPTRI1xqjtR2XlssBThw==}
+  '@rspack/dev-middleware@2.0.1':
+    resolution: {integrity: sha512-cXSubf5/C+dvkWV2/+rGTtiZ93wSLd3OlTQhwMvsmsmGDdPlkYqIvQ+BTkOk9UCXxKIaF0DDYYmCpBeRRYJfJw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@rspack/core': ^2.0.0-0
@@ -4152,8 +4152,8 @@ packages:
       '@rspack/core':
         optional: true
 
-  '@rspack/dev-server@2.0.0-rc.2':
-    resolution: {integrity: sha512-yWslIsQXzkuuYcGSJOqZtievhcP2Ku+ZFJXs1ZHQcpKCBpeRwp+rBUldTS0WId88U8/1+dMiBCk8LJG2H5a73A==}
+  '@rspack/dev-server@2.0.0-rc.3':
+    resolution: {integrity: sha512-05awfTvXy9ZgWsKnYR3oOoPGJ+XS0RN/mhfPfA9WmWCETG9+Wop/OkL54FgokSPG0nJInfU3byNskTdDFYY4eQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@rspack/core': ^2.0.0-0
@@ -13675,11 +13675,11 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 2.0.0-rc.2
       '@rspack/binding-win32-x64-msvc': 2.0.0-rc.2
 
-  '@rspack/cli@2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))(@rspack/dev-server@2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15)))':
+  '@rspack/cli@2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))(@rspack/dev-server@2.0.0-rc.3(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15)))':
     dependencies:
       '@rspack/core': 2.0.0-rc.2(@swc/helpers@0.5.15)
     optionalDependencies:
-      '@rspack/dev-server': 2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
+      '@rspack/dev-server': 2.0.0-rc.3(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
 
   '@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15)':
     dependencies:
@@ -13687,14 +13687,14 @@ snapshots:
     optionalDependencies:
       '@swc/helpers': 0.5.15
 
-  '@rspack/dev-middleware@2.0.0(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))':
+  '@rspack/dev-middleware@2.0.1(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))':
     optionalDependencies:
       '@rspack/core': 2.0.0-rc.2(@swc/helpers@0.5.15)
 
-  '@rspack/dev-server@2.0.0-rc.2(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))':
+  '@rspack/dev-server@2.0.0-rc.3(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))':
     dependencies:
       '@rspack/core': 2.0.0-rc.2(@swc/helpers@0.5.15)
-      '@rspack/dev-middleware': 2.0.0(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
+      '@rspack/dev-middleware': 2.0.1(@rspack/core@2.0.0-rc.2(@swc/helpers@0.5.15))
 
   '@scarf/scarf@1.4.0': {}
 
