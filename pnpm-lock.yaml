@@ -37,8 +37,8 @@ catalogs:
       specifier: ^0.7.1
       version: 0.7.1
     dotenv:
-      specifier: ^17.4.1
-      version: 17.4.1
+      specifier: ^17.4.2
+      version: 17.4.2
     jsdom:
       specifier: ^29.0.2
       version: 29.0.2
@@ -109,7 +109,7 @@ importers:
         version: 4.3.1(@types/node@24.12.2)(typescript@5.9.3)
       dotenv:
         specifier: 'catalog:'
-        version: 17.4.1
+        version: 17.4.2
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -178,7 +178,7 @@ importers:
         version: 1.4.7
       dotenv:
         specifier: 'catalog:'
-        version: 17.4.1
+        version: 17.4.2
       eventemitter2:
         specifier: ^6.4.9
         version: 6.4.9
@@ -6094,6 +6094,10 @@ packages:
 
   dotenv@17.4.1:
     resolution: {integrity: sha512-k8DaKGP6r1G30Lx8V4+pCsLzKr8vLmV2paqEj1Y55GdAgJuIqpRp5FfajGF8KtwMxCz9qJc6wUIJnm053d/WCw==}
+    engines: {node: '>=12'}
+
+  dotenv@17.4.2:
+    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -15752,6 +15756,8 @@ snapshots:
   dotenv@16.4.7: {}
 
   dotenv@17.4.1: {}
+
+  dotenv@17.4.2: {}
 
   dunder-proto@1.0.1:
     dependencies:
