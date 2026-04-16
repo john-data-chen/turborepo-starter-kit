@@ -15,7 +15,7 @@ export class ParseObjectIdPipe implements PipeTransform<unknown, Types.ObjectId>
       throw new BadRequestException("Invalid ID format");
     }
     if (Types.ObjectId.isValid(value)) {
-      return typeof value === "string" ? new Types.ObjectId(value) : (value);
+      return typeof value === "string" ? new Types.ObjectId(value) : value;
     }
     throw new BadRequestException("Invalid ID format");
   }
