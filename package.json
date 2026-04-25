@@ -30,9 +30,9 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.0",
+    "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
-    "@commitlint/cz-commitlint": "^20.5.1",
+    "@commitlint/cz-commitlint": "^20.5.2",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
@@ -47,7 +47,7 @@
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.46.0",
     "oxlint": "^1.61.0",
-    "oxlint-tsgolint": "^0.21.1",
+    "oxlint-tsgolint": "^0.22.0",
     "start-server-and-test": "^3.0.2",
     "turbo": "^2.9.6",
     "vitest": "catalog:"
