@@ -296,7 +296,7 @@ importers:
         version: 55.0.13(expo@55.0.17)(react@19.2.5)
       expo-router:
         specifier: ~55.0.13
-        version: 55.0.13(6e015714545125bc37f58e2509236ad9)
+        version: 55.0.13(945329922e198684ca076c8300b1540e)
       expo-secure-store:
         specifier: ^55.0.13
         version: 55.0.13(expo@55.0.17)
@@ -331,8 +331,8 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4(@expo/metro-config@55.0.17(expo@55.0.17)(typescript@5.9.3))(lightningcss@1.30.1)(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       react-native-gesture-handler:
-        specifier: ^2.30.0
-        version: 2.30.0(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+        specifier: ^2.30.1
+        version: 2.31.1(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       react-native-reanimated:
         specifier: ~4.2.1
         version: 4.2.1(react-native-worklets@0.7.4(@babel/core@7.28.5)(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
@@ -4800,6 +4800,9 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
 
+  '@types/react-test-renderer@19.1.0':
+    resolution: {integrity: sha512-XD0WZrHqjNrxA/MaR9O22w/RNidWR9YZmBdRGI7wcnWGrv/3dA8wKCJ8m63Sn+tLJhcjmuhOi629N66W6kgWzQ==}
+
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
 
@@ -8650,8 +8653,8 @@ packages:
       react: 19.2.5
       react-native: 0.83.4
 
-  react-native-gesture-handler@2.30.0:
-    resolution: {integrity: sha512-5YsnKHGa0X9C8lb5oCnKm0fLUPM6CRduvUUw2Bav4RIj/C3HcFh4RIUnF8wgG6JQWCL1//gRx4v+LVWgcIQdGA==}
+  react-native-gesture-handler@2.31.1:
+    resolution: {integrity: sha512-wQDlECdEzHhYKTnQXFnSqWUtJ5TS3MGQi7EWvQczTnEVKfk6XVSBecnpWAoI/CqlYQ7IWMJEyutY6BxwEBoxeg==}
     peerDependencies:
       react: 19.2.5
       react-native: 0.83.4
@@ -11235,7 +11238,7 @@ snapshots:
       ws: 8.20.0
       zod: 3.25.76
     optionalDependencies:
-      expo-router: 55.0.13(6e015714545125bc37f58e2509236ad9)
+      expo-router: 55.0.13(945329922e198684ca076c8300b1540e)
       react-native: 0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5)
     transitivePeerDependencies:
       - '@expo/dom-webview'
@@ -11499,7 +11502,7 @@ snapshots:
       react: 19.2.5
     optionalDependencies:
       '@expo/metro-runtime': 55.0.6(@expo/dom-webview@55.0.3)(expo@55.0.17)(react-dom@19.2.5(react@19.2.5))(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
-      expo-router: 55.0.13(6e015714545125bc37f58e2509236ad9)
+      expo-router: 55.0.13(945329922e198684ca076c8300b1540e)
       react-dom: 19.2.5(react@19.2.5)
     transitivePeerDependencies:
       - supports-color
@@ -14374,6 +14377,10 @@ snapshots:
     dependencies:
       '@types/react': 19.2.14
 
+  '@types/react-test-renderer@19.1.0':
+    dependencies:
+      '@types/react': 19.2.14
+
   '@types/react@19.2.14':
     dependencies:
       csstype: 3.2.3
@@ -16215,7 +16222,7 @@ snapshots:
     optionalDependencies:
       react-native-worklets: 0.7.4(@babel/core@7.28.5)(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
 
-  expo-router@55.0.13(6e015714545125bc37f58e2509236ad9):
+  expo-router@55.0.13(945329922e198684ca076c8300b1540e):
     dependencies:
       '@expo/log-box': 55.0.11(@expo/dom-webview@55.0.3)(expo@55.0.17)(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       '@expo/metro-runtime': 55.0.6(@expo/dom-webview@55.0.3)(expo@55.0.17)(react-dom@19.2.5(react@19.2.5))(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
@@ -16254,7 +16261,7 @@ snapshots:
     optionalDependencies:
       '@testing-library/react-native': 13.3.3(jest@30.2.0(@types/node@25.6.0)(ts-node@10.9.2(@swc/core@1.15.10)(@types/node@25.6.0)(typescript@5.9.3)))(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react-test-renderer@19.2.0(react@19.2.5))(react@19.2.5)
       react-dom: 19.2.5(react@19.2.5)
-      react-native-gesture-handler: 2.30.0(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+      react-native-gesture-handler: 2.31.1(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       react-native-reanimated: 4.2.1(react-native-worklets@0.7.4(@babel/core@7.28.5)(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       react-native-web: 0.21.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     transitivePeerDependencies:
@@ -18867,9 +18874,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-native-gesture-handler@2.30.0(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
+  react-native-gesture-handler@2.31.1(react-native@0.83.4(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
     dependencies:
       '@egjs/hammerjs': 2.0.17
+      '@types/react-test-renderer': 19.1.0
       hoist-non-react-statics: 3.3.2
       invariant: 2.2.4
       react: 19.2.5
