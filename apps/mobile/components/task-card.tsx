@@ -57,8 +57,8 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
 
   const cycleStatus = useCallback(() => {
     const currentIndex = STATUS_ORDER.indexOf(task.status || TaskStatus.TODO);
-    const nextIndex = (currentIndex + 1) % STATUS_ORDER.length;
-    const nextStatus = STATUS_ORDER[nextIndex];
+    const safeIndex = currentIndex < 0 ? 0 : currentIndex;
+    const nextStatus = STATUS_ORDER[(safeIndex + 1) % STATUS_ORDER.length];
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     updateTaskMutation.mutate({ id: task._id, status: nextStatus });
@@ -91,6 +91,8 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
   }, [t, task.title, task._id, deleteTaskMutation]);
 
   const pan = Gesture.Pan()
+    .activeOffsetX([-15, 15])
+    .failOffsetY([-30, 30])
     .onBegin(() => {
       context.value = translateX.value;
     })
