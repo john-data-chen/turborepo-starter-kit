@@ -118,7 +118,7 @@ describe("TaskRepository", () => {
       expect(mockModel.findByIdAndUpdate).toHaveBeenCalledWith(
         taskId,
         { $set: updateData },
-        { new: true }
+        { returnDocument: "after" }
       );
       expect(result).toEqual(mockTask);
     });
