@@ -35,7 +35,7 @@ export class TaskRepository {
 
   async updateById(id: string, updateData: Record<string, unknown>): Promise<TaskDocument | null> {
     return this.taskModel
-      .findByIdAndUpdate(id, { $set: updateData }, { new: true })
+      .findByIdAndUpdate(id, { $set: updateData }, { returnDocument: "after" })
       .populate("lastModifier", "name email")
       .exec();
   }
