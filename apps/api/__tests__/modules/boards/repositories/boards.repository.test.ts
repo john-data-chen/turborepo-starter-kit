@@ -127,7 +127,7 @@ describe("BoardRepository", () => {
       expect(mockModel.findByIdAndUpdate).toHaveBeenCalledWith(
         boardId,
         { $set: updateData },
-        { new: true }
+        { returnDocument: "after" }
       );
       expect(result).toEqual(mockBoard);
     });
@@ -164,7 +164,7 @@ describe("BoardRepository", () => {
       expect(mockModel.findOneAndUpdate).toHaveBeenCalledWith(
         { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
         { $addToSet: { members: new Types.ObjectId(memberId) } },
-        { new: true }
+        { returnDocument: "after" }
       );
       expect(result).toEqual(mockBoard);
     });
@@ -188,7 +188,7 @@ describe("BoardRepository", () => {
       expect(mockModel.findOneAndUpdate).toHaveBeenCalledWith(
         { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
         { $pull: { members: new Types.ObjectId(memberId) } },
-        { new: true }
+        { returnDocument: "after" }
       );
       expect(result).toEqual(mockBoard);
     });

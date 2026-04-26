@@ -108,7 +108,7 @@ describe("ProjectRepository", () => {
       expect(mockModel.findByIdAndUpdate).toHaveBeenCalledWith(
         projectId,
         { $set: updateData },
-        { new: true, runValidators: true }
+        { returnDocument: "after", runValidators: true }
       );
       expect(result).toEqual(mockProject);
     });

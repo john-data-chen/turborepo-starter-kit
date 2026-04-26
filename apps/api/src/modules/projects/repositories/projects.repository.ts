@@ -37,7 +37,7 @@ export class ProjectRepository {
 
   async updateById(id: string, updateData: Partial<Project>): Promise<ProjectDocument | null> {
     return this.projectModel
-      .findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
+      .findByIdAndUpdate(id, { $set: updateData }, { returnDocument: "after", runValidators: true })
       .populate("owner", "name email")
       .populate("members", "name email")
       .populate("assignee", "name email")
