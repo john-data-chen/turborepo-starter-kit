@@ -15,17 +15,9 @@ config.resolver.nodeModulesPaths = [
   path.resolve(monorepoRoot, "node_modules")
 ];
 
-// Monorepo: pnpm creates isolated node_modules per package, causing Metro to
-// bundle multiple copies of React (e.g. from @expo/metro-runtime/node_modules/react-dom
-// and react-native-web/node_modules/react-dom). Even if same version, different file
-// paths = different Metro modules = broken hooks. Force all to mobile's copy.
-const singletonPkgs = ["react", "react-dom"];
-const singletonPaths = Object.fromEntries(
-  singletonPkgs.map((pkg) => [
-    "/node_modules/" + pkg + "/",
-    path.resolve(__dirname, "node_modules", pkg) + "/"
-  ])
-);
+// Monorepo: pnpm with nodeLinker: hoisted puts all packages in root node_modules
+const rootNodeModules = path.resolve(monorepoRoot, "node_modules");
+const singletonPkgs = ["react", "react-dom", "react-native", "react-native-web"];
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   // Zustand 5 ESM uses import.meta.env which breaks Metro's classic script on web
@@ -42,13 +34,18 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
 
   const resolution = context.resolveRequest(context, moduleName, platform);
 
-  // Redirect duplicate React packages to mobile's single copy
+  // Redirect duplicate React packages to root node_modules
   if (resolution?.type === "sourceFile" && resolution.filePath) {
-    for (const [needle, canonicalBase] of Object.entries(singletonPaths)) {
+    for (const pkg of singletonPkgs) {
+      const needle = "/node_modules/" + pkg + "/";
       const idx = resolution.filePath.lastIndexOf(needle);
-      if (idx !== -1 && !resolution.filePath.startsWith(canonicalBase)) {
-        const relPath = resolution.filePath.substring(idx + needle.length);
-        return { type: "sourceFile", filePath: canonicalBase + relPath };
+      if (idx !== -1) {
+        const canonicalBase = rootNodeModules + "/" + pkg + "/";
+        // Only redirect if not already at root level
+        if (!resolution.filePath.startsWith(canonicalBase)) {
+          const relPath = resolution.filePath.substring(idx + needle.length);
+          return { type: "sourceFile", filePath: canonicalBase + relPath };
+        }
       }
     }
   }
