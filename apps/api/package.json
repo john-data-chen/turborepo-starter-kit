@@ -27,7 +27,7 @@
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.19",
-    "@nestjs/swagger": "^11.2.7",
+    "@nestjs/swagger": "^11.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
@@ -39,15 +39,15 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "run-script-webpack-plugin": "^0.2.3",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.19",
-    "@nestjs/schematics": "^11.0.10",
+    "@nestjs/cli": "^11.0.21",
+    "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.1.19",
     "@rspack/cli": "2.0.0",
     "@rspack/core": "2.0.0",
-    "@rspack/dev-server": "2.0.0",
+    "@rspack/dev-server": "2.0.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
