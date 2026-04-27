@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
+import { useEffect } from "react";
 
 import { authService } from "@/lib/auth/auth-service";
 import { useAuthStore } from "@/stores/auth";
@@ -18,6 +19,13 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000,
     retry: false
   });
+
+  useEffect(() => {
+    if (sessionQuery.data) {
+      setSession(sessionQuery.data);
+      setUser(sessionQuery.data.user ?? null);
+    }
+  }, [sessionQuery.data, setSession, setUser]);
 
   const loginMutation = useMutation({
     mutationFn: async (email: string) => authService.login(email),

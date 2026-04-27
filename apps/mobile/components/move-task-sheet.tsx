@@ -1,6 +1,7 @@
 import { Project } from "@repo/store";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
+import { useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, ActivityIndicator, Platform, ActionSheetIOS } from "react-native";
 
@@ -26,43 +27,52 @@ export function MoveTaskSheet({
   const { t } = useTranslation();
   const { data: projects = [], isLoading } = useProjects(boardId);
   const moveTaskMutation = useMoveTask();
+  const hasShownActionSheet = useRef(false);
 
   const availableProjects = projects.filter((p: Project) => p._id !== currentProjectId);
 
-  const handleMove = (targetProjectId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    moveTaskMutation.mutate(
+  const showActionSheet = useCallback(() => {
+    if (hasShownActionSheet.current) {
+      return;
+    }
+    hasShownActionSheet.current = true;
+    ActionSheetIOS.showActionSheetWithOptions(
       {
-        taskId,
-        projectId: targetProjectId,
-        orderInProject: 0
+        options: [...availableProjects.map((p) => p.title), t("common.cancel") || "Cancel"],
+        cancelButtonIndex: availableProjects.length,
+        title: t("kanban.task.moveToTitle") || "Move to Project",
+        message: t("kanban.task.moveToDescription") || "Select a project to move this task to"
       },
-      {
-        onSuccess: () => {
+      (buttonIndex) => {
+        if (buttonIndex < availableProjects.length) {
+          const targetProject = availableProjects[buttonIndex];
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onClose();
+          moveTaskMutation.mutate({ taskId, projectId: targetProject._id, orderInProject: 0 });
+        } else {
           onClose();
         }
       }
     );
+  }, [availableProjects, t, taskId, moveTaskMutation, onClose]);
+
+  useEffect(() => {
+    if (!visible) {
+      hasShownActionSheet.current = false;
+      return;
+    }
+    if (Platform.OS === "ios" && !isLoading && availableProjects.length > 0) {
+      showActionSheet();
+    }
+  }, [visible, isLoading, availableProjects.length, showActionSheet]);
+
+  const handleMove = (targetProjectId: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onClose();
+    moveTaskMutation.mutate({ taskId, projectId: targetProjectId, orderInProject: 0 });
   };
 
   if (Platform.OS === "ios") {
-    if (visible && !isLoading && availableProjects.length > 0) {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: [...availableProjects.map((p) => p.title), t("common.cancel") || "Cancel"],
-          cancelButtonIndex: availableProjects.length,
-          title: t("kanban.task.moveToTitle") || "Move to Project",
-          message: t("kanban.task.moveToDescription") || "Select a project to move this task to"
-        },
-        (buttonIndex) => {
-          if (buttonIndex < availableProjects.length) {
-            handleMove(availableProjects[buttonIndex]._id);
-          } else {
-            onClose();
-          }
-        }
-      );
-    }
     return null;
   }
 

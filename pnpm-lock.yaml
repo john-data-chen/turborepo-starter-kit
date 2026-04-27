@@ -71,7 +71,12 @@ overrides:
   lightningcss: 1.30.1
   react@*: 19.2.5
   react-dom@*: 19.2.5
-  react-native@*: 0.83.4
+  react-native@*: 0.83.6
+
+patchedDependencies:
+  '@react-navigation/elements@2.9.10':
+    hash: 2f0fa1cb8e384ffbe7840a8dbe6bf3f4895a0a03aa34531e3563c9a90c2eb4d9
+    path: patches/@react-navigation__elements@2.9.10.patch
 
 importers:
 
@@ -1704,7 +1709,7 @@ packages:
     peerDependencies:
       expo: '*'
       expo-router: '*'
-      react-native: 0.83.4
+      react-native: 0.83.6
     peerDependenciesMeta:
       expo-router:
         optional: true
@@ -1730,7 +1735,7 @@ packages:
     resolution: {integrity: sha512-4VsFn9MUriocyuhyA+ycJP3TJhUsOFHDc270l9h3LhNpXMf6wvIdGcA0QzXkZtORXmlDybWXRP2KT1k36HcQkA==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
     peerDependenciesMeta:
       react:
         optional: true
@@ -1742,7 +1747,7 @@ packages:
     peerDependencies:
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@expo/env@2.1.1':
     resolution: {integrity: sha512-rVvHC4I6xlPcg+mAO09ydUi2Wjv1ZytpLmHOSzvXzBAz9mMrJggqCe4s4dubjJvi/Ino/xQCLhbaLCnTtLpikg==}
@@ -1767,7 +1772,7 @@ packages:
       '@expo/dom-webview': ^55.0.5
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@expo/log-box@55.0.7':
     resolution: {integrity: sha512-m7V1k2vlMp4NOj3fopjOg4zl/ANXyTRF3HMTMep2GZAKsPiDzgOQ41nm8CaU50/HlDIGXlCObss07gOn20UpHQ==}
@@ -1775,7 +1780,7 @@ packages:
       '@expo/dom-webview': ^55.0.3
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@expo/metro-config@55.0.17':
     resolution: {integrity: sha512-o11VyNoRDXv0T5320D9cH+nSsrR/OMHTjtysKLIfDlidsBswDk1DMApPv9Kw0/gluArCSnbx8JC1G0Yh2Y4P3g==}
@@ -1791,7 +1796,7 @@ packages:
       expo: '*'
       react: 19.2.5
       react-dom: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
     peerDependenciesMeta:
       react-dom:
         optional: true
@@ -1862,7 +1867,7 @@ packages:
     peerDependencies:
       expo-font: '>=14.0.4'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@expo/ws-tunnel@1.0.6':
     resolution: {integrity: sha512-nDRbLmSrJar7abvUjp3smDwH8HcbZcoOEa5jVPUv9/9CajgmWw20JNRwTuBRzWIWIkEJDkz20GoNA+tSwUqk0Q==}
@@ -3806,14 +3811,14 @@ packages:
   '@react-native-async-storage/async-storage@2.2.0':
     resolution: {integrity: sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==}
     peerDependencies:
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@react-native-community/datetimepicker@8.6.0':
     resolution: {integrity: sha512-yxPSqNfxgpGaqHQIpatqe6ykeBdU/1pdsk/G3x01mY2bpTflLpmVTLqFSJYd3MiZzxNZcMs/j1dQakUczSjcYA==}
     peerDependencies:
       expo: '>=52.0.0'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-windows: '*'
     peerDependenciesMeta:
       expo:
@@ -3825,7 +3830,7 @@ packages:
     resolution: {integrity: sha512-l84YeVX8xAU3lvOJSvV4nK/NbGhIm2gBfveYolwaoCbRp+/SLXtc6mYrQmM9ScXNwU14mnzjQTpTHWl5YPnkzQ==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@react-native/assets-registry@0.83.6':
     resolution: {integrity: sha512-iljb4ue1yWJ3EhySz7EjV6CzSVrI2uNtR8BI2jzP5+QS5E4Cl3fdIJRmVwDEx1pu8uE97PGEusGRHnoaZ9Q3jg==}
@@ -3891,7 +3896,7 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -3901,7 +3906,7 @@ packages:
     peerDependencies:
       '@react-navigation/native': ^7.1.33
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-safe-area-context: '>= 4.0.0'
       react-native-screens: '>= 4.0.0'
 
@@ -3916,7 +3921,7 @@ packages:
       '@react-native-masked-view/masked-view': '>= 0.2.0'
       '@react-navigation/native': ^7.1.33
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-safe-area-context: '>= 4.0.0'
     peerDependenciesMeta:
       '@react-native-masked-view/masked-view':
@@ -3927,7 +3932,7 @@ packages:
     peerDependencies:
       '@react-navigation/native': ^7.1.33
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-safe-area-context: '>= 4.0.0'
       react-native-screens: '>= 4.0.0'
 
@@ -3935,7 +3940,7 @@ packages:
     resolution: {integrity: sha512-DpFdWGcgLajKZ1TuIvDNQsblN2QaUFWpTQaB8v7WRP9Mix8H/6TFoIrZd93pbymI2hybd6UYrD+lI408eWVcfw==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   '@react-navigation/routers@7.5.3':
     resolution: {integrity: sha512-1tJHg4KKRJuQ1/EvJxatrMef3NZXEPzwUIUZ3n1yJ2t7Q97siwRtbynRpQG9/69ebbtiZ8W3ScOZF/OmhvM4Rg==}
@@ -4570,14 +4575,9 @@ packages:
 
   '@testing-library/jest-native@5.4.3':
     resolution: {integrity: sha512-/sSDGaOuE+PJ1Z9Kp4u7PQScSVVXGud59I/qsBFFJvIbcn4P6yYw6cBnBmbPF+X9aRIsTJRDl6gzw5ZkJNm66w==}
-    deprecated: |-
-      DEPRECATED: This package is no longer maintained.
-      Please use the built-in Jest matchers available in @testing-library/react-native v12.4+.
-
-      See migration guide: https://callstack.github.io/react-native-testing-library/docs/migration/jest-matchers
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-test-renderer: '>=16.0.0'
 
   '@testing-library/react-native@13.3.3':
@@ -4586,7 +4586,7 @@ packages:
     peerDependencies:
       jest: '>=29.0.0'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-test-renderer: '>=18.2.0'
     peerDependenciesMeta:
       jest:
@@ -6462,33 +6462,33 @@ packages:
     peerDependencies:
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-constants@55.0.15:
     resolution: {integrity: sha512-w394fcZLJjeKN+9ZnJzL/HiarE1nwZFDa+3S9frevh6Ur+MAAs9QDrcXhDrV8T3xqRzzYaqsP6Z8TFZ4efWN1A==}
     peerDependencies:
       expo: '*'
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-file-system@55.0.17:
     resolution: {integrity: sha512-d27K1cagUOt2BwxwPka9KW8Znu5kN1tnairozCzzCRZviZFtWnBxwFuJ3KU6MAbav/9UhSMkp5Ve/oZ+SR0UgQ==}
     peerDependencies:
       expo: '*'
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-font@55.0.6:
     resolution: {integrity: sha512-x9czUA3UQWjIwa0ZUEs/eWJNqB4mAue/m4ltESlNPLZhHL0nWWqIfsyHmklTLFH7mVfcHSJvew6k+pR2FE1zVw==}
     peerDependencies:
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-glass-effect@55.0.10:
     resolution: {integrity: sha512-5kL/jATvgJWdrqPdxixrECJqD2l8cfQ4ALr1DK7qi9XkyI97ejXvUjB2VsfEePNy3Fg+/VwzA3n3L7Nv3tAPkw==}
     peerDependencies:
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-haptics@55.0.14:
     resolution: {integrity: sha512-KjDItBsA9mi1f5nRwf8g1wOdfEcLHwvEdt5Jl1sMCDETR/homcGOl+F3QIiPOl/PRlbGVieQsjTtF4DGtHOj6g==}
@@ -6500,7 +6500,7 @@ packages:
     peerDependencies:
       expo: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-web: '*'
     peerDependenciesMeta:
       react-native-web:
@@ -6516,7 +6516,7 @@ packages:
     resolution: {integrity: sha512-ZSqOvJyEquf04M5/ZpQo2diK9QRnNrzgqZo7p8gzxaPPHxP6IyUJnmcd12qT+dTxnRTVmUpxFQVHHWbvwPNIwQ==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-localization@55.0.13:
     resolution: {integrity: sha512-fXiEUUihIrXmAEzoneaTOFcQ7TKmr25RR/ymrB/MvYTVnmevFA1zY2KI0VSiXY+NKKjZ8mG65YSn1wh4gEYKxA==}
@@ -6532,7 +6532,7 @@ packages:
     resolution: {integrity: sha512-IGWT5N9MoV4zgWyrv686bElnKhzhE7E6pSazhaBNh3vgViAah5nnAz2o5h5YoUMR2B+ZTdHumRbGHN6gHLgwPA==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-worklets: ^0.7.4 || ^0.8.0
     peerDependenciesMeta:
       react-native-worklets:
@@ -6550,7 +6550,7 @@ packages:
       expo-linking: ^55.0.14
       react: 19.2.5
       react-dom: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-gesture-handler: '*'
       react-native-reanimated: '*'
       react-native-safe-area-context: '>= 5.4.0'
@@ -6591,7 +6591,7 @@ packages:
     resolution: {integrity: sha512-qb0c3rJO2b7CC0gUVGi1JYp92oLenWdYGyk8l4YQs6U+uaXUTPv6aaFa3KkT2HON10re3AxxPNJci8rsz6kPxg==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-symbols@55.0.7:
     resolution: {integrity: sha512-y4ALLbncSGQzhFLw1PaIBbO39xzaw3ie249HmK6zK/WLJYfw4Z/9UU4iPKO3KCE4FyCKIzd+yRsvzvlri23YrQ==}
@@ -6599,13 +6599,13 @@ packages:
       expo: '*'
       expo-font: '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo-web-browser@55.0.14:
     resolution: {integrity: sha512-bTDkBSQBnrlnYcM7Aak72AOvJuvdgA3M8p//Lazrm0Nfa77T9cRXzQ6KhLrB08V39n1+00d1dvuTWznJslkmdg==}
     peerDependencies:
       expo: '*'
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   expo@55.0.17:
     resolution: {integrity: sha512-yVF2phiPw5XgOCedC/oQaL3j0XbwzsBLst3JiAF8bi9aFlxLOVvuDEM8BDg3E09XGSLaGCAclY4q5L+sFerXlQ==}
@@ -6614,7 +6614,7 @@ packages:
       '@expo/dom-webview': '*'
       '@expo/metro-runtime': '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-webview: '*'
     peerDependenciesMeta:
       '@expo/dom-webview':
@@ -6890,7 +6890,6 @@ packages:
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.6:
@@ -6899,7 +6898,6 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-directory@5.0.0:
     resolution: {integrity: sha512-1pgFdhK3J2LeM+dVf2Pd424yHx2ou338lC0ErNP2hPx4j8eW1Sp0XqSjNxtk6Tc4Kr5wlWtSvz8cn2yb7/SG/w==}
@@ -8651,38 +8649,38 @@ packages:
       '@expo/metro-config': '>=54'
       lightningcss: 1.30.1
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native-gesture-handler@2.30.1:
     resolution: {integrity: sha512-xIUBDo5ktmJs++0fZlavQNvDEE4PsihWhSeJsJtoz4Q6p0MiTM9TgrTgfEgzRR36qGPytFoeq+ShLrVwGdpUdA==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native-is-edge-to-edge@1.2.1:
     resolution: {integrity: sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native-reanimated@4.2.1:
     resolution: {integrity: sha512-/NcHnZMyOvsD/wYXug/YqSKw90P9edN0kEPL5lP4PFf1aQ4F1V7MKe/E0tvfkXKIajy3Qocp5EiEnlcrK/+BZg==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
       react-native-worklets: '>=0.7.0'
 
   react-native-safe-area-context@5.6.2:
     resolution: {integrity: sha512-4XGqMNj5qjUTYywJqpdWZ9IG8jgkS3h06sfVjfw5yZQZfWnRFXczi0GnYyFyCc2EBps/qFmoCH8fez//WumdVg==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native-screens@4.23.0:
     resolution: {integrity: sha512-XhO3aK0UeLpBn4kLecd+J+EDeRRJlI/Ro9Fze06vo1q163VeYtzfU9QS09/VyDFMWR1qxDC1iazCArTPSFFiPw==}
     peerDependencies:
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native-web@0.21.2:
     resolution: {integrity: sha512-SO2t9/17zM4iEnFvlu2DA9jqNbzNhoUP+AItkoCOyFmDMOhUnBBznBDCYN92fGdfAkfQlWzPoez6+zLxFNsZEg==}
@@ -8695,7 +8693,7 @@ packages:
     peerDependencies:
       '@babel/core': '*'
       react: 19.2.5
-      react-native: 0.83.4
+      react-native: 0.83.6
 
   react-native@0.83.6:
     resolution: {integrity: sha512-H513+8VzviNFXOdPnStRzX9S3/jiJGg++QZ1zd+ROyAvBEKqFqKUPHH0d82y3QyRPct5qKjdOa7J6vNehCvXYA==}

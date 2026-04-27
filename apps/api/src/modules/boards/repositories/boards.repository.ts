@@ -136,7 +136,9 @@ export class BoardRepository {
   }
 
   async updateById(id: string, updateData: Partial<Board>): Promise<BoardDocument | null> {
-    return this.boardModel.findByIdAndUpdate(id, { $set: updateData }, { new: true }).exec();
+    return this.boardModel
+      .findByIdAndUpdate(id, { $set: updateData }, { returnDocument: "after" })
+      .exec();
   }
 
   async deleteById(id: string): Promise<{ deletedCount: number }> {
@@ -149,7 +151,7 @@ export class BoardRepository {
       .findOneAndUpdate(
         { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
         { $addToSet: { members: new Types.ObjectId(memberId) } },
-        { new: true }
+        { returnDocument: "after" }
       )
       .exec();
   }
@@ -159,7 +161,7 @@ export class BoardRepository {
       .findOneAndUpdate(
         { _id: new Types.ObjectId(boardId), owner: new Types.ObjectId(ownerId) },
         { $pull: { members: new Types.ObjectId(memberId) } },
-        { new: true }
+        { returnDocument: "after" }
       )
       .exec();
   }
