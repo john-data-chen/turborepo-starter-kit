@@ -604,7 +604,7 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | Memory    | ~50% reduction in memory usage compared to the JS-based compiler                          |
 | Trade-off | Will evaluate migration once TS 7 reaches stable maturity and ecosystem readiness         |
 
-[TypeScript Native Port](https://devblogs.microsoft.com/typescript/typescript-native-port/) | [typescript-go repo](https://github.com/microsoft/typescript-go)
+[Announcing TypeScript 7.0 Beta](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/) | [typescript-go repo](https://github.com/microsoft/typescript-go)
 
 ### React Compiler
 
