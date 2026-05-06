@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*", "../../packages/ui/src/**/*.{ts,tsx,css}"],
       "outputs": [".next/**", "!.next/cache/**"]
     }
   }

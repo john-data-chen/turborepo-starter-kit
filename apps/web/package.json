@@ -7,8 +7,8 @@
     "url": "https://github.com/john-data-chen/turborepo-starter-kit"
   },
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
+    "build": "node scripts/build-styles.mjs && next build",
+    "dev": "node scripts/build-styles.mjs && next dev",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "playwright": "npx playwright test",

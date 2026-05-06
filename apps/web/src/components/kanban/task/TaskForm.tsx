@@ -145,7 +145,6 @@ export function TaskForm({
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        role="combobox"
                         aria-expanded={assignOpen}
                         aria-controls="assignee-options"
                         className="w-full justify-between"
@@ -159,7 +158,6 @@ export function TaskForm({
                     </PopoverTrigger>
                     <PopoverContent
                       id="assignee-options"
-                      role="listbox"
                       className="z-[60] p-0"
                       side="bottom"
                       align="start"

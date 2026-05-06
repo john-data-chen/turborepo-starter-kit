@@ -1,4 +1,4 @@
-import "@repo/ui/styles.css";
+import "../generated-ui.css";
 
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";

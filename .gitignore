@@ -25,6 +25,7 @@
 apps/web/.next/
 apps/web/out/
 apps/web/next-env.d.ts
+apps/web/src/app/generated-ui.css
 
 # General Build Artifacts
 **/build/
