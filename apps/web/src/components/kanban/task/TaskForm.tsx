@@ -145,6 +145,7 @@ export function TaskForm({
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
+                        /* oxlint-disable jsx-a11y/prefer-tag-over-role */
                         role="combobox"
                         aria-expanded={assignOpen}
                         aria-controls="assignee-options"
@@ -159,6 +160,7 @@ export function TaskForm({
                     </PopoverTrigger>
                     <PopoverContent
                       id="assignee-options"
+                      /* oxlint-disable jsx-a11y/prefer-tag-over-role */
                       role="listbox"
                       className="z-[60] p-0"
                       side="bottom"

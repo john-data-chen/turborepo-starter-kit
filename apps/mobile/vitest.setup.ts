@@ -77,7 +77,7 @@ vi.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children
 }));
 
-// Mock i18next and react-i18next
+// Mock react-i18next
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -88,5 +88,20 @@ vi.mock("react-i18next", () => ({
   initReactI18next: {
     type: "3rdParty",
     init: vi.fn()
+  }
+}));
+
+// Mock @react-native-async-storage/async-storage
+vi.mock("@react-native-async-storage/async-storage", () => ({
+  default: {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+    clear: vi.fn(),
+    getAllKeys: vi.fn(),
+    multiGet: vi.fn(),
+    multiSet: vi.fn(),
+    multiRemove: vi.fn(),
+    multiMerge: vi.fn()
   }
 }));
