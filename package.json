@@ -44,12 +44,12 @@
     "dotenv": "catalog:",
     "husky": "^9.1.7",
     "jsdom": "catalog:",
-    "lint-staged": "^16.4.0",
-    "oxfmt": "^0.47.0",
-    "oxlint": "^1.62.0",
+    "lint-staged": "^17.0.2",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0",
     "oxlint-tsgolint": "^0.22.1",
     "start-server-and-test": "^3.0.2",
-    "turbo": "^2.9.6",
+    "turbo": "^2.9.9",
     "vitest": "catalog:"
   },
   "lint-staged": {
@@ -85,9 +85,6 @@
       "react@*": "19.2.5",
       "react-dom@*": "19.2.5",
       "react-native@*": "0.83.6"
-    },
-    "patchedDependencies": {
-      "@react-navigation/elements@2.9.10": "patches/@react-navigation__elements@2.9.10.patch"
     }
   }
 }
