@@ -30,9 +30,9 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.3",
-    "@commitlint/config-conventional": "^20.5.3",
-    "@commitlint/cz-commitlint": "^20.5.3",
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "@commitlint/cz-commitlint": "^21.0.0",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
@@ -69,7 +69,7 @@
   "engines": {
     "node": ">=24.14.1"
   },
-  "packageManager": "pnpm@11.0.8",
+  "packageManager": "pnpm@11.0.9",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",
@@ -80,12 +80,6 @@
       "esbuild",
       "sharp",
       "unrs-resolver"
-    ],
-    "overrides": {
-      "lightningcss": "1.30.1",
-      "react@*": "19.2.6",
-      "react-dom@*": "19.2.6",
-      "react-native@*": "0.83.6"
-    }
+    ]
   }
 }
