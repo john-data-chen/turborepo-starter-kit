@@ -2,7 +2,6 @@ import { createRequire } from "module";
 import * as path from "path";
 
 import react from "@vitejs/plugin-react";
-import type { ViteUserConfig } from "vitest/config";
 import { defineConfig } from "vitest/config";
 
 import rootConfigRaw from "../../vitest.config";
