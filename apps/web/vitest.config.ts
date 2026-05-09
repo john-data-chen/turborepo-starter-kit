@@ -1,13 +1,14 @@
 import { createRequire } from "module";
-import path from "path";
+import * as path from "path";
 
+import react from "@vitejs/plugin-react";
 import type { ViteUserConfig } from "vitest/config";
 import { defineConfig } from "vitest/config";
 
 import rootConfigRaw from "../../vitest.config";
 
 // Cast to ViteUserConfig to avoid type mismatch from duplicate vitest installations
-const rootConfig = rootConfigRaw as ViteUserConfig;
+const rootConfig = rootConfigRaw;
 
 // Use require.resolve to dynamically locate React wherever pnpm stores it.
 // path.resolve(__dirname, './node_modules/react') breaks in CI where pnpm
@@ -19,6 +20,7 @@ const reactDomPath = path.dirname(require.resolve("react-dom/package.json"));
 
 export default defineConfig({
   ...rootConfig,
+  plugins: [react()],
   test: {
     ...rootConfig.test,
     include: ["__tests__/**/*.test.{ts,tsx}"],
