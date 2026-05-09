@@ -1,3 +1,3 @@
 import { ViteUserConfig } from "vitest/config";
-declare const rootConfig: ViteUserConfig;
-const testAlias = rootConfig.test?.alias;
+// This file is used for testing type imports/declarations
+export type { ViteUserConfig };

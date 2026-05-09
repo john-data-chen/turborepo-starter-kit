@@ -56,15 +56,15 @@ export const Vertical: Story = {
 export const InNavigation: Story = {
   render: (args: ComponentProps<typeof Separator>) => (
     <nav className="flex items-center space-x-4">
-      <a href="#" className="text-sm">
+      <a href="https://example.com" className="text-sm">
         Home
       </a>
       <Separator orientation="vertical" className="h-4" {...args} />
-      <a href="#" className="text-sm">
+      <a href="https://example.com" className="text-sm">
         About
       </a>
       <Separator orientation="vertical" className="h-4" {...args} />
-      <a href="#" className="text-sm">
+      <a href="https://example.com" className="text-sm">
         Contact
       </a>
     </nav>
