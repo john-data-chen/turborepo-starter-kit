@@ -130,7 +130,12 @@ describe("fetchWithAuth", () => {
       json: async () => ({ message: errorMsg })
     });
 
-    await expect(fetchWithAuth(mockUrl)).rejects.toThrow(errorMsg);
+    try {
+      await fetchWithAuth(mockUrl);
+      expect.fail("Should have thrown");
+    } catch (e: any) {
+      expect(e.message).toContain(errorMsg);
+    }
   });
 
   it("should throw error with text body", async () => {
@@ -144,7 +149,12 @@ describe("fetchWithAuth", () => {
       text: async () => errorMsg
     });
 
-    await expect(fetchWithAuth(mockUrl)).rejects.toThrow(errorMsg);
+    try {
+      await fetchWithAuth(mockUrl);
+      expect.fail("Should have thrown");
+    } catch (e: any) {
+      expect(e.message).toContain(errorMsg);
+    }
   });
 
   it("should throw fallback error if text parsing fails", async () => {
@@ -159,7 +169,12 @@ describe("fetchWithAuth", () => {
       }
     });
 
-    await expect(fetchWithAuth(mockUrl)).rejects.toThrow("Request failed with status 500");
+    try {
+      await fetchWithAuth(mockUrl);
+      expect.fail("Should have thrown");
+    } catch (e: any) {
+      expect(e.message).toContain("Request failed with status 500");
+    }
   });
 
   it("should throw error without crashing on 401", async () => {
@@ -169,6 +184,11 @@ describe("fetchWithAuth", () => {
       json: async () => ({ message: "Unauthorized" })
     });
 
-    await expect(fetchWithAuth(mockUrl)).rejects.toThrow("Unauthorized");
+    try {
+      await fetchWithAuth(mockUrl);
+      expect.fail("Should have thrown");
+    } catch (e: any) {
+      expect(e.message).toContain("Unauthorized");
+    }
   });
 });
