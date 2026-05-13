@@ -247,11 +247,14 @@ describe("Task Query Hooks", () => {
 
       const { result } = renderHook(() => useUpdateTask(), { wrapper });
 
-      await expect(
-        act(async () => {
+      try {
+        await act(async () => {
           await result.current.mutateAsync({ id: "1", title: "Test" });
-        })
-      ).rejects.toThrow("User must be authenticated to update a task");
+        });
+        expect.fail("Should have thrown");
+      } catch (e: any) {
+        expect(e.message).toContain("User must be authenticated to update a task");
+      }
     });
 
     it("should update task title", async () => {
