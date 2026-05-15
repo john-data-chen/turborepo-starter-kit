@@ -36,22 +36,22 @@
     "radix-ui": "latest",
     "react-day-picker": "^10.0.0",
     "react-hook-form": "catalog:",
-    "tailwind-merge": "^3.5.0",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.3.6",
-    "@storybook/addon-docs": "^10.3.6",
-    "@storybook/addon-links": "^10.3.6",
-    "@storybook/addon-themes": "^10.3.6",
-    "@storybook/react": "^10.3.6",
-    "@storybook/react-vite": "^10.3.6",
-    "@storybook/test-runner": "0.24.3",
+    "@storybook/addon-a11y": "^10.4.0",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/addon-links": "^10.4.0",
+    "@storybook/addon-themes": "^10.4.0",
+    "@storybook/react": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "@storybook/test-runner": "0.24.4",
     "@typescript/native-preview": "catalog:",
     "global-tsconfig": "workspace:*",
-    "playwright": "1.59.1",
-    "playwright-core": "1.59.1",
-    "storybook": "^10.3.6"
+    "playwright": "1.60.0",
+    "playwright-core": "1.60.0",
+    "storybook": "^10.4.0"
   },
   "peerDependencies": {
     "react": "catalog:",
