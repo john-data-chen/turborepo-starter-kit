@@ -42,7 +42,7 @@ vi.mock("@repo/ui/components/calendar", () => ({
 // Mock Command components
 vi.mock("@repo/ui/components/command", () => ({
   Command: ({ children }: any) => <div>{children}</div>,
-  CommandInput: () => <input data-testid="command-input" />,
+  CommandInput: () => <input aria-label="command-input" data-testid="command-input" />,
   CommandList: ({ children }: any) => <div>{children}</div>,
   CommandEmpty: ({ children }: any) => <div>{children}</div>,
   CommandGroup: ({ children }: any) => <div>{children}</div>,
@@ -56,7 +56,9 @@ vi.mock("@repo/ui/components/command", () => ({
 // Mock RadioGroup components
 vi.mock("@repo/ui/components/radio-group", () => ({
   RadioGroup: ({ children, _defaultValue }: any) => <div data-testid="radio-group">{children}</div>,
-  RadioGroupItem: ({ value }: any) => <input type="radio" value={value} />
+  RadioGroupItem: ({ value }: any) => (
+    <input aria-label={`radio-${value}`} type="radio" value={value} />
+  )
 }));
 
 vi.mock("@/hooks/useTaskForm", () => ({
