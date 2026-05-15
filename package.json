@@ -30,9 +30,9 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.0",
-    "@commitlint/config-conventional": "^21.0.0",
-    "@commitlint/cz-commitlint": "^21.0.0",
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
+    "@commitlint/cz-commitlint": "^21.0.1",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
@@ -50,7 +50,7 @@
     "oxlint": "^1.64.0",
     "oxlint-tsgolint": "^0.22.1",
     "start-server-and-test": "^3.0.4",
-    "turbo": "^2.9.12",
+    "turbo": "^2.9.14",
     "vitest": "catalog:"
   },
   "lint-staged": {
@@ -69,7 +69,7 @@
   "engines": {
     "node": ">=24.14.1"
   },
-  "packageManager": "pnpm@11.1.1",
+  "packageManager": "pnpm@11.1.2",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",

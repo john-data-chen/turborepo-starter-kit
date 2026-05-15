@@ -26,7 +26,7 @@
     "@repo/store": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tanstack/react-query": "^5.100.9",
-    "expo": "~55.0.23",
+    "expo": "~55.0.24",
     "expo-constants": "~55.0.16",
     "expo-font": "~55.0.7",
     "expo-haptics": "~55.0.14",
