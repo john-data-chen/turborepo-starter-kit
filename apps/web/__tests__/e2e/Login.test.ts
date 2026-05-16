@@ -1,12 +1,7 @@
-import { readFileSync } from "fs";
-import { join } from "path";
-
 import { expect, test } from "@playwright/test";
+import enMessages from "@repo/i18n/locales/en";
 
 import { defaultEmail } from "@/constants/demoData";
-
-// Read the JSON file synchronously
-const enMessages = JSON.parse(readFileSync(join(process.cwd(), "messages", "en.json"), "utf-8"));
 
 /**
  * Wait for API server to be ready
@@ -24,6 +19,9 @@ async function waitForAPI(url: string, timeout = 30000): Promise<void> {
         method: "GET",
         headers: { "Content-Type": "application/json" }
       });
+      if (response.ok) {
+        return;
+      }
       lastError = new Error(`API returned ${response.status}`);
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
