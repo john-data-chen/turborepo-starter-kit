@@ -17,21 +17,58 @@ catalog:
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/react": ^16.3.2
   "@types/node": "^24.12.4"
-  "@types/react": ^19.2.14
+  "@types/react": ^19.2.15
   "@types/react-dom": ^19.2.3
   "@typescript/native-preview": "7.0.0-dev.20260516.1"
-  "@vitest/coverage-v8": ^4.1.6
+  "@vitest/coverage-v8": ^4.1.7
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
   jsdom: ^29.1.1
   lucide-react: ^1.16.0
   react: ^19.2.6
   react-dom: ^19.2.6
-  react-hook-form: ^7.75.0
+  react-hook-form: ^7.76.0
   tailwindcss: ^4.3.0
-  vitest: ^4.1.6
+  vitest: ^4.1.7
   zod: ^4.4.3
   zustand: ^5.0.13
+
+minimumReleaseAgeExclude:
+  - '@rspack/binding-darwin-arm64@2.0.4'
+  - '@rspack/binding-darwin-x64@2.0.4'
+  - '@rspack/binding-linux-arm64-gnu@2.0.4'
+  - '@rspack/binding-linux-arm64-musl@2.0.4'
+  - '@rspack/binding-linux-x64-gnu@2.0.4'
+  - '@rspack/binding-linux-x64-musl@2.0.4'
+  - '@rspack/binding-wasm32-wasi@2.0.4'
+  - '@rspack/binding-win32-arm64-msvc@2.0.4'
+  - '@rspack/binding-win32-ia32-msvc@2.0.4'
+  - '@rspack/binding-win32-x64-msvc@2.0.4'
+  - '@rspack/binding@2.0.4'
+  - '@rspack/cli@2.0.4'
+  - '@rspack/core@2.0.4'
+  - '@types/react@19.2.15'
+  - '@vitest/coverage-v8@4.1.7'
+  - '@vitest/expect@4.1.7'
+  - '@vitest/mocker@4.1.7'
+  - '@vitest/pretty-format@4.1.7'
+  - '@vitest/runner@4.1.7'
+  - '@vitest/snapshot@4.1.7'
+  - '@vitest/spy@4.1.7'
+  - '@vitest/utils@4.1.7'
+  - vitest@4.1.7
+  - '@expo/cli@55.0.31'
+  - '@expo/metro-config@55.0.22'
+  - '@expo/router-server@55.0.17'
+  - babel-preset-expo@55.0.22
+  - expo-file-system@55.0.21
+  - expo-font@55.0.8
+  - expo-modules-autolinking@55.0.23
+  - expo-server@55.0.10
+  - expo@55.0.25
+  - expo-localization@55.0.15
+  - expo-router@55.0.15
+  - expo-symbols@55.0.9
 
 nodeLinker: hoisted
 

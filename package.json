@@ -46,9 +46,9 @@
     "jsdom": "catalog:",
     "lightningcss": "1.32.0",
     "lint-staged": "^17.0.5",
-    "oxfmt": "^0.50.0",
-    "oxlint": "^1.65.0",
-    "oxlint-tsgolint": "^0.22.1",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.66.0",
+    "oxlint-tsgolint": "^0.23.0",
     "start-server-and-test": "^3.0.5",
     "turbo": "^2.9.14",
     "vitest": "catalog:"
@@ -67,9 +67,8 @@
     }
   },
   "engines": {
-    "node": ">=24.14.1"
+    "node": ">=24.15.0"
   },
-  "packageManager": "pnpm@11.1.2",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",
@@ -81,5 +80,6 @@
       "sharp",
       "unrs-resolver"
     ]
-  }
+  },
+  "packageManager": "pnpm@11.1.3"
 }
