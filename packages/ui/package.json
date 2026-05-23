@@ -40,18 +40,18 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.4.0",
-    "@storybook/addon-docs": "^10.4.0",
-    "@storybook/addon-links": "^10.4.0",
-    "@storybook/addon-themes": "^10.4.0",
-    "@storybook/react": "^10.4.0",
-    "@storybook/react-vite": "^10.4.0",
+    "@storybook/addon-a11y": "^10.4.1",
+    "@storybook/addon-docs": "^10.4.1",
+    "@storybook/addon-links": "^10.4.1",
+    "@storybook/addon-themes": "^10.4.1",
+    "@storybook/react": "^10.4.1",
+    "@storybook/react-vite": "^10.4.1",
     "@storybook/test-runner": "0.24.4",
     "@typescript/native-preview": "catalog:",
     "global-tsconfig": "workspace:*",
     "playwright": "1.60.0",
     "playwright-core": "1.60.0",
-    "storybook": "^10.4.0"
+    "storybook": "^10.4.1"
   },
   "peerDependencies": {
     "react": "catalog:",
