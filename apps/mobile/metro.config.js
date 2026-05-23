@@ -17,7 +17,17 @@ config.resolver.nodeModulesPaths = [
 
 // Monorepo: pnpm with nodeLinker: hoisted puts all packages in root node_modules
 const rootNodeModules = path.resolve(monorepoRoot, "node_modules");
-const singletonPkgs = ["react", "react-dom", "react-native", "react-native-web"];
+const mobileNodeModules = path.resolve(__dirname, "node_modules");
+
+// Mobile pins react/react-dom to a different version than the workspace catalog
+// (matches react-native-renderer bundled in react-native). Canonical location is
+// apps/mobile/node_modules so the bundle never picks up the hoisted root copy.
+const singletonPkgs = {
+  react: mobileNodeModules,
+  "react-dom": mobileNodeModules,
+  "react-native": rootNodeModules,
+  "react-native-web": rootNodeModules
+};
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   // Zustand 5 ESM uses import.meta.env which breaks Metro's classic script on web
@@ -34,14 +44,13 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
 
   const resolution = context.resolveRequest(context, moduleName, platform);
 
-  // Redirect duplicate React packages to root node_modules
+  // Redirect duplicate React packages to their canonical install
   if (resolution?.type === "sourceFile" && resolution.filePath) {
-    for (const pkg of singletonPkgs) {
+    for (const [pkg, baseDir] of Object.entries(singletonPkgs)) {
       const needle = "/node_modules/" + pkg + "/";
       const idx = resolution.filePath.lastIndexOf(needle);
       if (idx !== -1) {
-        const canonicalBase = rootNodeModules + "/" + pkg + "/";
-        // Only redirect if not already at root level
+        const canonicalBase = baseDir + "/" + pkg + "/";
         if (!resolution.filePath.startsWith(canonicalBase)) {
           const relPath = resolution.filePath.substring(idx + needle.length);
           return { type: "sourceFile", filePath: canonicalBase + relPath };
