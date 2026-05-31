@@ -39,7 +39,7 @@
     "expo-status-bar": "~56.0.4",
     "expo-web-browser": "~56.0.5",
     "i18next": "^26.0.9",
-    "nativewind": "5.0.0-preview.3",
+    "nativewind": "5.0.0-preview.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-i18next": "^17.0.6",
