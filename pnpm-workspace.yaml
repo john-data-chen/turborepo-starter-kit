@@ -25,14 +25,14 @@ catalog:
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
   jsdom: ^29.1.1
-  lucide-react: ^1.16.0
+  lucide-react: ^1.17.0
   react: ^19.2.6
   react-dom: ^19.2.6
   react-hook-form: ^7.76.1
   tailwindcss: ^4.3.0
   vitest: ^4.1.7
   zod: ^4.4.3
-  zustand: ^5.0.13
+  zustand: ^5.0.14
 
 minimumReleaseAgeExclude:
   - "@rspack/binding-darwin-arm64@2.0.4"
@@ -93,6 +93,7 @@ minimumReleaseAgeExclude:
   - "@typescript/native-preview@7.0.0-dev.20260522.1"
   - date-fns@4.3.0
   - storybook@10.4.1
+  - lint-staged@17.0.6
 
 nodeLinker: hoisted
 
