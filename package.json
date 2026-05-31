@@ -30,9 +30,9 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.1",
-    "@commitlint/config-conventional": "^21.0.1",
-    "@commitlint/cz-commitlint": "^21.0.1",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/cz-commitlint": "^21.0.2",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
@@ -45,12 +45,12 @@
     "husky": "^9.1.7",
     "jsdom": "catalog:",
     "lightningcss": "1.32.0",
-    "lint-staged": "^17.0.5",
-    "oxfmt": "^0.51.0",
-    "oxlint": "^1.66.0",
+    "lint-staged": "^17.0.6",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
     "oxlint-tsgolint": "^0.23.0",
     "start-server-and-test": "^3.0.5",
-    "turbo": "^2.9.14",
+    "turbo": "^2.9.16",
     "vitest": "catalog:"
   },
   "lint-staged": {
@@ -69,5 +69,5 @@
   "engines": {
     "node": ">=24.16.0"
   },
-  "packageManager": "pnpm@11.3.0"
+  "packageManager": "pnpm@11.5.0"
 }
