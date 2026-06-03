@@ -94,40 +94,40 @@ minimumReleaseAgeExclude:
   - date-fns@4.3.0
   - storybook@10.4.1
   - lint-staged@17.0.6
-  - '@rspack/binding-darwin-arm64@2.0.6'
-  - '@rspack/binding-darwin-x64@2.0.6'
-  - '@rspack/binding-linux-arm64-gnu@2.0.6'
-  - '@rspack/binding-linux-arm64-musl@2.0.6'
-  - '@rspack/binding-linux-x64-gnu@2.0.6'
-  - '@rspack/binding-linux-x64-musl@2.0.6'
-  - '@rspack/binding-wasm32-wasi@2.0.6'
-  - '@rspack/binding-win32-arm64-msvc@2.0.6'
-  - '@rspack/binding-win32-ia32-msvc@2.0.6'
-  - '@rspack/binding-win32-x64-msvc@2.0.6'
-  - '@rspack/binding@2.0.6'
-  - '@rspack/cli@2.0.6'
-  - '@rspack/core@2.0.6'
-  - '@storybook/addon-a11y@10.4.2'
-  - '@storybook/addon-docs@10.4.2'
-  - '@storybook/addon-links@10.4.2'
-  - '@storybook/addon-themes@10.4.2'
-  - '@storybook/builder-vite@10.4.2'
-  - '@storybook/csf-plugin@10.4.2'
-  - '@storybook/react-dom-shim@10.4.2'
-  - '@storybook/react-vite@10.4.2'
-  - '@storybook/react@10.4.2'
-  - '@tanstack/query-core@5.101.0'
-  - '@tanstack/query-devtools@5.101.0'
-  - '@tanstack/react-query-devtools@5.101.0'
-  - '@tanstack/react-query@5.101.0'
-  - '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-darwin-x64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-linux-arm64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-linux-arm@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-linux-x64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-win32-arm64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview-win32-x64@7.0.0-dev.20260603.1'
-  - '@typescript/native-preview@7.0.0-dev.20260603.1'
+  - "@rspack/binding-darwin-arm64@2.0.6"
+  - "@rspack/binding-darwin-x64@2.0.6"
+  - "@rspack/binding-linux-arm64-gnu@2.0.6"
+  - "@rspack/binding-linux-arm64-musl@2.0.6"
+  - "@rspack/binding-linux-x64-gnu@2.0.6"
+  - "@rspack/binding-linux-x64-musl@2.0.6"
+  - "@rspack/binding-wasm32-wasi@2.0.6"
+  - "@rspack/binding-win32-arm64-msvc@2.0.6"
+  - "@rspack/binding-win32-ia32-msvc@2.0.6"
+  - "@rspack/binding-win32-x64-msvc@2.0.6"
+  - "@rspack/binding@2.0.6"
+  - "@rspack/cli@2.0.6"
+  - "@rspack/core@2.0.6"
+  - "@storybook/addon-a11y@10.4.2"
+  - "@storybook/addon-docs@10.4.2"
+  - "@storybook/addon-links@10.4.2"
+  - "@storybook/addon-themes@10.4.2"
+  - "@storybook/builder-vite@10.4.2"
+  - "@storybook/csf-plugin@10.4.2"
+  - "@storybook/react-dom-shim@10.4.2"
+  - "@storybook/react-vite@10.4.2"
+  - "@storybook/react@10.4.2"
+  - "@tanstack/query-core@5.101.0"
+  - "@tanstack/query-devtools@5.101.0"
+  - "@tanstack/react-query-devtools@5.101.0"
+  - "@tanstack/react-query@5.101.0"
+  - "@typescript/native-preview-darwin-arm64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-darwin-x64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-linux-arm64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-linux-arm@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-linux-x64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-win32-arm64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview-win32-x64@7.0.0-dev.20260603.1"
+  - "@typescript/native-preview@7.0.0-dev.20260603.1"
   - start-server-and-test@3.0.6
   - storybook@10.4.2
 
