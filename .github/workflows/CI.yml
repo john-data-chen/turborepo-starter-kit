@@ -19,7 +19,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
-          version: 11.5.0
+          version: 11.5.1
           run_install: false
 
       - name: Install Node.js
@@ -38,7 +38,7 @@ jobs:
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           # Add any other environment variables needed specifically for tests
-        run: pnpm test
+        run: pnpm test:coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

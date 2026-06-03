@@ -15,8 +15,9 @@
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "start": "node dist/main.js",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest --watch"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.24",
@@ -45,14 +46,14 @@
     "@nestjs/cli": "^11.0.21",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.1.24",
-    "@rspack/cli": "2.0.5",
-    "@rspack/core": "2.0.5",
+    "@rspack/cli": "2.0.6",
+    "@rspack/core": "2.0.6",
     "@rspack/dev-server": "2.0.3",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
     "cross-env": "^10.1.0",
-    "tsx": "^4.22.3",
+    "tsx": "^4.22.4",
     "webpack-node-externals": "^3.0.0"
   }
 }
