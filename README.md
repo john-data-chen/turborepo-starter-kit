@@ -541,10 +541,10 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 
 By treating AI as an integrated part of the stack, this project achieves:
 
-- **Velocity**: 5-10x faster implementation of boilerplate and standard patterns.
-- **Quality**: Higher test coverage (80%+) through AI-generated test scaffolding.
+- **Velocity**: 5-10x faster implementation of boilerplate and standard patterns, reduce time of PR review 30~40% by Gemini Code Assist.
+- **Quality**: Higher test coverage (80%+) through AI-generated test scaffolding, and PR review by Gemini Code Assist to reduce bugs and bed smell.
 - **Learning**: Rapid mastery of new tools (Rspack, Playwright, Storybook...and more) via AI-guided implementation.
-- **Cost**: Lower costs by using AI agents skills to reduce tokens and match the best practice in frontend.
+- **Cost**: Lower costs by using AI agents skills to reduce tokens and match the best practices.
 - **Focus**: Shifted engineering time from syntax to system architecture and user experience.
 
 ---
