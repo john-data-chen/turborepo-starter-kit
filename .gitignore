@@ -62,3 +62,6 @@ AGENTS.md
 .gemini
 .kilocode
 task-template.md
+
+# pnpm
+.pnpm-store

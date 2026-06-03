@@ -13,8 +13,9 @@
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/mobile",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest watch"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
