@@ -327,7 +327,8 @@ This follows the principle that good cross-platform development means **same goa
 ```text
 .github/                    # GitHub Actions workflows
 .husky/                     # Husky configuration
-ai-docs/                    # AI documentations including skills and prompts
+ai-docs/                    # AI documentation & skills
+└── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
 apps/
 ├── api/                    # Nest.js API server
 │   ├── __tests__/          # Unit tests (by Vitest)
@@ -531,7 +532,7 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 
 - Create a folder named `.claude`
 - Copy skills you need from `ai_docs/skills/` to `.claude/skills/`
-- Copy or create a symbolic link of `PROMPTS.md` to your AI tool's context file location
+- Copy or create a symbolic link of `AGENTS.md` to your AI tool's context file location
   | AI Tool | Target Path |
   | ----------- | ------------------- |
   | Claude Code | `[root-folder]/CLAUDE.md` |
