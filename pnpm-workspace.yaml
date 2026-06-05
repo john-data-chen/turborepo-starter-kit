@@ -20,7 +20,7 @@ catalog:
   "@types/node": "^24.12.4"
   "@types/react": ^19.2.16
   "@types/react-dom": ^19.2.3
-  "@typescript/native-preview": "7.0.0-dev.20260603.1"
+  "@typescript/native-preview": "latest"
   "@vitest/coverage-v8": ^4.1.8
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
@@ -34,102 +34,7 @@ catalog:
   zod: ^4.4.3
   zustand: ^5.0.14
 
-minimumReleaseAgeExclude:
-  - "@rspack/binding-darwin-arm64@2.0.4"
-  - "@rspack/binding-darwin-x64@2.0.4"
-  - "@rspack/binding-linux-arm64-gnu@2.0.4"
-  - "@rspack/binding-linux-arm64-musl@2.0.4"
-  - "@rspack/binding-linux-x64-gnu@2.0.4"
-  - "@rspack/binding-linux-x64-musl@2.0.4"
-  - "@rspack/binding-wasm32-wasi@2.0.4"
-  - "@rspack/binding-win32-arm64-msvc@2.0.4"
-  - "@rspack/binding-win32-ia32-msvc@2.0.4"
-  - "@rspack/binding-win32-x64-msvc@2.0.4"
-  - "@rspack/binding@2.0.4"
-  - "@rspack/cli@2.0.4"
-  - "@rspack/core@2.0.4"
-  - "@types/react@19.2.15"
-  - "@vitest/coverage-v8@4.1.7"
-  - "@vitest/expect@4.1.7"
-  - "@vitest/mocker@4.1.7"
-  - "@vitest/pretty-format@4.1.7"
-  - "@vitest/runner@4.1.7"
-  - "@vitest/snapshot@4.1.7"
-  - "@vitest/spy@4.1.7"
-  - "@vitest/utils@4.1.7"
-  - vitest@4.1.7
-  - "@expo/cli@55.0.31"
-  - "@expo/metro-config@55.0.22"
-  - "@expo/router-server@55.0.17"
-  - babel-preset-expo@55.0.22
-  - expo-file-system@55.0.21
-  - expo-font@55.0.8
-  - expo-modules-autolinking@55.0.23
-  - expo-server@55.0.10
-  - expo@55.0.25
-  - expo-localization@55.0.15
-  - expo-router@55.0.15
-  - expo-symbols@55.0.9
-  - "@storybook/addon-a11y@10.4.1"
-  - "@storybook/addon-docs@10.4.1"
-  - "@storybook/addon-links@10.4.1"
-  - "@storybook/addon-themes@10.4.1"
-  - "@storybook/builder-vite@10.4.1"
-  - "@storybook/csf-plugin@10.4.1"
-  - "@storybook/react-dom-shim@10.4.1"
-  - "@storybook/react-vite@10.4.1"
-  - "@storybook/react@10.4.1"
-  - "@tanstack/query-core@5.100.13"
-  - "@tanstack/query-devtools@5.100.13"
-  - "@tanstack/react-query-devtools@5.100.13"
-  - "@tanstack/react-query@5.100.13"
-  - "@typescript/native-preview-darwin-arm64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-darwin-x64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-linux-arm64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-linux-arm@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-linux-x64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-win32-arm64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview-win32-x64@7.0.0-dev.20260522.1"
-  - "@typescript/native-preview@7.0.0-dev.20260522.1"
-  - date-fns@4.3.0
-  - storybook@10.4.1
-  - lint-staged@17.0.6
-  - "@rspack/binding-darwin-arm64@2.0.6"
-  - "@rspack/binding-darwin-x64@2.0.6"
-  - "@rspack/binding-linux-arm64-gnu@2.0.6"
-  - "@rspack/binding-linux-arm64-musl@2.0.6"
-  - "@rspack/binding-linux-x64-gnu@2.0.6"
-  - "@rspack/binding-linux-x64-musl@2.0.6"
-  - "@rspack/binding-wasm32-wasi@2.0.6"
-  - "@rspack/binding-win32-arm64-msvc@2.0.6"
-  - "@rspack/binding-win32-ia32-msvc@2.0.6"
-  - "@rspack/binding-win32-x64-msvc@2.0.6"
-  - "@rspack/binding@2.0.6"
-  - "@rspack/cli@2.0.6"
-  - "@rspack/core@2.0.6"
-  - "@storybook/addon-a11y@10.4.2"
-  - "@storybook/addon-docs@10.4.2"
-  - "@storybook/addon-links@10.4.2"
-  - "@storybook/addon-themes@10.4.2"
-  - "@storybook/builder-vite@10.4.2"
-  - "@storybook/csf-plugin@10.4.2"
-  - "@storybook/react-dom-shim@10.4.2"
-  - "@storybook/react-vite@10.4.2"
-  - "@storybook/react@10.4.2"
-  - "@tanstack/query-core@5.101.0"
-  - "@tanstack/query-devtools@5.101.0"
-  - "@tanstack/react-query-devtools@5.101.0"
-  - "@tanstack/react-query@5.101.0"
-  - "@typescript/native-preview-darwin-arm64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-darwin-x64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-linux-arm64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-linux-arm@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-linux-x64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-win32-arm64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview-win32-x64@7.0.0-dev.20260603.1"
-  - "@typescript/native-preview@7.0.0-dev.20260603.1"
-  - start-server-and-test@3.0.6
-  - storybook@10.4.2
+minimumReleaseAge: 1440
 
 nodeLinker: hoisted
 
