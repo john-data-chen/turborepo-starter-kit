@@ -79,24 +79,42 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /* Run your local dev servers before starting the tests */
   // Note: Playwright tests require both web and API servers to be running.
-  // Using `pnpm dev` from the root to start both servers with Turborepo.
+  // Start each app with Turborepo and wait for BOTH to be ready before running tests.
+  // The API (Nest) compiles slower than web (Next), so we explicitly wait on the API
+  // `/health` endpoint to avoid a race where sign-in tests fire before the API is up.
   // You must ensure MongoDB is running:
   // - Locally: docker compose up -d (in apps/api/database/)
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
-  webServer: {
-    command: "pnpm dev",
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-    env: {
-      ...process.env,
-      NODE_ENV: process.env.NODE_ENV || "test",
-      NEXT_PUBLIC_API_URL: apiURL,
-      NEXT_PUBLIC_WEB_URL: baseURL
+  webServer: [
+    {
+      command: "turbo run dev --filter=turborepo-starter-kit-api",
+      url: `${apiURL}/health`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      env: {
+        ...process.env,
+        NODE_ENV: process.env.NODE_ENV || "test",
+        NEXT_PUBLIC_API_URL: apiURL,
+        NEXT_PUBLIC_WEB_URL: baseURL
+      },
+      stdout: "pipe",
+      stderr: "pipe"
     },
-    stdout: "pipe",
-    stderr: "pipe"
-  }
+    {
+      command: "turbo run dev --filter=turborepo-starter-kit-web",
+      url: baseURL,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      env: {
+        ...process.env,
+        NODE_ENV: process.env.NODE_ENV || "test",
+        NEXT_PUBLIC_API_URL: apiURL,
+        NEXT_PUBLIC_WEB_URL: baseURL
+      },
+      stdout: "pipe",
+      stderr: "pipe"
+    }
+  ]
 });

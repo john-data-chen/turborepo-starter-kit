@@ -50,7 +50,7 @@
       "inputs": ["src/**/*.{ts,tsx,js,jsx}", "__tests__/**/*.{ts,tsx,js,jsx}"],
       "outputs": ["coverage/**"]
     },
-    "playwright": {
+    "test:e2e": {
       "inputs": ["src/**/*.{ts,tsx,js,jsx}", "__tests__/**/*.{ts,tsx,js,jsx}"],
       "cache": false
     },

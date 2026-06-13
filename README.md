@@ -221,8 +221,8 @@ pnpm init-db
 # Basic Commands
 pnpm dev                   # Development (including api, web and ios simulator)
 pnpm test                  # Unit tests (including api, web and mobile)
-pnpm playwright:install    # Install browsers before E2E tests for web
-pnpm playwright            # E2E tests for web
+pnpm test:e2e:install      # Install browsers before E2E tests for web
+pnpm test:e2e              # E2E tests for web
 pnpm storybook             # Execute Storybook for web UI components
 pnpm storybook:test        # Run Storybook interaction tests for web UI components
 pnpm build                 # Production build (including api, web and mobile)
