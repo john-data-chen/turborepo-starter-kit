@@ -75,9 +75,19 @@ export default defineConfig({
     }
   },
   // Force packages to be bundled (not externalized) so React aliases are applied.
-  // This prevents packages from using their own node_modules/react copy
-  // which causes "Invalid hook call" errors in tests.
+  // This prevents packages from using their own node_modules/react copy which
+  // causes "Invalid hook call" / "Cannot read properties of null (useId)" errors.
+  // Mobile pins react 19.2.3 while web uses catalog 19.2.7, so pnpm (hoisted)
+  // gives these shared UI libs a nested node_modules/react@19.2.3; inlining them
+  // lets the react alias above pin them to the web copy in tests.
   ssr: {
-    noExternal: [/zustand/, /@tanstack\/react-query/, /@tanstack\/query-core/]
+    noExternal: [
+      /zustand/,
+      /@tanstack\/react-query/,
+      /@tanstack\/query-core/,
+      /radix-ui/,
+      /vaul/,
+      /react-i18next/
+    ]
   }
 });

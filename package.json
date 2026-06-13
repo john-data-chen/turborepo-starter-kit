@@ -20,14 +20,14 @@
     "mobile:build:eas": "turbo run build:eas --filter=mobile",
     "mobile:expo:fix": "turbo run expo:fix --filter=mobile",
     "mobile:expo:upgrade": "turbo run expo:upgrade --filter=mobile",
-    "playwright": "turbo run playwright --filter=./apps/web",
-    "playwright:install": "pnpm --filter=./apps/web exec playwright install --with-deps",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi",
     "storybook": "turbo run storybook --filter=@repo/ui",
     "storybook:build": "turbo run storybook:build --filter=@repo/ui",
     "storybook:test": "turbo run storybook:test --filter=@repo/ui",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
+    "test:e2e": "turbo run test:e2e --filter=./apps/web",
+    "test:e2e:install": "pnpm --filter=./apps/web exec playwright install --with-deps",
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
