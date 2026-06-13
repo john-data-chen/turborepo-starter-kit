@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@radix-ui/react-icons": "catalog:",
-    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-slot": "^1.2.5",
     "class-variance-authority": "catalog:",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -40,18 +40,18 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.4.2",
-    "@storybook/addon-docs": "^10.4.2",
-    "@storybook/addon-links": "^10.4.2",
-    "@storybook/addon-themes": "^10.4.2",
-    "@storybook/react": "^10.4.2",
-    "@storybook/react-vite": "^10.4.2",
+    "@storybook/addon-a11y": "^10.4.4",
+    "@storybook/addon-docs": "^10.4.4",
+    "@storybook/addon-links": "^10.4.4",
+    "@storybook/addon-themes": "^10.4.4",
+    "@storybook/react": "^10.4.4",
+    "@storybook/react-vite": "^10.4.4",
     "@storybook/test-runner": "0.24.4",
     "@typescript/native-preview": "catalog:",
     "global-tsconfig": "workspace:*",
     "playwright": "1.60.0",
     "playwright-core": "1.60.0",
-    "storybook": "^10.4.2"
+    "storybook": "^10.4.4"
   },
   "peerDependencies": {
     "react": "catalog:",

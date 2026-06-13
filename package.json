@@ -45,13 +45,13 @@
     "dotenv": "catalog:",
     "husky": "^9.1.7",
     "jsdom": "catalog:",
-    "lightningcss": "1.32.0",
+    "lightningcss": "1.30.1",
     "lint-staged": "^17.0.7",
-    "oxfmt": "^0.53.0",
-    "oxlint": "^1.68.0",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
     "oxlint-tsgolint": "^0.23.0",
-    "start-server-and-test": "^3.0.8",
-    "turbo": "^2.9.16",
+    "start-server-and-test": "^3.0.11",
+    "turbo": "^2.9.18",
     "vitest": "catalog:"
   },
   "lint-staged": {
@@ -70,5 +70,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.6.0"
 }
