@@ -41,7 +41,7 @@
     "@types/react-dom": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "commitizen": "^4.3.1",
+    "commitizen": "^4.3.2",
     "dotenv": "catalog:",
     "husky": "^9.1.7",
     "jsdom": "catalog:",

@@ -17,10 +17,10 @@ catalog:
   "@tailwindcss/postcss": ^4.3.0
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/react": ^16.3.2
-  "@types/node": "^24.13.1"
+  "@types/node": "^25.9.3"
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
-  "@typescript/native-preview": "7.0.0-dev.20260611.2"
+  "@typescript/native-preview": "7.0.0-dev.20260614.1"
   "@vitest/coverage-v8": ^4.1.8
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
@@ -34,10 +34,10 @@ catalog:
   zod: ^4.4.3
   zustand: ^5.0.14
 
-minimumReleaseAge: 1440
+minimumReleaseAge: 0
 
 nodeLinker: hoisted
 
 overrides:
   lightningcss: 1.30.1
-  "@types/node": "^24.13.1"
+  "@types/node": "^24.13.2"
