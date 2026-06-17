@@ -11,8 +11,8 @@
 
 ### Gallery
 
-|                                                  Web                                                   |                                                       Mobile                                                        |
-| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+|                                                     Web                                                     |                                                           Mobile                                                            |
+| :---------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: |
 | <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Web demo recording" width="270" height="579"> | <img src="./apps/mobile/assets/images/simulator-screenshot.png" alt="Mobile simulator screenshot" width="270" height="579"> |
 
 A production-grade Kanban application demonstrating monorepo architecture, test-driven development, and modern tooling practices. Originally built as a monolithic Next.js app ([next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit)), then strategically re-architected to a decoupled frontend/backend system, and now expanded to a **multi-platform solution** with shared business logic across Web and Mobile by AI-assisted development.
@@ -325,8 +325,10 @@ This follows the principle that good cross-platform development means **same goa
 ```text
 .github/                    # GitHub Actions workflows
 .husky/                     # Husky configuration
-ai-docs/                    # AI documentation & skills
-└── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
+ai_docs/                    # AI documentation & skills
+├── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
+├── api-context.md          # API project context & development constraints (loaded on demand)
+└── mobile-context.md       # Mobile app context, architecture & pitfalls (loaded on demand)
 apps/
 ├── api/                    # Nest.js API server
 │   ├── __tests__/          # Unit tests (by Vitest)
@@ -479,11 +481,12 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 
 **AI Optimization Skills** (`ai_docs/skills/ai-optimization/`)
 
-Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills)
+Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills) and [caveman](https://github.com/juliusbrussee/caveman)
 
-| Skill                 | Purpose                                          | When to Use                                                                                                                                                                    |
-| :-------------------- | :----------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors | Writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
+| Skill                 | Purpose                                                    | When to Use                                                                                                                                                                     |
+| :-------------------- | :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors           | Writing, reviewing, or refactoring code to avoid over-complication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
+| `caveman`             | makes agent talk like caveman — cuts ~75% of output tokens | Every task. Global skill (not in repo) that reduces token consumption.                                                                                                          |
 
 **API Skills** (`ai_docs/skills/api/`)
 
@@ -520,7 +523,13 @@ Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 | `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                                               |
 | `turborepo`                   | Turborepo best practices    | Build system guide for JavaScript and TypeScript monorepos with task caching and parallel execution |
 
-**AI Guidelines** (`ai_docs/PROMPTS.md`)
+**Workflow Skills** (private, not open-sourced)
+
+| Skill             | Purpose                                    | When to Use                                                         |
+| :---------------- | :----------------------------------------- | :------------------------------------------------------------------ |
+| `session-handoff` | Cross-session task tracking and continuity | Multi-session tasks, handoffs, progress tracking across AI sessions |
+
+**AI Guidelines** (`ai_docs/AGENTS.md`)
 
 Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. Adhering to these guidelines reduces AI hallucinations and increases the accurate utilization of skills and MCP servers by approximately 40-60%. AI tools should reference this file first when working on this project.
 
