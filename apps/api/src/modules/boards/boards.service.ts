@@ -22,11 +22,13 @@ export class BoardService {
     const ownerId = new Types.ObjectId(createBoardDto.owner);
 
     return this.boardRepository.create({
-      ...createBoardDto,
+      title: createBoardDto.title,
+      description: createBoardDto.description,
       owner: ownerId,
       members: [
         ...new Set([ownerId, ...(createBoardDto.members || []).map((id) => new Types.ObjectId(id))])
-      ]
+      ],
+      projects: createBoardDto.projects?.map((id) => new Types.ObjectId(id))
     });
   }
 
@@ -71,7 +73,21 @@ export class BoardService {
       throw new NotFoundException(`Board with ID "${id}" not found or access denied`);
     }
 
-    await this.boardRepository.updateById(id, updateBoardDto);
+    const updateData: Partial<Board> = {
+      ...(updateBoardDto.title !== undefined && { title: updateBoardDto.title }),
+      ...(updateBoardDto.description !== undefined && { description: updateBoardDto.description }),
+      ...(updateBoardDto.owner !== undefined && {
+        owner: new Types.ObjectId(updateBoardDto.owner)
+      }),
+      ...(updateBoardDto.members !== undefined && {
+        members: updateBoardDto.members.map((memberId) => new Types.ObjectId(memberId))
+      }),
+      ...(updateBoardDto.projects !== undefined && {
+        projects: updateBoardDto.projects.map((projectId) => new Types.ObjectId(projectId))
+      })
+    };
+
+    await this.boardRepository.updateById(id, updateData);
     return this.findOne(id, userId);
   }
 

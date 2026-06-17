@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 
 import { UserRepository } from "./repositories/users.repository";
-import { User } from "./schemas/users.schema";
+import { User, UserDocument } from "./schemas/users.schema";
 
 @Injectable()
 export class UserService {
@@ -9,7 +9,7 @@ export class UserService {
 
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserDocument | null> {
     if (!email) {
       return null;
     }

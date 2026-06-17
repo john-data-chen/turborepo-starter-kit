@@ -137,13 +137,13 @@ describe("TaskCard", () => {
   });
 
   it("should render without creator", () => {
-    const taskWithoutCreator = { ...mockTask, creator: undefined };
+    const taskWithoutCreator = { ...mockTask, creator: undefined } as unknown as Task;
     render(<TaskCard task={taskWithoutCreator} />);
     expect(screen.queryByText(/createdBy/)).not.toBeInTheDocument();
   });
 
   it("should render without last modifier", () => {
-    const taskWithoutModifier = { ...mockTask, lastModifier: undefined };
+    const taskWithoutModifier = { ...mockTask, lastModifier: undefined } as unknown as Task;
     render(<TaskCard task={taskWithoutModifier} />);
     expect(screen.queryByText(/lastModifiedBy/)).not.toBeInTheDocument();
   });

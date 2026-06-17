@@ -104,7 +104,7 @@ describe("TaskFilter", () => {
 
     render(<TaskFilter />);
     const searchInput = screen.getByTestId("search-input");
-    expect(searchInput.value).toBe("test query");
+    expect((searchInput as HTMLInputElement).value).toBe("test query");
   });
 
   it("should call setFilter when search input changes", () => {

@@ -1,7 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { Types } from "mongoose";
 
-import { User, UserDocument } from "../users/schemas/users.schema";
+import { User } from "../users/schemas/users.schema";
 import { UserService } from "../users/users.service";
 
 @Injectable()
@@ -27,7 +28,7 @@ export class AuthService {
     }
   }
 
-  async login(user: Pick<UserDocument, "email" | "_id"> & { name?: string }) {
+  async login(user: { _id: Types.ObjectId | string; email: string; name?: string }) {
     const payload = { email: user.email, sub: user._id };
     const access_token = this.jwtService.sign(payload);
 
