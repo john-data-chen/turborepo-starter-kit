@@ -325,8 +325,10 @@ This follows the principle that good cross-platform development means **same goa
 ```text
 .github/                    # GitHub Actions workflows
 .husky/                     # Husky configuration
-ai-docs/                    # AI documentation & skills
-└── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
+ai_docs/                    # AI documentation & skills
+├── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
+├── api-context.md          # API project context & development constraints (loaded on demand)
+└── mobile-context.md       # Mobile app context, architecture & pitfalls (loaded on demand)
 apps/
 ├── api/                    # Nest.js API server
 │   ├── __tests__/          # Unit tests (by Vitest)
