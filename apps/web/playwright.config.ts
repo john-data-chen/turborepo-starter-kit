@@ -89,7 +89,7 @@ export default defineConfig({
   // - Or use a cloud MongoDB instance (set DATABASE_URL in .env.test)
   webServer: [
     {
-      command: "turbo run dev --filter=turborepo-starter-kit-api",
+      command: "turbo run dev --filter=@repo/api",
       url: `${apiURL}/health`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
@@ -103,7 +103,7 @@ export default defineConfig({
       stderr: "pipe"
     },
     {
-      command: "turbo run dev --filter=turborepo-starter-kit-web",
+      command: "turbo run dev --filter=@repo/web",
       url: baseURL,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,

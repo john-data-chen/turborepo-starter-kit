@@ -8,7 +8,7 @@ import { User, UserDocument } from "../schemas/users.schema";
 export class UserRepository {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ email }).exec();
   }
 

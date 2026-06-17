@@ -13,7 +13,11 @@ import { TaskStatus, User } from "@/types/dbInterface";
 import { TaskFormSchema } from "@/types/taskForm";
 
 interface UseTaskFormProps {
-  defaultValues?: Partial<z.infer<typeof TaskFormSchema>>;
+  // `assignee` may arrive as a bare user id (string) which the hook resolves to a full
+  // user object — see processedDefaultValues below.
+  defaultValues?: Partial<Omit<z.infer<typeof TaskFormSchema>, "assignee">> & {
+    assignee?: z.infer<typeof TaskFormSchema>["assignee"] | string;
+  };
   onSubmit: (values: z.infer<typeof TaskFormSchema>) => Promise<void>;
 }
 
@@ -25,27 +29,27 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
   const [assignOpen, setAssignOpen] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, SEARCH_DEBOUNCE_DELAY_MS);
 
-  // Process default values to ensure assignee is in the correct format
-  const processedDefaultValues = useMemo(() => {
-    if (!defaultValues?.assignee) {
-      return defaultValues;
+  // Process default values to ensure assignee is in the schema's object format.
+  const processedDefaultValues = useMemo(():
+    | Partial<z.infer<typeof TaskFormSchema>>
+    | undefined => {
+    if (!defaultValues) {
+      return undefined;
     }
 
-    // If assignee is just an ID, we need to fetch the full user data
-    if (typeof defaultValues.assignee === "string") {
-      return {
-        ...defaultValues,
-        assignee: { _id: defaultValues.assignee }
-      };
+    const { assignee, ...rest } = defaultValues;
+    if (!assignee) {
+      return rest;
     }
 
-    // If assignee is an object but missing name/email, we might need to fetch the full user data
-    if (defaultValues.assignee._id && !defaultValues.assignee.name) {
-      // This will be handled by the useEffect that loads users
-      return defaultValues;
+    // If assignee is just an ID, normalize to an object; full user data is fetched
+    // later by the useEffect below.
+    if (typeof assignee === "string") {
+      return { ...rest, assignee: { _id: assignee, name: null } };
     }
 
-    return defaultValues;
+    // assignee is already an object (may miss name/email — filled in by the effect).
+    return { ...rest, assignee };
   }, [defaultValues]);
 
   const form = useForm<z.infer<typeof TaskFormSchema>>({

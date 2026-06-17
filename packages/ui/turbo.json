@@ -10,10 +10,7 @@
       "cache": false,
       "persistent": true,
       "dependsOn": [],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        ".storybook/**/*"
-      ]
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", ".storybook/**/*"]
     },
     "build-storybook": {
       "outputs": ["storybook-static/**"]

@@ -1,11 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["NODE_ENV", "ENABLE_EXPERIMENTAL_COREPACK"],
-  "globalDependencies": ["packages/global-tsconfig/*"],
+  "globalDependencies": ["packages/tsconfig/*"],
+  "remoteCache": {
+    "enabled": true
+  },
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
     },
     "storybook": {
       "cache": false,
@@ -24,6 +30,7 @@
     "lint": {
       "inputs": [
         "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/.oxlintrc.json",
         "src/**/*.{ts,tsx,js,jsx}",
         "app/**/*.{ts,tsx,js,jsx}",
         "__tests__/**/*.{ts,tsx,js,jsx}"
@@ -33,6 +40,7 @@
       "cache": false,
       "inputs": [
         "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/.oxfmtrc.json",
         "src/**/*.{ts,tsx,js,jsx,css,scss}",
         "app/**/*.{ts,tsx,js,jsx,css,scss}",
         "__tests__/**/*.{ts,tsx,js,jsx,css,scss}"

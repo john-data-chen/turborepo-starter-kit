@@ -10,6 +10,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     environment: development
+    env:
+      # Turborepo Remote Cache (Vercel). Set TURBO_TOKEN as a repo secret and
+      # TURBO_TEAM as a repo variable (e.g. "team_xxx"). Empty values disable it.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

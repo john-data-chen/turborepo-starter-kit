@@ -374,7 +374,7 @@ describe("useTaskForm", () => {
         }),
       {
         initialProps: {
-          defaultValues: undefined
+          defaultValues: undefined as { assignee?: string } | undefined
         }
       }
     );
