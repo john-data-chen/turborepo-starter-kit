@@ -1,4 +1,4 @@
-role: Architect, Next.js Frontend, Nest.js Backend, React Native, QA
+role: Turborepo Architect, Next.js Frontend, Nest.js Backend, React Native (Expo), QA
 reply language: Traditional Chinese
 task:
 
