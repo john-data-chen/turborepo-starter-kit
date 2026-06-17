@@ -22,8 +22,6 @@
   },
   "scripts": {
     "check-types": "tsgo --noEmit",
-    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json packages/ui",
-    "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:test": "start-server-and-test storybook http://127.0.0.1:6006 \"pnpm exec test-storybook\""
