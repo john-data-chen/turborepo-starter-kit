@@ -527,7 +527,7 @@ Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 | :---------------- | :----------------------------------------- | :------------------------------------------------------------------ |
 | `session-handoff` | Cross-session task tracking and continuity | Multi-session tasks, handoffs, progress tracking across AI sessions |
 
-**AI Guidelines** (`ai_docs/PROMPTS.md`)
+**AI Guidelines** (`ai_docs/AGENTS.md`)
 
 Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. Adhering to these guidelines reduces AI hallucinations and increases the accurate utilization of skills and MCP servers by approximately 40-60%. AI tools should reference this file first when working on this project.
 
