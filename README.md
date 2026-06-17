@@ -11,8 +11,8 @@
 
 ### Gallery
 
-|                                                  Web                                                   |                                                       Mobile                                                        |
-| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+|                                                     Web                                                     |                                                           Mobile                                                            |
+| :---------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: |
 | <img src="./apps/web/public/assets/Screen_Recording.gif" alt="Web demo recording" width="270" height="579"> | <img src="./apps/mobile/assets/images/simulator-screenshot.png" alt="Mobile simulator screenshot" width="270" height="579"> |
 
 A production-grade Kanban application demonstrating monorepo architecture, test-driven development, and modern tooling practices. Originally built as a monolithic Next.js app ([next-dnd-starter-kit](https://github.com/john-data-chen/next-dnd-starter-kit)), then strategically re-architected to a decoupled frontend/backend system, and now expanded to a **multi-platform solution** with shared business logic across Web and Mobile by AI-assisted development.
@@ -479,11 +479,12 @@ Skills extend AI capabilities for specialized tasks. Each skill contains instruc
 
 **AI Optimization Skills** (`ai_docs/skills/ai-optimization/`)
 
-Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills)
+Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills) and [caveman](https://github.com/juliusbrussee/caveman)
 
-| Skill                 | Purpose                                          | When to Use                                                                                                                                                                    |
-| :-------------------- | :----------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors | Writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
+| Skill                 | Purpose                                                    | When to Use                                                                                                                                                                     |
+| :-------------------- | :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors           | Writing, reviewing, or refactoring code to avoid over-complication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
+| `caveman`             | makes agent talk like caveman — cuts ~75% of output tokens | Every task. Global skill (not in repo) that reduces token consumption.                                                                                                          |
 
 **API Skills** (`ai_docs/skills/api/`)
 
