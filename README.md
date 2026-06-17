@@ -36,7 +36,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 ┌──────────────────────────────────────────────────────────────────┐
 │                       Shared Packages                            │
 │                                                                  │
-│  @repo/store         @repo/i18n      @repo/ui     global-tsconfig│
+│  @repo/store         @repo/i18n      @repo/ui      @repo/tsconfig│
 │  ├── Types           ├── en.json     ├── Shadcn UI └── Base TS   │
 │  ├── Zustand Stores  ├── de.json     └── Storybook    configs    │
 │  └── Storage Adapter └── Locale                                  │
@@ -142,6 +142,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 | Tool       | Purpose                                           |
 | ---------- | ------------------------------------------------- |
+| Turborepo  | Monorepo task pipeline + local/remote build cache |
 | Rspack     | Rust-based bundler for 5-10x faster than webpack  |
 | Turbopack  | Rust bundler with filesystem caching for fast HMR |
 | Oxlint     | 50-100x faster than ESLint, clearer diagnostics   |
@@ -402,7 +403,7 @@ apps/
 │   │   └── proxy.ts                # Middleware (i18n + auth guard)
 │   └── types/              # Type definitions
 packages/
-├── global-tsconfig/        # Base TypeScript configuration
+├── tsconfig/               # Base TypeScript configuration (@repo/tsconfig)
 ├── i18n/                   # Shared translations (@repo/i18n)
 │   └── src/
 │       ├── locales/
@@ -623,6 +624,28 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 | Decision  | Enabled on mobile where Metro handles compilation; deferred on web due to Turbopack build cost |
 
 [React Compiler](https://react.dev/learn/react-compiler)
+
+### Turborepo Remote Cache & Task Pipeline
+
+The monorepo is tuned for Turborepo best practices so every task is cacheable, parallelized, and runnable from the repo root.
+
+| Aspect            | Details                                                                                                          |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| Status            | **Configured** — `remoteCache` enabled in `turbo.json` + CI reads `TURBO_TOKEN`/`TURBO_TEAM`; run `turbo link` once to activate |
+| Local cache       | Filesystem cache in `.turbo/` — instant replays of unchanged `build` / `lint` / `check-types` / `test`           |
+| Remote cache      | Vercel Remote Cache shares artifacts across machines and CI, so a teammate or CI run reuses your local results   |
+| Package naming    | All workspaces unified under the `@repo/*` scope (`@repo/web`, `@repo/api`, `@repo/mobile`, `@repo/ui`, `@repo/store`, `@repo/i18n`, `@repo/tsconfig`) |
+| Root-only scripts | `pnpm lint` / `format` / `check-types` / `test` / `build` fan out to every workspace via Turborepo — no `cd` needed |
+| Cache correctness | Task `inputs` track root configs via `$TURBO_ROOT$` (`.oxlintrc.json`, `.oxfmtrc.json`), and `globalDependencies` track the shared `@repo/tsconfig` so edits invalidate the right caches |
+
+**Enabling remote cache (one-time):**
+
+```bash
+npx turbo login   # authenticate with your Vercel account
+npx turbo link    # link this repo to its Vercel Remote Cache
+```
+
+For CI, set `TURBO_TOKEN` (GitHub repo **secret**) and `TURBO_TEAM` (GitHub repo **variable**) — the workflow already passes them to every `turbo` invocation.
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "name": "turborepo-starter-kit-web",
+  "name": "@repo/web",
   "version": "1.0.0",
   "private": true,
   "author": {
@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "next build",
+    "check-types": "tsgo --noEmit",
     "dev": "next dev",
     "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json apps/web",
     "lint": "npx oxlint --config ../../.oxlintrc.json --fix",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",
+    "@repo/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/js-cookie": "^3.0.6",

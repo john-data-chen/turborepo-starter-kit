@@ -214,6 +214,9 @@ importers:
       '@nestjs/testing':
         specifier: ^11.1.27
         version: 11.1.27(@nestjs/common@11.1.27(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.27)(@nestjs/platform-express@11.1.27)
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@rspack/cli':
         specifier: 2.0.8
         version: 2.0.8(@rspack/core@2.0.8)(@rspack/dev-server@2.0.3(@rspack/core@2.0.8))
@@ -474,6 +477,9 @@ importers:
       '@playwright/test':
         specifier: ^1.61.0
         version: 1.61.0
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@testing-library/jest-dom':
         specifier: 'catalog:'
         version: 6.9.1
@@ -496,16 +502,14 @@ importers:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@24.13.2)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
-  packages/global-tsconfig: {}
-
   packages/i18n:
     devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@typescript/native-preview':
         specifier: 'catalog:'
         version: 7.0.0-dev.20260421.2
-      global-tsconfig:
-        specifier: workspace:*
-        version: link:../global-tsconfig
 
   packages/store:
     dependencies:
@@ -513,12 +517,14 @@ importers:
         specifier: 'catalog:'
         version: 5.0.14(@types/react@19.2.17)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@typescript/native-preview':
         specifier: 'catalog:'
         version: 7.0.0-dev.20260421.2
-      global-tsconfig:
-        specifier: workspace:*
-        version: link:../global-tsconfig
+
+  packages/tsconfig: {}
 
   packages/ui:
     dependencies:
@@ -562,6 +568,9 @@ importers:
         specifier: 'catalog:'
         version: 4.3.1
     devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@storybook/addon-a11y':
         specifier: ^10.4.6
         version: 10.4.6(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
@@ -586,9 +595,6 @@ importers:
       '@typescript/native-preview':
         specifier: 'catalog:'
         version: 7.0.0-dev.20260421.2
-      global-tsconfig:
-        specifier: workspace:*
-        version: link:../global-tsconfig
       playwright:
         specifier: 1.61.0
         version: 1.61.0

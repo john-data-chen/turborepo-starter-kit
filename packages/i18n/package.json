@@ -10,10 +10,12 @@
     "./locales/de": "./src/locales/de.json"
   },
   "scripts": {
-    "build": "tsgo --noEmit"
+    "check-types": "tsgo --noEmit",
+    "format": "cd ../.. && oxfmt --no-error-on-unmatched-pattern --config .oxfmtrc.json packages/i18n",
+    "lint": "npx oxlint --config ../../.oxlintrc.json --fix"
   },
   "devDependencies": {
-    "@typescript/native-preview": "catalog:",
-    "global-tsconfig": "workspace:*"
+    "@repo/tsconfig": "workspace:*",
+    "@typescript/native-preview": "catalog:"
   }
 }

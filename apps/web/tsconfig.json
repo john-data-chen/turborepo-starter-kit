@@ -1,5 +1,5 @@
 {
-  "extends": "../../packages/global-tsconfig/base-tsconfig.json",
+  "extends": "@repo/tsconfig/base-tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
