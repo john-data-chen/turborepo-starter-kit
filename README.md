@@ -521,6 +521,12 @@ Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 | `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                                               |
 | `turborepo`                   | Turborepo best practices    | Build system guide for JavaScript and TypeScript monorepos with task caching and parallel execution |
 
+**Workflow Skills** (private, not open-sourced)
+
+| Skill             | Purpose                                    | When to Use                                                         |
+| :---------------- | :----------------------------------------- | :------------------------------------------------------------------ |
+| `session-handoff` | Cross-session task tracking and continuity | Multi-session tasks, handoffs, progress tracking across AI sessions |
+
 **AI Guidelines** (`ai_docs/PROMPTS.md`)
 
 Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. Adhering to these guidelines reduces AI hallucinations and increases the accurate utilization of skills and MCP servers by approximately 40-60%. AI tools should reference this file first when working on this project.
