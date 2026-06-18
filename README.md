@@ -7,6 +7,14 @@
 
 > A production-grade multi-platform monorepo demonstrating shared business logic across Web and Mobile. Built with a write-once approach for state management, validation, and types — while each platform retains full control over its UI and navigation. Showcases engineering practices, decision-making and AI-assisted optimization for senior full-stack roles.
 
+## Other Interview Projects
+
+### [Ultra Light Monorepo](https://github.com/john-data-chen/ultra-light-monorepo)
+
+Multi-user online ledger. Hono API backend + SvelteKit frontend. Turborepo architecture. 
+Demonstrate framework agility. Switch frameworks easy. AI accelerate development. 
+AI produce high-quality project fast. Achieve 95% test coverage. Implement Vercel Remote Cache.
+
 ## Architecture & Engineering Decisions
 
 ### Gallery
