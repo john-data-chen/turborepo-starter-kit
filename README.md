@@ -7,12 +7,12 @@
 
 > A production-grade multi-platform monorepo demonstrating shared business logic across Web and Mobile. Built with a write-once approach for state management, validation, and types — while each platform retains full control over its UI and navigation. Showcases engineering practices, decision-making and AI-assisted optimization for senior full-stack roles.
 
-## Other Interview Projects
+## Another Project
 
 ### [Ultra Light Monorepo](https://github.com/john-data-chen/ultra-light-monorepo)
 
-Multi-user online ledger. Hono API backend + SvelteKit frontend. Turborepo architecture. 
-Demonstrate framework agility. Switch frameworks easy. AI accelerate development. 
+Multi-user online ledger. Hono API backend + SvelteKit frontend. Turborepo architecture.
+Demonstrate framework agility. Switch frameworks easy. AI accelerate development.
 AI produce high-quality project fast. Achieve 95% test coverage. Implement Vercel Remote Cache.
 
 ## Architecture & Engineering Decisions
@@ -637,13 +637,13 @@ Part of my engineering approach involves continuously evaluating emerging tools 
 
 The monorepo is tuned for Turborepo best practices so every task is cacheable, parallelized, and runnable from the repo root.
 
-| Aspect            | Details                                                                                                          |
-| ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| Status            | **Configured** — `remoteCache` enabled in `turbo.json` + CI reads `TURBO_TOKEN`/`TURBO_TEAM`; run `turbo link` once to activate |
-| Local cache       | Filesystem cache in `.turbo/` — instant replays of unchanged `build` / `lint` / `check-types` / `test`           |
-| Remote cache      | Vercel Remote Cache shares artifacts across machines and CI, so a teammate or CI run reuses your local results   |
-| Package naming    | All workspaces unified under the `@repo/*` scope (`@repo/web`, `@repo/api`, `@repo/mobile`, `@repo/ui`, `@repo/store`, `@repo/i18n`, `@repo/tsconfig`) |
-| Root-only scripts | `pnpm lint` / `format` / `check-types` / `test` / `build` fan out to every workspace via Turborepo — no `cd` needed |
+| Aspect            | Details                                                                                                                                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Status            | **Configured** — `remoteCache` enabled in `turbo.json` + CI reads `TURBO_TOKEN`/`TURBO_TEAM`; run `turbo link` once to activate                                                          |
+| Local cache       | Filesystem cache in `.turbo/` — instant replays of unchanged `build` / `lint` / `check-types` / `test`                                                                                   |
+| Remote cache      | Vercel Remote Cache shares artifacts across machines and CI, so a teammate or CI run reuses your local results                                                                           |
+| Package naming    | All workspaces unified under the `@repo/*` scope (`@repo/web`, `@repo/api`, `@repo/mobile`, `@repo/ui`, `@repo/store`, `@repo/i18n`, `@repo/tsconfig`)                                   |
+| Root-only scripts | `pnpm lint` / `format` / `check-types` / `test` / `build` fan out to every workspace via Turborepo — no `cd` needed                                                                      |
 | Cache correctness | Task `inputs` track root configs via `$TURBO_ROOT$` (`.oxlintrc.json`, `.oxfmtrc.json`), and `globalDependencies` track the shared `@repo/tsconfig` so edits invalidate the right caches |
 
 **Enabling remote cache (one-time):**
