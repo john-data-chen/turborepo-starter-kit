@@ -54,6 +54,7 @@
     "packages/ui/src/hooks/use-mobile.ts",
     "apps/api/database/mongodb/**",
     "apps/api/database/docker-compose.yml",
-    "env.example"
+    "env.example",
+    ".agent/*"
   ]
 }

@@ -334,8 +334,10 @@ This follows the principle that good cross-platform development means **same goa
 ```text
 .github/                    # GitHub Actions workflows
 .husky/                     # Husky configuration
-ai_docs/                    # AI documentation & skills
-├── AGENTS.md               # AI guidelines (copy to root folder, or rename it when your tool needs specific file name such as CLAUDE.md)
+AGENTS.md                   # AI guidelines (symlink it when your tool needs specific file name such as CLAUDE.md)
+.agents/                    # AI skills
+└── skills/                 # Agent skills
+ai_docs/                    # AI documentation
 ├── api-context.md          # API project context & development constraints (loaded on demand)
 └── mobile-context.md       # Mobile app context, architecture & pitfalls (loaded on demand)
 apps/
@@ -484,11 +486,11 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 | [nextjs-mcp](https://nextjs.org/docs/app/guides/mcp)                         | Framework diagnostics | Allow AI agents direct access to dev server logs and routes                                  |
 | [playwright-mcp](https://github.com/microsoft/playwright-mcp)                | E2E testing           | Allow AI agents direct access to run e2e tests                                               |
 
-**AI Skills** (in `ai_docs/skills/`)
+**AI Skills** (in `.agents/skills/`)
 
 Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use. Skills are organized by platform:
 
-**AI Optimization Skills** (`ai_docs/skills/ai-optimization/`)
+**AI Optimization Skills** (`.agents/skills/ai-optimization/`)
 
 Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills) and [caveman](https://github.com/juliusbrussee/caveman)
 
@@ -497,7 +499,7 @@ Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-s
 | `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors           | Writing, reviewing, or refactoring code to avoid over-complication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
 | `caveman`             | makes agent talk like caveman — cuts ~75% of output tokens | Every task. Global skill (not in repo) that reduces token consumption.                                                                                                          |
 
-**API Skills** (`ai_docs/skills/api/`)
+**API Skills** (`.agents/skills/api/`)
 
 Based on and refined from [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
 
@@ -505,7 +507,7 @@ Based on and refined from [nestjs-best-practices](https://github.com/davila7/cla
 | :---------------------- | :----------------------------- | :------------------------------------------------------------------------------ |
 | `nestjs-best-practices` | NestJS architecture & patterns | Writing, reviewing, or refactoring NestJS code (Mongoose, Vitest, DI, security) |
 
-**Mobile Skills** (`ai_docs/skills/mobile/`)
+**Mobile Skills** (`.agents/skills/mobile/`)
 
 Based on [expo-skills](https://github.com/expo/skills)
 
@@ -519,7 +521,7 @@ Based on [expo-skills](https://github.com/expo/skills)
 | `upgrading-expo`       | Expo SDK upgrades                | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
 | `use-dom`              | DOM components for web-in-native | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
-**Web Skills** (`ai_docs/skills/web/`)
+**Web Skills** (`.agents/skills/web/`)
 
 Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 
@@ -532,13 +534,7 @@ Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 | `web-design-guidelines`       | UI/UX accessibility audits  | "Review my UI", "Check accessibility", "Audit design"                                               |
 | `turborepo`                   | Turborepo best practices    | Build system guide for JavaScript and TypeScript monorepos with task caching and parallel execution |
 
-**Workflow Skills** (private, not open-sourced)
-
-| Skill             | Purpose                                    | When to Use                                                         |
-| :---------------- | :----------------------------------------- | :------------------------------------------------------------------ |
-| `session-handoff` | Cross-session task tracking and continuity | Multi-session tasks, handoffs, progress tracking across AI sessions |
-
-**AI Guidelines** (`ai_docs/AGENTS.md`)
+**AI Guidelines** (`AGENTS.md`)
 
 Project-specific instructions for AI assistants including repository structure, commands, file conventions, and example workflows. Adhering to these guidelines reduces AI hallucinations and increases the accurate utilization of skills and MCP servers by approximately 40-60%. AI tools should reference this file first when working on this project.
 
@@ -547,7 +543,7 @@ Project-specific instructions for AI assistants including repository structure, 
 This is an example of how to use prompts and skills in Claude Code, you should check the documentation of other AI tools for more details.
 
 - Create a folder named `.claude`
-- Copy skills you need from `ai_docs/skills/` to `.claude/skills/`
+- Copy skills you need from `.agents/skills/` to `.claude/skills/`
 - Copy or create a symbolic link of `AGENTS.md` to your AI tool's context file location
   | AI Tool | Target Path |
   | ----------- | ------------------- |
