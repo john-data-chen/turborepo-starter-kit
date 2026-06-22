@@ -7,6 +7,8 @@ metadata:
   version: "1.1.0"
 ---
 
+> **Project context**: Before starting, read `ai_docs/api-context.md` for project-specific architecture (Repository pattern, event cascade, error handling).
+
 # NestJS Best Practices
 
 Comprehensive best practices guide for NestJS applications. Contains 40 rules across 10 categories, prioritized by impact to guide automated refactoring and code generation.

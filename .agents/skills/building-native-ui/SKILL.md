@@ -5,6 +5,8 @@ version: 1.0.1
 license: MIT
 ---
 
+> **Project context**: Before starting, read `ai_docs/mobile-context.md` for project-specific routes, components, hooks, and pitfalls.
+
 # Expo UI Guidelines
 
 ## References
