@@ -490,7 +490,7 @@ MCP enables AI tools to interact directly with development infrastructure, elimi
 
 Skills extend AI capabilities for specialized tasks. Each skill contains instructions and resources that AI assistants can use. Skills are organized by platform:
 
-**AI Optimization Skills** (`.agents/skills/ai-optimization/`)
+**AI Optimization Skills**
 
 Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-skills) and [caveman](https://github.com/juliusbrussee/caveman)
 
@@ -499,7 +499,7 @@ Based on [karpathy-guidelines](https://github.com/forrestchang/andrej-karpathy-s
 | `karpathy-guidelines` | Behavioral guidelines to reduce AI coding errors           | Writing, reviewing, or refactoring code to avoid over-complication, make surgical changes, surface assumptions, and define verifiable success criteria (Thinking before coding) |
 | `caveman`             | makes agent talk like caveman — cuts ~75% of output tokens | Every task. Global skill (not in repo) that reduces token consumption.                                                                                                          |
 
-**API Skills** (`.agents/skills/api/`)
+**API Skills**
 
 Based on and refined from [nestjs-best-practices](https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/nestjs-expert)
 
@@ -507,7 +507,7 @@ Based on and refined from [nestjs-best-practices](https://github.com/davila7/cla
 | :---------------------- | :----------------------------- | :------------------------------------------------------------------------------ |
 | `nestjs-best-practices` | NestJS architecture & patterns | Writing, reviewing, or refactoring NestJS code (Mongoose, Vitest, DI, security) |
 
-**Mobile Skills** (`.agents/skills/mobile/`)
+**Mobile Skills**
 
 Based on [expo-skills](https://github.com/expo/skills)
 
@@ -521,7 +521,7 @@ Based on [expo-skills](https://github.com/expo/skills)
 | `upgrading-expo`       | Expo SDK upgrades                | Upgrading Expo SDK versions or fixing dependency compatibility issues  |
 | `use-dom`              | DOM components for web-in-native | Using web libraries on native, migrating web code, Canvas/WebGL embeds |
 
-**Web Skills** (`.agents/skills/web/`)
+**Web Skills**
 
 Based on [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills)
 
