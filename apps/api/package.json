@@ -35,13 +35,13 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "catalog:",
     "eventemitter2": "^6.4.9",
-    "mongoose": "^9.7.0",
+    "mongoose": "^9.7.2",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "run-script-webpack-plugin": "^0.2.3",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.23",
@@ -50,7 +50,7 @@
     "@repo/tsconfig": "workspace:*",
     "@rspack/cli": "2.0.8",
     "@rspack/core": "2.0.8",
-    "@rspack/dev-server": "2.0.3",
+    "@rspack/dev-server": "2.1.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
