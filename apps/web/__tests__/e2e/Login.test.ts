@@ -132,14 +132,19 @@ test.describe.serial("SignInPage", () => {
     const submitStart = Date.now();
 
     try {
-      // Wait for navigation to complete after clicking submit
-      await Promise.all([
-        page.waitForURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/, {
-          timeout: 30000,
+      // Dev-mode hydration race: in Chromium the page can reach domcontentloaded
+      // before React hydrates, so clicking submit fires a NATIVE GET form submit
+      // (email lands in the query string, no login happens) instead of the React
+      // onSubmit handler. Retry fill+click until hydration has taken over and the
+      // client router actually navigates to /boards.
+      await expect(async () => {
+        await page.fill('input[name="email"]', defaultEmail);
+        await page.click('button[type="submit"]');
+        await page.waitForURL(/^http:\/\/localhost:3000\/en\/boards(\?.*)?$/, {
+          timeout: 5000,
           waitUntil: "domcontentloaded"
-        }),
-        page.click('button[type="submit"]')
-      ]);
+        });
+      }).toPass({ timeout: 30000 });
 
       const submitDuration = Date.now() - submitStart;
       console.log(`[Diagnostic] ✓ Navigation successful after ${submitDuration}ms`);
