@@ -20,7 +20,7 @@ catalog:
   "@types/node": 24.13.2
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
-  "@typescript/native-preview": "beta"
+  "@typescript/native-preview": "7.0.0-dev.20260627.2"
   "@vitest/coverage-v8": ^4.1.9
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
