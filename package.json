@@ -52,7 +52,7 @@
     "oxlint": "^1.71.0",
     "oxlint-tsgolint": "^0.23.0",
     "start-server-and-test": "^3.0.11",
-    "turbo": "^2.9.18",
+    "turbo": "^2.10.0",
     "vitest": "catalog:"
   },
   "lint-staged": {
