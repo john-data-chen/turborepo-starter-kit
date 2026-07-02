@@ -1,24 +1,55 @@
-import { createJSONStorage, type StateStorage } from "zustand/middleware";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+import { createStorage, type StorageAdapter } from "./storage";
+import type { Session, UserInfo } from "./types";
+
+export interface AuthState {
+  session: Session | null;
+  isLoading: boolean;
+  error: string | null;
+  user: UserInfo | null;
+  setSession: (session: Session | null) => void;
+  setUser: (user: UserInfo | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  clear: () => void;
+}
 
 /**
- * Platform-agnostic storage adapter interface.
+ * Factory that creates the auth store with an injectable storage adapter.
  *
- * - Web: pass `localStorage` directly (it already satisfies this interface)
- * - React Native: wrap AsyncStorage to match this interface
- *
- * Zustand's persist middleware accepts both sync and async storage,
- * so the same factory works for both platforms.
+ * @param storage - Platform-specific storage (localStorage for web,
+ *                  AsyncStorage wrapper for React Native).
+ *                  When omitted, Zustand uses localStorage by default.
  */
-export type StorageAdapter = StateStorage;
-
-/**
- * Creates a Zustand-compatible JSON storage wrapper from a StorageAdapter.
- * If no adapter is provided, falls back to localStorage (web default).
- *
- * Never return undefined here: persist merges options with an object spread,
- * so an explicit `storage: undefined` overrides zustand's localStorage default
- * and silently disables persistence ("storage is currently unavailable").
- */
-export function createStorage(adapter?: StorageAdapter) {
-  return createJSONStorage(() => adapter ?? window.localStorage);
+export function createAuthStore(storage?: StorageAdapter) {
+  return create<AuthState>()(
+    persist(
+      (set) => ({
+        session: null,
+        user: null,
+        isLoading: false,
+        error: null,
+        setSession: (session) => set({ session }),
+        setUser: (user) => set({ user }),
+        setLoading: (isLoading) => set({ isLoading }),
+        setError: (error) => set({ error }),
+        clear: () =>
+          set({
+            session: null,
+            user: null,
+            isLoading: false,
+            error: null
+          })
+      }),
+      {
+        name: "auth-storage",
+        storage: createStorage(storage),
+        partialize: (state) => ({
+          session: state.session
+        })
+      }
+    )
+  );
 }
