@@ -1,26 +1,31 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { useAuthStore } from "@/stores/auth-store";
 import { Session, UserInfo } from "@/types/dbInterface";
 
-// Mock localStorage for persist middleware
-const localStorageMock = {
-  getItem: vi.fn(() => null),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn()
-};
-
-Object.defineProperty(window, "localStorage", {
-  value: localStorageMock,
-  writable: true
-});
-
 describe("auth-store", () => {
   beforeEach(() => {
-    // Reset the store before each test
+    // Reset the store and its persisted state before each test
     useAuthStore.getState().clear();
-    vi.clearAllMocks();
+    window.localStorage.clear();
+  });
+
+  it("persists session to localStorage", () => {
+    const mockSession: Session = {
+      user: {
+        _id: "123",
+        email: "test@example.com",
+        name: "Test User"
+      },
+      accessToken: "mock-token"
+    };
+
+    useAuthStore.getState().setSession(mockSession);
+
+    // persist middleware writes synchronously to localStorage under "auth-storage"
+    const raw = window.localStorage.getItem("auth-storage");
+    expect(raw).not.toBeNull();
+    expect(JSON.parse(raw as string).state.session).toEqual(mockSession);
   });
 
   it("should have initial state", () => {
