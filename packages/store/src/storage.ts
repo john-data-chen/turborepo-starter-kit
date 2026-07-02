@@ -16,8 +16,5 @@ export type StorageAdapter = StateStorage;
  * If no adapter is provided, falls back to localStorage (web default).
  */
 export function createStorage(adapter?: StorageAdapter) {
-  if (!adapter) {
-    return undefined;
-  }
-  return createJSONStorage(() => adapter);
+  return createJSONStorage(() => adapter ?? window.localStorage);
 }

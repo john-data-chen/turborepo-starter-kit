@@ -18,75 +18,75 @@ Load matching skill **before writing code**.
 
 ### Universal (ALWAYS CHECK FIRST)
 
-| Condition | Skill |
-|:--|:--|
-| **Every session/task** — token optimization, terse communication | `caveman` |
-| **Any coding task** — writing, refactoring, fixing bugs | `karpathy-guidelines` |
-| Task handoff, session continuity, progress tracking, multi-step plans | `session-handoff` |
+| Condition                                                             | Skill                 |
+| :-------------------------------------------------------------------- | :-------------------- |
+| **Every session/task** — token optimization, terse communication      | `caveman`             |
+| **Any coding task** — writing, refactoring, fixing bugs               | `karpathy-guidelines` |
+| Task handoff, session continuity, progress tracking, multi-step plans | `session-handoff`     |
 
-### API
+### API (check `ai_docs/api-context.md`)
 
-| Condition | Skill |
-|:--|:--|
+| Condition                                                                        | Skill                   |
+| :------------------------------------------------------------------------------- | :---------------------- |
 | NestJS modules, DI, guards, pipes, interceptors, Mongoose, testing, architecture | `nestjs-best-practices` |
 
-### Mobile (also load `ai_docs/mobile-context.md`)
+### Mobile (check `ai_docs/mobile-context.md`)
 
-| Condition | Skill |
-|:--|:--|
-| Expo screens, navigation, animations, native tabs, styling, layout | `building-native-ui` |
-| Server-side API endpoints in Expo Router, EAS Hosting, Cloudflare Workers | `expo-api-routes` |
-| Custom dev client builds, TestFlight distribution, native modules | `expo-dev-client` |
-| Tailwind CSS / NativeWind setup in Expo | `expo-tailwind-setup` |
-| Network requests, API calls, fetch, caching, offline, auth tokens | `native-data-fetching` |
-| Upgrading Expo SDK, dependency conflicts, New Architecture migration | `upgrading-expo` |
-| Web code on native via webview, Canvas/WebGL, web library migration | `use-dom` |
+| Condition                                                                 | Skill                  |
+| :------------------------------------------------------------------------ | :--------------------- |
+| Expo screens, navigation, animations, native tabs, styling, layout        | `building-native-ui`   |
+| Server-side API endpoints in Expo Router, EAS Hosting, Cloudflare Workers | `expo-api-routes`      |
+| Custom dev client builds, TestFlight distribution, native modules         | `expo-dev-client`      |
+| Tailwind CSS / NativeWind setup in Expo                                   | `expo-tailwind-setup`  |
+| Network requests, API calls, fetch, caching, offline, auth tokens         | `native-data-fetching` |
+| Upgrading Expo SDK, dependency conflicts, New Architecture migration      | `upgrading-expo`       |
+| Web code on native via webview, Canvas/WebGL, web library migration       | `use-dom`              |
 
 ### Web
 
-| Condition | Skill |
-|:--|:--|
-| Next.js file conventions, RSC, data fetching, metadata, route handlers, async APIs | `next-best-practices` |
-| `use cache`, PPR, cacheLife, cacheTag, updateTag, static/dynamic mix | `next-cache-components` |
-| Component API design, compound components, boolean prop cleanup, render props | `vercel-composition-patterns` |
-| React/Next.js perf: re-renders, bundle size, waterfalls, memoization | `vercel-react-best-practices` |
-| UI review, a11y audit, UX compliance, design guidelines | `web-design-guidelines` |
-| Turborepo pipelines, caching, filtering, monorepo structure | `turborepo` |
+| Condition                                                                          | Skill                         |
+| :--------------------------------------------------------------------------------- | :---------------------------- |
+| Next.js file conventions, RSC, data fetching, metadata, route handlers, async APIs | `next-best-practices`         |
+| `use cache`, PPR, cacheLife, cacheTag, updateTag, static/dynamic mix               | `next-cache-components`       |
+| Component API design, compound components, boolean prop cleanup, render props      | `vercel-composition-patterns` |
+| React/Next.js perf: re-renders, bundle size, waterfalls, memoization               | `vercel-react-best-practices` |
+| UI review, a11y audit, UX compliance, design guidelines                            | `web-design-guidelines`       |
+| Turborepo pipelines, caching, filtering, monorepo structure                        | `turborepo`                   |
 
 ## MCP Servers
 
-| Server | Use When |
-|:--|:--|
-| `context7` | Need current library/package docs |
-| `next-devtools` | Dev server diagnostics, route inspection. Call `init` FIRST (confirm with user). |
-| `chrome-devtools` | Browser debugging, DOM inspection, performance, network |
+| Server            | Use When                                                                         |
+| :---------------- | :------------------------------------------------------------------------------- |
+| `context7`        | Need current library/package docs                                                |
+| `next-devtools`   | Dev server diagnostics, route inspection. Call `init` FIRST (confirm with user). |
+| `chrome-devtools` | Browser debugging, DOM inspection, performance, network                          |
 
 ## Project Overview
 
 ### Repo Structure
 
-| Type | Package | Description |
-|--|--|--|
-| App | `apps/api` | Nest.js (Express) — see `ai_docs/api-context.md` |
-| App | `apps/web` | Next.js AppRouter |
-| App | `apps/mobile` | React Native (Expo + React latest) — see `ai_docs/mobile-context.md` |
-| Pkg | `packages/global-tsconfig` | TS configs |
-| Pkg | `packages/i18n` | Shared i18n (EN/DE), locale config, Messages type |
-| Pkg | `packages/store` | Domain types, Zustand stores, StorageAdapter |
-| Pkg | `packages/ui` | Shadcn UI (web-only, not mobile) |
+| Type | Package                    | Description                                                          |
+| ---- | -------------------------- | -------------------------------------------------------------------- |
+| App  | `apps/api`                 | Nest.js (Express) — see `ai_docs/api-context.md`                     |
+| App  | `apps/web`                 | Next.js AppRouter                                                    |
+| App  | `apps/mobile`              | React Native (Expo + React latest) — see `ai_docs/mobile-context.md` |
+| Pkg  | `packages/global-tsconfig` | TS configs                                                           |
+| Pkg  | `packages/i18n`            | Shared i18n (EN/DE), locale config, Messages type                    |
+| Pkg  | `packages/store`           | Domain types, Zustand stores, StorageAdapter                         |
+| Pkg  | `packages/ui`              | Shadcn UI (web-only, not mobile)                                     |
 
 **Stack**: TypeScript strict, PNPM, Turborepo, Vitest, Playwright, Zustand + TanStack Query, React Hook Form + Zod
 
 ## Naming
 
-| Type | Convention | Example |
-|--|--|--|
-| Components (web) | PascalCase | `DatePicker.tsx` |
-| Components (mobile) | kebab-case | `board-card.tsx` |
-| Utilities | camelCase | `dateUtils.ts` |
-| Constants | UPPER_SNAKE | `API_ENDPOINTS.ts` |
-| Types | PascalCase | `UserData`, `ApiResponse` |
-| Hooks (mobile) | kebab-case | `use-auth.ts` |
+| Type                | Convention  | Example                   |
+| ------------------- | ----------- | ------------------------- |
+| Components (web)    | PascalCase  | `DatePicker.tsx`          |
+| Components (mobile) | kebab-case  | `board-card.tsx`          |
+| Utilities           | camelCase   | `dateUtils.ts`            |
+| Constants           | UPPER_SNAKE | `API_ENDPOINTS.ts`        |
+| Types               | PascalCase  | `UserData`, `ApiResponse` |
+| Hooks (mobile)      | kebab-case  | `use-auth.ts`             |
 
 ### Exports
 
