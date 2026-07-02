@@ -82,11 +82,8 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 | -------------- | ------------------------------------------------------------- |
 | Test Coverage  | **80%+** via Vitest (unit + integration)                      |
 | Code Quality   | **SonarQube A** across Security, Reliability, Maintainability |
-| Performance    | **Lighthouse 90+** on all categories                          |
 | E2E Validation | Cross-browser (Chrome, Safari, Edge) via Playwright           |
 | CI/CD Pipeline | GitHub Actions → SonarQube + Codecov → Vercel                 |
-
-<img src="./apps/web/public/assets/lighthouse_scores.png" alt="Lighthouse Scores" width="380" height="125">
 
 ### Quality Assurance
 
