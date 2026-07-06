@@ -55,7 +55,7 @@
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
     "cross-env": "^10.1.0",
-    "tsx": "^4.22.5",
+    "tsx": "^4.23.0",
     "webpack-node-externals": "^3.0.0"
   }
 }
