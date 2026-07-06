@@ -52,7 +52,7 @@
     "oxlint": "^1.72.0",
     "oxlint-tsgolint": "^0.24.0",
     "start-server-and-test": "^3.0.11",
-    "turbo": "^2.10.2",
+    "turbo": "^2.10.3",
     "vitest": "catalog:"
   },
   "lint-staged": {
@@ -71,5 +71,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.9.0"
+  "packageManager": "pnpm@11.10.0"
 }
