@@ -21,7 +21,7 @@ catalog:
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
   "@typescript/native-preview": "beta"
-  "@vitest/coverage-v8": 4.1.10
+  "@vitest/coverage-v8": ^4.1.10
   class-variance-authority: ^0.7.1
   dotenv: ^17.4.2
   jsdom: ^29.1.1
@@ -30,7 +30,7 @@ catalog:
   react-dom: ^19.2.7
   react-hook-form: ^7.81.0
   tailwindcss: ^4.3.2
-  vitest: 4.1.10
+  vitest: ^4.1.10
   zod: ^4.4.3
   zustand: ^5.0.14
 
