@@ -357,7 +357,7 @@ Boards, projects, and tasks refresh every **5 seconds** on both platforms, and c
 AGENTS.md                   # AI guidelines (symlink it when your tool needs specific file name such as CLAUDE.md)
 .agents/                    # AI skills
 └── skills/                 # Agent skills
-ai_docs/                    # AI documentation
+ai-docs/                    # AI documentation
 ├── api-context.md          # API project context & development constraints (loaded on demand)
 └── mobile-context.md       # Mobile app context, architecture & pitfalls (loaded on demand)
 apps/

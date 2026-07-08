@@ -5,7 +5,7 @@ version: 1.0.1
 license: MIT
 ---
 
-> **Project context**: Before starting, read `ai_docs/mobile-context.md` for project-specific routes, components, hooks, and pitfalls.
+> **Project context**: Before starting, read `ai-docs/mobile-context.md` for project-specific routes, components, hooks, and pitfalls.
 
 # Expo UI Guidelines
 
@@ -17,7 +17,7 @@ Consult these resources as needed:
 references/
   animations.md          Reanimated: entering, exiting, layout, scroll-driven, gestures
   controls.md            Native iOS: Switch, Slider, SegmentedControl, DateTimePicker, Picker
-  form-sheet.md          Form sheets in expo-router: configuration, footers and background interaction. 
+  form-sheet.md          Form sheets in expo-router: configuration, footers and background interaction.
   gradients.md           CSS gradients via experimental_backgroundImage (New Arch only)
   icons.md               SF Symbols via expo-image (sf: source), names, animations, weights
   media.md               Camera, audio, video, and file saving
@@ -189,25 +189,11 @@ import { Link } from "expo-router";
     </Pressable>
   </Link.Trigger>
   <Link.Menu>
-    <Link.MenuAction
-      title="Share"
-      icon="square.and.arrow.up"
-      onPress={handleSharePress}
-    />
-    <Link.MenuAction
-      title="Block"
-      icon="nosign"
-      destructive
-      onPress={handleBlockPress}
-    />
+    <Link.MenuAction title="Share" icon="square.and.arrow.up" onPress={handleSharePress} />
+    <Link.MenuAction title="Block" icon="nosign" destructive onPress={handleBlockPress} />
     <Link.Menu title="More" icon="ellipsis">
       <Link.MenuAction title="Copy" icon="doc.on.doc" onPress={() => {}} />
-      <Link.MenuAction
-        title="Delete"
-        icon="trash"
-        destructive
-        onPress={() => {}}
-      />
+      <Link.MenuAction title="Delete" icon="trash" destructive onPress={() => {}} />
     </Link.Menu>
   </Link.Menu>
 </Link>;
@@ -251,7 +237,7 @@ Present a screen as a dynamic form sheet:
     presentation: "formSheet",
     sheetGrabberVisible: true,
     sheetAllowedDetents: [0.5, 1.0],
-    contentStyle: { backgroundColor: "transparent" },
+    contentStyle: { backgroundColor: "transparent" }
   }}
 />
 ```
@@ -312,7 +298,7 @@ export default function Layout({ segment }) {
         headerTitleStyle: { color: PlatformColor("label") },
         headerLargeTitle: true,
         headerBlurEffect: "none",
-        headerBackButtonDisplayMode: "minimal",
+        headerBackButtonDisplayMode: "minimal"
       }}
     >
       <Stack.Screen name={screen} options={{ title: titles[screen] }} />
