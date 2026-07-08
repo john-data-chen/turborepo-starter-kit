@@ -23,7 +23,8 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
     queryFn: async () => taskApi.getTasks(projectId, assigneeId),
     enabled: !!projectId || !!assigneeId,
     staleTime: 0,
-    gcTime: 5 * 60 * 1000
+    gcTime: 5 * 60 * 1000,
+    refetchInterval: 5000
   });
 };
 
@@ -31,7 +32,8 @@ export const useTask = (taskId?: string) => {
   return useQuery({
     queryKey: TASK_KEYS.detail(taskId || ""),
     queryFn: async () => taskApi.getTaskById(taskId || ""),
-    enabled: !!taskId
+    enabled: !!taskId,
+    refetchInterval: 5000
   });
 };
 

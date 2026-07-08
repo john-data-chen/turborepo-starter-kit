@@ -18,7 +18,8 @@ export const useProjects = (boardId?: string | { _id: string; title: string }) =
       }
       return projectApi.getProjects(id);
     },
-    enabled: !!id
+    enabled: !!id,
+    refetchInterval: 5000
   });
 };
 
@@ -36,7 +37,8 @@ export const useProject = (id: string | { _id: string } | undefined) => {
       }
       return projectApi.getProjectById(projectId);
     },
-    enabled: !!projectId
+    enabled: !!projectId,
+    refetchInterval: 5000
   });
 };
 

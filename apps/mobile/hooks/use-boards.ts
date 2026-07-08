@@ -17,7 +17,8 @@ export const useBoards = () => {
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000
+    gcTime: 10 * 60 * 1000,
+    refetchInterval: 5000
   });
 };
 
@@ -25,7 +26,8 @@ export const useBoard = (boardId?: string) => {
   return useQuery({
     queryKey: BOARD_KEYS.detail(boardId || ""),
     queryFn: async () => boardApi.getBoardById(boardId || ""),
-    enabled: !!boardId
+    enabled: !!boardId,
+    refetchInterval: 5000
   });
 };
 

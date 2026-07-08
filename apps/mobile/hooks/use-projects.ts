@@ -19,7 +19,8 @@ export const useProjects = (boardId?: string) => {
       }
       return projectApi.getProjects(boardId);
     },
-    enabled: !!boardId
+    enabled: !!boardId,
+    refetchInterval: 5000
   });
 };
 

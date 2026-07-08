@@ -68,6 +68,22 @@ describe("Task Query Hooks", () => {
       expect(taskApi.getTasks).toHaveBeenCalledWith("project1", undefined);
     });
 
+    it("should poll every 5 seconds", async () => {
+      const mockTasks = [{ _id: "1", title: "Task 1", project: "project1" }];
+      (taskApi.getTasks as Mock).mockResolvedValue(mockTasks);
+
+      const { result } = renderHook(() => useTasks("project1"), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient
+        .getQueryCache()
+        .find({ queryKey: TASK_KEYS.list({ project: "project1" }) });
+      expect(query?.options.refetchInterval).toBe(5000);
+    });
+
     it("should fetch tasks by assigneeId", async () => {
       const mockTasks = [{ _id: "1", title: "Task 1", assignee: "user1" }];
       (taskApi.getTasks as Mock).mockResolvedValue(mockTasks);
@@ -103,6 +119,20 @@ describe("Task Query Hooks", () => {
 
       expect(result.current.data).toEqual(mockTask);
       expect(taskApi.getTaskById).toHaveBeenCalledWith("1");
+    });
+
+    it("should poll every 5 seconds", async () => {
+      const mockTask = { _id: "1", title: "Task 1", project: "project1" };
+      (taskApi.getTaskById as Mock).mockResolvedValue(mockTask);
+
+      const { result } = renderHook(() => useTask("1"), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient.getQueryCache().find({ queryKey: TASK_KEYS.detail("1") });
+      expect(query?.options.refetchInterval).toBe(5000);
     });
 
     it("should not fetch when taskId is undefined", () => {

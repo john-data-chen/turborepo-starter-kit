@@ -16,7 +16,8 @@ export const useTasks = (projectId?: string, assigneeId?: string) => {
     enabled: !!projectId || !!assigneeId,
     // Ensure we always get fresh data when the component mounts
     staleTime: 0,
-    gcTime: 5 * 60 * 1000 // 5 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: 5000
   });
 };
 
@@ -39,7 +40,8 @@ export const useTask = (taskId?: string, options: UseTaskOptions = {}) => {
           return false;
         }
         return failureCount < 3;
-      })
+      }),
+    refetchInterval: 5000
   });
 };
 

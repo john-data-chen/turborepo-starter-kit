@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -79,5 +80,23 @@ describe("ClientProviders", () => {
     expect(screen.getByText("Child 1")).toBeInTheDocument();
     expect(screen.getByText("Child 2")).toBeInTheDocument();
     expect(screen.getByText("Child 3")).toBeInTheDocument();
+  });
+
+  it("should create QueryClient with refetchOnWindowFocus enabled", () => {
+    let queryClientRef: ReturnType<typeof useQueryClient> | undefined;
+
+    function QueryClientReader() {
+      queryClientRef = useQueryClient();
+      return null;
+    }
+
+    render(
+      <ClientProviders>
+        <QueryClientReader />
+      </ClientProviders>
+    );
+
+    expect(queryClientRef).toBeDefined();
+    expect(queryClientRef!.getDefaultOptions().queries?.refetchOnWindowFocus).toBe(true);
   });
 });

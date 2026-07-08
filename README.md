@@ -68,6 +68,7 @@ The monorepo shares business logic across platforms while keeping UI and navigat
 
 - Drag-and-drop Kanban with multi-project support (web) / gesture-driven interactions (mobile)
 - Custom sorting and synchronization for projects and tasks
+- Near-real-time collaboration: boards, projects, and tasks sync across users within 5 seconds (polling), with optimistic locking (HTTP 409) to prevent silent overwrites on concurrent edits — see [trade-offs](#near-real-time-sync-polling--optimistic-locking)
 - Role-based permissions (Owner / Member)
 - Task assignment with audit tracking (lastModifier)
 - Search, filter by board ownership (my/team), and status filter (TODO/IN_PROGRESS/DONE)
@@ -314,6 +315,28 @@ This follows the principle that good cross-platform development means **same goa
 
 ---
 
+### Near-Real-Time Sync: Polling + Optimistic Locking
+
+Boards, projects, and tasks refresh every **5 seconds** on both platforms, and concurrent edits to the same task are detected server-side instead of silently overwriting each other.
+
+**How it works:**
+
+- **Polling (5s)**: Web board columns re-fetch via `setInterval` (paused while a drag is active, silent — no loading skeleton); boards/projects/tasks queries on both platforms use TanStack Query `refetchInterval`. On mobile this also compensates for React Native having no window-focus refetch.
+- **Optimistic locking**: clients send the `updatedAt` they last saw with `PATCH /tasks/{id}`; if it no longer matches, the API returns **409 Conflict** and the client shows a conflict notice (toast on web, alert on mobile) and re-fetches. The check is opt-in — requests without `updatedAt` keep the old last-write-wins behavior, so older clients are unaffected.
+
+**Why polling instead of WebSocket/SSE — the trade-off:**
+
+| Option                        | Verdict | Reasoning                                                                                                                           |
+| ----------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| WebSocket                     | ✗       | Vercel Serverless Functions cannot hold long-lived connections on any plan                                                          |
+| Server-Sent Events            | ✗       | Constrained by function max duration; connections drop frequently on the free tier                                                  |
+| Third-party push (Ably, etc.) | Later   | Real push at scale, but adds a dependency, an account, and a failure mode — not worth it for the current scale                      |
+| **Polling (5s)**              | ✓       | Zero new dependencies; ~12 requests/min per open client ≈ 345k invocations/month for 2 daily users vs the 1M/month Vercel Hobby cap |
+
+**Known limits (deliberate):** 5 seconds of staleness between polls; `PATCH /tasks/{id}/move` (drag-and-drop reordering) remains last-write-wins. The upgrade path when scale demands it: swap the polling layer for a managed realtime channel (Ably / Supabase Realtime) — the 409 conflict handling stays unchanged.
+
+---
+
 ## Permission Model
 
 | Capability          | Owner | Member |
@@ -541,8 +564,8 @@ This is an example of how to use prompts and skills in Claude Code, you should c
 - Create a folder named `.claude`
 - Copy skills you need from `.agents/skills/` to `.claude/skills/`
 - Copy or create a symbolic link of `AGENTS.md` to your AI tool's context file location
-  | AI Tool | Target Path |
-  | ----------- | ------------------- |
+  | AI Tool     | Target Path               |
+  | ----------- | ------------------------- |
   | Claude Code | `[root-folder]/CLAUDE.md` |
 - Restart the Claude Code or other AI tools
 
