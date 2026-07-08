@@ -57,6 +57,7 @@ GEMINI.md
 CLAUDE.md
 .claude
 session-handoff
+.cron-lock
 
 # pnpm
 .pnpm-store
