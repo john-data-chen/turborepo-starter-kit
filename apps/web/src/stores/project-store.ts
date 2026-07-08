@@ -29,11 +29,17 @@ export const createProjectSlice: StateCreator<
       const projects = await projectApi.getProjects(boardId);
 
       if (projects) {
-        set({
-          projects: projects.map((project) => ({
-            ...project,
-            tasks: []
-          }))
+        set((state) => {
+          const oldProjects = state.projects;
+          return {
+            projects: projects.map((project) => {
+              const existing = oldProjects.find((p) => p._id === project._id);
+              return {
+                ...project,
+                tasks: existing?.tasks ?? []
+              };
+            })
+          };
         });
       } else {
         set({ projects: [] });
@@ -44,6 +50,30 @@ export const createProjectSlice: StateCreator<
     } finally {
       set({ isLoadingProjects: false });
     }
+  },
+
+  refreshAllTasks: async () => {
+    const { projects } = get();
+    await Promise.all(
+      projects.map(async (project) => {
+        try {
+          const { taskApi } = await import("@/lib/api/taskApi");
+          const tasks = await taskApi.getTasks(project._id);
+          if (Array.isArray(tasks)) {
+            set((state) => ({
+              projects: state.projects.map((p) => (p._id === project._id ? { ...p, tasks } : p))
+            }));
+          }
+        } catch {
+          // keep existing tasks on failure
+        }
+      })
+    );
+  },
+
+  fetchProjectsWithTasks: async (boardId: string) => {
+    await get().fetchProjects(boardId);
+    await get().refreshAllTasks();
   },
 
   fetchTasksByProject: async (projectId: string) => {

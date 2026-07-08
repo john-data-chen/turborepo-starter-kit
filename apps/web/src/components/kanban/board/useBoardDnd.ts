@@ -230,7 +230,15 @@ export function useBoardDnd(
       }
 
       const activeProjectIndex = projectsId.indexOf(activeId as string);
-      const overProjectIndex = projectsId.indexOf(overId as string);
+
+      // overId may be a task ID if dropped on a task area; resolve to its parent project
+      let overProjectIndex = projectsId.indexOf(overId as string);
+      if (overProjectIndex === -1) {
+        const overProject = projects.find((p) => p.tasks.some((t) => t._id === overId));
+        if (overProject) {
+          overProjectIndex = projectsId.indexOf(overProject._id);
+        }
+      }
 
       if (activeProjectIndex === -1 || overProjectIndex === -1) {
         originalProjects.current = null;
