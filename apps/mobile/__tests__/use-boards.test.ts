@@ -65,7 +65,7 @@ describe("useBoards", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
-    expect(query?.options.refetchInterval).toBe(5000);
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 });
 

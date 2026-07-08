@@ -14,6 +14,8 @@ import {
 import { PROJECT_KEYS } from "@/types/projectApi";
 
 // Mock projectApi
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }));
+
 vi.mock("@/lib/api/projectApi", () => ({
   projectApi: {
     getProjects: vi.fn(),
@@ -71,7 +73,7 @@ describe("Project Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.list("board1") });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch projects with object boardId", async () => {
@@ -137,7 +139,7 @@ describe("Project Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.detail("1") });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch single project with object id", async () => {

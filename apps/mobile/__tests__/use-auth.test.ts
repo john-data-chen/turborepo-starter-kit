@@ -101,4 +101,45 @@ describe("useAuth", () => {
     // retry: false so it should surface the error
     expect(result.current.error).toBe("Session failed");
   });
+
+  it("should handle login success with user from response", async () => {
+    const mockUser = { _id: "u1", email: "t@e.com", name: "Test" };
+    const mockLoginResponse = { access_token: "token123", user: mockUser };
+    vi.mocked(authService.getSession).mockResolvedValue(null);
+    vi.mocked(authService.login).mockResolvedValue(mockLoginResponse);
+
+    const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Trigger login
+    result.current.login("t@e.com");
+
+    await waitFor(() => {
+      expect(authService.login).toHaveBeenCalledWith("t@e.com");
+    });
+  });
+
+  it("should handle login success with getProfile fallback", async () => {
+    const mockUser = { _id: "u1", email: "t@e.com", name: "Test" };
+    const mockLoginResponse = { access_token: "token123", user: undefined };
+    vi.mocked(authService.getSession).mockResolvedValue(null);
+    vi.mocked(authService.login).mockResolvedValue(mockLoginResponse);
+    vi.mocked(authService.getProfile).mockResolvedValue(mockUser);
+
+    const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Trigger login
+    result.current.login("t@e.com");
+
+    await waitFor(() => {
+      expect(authService.login).toHaveBeenCalledWith("t@e.com");
+    });
+  });
 });

@@ -28,7 +28,9 @@ export default function BoardPage() {
       fetchProjectsWithTasks(boardId);
     }, 5000);
 
-    return () =>{  clearInterval(interval); };
+    return () => {
+      clearInterval(interval);
+    };
   }, [boardId, setCurrentBoardId, fetchProjectsWithTasks]);
 
   return (

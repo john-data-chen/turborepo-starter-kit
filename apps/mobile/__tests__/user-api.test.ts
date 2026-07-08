@@ -34,4 +34,22 @@ describe("userApi", () => {
     const user = await userApi.getUserById("none");
     expect(user).toBeNull();
   });
+
+  it("should handle empty users array in search", async () => {
+    vi.mocked(fetchWithAuth).mockResolvedValue({ users: [] });
+    const users = await userApi.searchUsers("test");
+    expect(users).toHaveLength(0);
+  });
+
+  it("should handle missing users in search response", async () => {
+    vi.mocked(fetchWithAuth).mockResolvedValue({});
+    const users = await userApi.searchUsers("test");
+    expect(users).toHaveLength(0);
+  });
+
+  it("should return null if user response has no user field", async () => {
+    vi.mocked(fetchWithAuth).mockResolvedValue({});
+    const user = await userApi.getUserById("1");
+    expect(user).toBeNull();
+  });
 });

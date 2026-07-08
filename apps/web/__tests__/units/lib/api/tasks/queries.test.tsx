@@ -16,6 +16,8 @@ import { TaskStatus, type Task } from "@/types/dbInterface";
 import { TASK_KEYS } from "@/types/taskApi";
 
 // Mock taskApi
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }));
+
 vi.mock("@/lib/api/taskApi", () => ({
   taskApi: {
     getTasks: vi.fn(),
@@ -81,7 +83,7 @@ describe("Task Query Hooks", () => {
       const query = queryClient
         .getQueryCache()
         .find({ queryKey: TASK_KEYS.list({ project: "project1" }) });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch tasks by assigneeId", async () => {
@@ -132,7 +134,7 @@ describe("Task Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: TASK_KEYS.detail("1") });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should not fetch when taskId is undefined", () => {

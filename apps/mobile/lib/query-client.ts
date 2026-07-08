@@ -7,7 +7,9 @@ focusManager.setEventListener((handleFocus) => {
       handleFocus();
     }
   });
-  return () =>{  subscription.remove(); };
+  return () => {
+    subscription.remove();
+  };
 });
 
 export const queryClient = new QueryClient({

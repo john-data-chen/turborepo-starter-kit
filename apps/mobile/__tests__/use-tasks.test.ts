@@ -78,7 +78,7 @@ describe("useTasks", () => {
     const query = capturedClient
       ?.getQueryCache()
       .find({ queryKey: TASK_KEYS.list({ project: "p1" }) });
-    expect(query?.options.refetchInterval).toBe(5000);
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should fetch tasks by assigneeId", async () => {
@@ -136,7 +136,7 @@ describe("useTask", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: TASK_KEYS.detail("t1") });
-    expect(query?.options.refetchInterval).toBe(5000);
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should not fetch when taskId is undefined", () => {

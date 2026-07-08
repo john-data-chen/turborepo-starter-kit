@@ -1,24 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { useSyncToastListener } from "@/hooks/useSyncToast";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import type { Task, TaskStatus } from "@/types/dbInterface";
 import { TASK_KEYS, UpdateTaskInput } from "@/types/taskApi";
 
+import { suppressNextSyncToast } from "../sync-toast";
 import { taskApi } from "../taskApi";
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
-  return useQuery<Task[]>({
+  const query = useQuery<Task[]>({
     queryKey: TASK_KEYS.list({
       project: projectId,
       assignee: assigneeId
     }),
     queryFn: async () => taskApi.getTasks(projectId, assigneeId),
     enabled: !!projectId || !!assigneeId,
-    // Ensure we always get fresh data when the component mounts
     staleTime: 0,
     gcTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: 5000
   });
+
+  useSyncToastListener(
+    query.data,
+    !!projectId || !!assigneeId,
+    `${projectId ?? ""}|${assigneeId ?? ""}`
+  );
+
+  return query;
 };
 
 interface UseTaskOptions {
@@ -73,12 +82,11 @@ export const useCreateTask = () => {
       });
     },
     onSuccess: (variables) => {
-      // Invalidate the tasks list query to refetch
+      suppressNextSyncToast();
       queryClient.invalidateQueries({
         queryKey: TASK_KEYS.list({ project: variables.project })
       });
 
-      // Also invalidate the assignee's tasks if applicable
       let assigneeId: string | undefined;
       if (variables.assignee) {
         assigneeId =
@@ -139,6 +147,7 @@ export const useUpdateTask = () => {
 
     // Optimistic updates
     onMutate: async (updatedTask) => {
+      suppressNextSyncToast();
       const taskId = updatedTask.id;
       const taskQueryKey = TASK_KEYS.detail(taskId);
 
@@ -249,7 +258,7 @@ export const useDeleteTask = () => {
       return taskApi.deleteTask(taskId);
     },
     onMutate: async (taskId) => {
-      // Cancel any outgoing refetches
+      suppressNextSyncToast();
       await queryClient.cancelQueries({ queryKey: TASK_KEYS.lists() });
       await queryClient.cancelQueries({ queryKey: TASK_KEYS.detail(taskId) });
 

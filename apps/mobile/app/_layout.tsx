@@ -7,6 +7,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toaster } from "sonner-native";
 
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient } from "@/lib/query-client";
@@ -73,6 +74,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <RootLayoutNav />
+        <Toaster />
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

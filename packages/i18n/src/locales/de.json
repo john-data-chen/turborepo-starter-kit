@@ -169,5 +169,8 @@
     "tryAgain": "Erneut versuchen",
     "notFound": "Seite nicht gefunden",
     "goHome": "Zur Startseite"
+  },
+  "sync": {
+    "synced": "Synchronisiert"
   }
 }

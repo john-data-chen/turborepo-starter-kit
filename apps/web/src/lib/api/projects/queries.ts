@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { useSyncToastListener } from "@/hooks/useSyncToast";
 import { PROJECT_KEYS, type UpdateProjectInput } from "@/types/projectApi";
 
 import { projectApi } from "../projectApi";
+import { suppressNextSyncToast } from "../sync-toast";
 
 export const useProjects = (boardId?: string | { _id: string; title: string }) => {
   let id: string | undefined;
@@ -10,7 +12,7 @@ export const useProjects = (boardId?: string | { _id: string; title: string }) =
     id = typeof boardId === "string" ? boardId : boardId._id;
   }
 
-  return useQuery({
+  const query = useQuery({
     queryKey: PROJECT_KEYS.list(id || ""),
     queryFn: async () => {
       if (!id) {
@@ -21,6 +23,10 @@ export const useProjects = (boardId?: string | { _id: string; title: string }) =
     enabled: !!id,
     refetchInterval: 5000
   });
+
+  useSyncToastListener(query.data, !!id, id);
+
+  return query;
 };
 
 export const useProject = (id: string | { _id: string } | undefined) => {
@@ -48,7 +54,7 @@ export const useCreateProject = () => {
   return useMutation({
     mutationFn: projectApi.createProject,
     onSuccess: (newProject) => {
-      // Invalidate the projects list for the specific board
+      suppressNextSyncToast();
       const boardId =
         typeof newProject.board === "string" ? newProject.board : newProject.board?._id;
 
@@ -80,7 +86,7 @@ export const useUpdateProject = () => {
       return projectApi.updateProject(id, updateData);
     },
     onSuccess: (updatedProject) => {
-      // Invalidate both the list and the specific project
+      suppressNextSyncToast();
       const boardId =
         typeof updatedProject.board === "string" ? updatedProject.board : updatedProject.board?._id;
 
@@ -103,13 +109,12 @@ export const useDeleteProject = () => {
   return useMutation({
     mutationFn: projectApi.deleteProject,
     onSuccess: (_, projectId, context: { boardId?: string } | undefined) => {
-      // Invalidate the projects list for the board if we have the boardId
+      suppressNextSyncToast();
       if (context?.boardId) {
         queryClient.invalidateQueries({
           queryKey: PROJECT_KEYS.list(context.boardId)
         });
       }
-      // Remove the specific project from the cache
       queryClient.removeQueries({
         queryKey: PROJECT_KEYS.detail(projectId)
       });

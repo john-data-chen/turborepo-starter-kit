@@ -15,6 +15,8 @@ import {
 import { BOARD_KEYS } from "@/types/boardApi";
 
 // Mock boardApi
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }));
+
 vi.mock("@/lib/api/boardApi", () => ({
   boardApi: {
     getBoards: vi.fn(),
@@ -76,7 +78,7 @@ describe("Board Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should handle fetch error", async () => {
@@ -125,7 +127,7 @@ describe("Board Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.detail("1") });
-      expect(query?.options.refetchInterval).toBe(5000);
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should not fetch when boardId is undefined", () => {

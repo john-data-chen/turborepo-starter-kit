@@ -63,7 +63,7 @@ describe("useProjects", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: PROJECT_KEYS.list("b1") });
-    expect(query?.options.refetchInterval).toBe(5000);
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should not fetch when boardId is undefined", () => {

@@ -1,11 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { useSyncToastListener } from "@/hooks/useSyncToast";
 import { BOARD_KEYS } from "@/types/boardApi";
 
 import { boardApi } from "../boardApi";
+import { suppressNextSyncToast } from "../sync-toast";
 
 export const useBoards = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: BOARD_KEYS.list(),
     queryFn: async () => {
       return boardApi.getBoards();
@@ -16,6 +18,10 @@ export const useBoards = () => {
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     refetchInterval: 5000
   });
+
+  useSyncToastListener(query.data, !!query.data);
+
+  return query;
 };
 
 export const useBoard = (boardId?: string) => {
@@ -33,7 +39,7 @@ export const useCreateBoard = () => {
   return useMutation({
     mutationFn: boardApi.createBoard,
     onSuccess: () => {
-      // Invalidate the boards list query to refetch
+      suppressNextSyncToast();
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
@@ -51,7 +57,7 @@ export const useUpdateBoard = () => {
     }: { id: string } & Parameters<typeof boardApi.updateBoard>[1]) =>
       boardApi.updateBoard(id, updates),
     onSuccess: (updatedBoard) => {
-      // Invalidate both the list and the specific board
+      suppressNextSyncToast();
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
@@ -68,11 +74,10 @@ export const useDeleteBoard = () => {
   return useMutation({
     mutationFn: boardApi.deleteBoard,
     onSuccess: (_, boardId) => {
-      // Invalidate the boards list
+      suppressNextSyncToast();
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
-      // Remove the specific board from the cache
       queryClient.removeQueries({
         queryKey: BOARD_KEYS.detail(boardId)
       });
@@ -87,7 +92,7 @@ export const useAddBoardMember = () => {
     mutationFn: async ({ boardId, memberId }: { boardId: string; memberId: string }) =>
       boardApi.addBoardMember(boardId, memberId),
     onSuccess: (updatedBoard) => {
-      // Invalidate the board data
+      suppressNextSyncToast();
       queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.detail(updatedBoard._id)
       });
