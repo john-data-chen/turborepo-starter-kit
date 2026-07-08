@@ -15,6 +15,8 @@ import {
 import { BOARD_KEYS } from "@/types/boardApi";
 
 // Mock boardApi
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }));
+
 vi.mock("@/lib/api/boardApi", () => ({
   boardApi: {
     getBoards: vi.fn(),
@@ -62,6 +64,23 @@ describe("Board Query Hooks", () => {
       expect(boardApi.getBoards).toHaveBeenCalledTimes(1);
     });
 
+    it("should poll every 5 seconds", async () => {
+      const mockBoards = {
+        myBoards: [{ _id: "1", title: "Board 1" } as any],
+        teamBoards: [] as any[]
+      };
+      (boardApi.getBoards as Mock).mockResolvedValue(mockBoards);
+
+      const { result } = renderHook(() => useBoards(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+    });
+
     it("should handle fetch error", async () => {
       const mockError = new Error("Failed to fetch boards");
       (boardApi.getBoards as Mock).mockRejectedValue(mockError);
@@ -95,6 +114,20 @@ describe("Board Query Hooks", () => {
 
       expect(result.current.data).toEqual(mockBoard);
       expect(boardApi.getBoardById).toHaveBeenCalledWith("1");
+    });
+
+    it("should poll every 5 seconds", async () => {
+      const mockBoard = { _id: "1", title: "Board 1" };
+      (boardApi.getBoardById as Mock).mockResolvedValue(mockBoard);
+
+      const { result } = renderHook(() => useBoard("1"), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.detail("1") });
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should not fetch when boardId is undefined", () => {

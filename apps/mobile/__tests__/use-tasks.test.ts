@@ -1,7 +1,10 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor, act } from "@testing-library/react";
+import React, { useState } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import {
+  TASK_KEYS,
   useTasks,
   useTask,
   useCreateTask,
@@ -52,8 +55,34 @@ describe("useTasks", () => {
     expect(taskApi.getTasks).toHaveBeenCalledWith("p1", undefined);
   });
 
+  it("should poll every 5 seconds", async () => {
+    const mockTasks = [{ _id: "t1", title: "Task 1", project: "p1" }];
+    vi.mocked(taskApi.getTasks).mockResolvedValue(mockTasks as any);
+
+    let capturedClient: QueryClient | undefined;
+    const CapturingWrapper = ({ children }: { children: React.ReactNode }) => {
+      const [client] = useState(() => {
+        const c = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        capturedClient = c;
+        return c;
+      });
+      return React.createElement(QueryClientProvider, { client }, children);
+    };
+
+    const { result } = renderHook(() => useTasks("p1"), { wrapper: CapturingWrapper });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    const query = capturedClient
+      ?.getQueryCache()
+      .find({ queryKey: TASK_KEYS.list({ project: "p1" }) });
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+  });
+
   it("should fetch tasks by assigneeId", async () => {
-    vi.mocked(taskApi.getTasks).mockResolvedValue([] as any);
+    vi.mocked(taskApi.getTasks).mockResolvedValue([]);
 
     const { result } = renderHook(() => useTasks(undefined, "u1"), { wrapper: Wrapper });
 
@@ -84,6 +113,30 @@ describe("useTask", () => {
     });
 
     expect(result.current.data).toEqual(mockTask);
+  });
+
+  it("should poll every 5 seconds", async () => {
+    const mockTask = { _id: "t1", title: "Task 1" };
+    vi.mocked(taskApi.getTaskById).mockResolvedValue(mockTask as any);
+
+    let capturedClient: QueryClient | undefined;
+    const CapturingWrapper = ({ children }: { children: React.ReactNode }) => {
+      const [client] = useState(() => {
+        const c = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        capturedClient = c;
+        return c;
+      });
+      return React.createElement(QueryClientProvider, { client }, children);
+    };
+
+    const { result } = renderHook(() => useTask("t1"), { wrapper: CapturingWrapper });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    const query = capturedClient?.getQueryCache().find({ queryKey: TASK_KEYS.detail("t1") });
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should not fetch when taskId is undefined", () => {
@@ -171,7 +224,7 @@ describe("useUpdateTask", () => {
 
 describe("useDeleteTask", () => {
   it("should delete task", async () => {
-    vi.mocked(taskApi.deleteTask).mockResolvedValue(undefined as any);
+    vi.mocked(taskApi.deleteTask).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteTask(), { wrapper: Wrapper });
 

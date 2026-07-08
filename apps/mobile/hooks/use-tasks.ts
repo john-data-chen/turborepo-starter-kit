@@ -4,6 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { taskApi } from "@/lib/api/task-api";
 import { useAuthStore } from "@/stores/auth";
 
+import { suppressNextSyncToast } from "./use-sync-toast";
+import { useSyncToastListener } from "./use-sync-toast-listener";
+
 export const TASK_KEYS = {
   all: ["tasks"] as const,
   lists: () => [...TASK_KEYS.all, "list"] as const,
@@ -18,20 +21,30 @@ export const TASK_KEYS = {
 };
 
 export const useTasks = (projectId?: string, assigneeId?: string) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: TASK_KEYS.list({ project: projectId, assignee: assigneeId }),
     queryFn: async () => taskApi.getTasks(projectId, assigneeId),
     enabled: !!projectId || !!assigneeId,
     staleTime: 0,
-    gcTime: 5 * 60 * 1000
+    gcTime: 5 * 60 * 1000,
+    refetchInterval: 5000
   });
+
+  useSyncToastListener(
+    query.data,
+    !!projectId || !!assigneeId,
+    `${projectId ?? ""}|${assigneeId ?? ""}`
+  );
+
+  return query;
 };
 
 export const useTask = (taskId?: string) => {
   return useQuery({
     queryKey: TASK_KEYS.detail(taskId || ""),
     queryFn: async () => taskApi.getTaskById(taskId || ""),
-    enabled: !!taskId
+    enabled: !!taskId,
+    refetchInterval: 5000
   });
 };
 
@@ -40,6 +53,7 @@ export const useCreateTask = () => {
   return useMutation({
     mutationFn: taskApi.createTask,
     onSuccess: (newTask) => {
+      suppressNextSyncToast();
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ project: newTask.project }) });
       if (newTask.assignee) {
         const assigneeId =
@@ -65,6 +79,7 @@ export const useUpdateTask = () => {
       return taskApi.updateTask(id, { ...updates, lastModifier: user._id });
     },
     onSuccess: (updatedTask) => {
+      suppressNextSyncToast();
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ project: updatedTask.project }) });
     }
@@ -76,6 +91,7 @@ export const useDeleteTask = () => {
   return useMutation({
     mutationFn: taskApi.deleteTask,
     onSuccess: () => {
+      suppressNextSyncToast();
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
     }
   });
@@ -94,6 +110,7 @@ export const useMoveTask = () => {
       orderInProject: number;
     }) => taskApi.moveTask(taskId, projectId, orderInProject),
     onSuccess: (updatedTask) => {
+      suppressNextSyncToast();
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
       queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
     }

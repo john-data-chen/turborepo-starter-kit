@@ -1,7 +1,10 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor, act } from "@testing-library/react";
+import React, { useState } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import {
+  BOARD_KEYS,
   useBoards,
   useBoard,
   useCreateBoard,
@@ -40,6 +43,30 @@ describe("useBoards", () => {
     expect(result.current.data).toEqual(mockBoards);
     expect(boardApi.getBoards).toHaveBeenCalled();
   });
+
+  it("should poll every 5 seconds", async () => {
+    const mockBoards = [{ _id: "b1", title: "Board 1" }];
+    vi.mocked(boardApi.getBoards).mockResolvedValue(mockBoards as any);
+
+    let capturedClient: QueryClient | undefined;
+    const CapturingWrapper = ({ children }: { children: React.ReactNode }) => {
+      const [client] = useState(() => {
+        const c = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        capturedClient = c;
+        return c;
+      });
+      return React.createElement(QueryClientProvider, { client }, children);
+    };
+
+    const { result } = renderHook(() => useBoards(), { wrapper: CapturingWrapper });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    const query = capturedClient?.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+  });
 });
 
 describe("useBoard", () => {
@@ -76,7 +103,7 @@ describe("useCreateBoard", () => {
     const { result } = renderHook(() => useCreateBoard(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ title: "New Board" } as any);
+      result.current.mutate({ title: "New Board" });
     });
 
     await waitFor(() => {
@@ -95,7 +122,7 @@ describe("useUpdateBoard", () => {
     const { result } = renderHook(() => useUpdateBoard(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ id: "b1", title: "Updated" } as any);
+      result.current.mutate({ id: "b1", title: "Updated" });
     });
 
     await waitFor(() => {
@@ -108,7 +135,7 @@ describe("useUpdateBoard", () => {
 
 describe("useDeleteBoard", () => {
   it("should call boardApi.deleteBoard", async () => {
-    vi.mocked(boardApi.deleteBoard).mockResolvedValue(undefined as any);
+    vi.mocked(boardApi.deleteBoard).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteBoard(), { wrapper: Wrapper });
 

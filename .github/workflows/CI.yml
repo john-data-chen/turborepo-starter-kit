@@ -10,6 +10,14 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     environment: development
+    services:
+      mongodb:
+        image: mongo:8
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: "123456"
     env:
       # Turborepo Remote Cache (Vercel). Set TURBO_TOKEN as a repo secret and
       # TURBO_TEAM as a repo variable (e.g. "team_xxx"). Empty values disable it.
@@ -39,7 +47,7 @@ jobs:
       - name: Run Unit Tests by Vitest
         # highlight-start
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: "mongodb://root:123456@localhost:27017/next-project-manager?authSource=admin"
           NODE_ENV: ${{ vars.NODE_ENV }} # Or 'test' if preferred for testing
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           # Add any other environment variables needed specifically for tests

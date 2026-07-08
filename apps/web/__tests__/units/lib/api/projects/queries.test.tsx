@@ -14,6 +14,8 @@ import {
 import { PROJECT_KEYS } from "@/types/projectApi";
 
 // Mock projectApi
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }));
+
 vi.mock("@/lib/api/projectApi", () => ({
   projectApi: {
     getProjects: vi.fn(),
@@ -58,6 +60,20 @@ describe("Project Query Hooks", () => {
 
       expect(result.current.data).toEqual(mockProjects);
       expect(projectApi.getProjects).toHaveBeenCalledWith("board1");
+    });
+
+    it("should poll every 5 seconds", async () => {
+      const mockProjects = [{ _id: "1", title: "Project 1", board: "board1" }];
+      (projectApi.getProjects as Mock).mockResolvedValue(mockProjects);
+
+      const { result } = renderHook(() => useProjects("board1"), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.list("board1") });
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch projects with object boardId", async () => {
@@ -110,6 +126,20 @@ describe("Project Query Hooks", () => {
 
       expect(result.current.data).toEqual(mockProject);
       expect(projectApi.getProjectById).toHaveBeenCalledWith("1");
+    });
+
+    it("should poll every 5 seconds", async () => {
+      const mockProject = { _id: "1", title: "Project 1", board: "board1" };
+      (projectApi.getProjectById as Mock).mockResolvedValue(mockProject);
+
+      const { result } = renderHook(() => useProject("1"), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+
+      const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.detail("1") });
+      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch single project with object id", async () => {
@@ -187,7 +217,7 @@ describe("Project Query Hooks", () => {
       const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
       await act(async () => {
-        await result.current.mutateAsync({ id: "1", title: "Updated Project" } as any);
+        await result.current.mutateAsync({ id: "1", title: "Updated Project" });
       });
 
       await waitFor(() => {

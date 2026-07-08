@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectApi, type UpdateProjectInput } from "@/lib/api/project-api";
 
+import { suppressNextSyncToast } from "./use-sync-toast";
+import { useSyncToastListener } from "./use-sync-toast-listener";
+
 export const PROJECT_KEYS = {
   all: ["projects"] as const,
   lists: () => [...PROJECT_KEYS.all, "list"] as const,
@@ -11,7 +14,7 @@ export const PROJECT_KEYS = {
 };
 
 export const useProjects = (boardId?: string) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: PROJECT_KEYS.list(boardId || ""),
     queryFn: async () => {
       if (!boardId) {
@@ -19,8 +22,13 @@ export const useProjects = (boardId?: string) => {
       }
       return projectApi.getProjects(boardId);
     },
-    enabled: !!boardId
+    enabled: !!boardId,
+    refetchInterval: 5000
   });
+
+  useSyncToastListener(query.data, !!boardId, boardId);
+
+  return query;
 };
 
 export const useCreateProject = () => {
@@ -28,6 +36,7 @@ export const useCreateProject = () => {
   return useMutation({
     mutationFn: projectApi.createProject,
     onSuccess: (newProject) => {
+      suppressNextSyncToast();
       const boardId =
         typeof newProject.board === "string" ? newProject.board : newProject.board?._id;
       if (boardId) {
@@ -43,6 +52,7 @@ export const useUpdateProject = () => {
     mutationFn: async ({ id, ...updates }: { id: string } & UpdateProjectInput) =>
       projectApi.updateProject(id, updates),
     onSuccess: (updatedProject) => {
+      suppressNextSyncToast();
       const boardId =
         typeof updatedProject.board === "string" ? updatedProject.board : updatedProject.board?._id;
       if (boardId) {
@@ -61,6 +71,7 @@ export const useDeleteProject = () => {
       return { boardId };
     },
     onSuccess: ({ boardId }, { id }) => {
+      suppressNextSyncToast();
       if (boardId) {
         queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
       }

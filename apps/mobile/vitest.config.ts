@@ -33,7 +33,10 @@ export default defineConfig({
       include: ["hooks/**/*.{ts,tsx}", "stores/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"],
       exclude: ["**/*.d.ts", "**/__tests__/**"],
       thresholds: {
-        statements: 80
+        statements: 90,
+        branches: 80,
+        functions: 90,
+        lines: 90
       }
     }
   },

@@ -1,7 +1,10 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor, act } from "@testing-library/react";
+import React, { useState } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import {
+  PROJECT_KEYS,
   useProjects,
   useCreateProject,
   useUpdateProject,
@@ -39,6 +42,30 @@ describe("useProjects", () => {
     expect(projectApi.getProjects).toHaveBeenCalledWith("b1");
   });
 
+  it("should poll every 5 seconds", async () => {
+    const mockProjects = [{ _id: "p1", title: "Project 1", board: "b1" }];
+    vi.mocked(projectApi.getProjects).mockResolvedValue(mockProjects as any);
+
+    let capturedClient: QueryClient | undefined;
+    const CapturingWrapper = ({ children }: { children: React.ReactNode }) => {
+      const [client] = useState(() => {
+        const c = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        capturedClient = c;
+        return c;
+      });
+      return React.createElement(QueryClientProvider, { client }, children);
+    };
+
+    const { result } = renderHook(() => useProjects("b1"), { wrapper: CapturingWrapper });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    const query = capturedClient?.getQueryCache().find({ queryKey: PROJECT_KEYS.list("b1") });
+    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+  });
+
   it("should not fetch when boardId is undefined", () => {
     const { result } = renderHook(() => useProjects(undefined), { wrapper: Wrapper });
 
@@ -55,7 +82,7 @@ describe("useCreateProject", () => {
     const { result } = renderHook(() => useCreateProject(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ title: "New", boardId: "b1" } as any);
+      result.current.mutate({ title: "New", boardId: "b1" });
     });
 
     await waitFor(() => {
@@ -72,7 +99,7 @@ describe("useCreateProject", () => {
     const { result } = renderHook(() => useCreateProject(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ title: "New", boardId: "b2" } as any);
+      result.current.mutate({ title: "New", boardId: "b2" });
     });
 
     await waitFor(() => {
@@ -89,7 +116,7 @@ describe("useUpdateProject", () => {
     const { result } = renderHook(() => useUpdateProject(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ id: "p1", title: "Updated" } as any);
+      result.current.mutate({ id: "p1", title: "Updated" });
     });
 
     await waitFor(() => {
@@ -106,7 +133,7 @@ describe("useUpdateProject", () => {
     const { result } = renderHook(() => useUpdateProject(), { wrapper: Wrapper });
 
     await act(async () => {
-      result.current.mutate({ id: "p1", title: "Updated" } as any);
+      result.current.mutate({ id: "p1", title: "Updated" });
     });
 
     await waitFor(() => {
@@ -117,7 +144,7 @@ describe("useUpdateProject", () => {
 
 describe("useDeleteProject", () => {
   it("should delete project with boardId", async () => {
-    vi.mocked(projectApi.deleteProject).mockResolvedValue(undefined as any);
+    vi.mocked(projectApi.deleteProject).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteProject(), { wrapper: Wrapper });
 
@@ -133,7 +160,7 @@ describe("useDeleteProject", () => {
   });
 
   it("should delete project without boardId", async () => {
-    vi.mocked(projectApi.deleteProject).mockResolvedValue(undefined as any);
+    vi.mocked(projectApi.deleteProject).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteProject(), { wrapper: Wrapper });
 

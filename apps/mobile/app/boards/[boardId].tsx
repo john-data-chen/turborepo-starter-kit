@@ -1,7 +1,7 @@
 import { TaskStatus } from "@repo/store";
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
 
@@ -35,14 +35,19 @@ export default function BoardDetailScreen() {
   } = useProjects(boardId);
   const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState<TaskStatus | null>(null);
+  const [manualRefreshing, setManualRefreshing] = useState(false);
 
   const isLoading = isBoardLoading || isProjectsLoading;
   const isRefetching = isBoardRefetching || isProjectsRefetching;
 
-  const handleRefresh = () => {
-    refetchBoard();
-    refetchProjects();
-  };
+  const handleRefresh = useCallback(async () => {
+    setManualRefreshing(true);
+    try {
+      await Promise.all([refetchBoard(), refetchProjects()]);
+    } finally {
+      setManualRefreshing(false);
+    }
+  }, [refetchBoard, refetchProjects]);
 
   const sortedProjects = useMemo(
     () => [...projects].sort((a, b) => (a.orderInBoard || 0) - (b.orderInBoard || 0)),
@@ -179,7 +184,10 @@ export default function BoardDetailScreen() {
           ) : (
             <ScrollView
               contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 16 }}
-              refreshControl=<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
+              refreshControl=<RefreshControl
+                refreshing={manualRefreshing}
+                onRefresh={handleRefresh}
+              />
             >
               {sortedProjects.map((project) => (
                 <ProjectColumn

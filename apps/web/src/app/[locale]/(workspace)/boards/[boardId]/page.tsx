@@ -15,15 +15,23 @@ export default function BoardPage() {
   const t = useTranslations("kanban");
   const boardId = params?.boardId as string;
   const setCurrentBoardId = useWorkspaceStore((state) => state.setCurrentBoardId);
-  const fetchProjects = useWorkspaceStore((state) => state.fetchProjects);
+  const fetchProjectsWithTasks = useWorkspaceStore((state) => state.fetchProjectsWithTasks);
 
   useEffect(() => {
     if (!boardId) {
       return;
     }
     setCurrentBoardId(boardId);
-    fetchProjects(boardId);
-  }, [boardId, setCurrentBoardId, fetchProjects]);
+    fetchProjectsWithTasks(boardId);
+
+    const interval = setInterval(() => {
+      fetchProjectsWithTasks(boardId);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [boardId, setCurrentBoardId, fetchProjectsWithTasks]);
 
   return (
     <PageContainer>

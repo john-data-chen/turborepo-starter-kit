@@ -30,6 +30,8 @@ export interface ProjectSliceState {
   isLoadingProjects: boolean;
   setProjects: (projects: Project[]) => void;
   fetchProjects: (boardId: string) => Promise<void>;
+  refreshAllTasks: () => Promise<void>;
+  fetchProjectsWithTasks: (boardId: string) => Promise<void>;
   fetchTasksByProject: (projectId: string) => Promise<Task[]>;
   addProject: (
     title: string,

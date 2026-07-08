@@ -81,7 +81,7 @@
     "typescript/use-unknown-in-catch-callback-variable": "warn"
   },
   "ignorePatterns": [
-    "ai_docs/**/*",
+    "ai-docs/**/*",
     "node_modules/**/*",
     "dist/**/*",
     "../../apps/api/database/mongodb/**/*",

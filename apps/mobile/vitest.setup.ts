@@ -105,3 +105,19 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
     multiMerge: vi.fn()
   }
 }));
+
+// Mock sonner-native
+vi.mock("sonner-native", () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn()
+  },
+  Toaster: () => null
+}));
+
+// Mock expo-localization
+vi.mock("expo-localization", () => ({
+  getLocales: () => [{ languageCode: "en" }]
+}));
