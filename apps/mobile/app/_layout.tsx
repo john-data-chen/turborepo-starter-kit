@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Toaster } from "sonner-native";
 
@@ -70,11 +71,15 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  // Toast uses the opposite theme of the UI for contrast (UI dark → toast light).
+  const colorScheme = useColorScheme();
+  const toastTheme = colorScheme === "light" ? "dark" : "light";
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <RootLayoutNav />
-        <Toaster />
+        <Toaster theme={toastTheme} position="bottom-center" />
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
