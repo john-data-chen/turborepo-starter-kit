@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
-import { consumeSuppressFlag } from "@/lib/api/sync-toast";
+import { coalesceSyncToast } from "@/lib/api/sync-toast";
 
 function getUpdatedAtSet(data: unknown): string {
   if (!Array.isArray(data)) {
@@ -53,9 +53,7 @@ export function useSyncToastListener(data: unknown, enabled = true, key?: string
 
     if (snapshot && snapshot !== prevSnapshot.current) {
       prevSnapshot.current = snapshot;
-      if (!consumeSuppressFlag()) {
-        toast.success(t("synced"));
-      }
+      coalesceSyncToast(() => toast.success(t("synced")));
     }
   }, [data, enabled, key, t]);
 }

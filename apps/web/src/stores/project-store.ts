@@ -2,6 +2,7 @@ import type { Project } from "@repo/store";
 import type { StateCreator } from "zustand";
 
 import { projectApi } from "@/lib/api/projectApi";
+import { suppressNextSyncToast } from "@/lib/api/sync-toast";
 
 import type { BoardSliceState, ProjectSliceState, UserSliceState } from "./types";
 
@@ -15,6 +16,9 @@ export const createProjectSlice: StateCreator<
   isLoadingProjects: false,
 
   setProjects: (projects: Project[]) => {
+    // ponytail: setProjects is only the DnD optimistic writer (poll uses set() directly),
+    // so a local reorder/move lands here — suppress the "synced" toast for our own change.
+    suppressNextSyncToast();
     set({ projects });
   },
 
@@ -23,7 +27,12 @@ export const createProjectSlice: StateCreator<
       return;
     }
 
-    set({ isLoadingProjects: true });
+    // Only show the skeleton on first load. Background polls (every 5s) must not toggle
+    // isLoadingProjects, or the board unmounts to a Skeleton and remounts each poll — the flicker.
+    const isInitialLoad = get().projects.length === 0;
+    if (isInitialLoad) {
+      set({ isLoadingProjects: true });
+    }
 
     try {
       const projects = await projectApi.getProjects(boardId);
@@ -48,7 +57,9 @@ export const createProjectSlice: StateCreator<
       console.error("Error fetching projects:", error);
       set({ projects: [] });
     } finally {
-      set({ isLoadingProjects: false });
+      if (isInitialLoad) {
+        set({ isLoadingProjects: false });
+      }
     }
   },
 

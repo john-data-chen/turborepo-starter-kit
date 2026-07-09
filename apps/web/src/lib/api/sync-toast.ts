@@ -25,3 +25,25 @@ export function consumeSuppressFlag(): boolean {
   }
   return false;
 }
+
+let coalesceOpen = false;
+const COALESCE_WINDOW_MS = 500;
+
+// Multiple query listeners (boards/projects/tasks) can each detect a change in the
+// same sync burst. Funnel their toasts through one window so a burst yields at most
+// one toast, and let suppression apply to the whole burst.
+// ponytail: 500ms fixed window; widen if poll responses ever drift further apart.
+export function coalesceSyncToast(show: () => void) {
+  if (coalesceOpen) {
+    return;
+  }
+  coalesceOpen = true;
+  setTimeout(() => {
+    coalesceOpen = false;
+  }, COALESCE_WINDOW_MS);
+
+  if (consumeSuppressFlag()) {
+    return;
+  }
+  show();
+}
