@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("sonner-native", () => ({
   toast: {
@@ -23,6 +23,12 @@ describe("useSyncToastListener", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    // Close the module-level coalesce window before the next test.
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 
   it("should not toast on initial render", () => {
@@ -50,6 +56,26 @@ describe("useSyncToastListener", () => {
     rerender({ data: data2, enabled: true });
 
     expect(toast.success).toHaveBeenCalledWith("sync.synced");
+  });
+
+  it("coalesces simultaneous changes from multiple listeners into one toast", () => {
+    const a1 = [{ updatedAt: "2026-01-01T00:00:00Z" }];
+    const a2 = [{ updatedAt: "2026-01-02T00:00:00Z" }];
+    const b1 = [{ updatedAt: "2026-02-01T00:00:00Z" }];
+    const b2 = [{ updatedAt: "2026-02-02T00:00:00Z" }];
+
+    const { rerender } = renderHook(
+      ({ a, b }) => {
+        useSyncToastListener(a, true, "a");
+        useSyncToastListener(b, true, "b");
+      },
+      { initialProps: { a: a1, b: b1 } }
+    );
+
+    // Both lists change in the same sync burst.
+    rerender({ a: a2, b: b2 });
+
+    expect(toast.success).toHaveBeenCalledTimes(1);
   });
 
   it("should not toast when data is the same", () => {

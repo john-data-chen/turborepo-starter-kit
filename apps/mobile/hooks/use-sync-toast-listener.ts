@@ -3,7 +3,7 @@ import { toast } from "sonner-native";
 
 import { i18n } from "@/lib/i18n";
 
-import { consumeSuppressFlag } from "./use-sync-toast";
+import { coalesceSyncToast } from "./use-sync-toast";
 
 function getUpdatedAtSet(data: unknown): string {
   if (!Array.isArray(data)) {
@@ -51,9 +51,7 @@ export function useSyncToastListener(data: unknown, enabled = true, key?: string
 
     if (snapshot && snapshot !== prevSnapshot.current) {
       prevSnapshot.current = snapshot;
-      if (!consumeSuppressFlag()) {
-        toast.success(i18n.t("sync.synced"));
-      }
+      coalesceSyncToast(() => toast.success(i18n.t("sync.synced")));
     }
   }, [data, enabled, key]);
 }
