@@ -2,6 +2,7 @@ import type { Project } from "@repo/store";
 import type { StateCreator } from "zustand";
 
 import { projectApi } from "@/lib/api/projectApi";
+import { suppressNextSyncToast } from "@/lib/api/sync-toast";
 
 import type { BoardSliceState, ProjectSliceState, UserSliceState } from "./types";
 
@@ -15,6 +16,9 @@ export const createProjectSlice: StateCreator<
   isLoadingProjects: false,
 
   setProjects: (projects: Project[]) => {
+    // ponytail: setProjects is only the DnD optimistic writer (poll uses set() directly),
+    // so a local reorder/move lands here — suppress the "synced" toast for our own change.
+    suppressNextSyncToast();
     set({ projects });
   },
 
