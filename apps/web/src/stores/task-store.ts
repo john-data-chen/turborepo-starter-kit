@@ -43,7 +43,17 @@ export const createTaskSlice: StateCreator<
         ...(assigneeId && { assignee: assigneeId })
       };
 
-      await createTask(taskInput);
+      const newTask = await createTask(taskInput);
+
+      // Optimistic insert: fetchProjects preserves existing local tasks and never merges
+      // this new one, so it wouldn't appear until the board's next 5s poll. Add it now.
+      set((state) => ({
+        projects: state.projects.map((project) =>
+          project._id === projectId
+            ? { ...project, tasks: [...(project.tasks ?? []), newTask] }
+            : project
+        )
+      }));
 
       await fetchProjects(currentBoardId);
     } catch (error) {
