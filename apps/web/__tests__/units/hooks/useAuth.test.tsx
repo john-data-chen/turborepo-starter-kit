@@ -70,8 +70,11 @@ describe("useAuth", () => {
       }
     });
 
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.getProfile).mockResolvedValue(mockUser);
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token", user: mockUser });
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.logout).mockResolvedValue(undefined);
 
     const authStoreState = {
@@ -171,11 +174,13 @@ describe("useAuth", () => {
       expect(result.current.user).toEqual(mockUser);
     });
 
+    // oxlint-disable-next-line typescript/unbound-method
     expect(AuthService.login).toHaveBeenCalledWith("test@example.com");
   });
 
   it("should handle login errors", async () => {
     const loginError = new Error("Invalid credentials");
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.login).mockRejectedValue(loginError);
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -196,8 +201,9 @@ describe("useAuth", () => {
       expect(result.current.isAuthenticated).toBe(true);
     });
 
-    await result.current.logout();
+    result.current.logout();
 
+    // oxlint-disable-next-line typescript/unbound-method
     expect(AuthService.logout).toHaveBeenCalled();
   });
 });
@@ -220,6 +226,7 @@ describe("useAuthForm", () => {
     });
 
     const mockUser = { _id: "123", email: "test@example.com", name: "Test User" };
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token", user: mockUser });
 
     const authStoreState = {
@@ -309,18 +316,20 @@ describe("useAuthForm", () => {
       forward: vi.fn()
     };
     const { useRouter } = await import("@/i18n/navigation");
-    vi.mocked(useRouter).mockReturnValue(mockRouter as any);
+    vi.mocked(useRouter).mockReturnValue(mockRouter);
 
     const { result } = renderHook(() => useAuthForm(), { wrapper });
 
     await result.current.handleSubmit("test@example.com");
 
     await waitFor(() => {
+      // oxlint-disable-next-line typescript/unbound-method
       expect(AuthService.login).toHaveBeenCalledWith("test@example.com");
     });
   });
 
   it("should handle login failure without redirecting", async () => {
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.login).mockRejectedValue(new Error("Login failed"));
 
     const { result } = renderHook(() => useAuthForm(), { wrapper });
@@ -328,6 +337,7 @@ describe("useAuthForm", () => {
     await result.current.handleSubmit("invalid@example.com");
 
     await waitFor(() => {
+      // oxlint-disable-next-line typescript/unbound-method
       expect(AuthService.login).toHaveBeenCalledWith("invalid@example.com");
     });
   });

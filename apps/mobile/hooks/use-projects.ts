@@ -35,12 +35,12 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: projectApi.createProject,
-    onSuccess: (newProject) => {
+    onSuccess: async (newProject) => {
       suppressNextSyncToast();
       const boardId =
         typeof newProject.board === "string" ? newProject.board : newProject.board?._id;
       if (boardId) {
-        queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
+        await queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
       }
     }
   });
@@ -51,14 +51,14 @@ export const useUpdateProject = () => {
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string } & UpdateProjectInput) =>
       projectApi.updateProject(id, updates),
-    onSuccess: (updatedProject) => {
+    onSuccess: async (updatedProject) => {
       suppressNextSyncToast();
       const boardId =
         typeof updatedProject.board === "string" ? updatedProject.board : updatedProject.board?._id;
       if (boardId) {
-        queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
+        await queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
       }
-      queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.detail(updatedProject._id) });
+      await queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.detail(updatedProject._id) });
     }
   });
 };
@@ -70,10 +70,10 @@ export const useDeleteProject = () => {
       await projectApi.deleteProject(id);
       return { boardId };
     },
-    onSuccess: ({ boardId }, { id }) => {
+    onSuccess: async ({ boardId }, { id }) => {
       suppressNextSyncToast();
       if (boardId) {
-        queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
+        await queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.list(boardId) });
       }
       queryClient.removeQueries({ queryKey: PROJECT_KEYS.detail(id) });
     }

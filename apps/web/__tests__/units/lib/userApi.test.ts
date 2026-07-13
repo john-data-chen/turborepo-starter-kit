@@ -46,7 +46,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: mockApiUsers })
+        json: () => ({ users: mockApiUsers })
       });
 
       const result = await userApi.searchUsers("john");
@@ -62,7 +62,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: mockApiUsers })
+        json: () => ({ users: mockApiUsers })
       });
 
       const result = await userApi.searchUsers("");
@@ -73,7 +73,7 @@ describe("userApi", () => {
     it("should handle empty users response", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: null })
+        json: () => ({ users: null })
       });
 
       const result = await userApi.searchUsers("test");
@@ -86,7 +86,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: [] })
+        json: () => ({ users: [] })
       });
 
       await userApi.searchUsers("test");
@@ -105,7 +105,7 @@ describe("userApi", () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 500,
-        text: async () => "Server error"
+        text: () => "Server error"
       });
 
       await expect(userApi.searchUsers("test")).rejects.toMatchObject({
@@ -126,7 +126,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ user: mockApiUser })
+        json: () => ({ user: mockApiUser })
       });
 
       const result = await userApi.getUserById("user-1");
@@ -140,7 +140,7 @@ describe("userApi", () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 404,
-        text: async () => "404 Not found"
+        text: () => "404 Not found"
       });
 
       const result = await userApi.getUserById("non-existent");
@@ -151,7 +151,7 @@ describe("userApi", () => {
     it("should return null when user is null in response", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ user: null })
+        json: () => ({ user: null })
       });
 
       const result = await userApi.getUserById("user-1");
@@ -163,7 +163,7 @@ describe("userApi", () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 500,
-        text: async () => "Server error"
+        text: () => "Server error"
       });
 
       await expect(userApi.getUserById("user-1")).rejects.toMatchObject({
@@ -176,7 +176,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: {
             _id: "user-1",
             name: "John Doe",
@@ -205,7 +205,7 @@ describe("userApi", () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        text: async () => "Unauthorized"
+        text: () => "Unauthorized"
       });
 
       await expect(userApi.searchUsers("test")).rejects.toMatchObject({
@@ -217,7 +217,7 @@ describe("userApi", () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 500,
-        text: async () => {
+        text: () => {
           throw new Error("Failed to parse");
         }
       });
@@ -232,7 +232,7 @@ describe("userApi", () => {
     it("should include credentials in request", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: [] })
+        json: () => ({ users: [] })
       });
 
       await userApi.searchUsers("test");
@@ -248,7 +248,7 @@ describe("userApi", () => {
     it("should include Content-Type header", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: [] })
+        json: () => ({ users: [] })
       });
 
       await userApi.searchUsers("test");
@@ -268,7 +268,7 @@ describe("userApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ users: [] })
+        json: () => ({ users: [] })
       });
 
       await userApi.searchUsers("test");

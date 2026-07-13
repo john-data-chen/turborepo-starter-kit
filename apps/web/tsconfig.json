@@ -1,6 +1,7 @@
 {
   "extends": "@repo/tsconfig/base-tsconfig.json",
   "compilerOptions": {
+    "rootDir": "../..",
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

@@ -37,7 +37,7 @@ export default function ProjectFormScreen() {
       return;
     }
 
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
     if (isEditMode && projectId) {
       updateProjectMutation.mutate(

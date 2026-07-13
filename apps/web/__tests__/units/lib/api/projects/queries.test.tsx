@@ -59,6 +59,7 @@ describe("Project Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockProjects);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjects).toHaveBeenCalledWith("board1");
     });
 
@@ -73,7 +74,7 @@ describe("Project Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.list("board1") });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch projects with object boardId", async () => {
@@ -89,6 +90,7 @@ describe("Project Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockProjects);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjects).toHaveBeenCalledWith("board1");
     });
 
@@ -96,6 +98,7 @@ describe("Project Query Hooks", () => {
       const { result } = renderHook(() => useProjects(undefined), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjects).not.toHaveBeenCalled();
     });
 
@@ -125,6 +128,7 @@ describe("Project Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockProject);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjectById).toHaveBeenCalledWith("1");
     });
 
@@ -139,7 +143,7 @@ describe("Project Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: PROJECT_KEYS.detail("1") });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch single project with object id", async () => {
@@ -153,6 +157,7 @@ describe("Project Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockProject);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjectById).toHaveBeenCalledWith("1");
     });
 
@@ -160,6 +165,7 @@ describe("Project Query Hooks", () => {
       const { result } = renderHook(() => useProject(undefined), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjectById).not.toHaveBeenCalled();
     });
   });
@@ -229,6 +235,7 @@ describe("Project Query Hooks", () => {
         });
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.updateProject).toHaveBeenCalledWith("1", {
         title: "Updated Project",
         description: null
@@ -258,6 +265,7 @@ describe("Project Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.updateProject).toHaveBeenCalledWith("1", {
         title: "Updated Project",
         description: "New description"
@@ -304,7 +312,9 @@ describe("Project Query Hooks", () => {
 
       // deleteProject is called with (projectId, mutationContext)
       // We only care about the first argument
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.deleteProject).toHaveBeenCalled();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.deleteProject).toHaveBeenCalledTimes(1);
       const callArgs = (projectApi.deleteProject as Mock).mock.calls[0];
       expect(callArgs[0]).toBe("1");

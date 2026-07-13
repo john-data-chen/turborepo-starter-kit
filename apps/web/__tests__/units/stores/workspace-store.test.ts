@@ -108,6 +108,7 @@ describe("workspace-store", () => {
         updatedAt: new Date().toISOString()
       };
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(boardApi.createBoard).mockResolvedValue(mockBoard);
 
       useWorkspaceStore.setState({
@@ -145,11 +146,13 @@ describe("workspace-store", () => {
         updatedAt: new Date().toISOString()
       };
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(boardApi.updateBoard).mockResolvedValue({ ...mockBoard, title: "New Title" });
 
       const store = useWorkspaceStore.getState();
       await store.updateBoard("board-1", { title: "New Title" });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.updateBoard).toHaveBeenCalledWith("board-1", { title: "New Title" });
     });
 

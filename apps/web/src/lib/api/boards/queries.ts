@@ -37,10 +37,11 @@ export const useCreateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: boardApi.createBoard,
+    mutationFn: async (input: Parameters<typeof boardApi.createBoard>[0]) =>
+      boardApi.createBoard(input),
     onSuccess: () => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
     }
@@ -58,10 +59,10 @@ export const useUpdateBoard = () => {
       boardApi.updateBoard(id, updates),
     onSuccess: (updatedBoard) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.detail(updatedBoard._id)
       });
     }
@@ -72,10 +73,10 @@ export const useDeleteBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: boardApi.deleteBoard,
+    mutationFn: async (boardId: string) => boardApi.deleteBoard(boardId),
     onSuccess: (_, boardId) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
       queryClient.removeQueries({
@@ -93,10 +94,10 @@ export const useAddBoardMember = () => {
       boardApi.addBoardMember(boardId, memberId),
     onSuccess: (updatedBoard) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.detail(updatedBoard._id)
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: BOARD_KEYS.list()
       });
     }

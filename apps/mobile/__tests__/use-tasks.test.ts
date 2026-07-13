@@ -78,7 +78,7 @@ describe("useTasks", () => {
     const query = capturedClient
       ?.getQueryCache()
       .find({ queryKey: TASK_KEYS.list({ project: "p1" }) });
-    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+    expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should fetch tasks by assigneeId", async () => {
@@ -136,7 +136,7 @@ describe("useTask", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: TASK_KEYS.detail("t1") });
-    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+    expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should not fetch when taskId is undefined", () => {
@@ -153,6 +153,7 @@ describe("useCreateTask", () => {
 
     const { result } = renderHook(() => useCreateTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New", projectId: "p1" } as any);
     });
@@ -170,6 +171,7 @@ describe("useCreateTask", () => {
 
     const { result } = renderHook(() => useCreateTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New", projectId: "p1" } as any);
     });
@@ -190,6 +192,7 @@ describe("useCreateTask", () => {
 
     const { result } = renderHook(() => useCreateTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New", projectId: "p1" } as any);
     });
@@ -207,6 +210,7 @@ describe("useUpdateTask", () => {
 
     const { result } = renderHook(() => useUpdateTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "t1", title: "Updated" });
     });
@@ -228,6 +232,7 @@ describe("useDeleteTask", () => {
 
     const { result } = renderHook(() => useDeleteTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate("t1");
     });
@@ -247,6 +252,7 @@ describe("useMoveTask", () => {
 
     const { result } = renderHook(() => useMoveTask(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ taskId: "t1", projectId: "p2", orderInProject: 0 });
     });

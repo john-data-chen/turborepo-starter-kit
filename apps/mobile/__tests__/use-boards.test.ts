@@ -65,7 +65,7 @@ describe("useBoards", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
-    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+    expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 });
 
@@ -102,6 +102,7 @@ describe("useCreateBoard", () => {
 
     const { result } = renderHook(() => useCreateBoard(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New Board" });
     });
@@ -121,6 +122,7 @@ describe("useUpdateBoard", () => {
 
     const { result } = renderHook(() => useUpdateBoard(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "b1", title: "Updated" });
     });
@@ -139,6 +141,7 @@ describe("useDeleteBoard", () => {
 
     const { result } = renderHook(() => useDeleteBoard(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate("b1");
     });

@@ -14,11 +14,17 @@ import {
 describe("boards/index exports", () => {
   it("should export boardApi", () => {
     expect(boardApi).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.getBoards).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.getBoardById).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.createBoard).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.updateBoard).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.deleteBoard).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(boardApi.addBoardMember).toBeDefined();
   });
 

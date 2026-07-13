@@ -18,15 +18,12 @@ export class AuthController {
 
   @Post("login")
   @UseGuards(EmailAuthGuard)
-  async login(
-    @CurrentUser() user: RequestWithUser["user"],
-    @Res({ passthrough: true }) res: Response
-  ) {
+  login(@CurrentUser() user: RequestWithUser["user"], @Res({ passthrough: true }) res: Response) {
     if (!user) {
       throw new UnauthorizedException("No user object found in request after authentication");
     }
 
-    const result = await this.authService.login(user);
+    const result = this.authService.login(user);
 
     const isProduction = this.configService.get<string>("NODE_ENV") === "production";
     const isVercel = this.configService.get<string>("VERCEL") === "1";
@@ -59,7 +56,7 @@ export class AuthController {
 
   @Post("logout")
   @UseGuards(JwtAuthGuard)
-  async logout(@Res({ passthrough: true }) res: Response) {
+  logout(@Res({ passthrough: true }) res: Response) {
     const isProduction = this.configService.get<string>("NODE_ENV") === "production";
     const isVercel = this.configService.get<string>("VERCEL") === "1";
 

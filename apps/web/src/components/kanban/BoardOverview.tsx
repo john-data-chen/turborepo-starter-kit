@@ -85,7 +85,7 @@ export function BoardOverview() {
       }
 
       // Refresh the board list
-      refresh();
+      void refresh();
 
       // Force a hard refresh to ensure we're on the correct page
       if (currentPath.endsWith("/boards")) {
@@ -127,7 +127,7 @@ export function BoardOverview() {
           const params = new URLSearchParams(searchParams.toString());
           params.delete("login_success");
           const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-          await router.replace(newUrl, { scroll: false });
+          router.replace(newUrl, { scroll: false });
         } else {
           throw new Error("Failed to get user session");
         }
@@ -139,14 +139,14 @@ export function BoardOverview() {
       }
     };
 
-    processLogin();
+    void processLogin();
   }, [searchParams, router, pathname, tLogin, setSession, setUserInfo, refresh]);
 
   // Ensure boards data is fetched when user is authenticated
   useEffect(() => {
     // If user is authenticated but we don't have boards data, fetch it
     if (userId && !boardsLoading && !myBoards?.length && !teamBoards?.length) {
-      refresh();
+      void refresh();
     }
   }, [userId, refresh, myBoards, teamBoards, boardsLoading]);
 
@@ -154,7 +154,7 @@ export function BoardOverview() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        refresh();
+        void refresh();
       }
     };
 

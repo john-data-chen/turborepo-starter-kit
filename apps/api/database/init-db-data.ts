@@ -243,11 +243,11 @@ async function main() {
     process.exit(0);
   } catch (error) {
     console.error("Error during database initialization:", error);
-    await mongoose.connection.close().catch((err) => {
+    await mongoose.connection.close().catch((err: unknown) => {
       console.error("Failed to close connection:", err);
     });
     process.exit(1);
   }
 }
 
-main();
+void main();

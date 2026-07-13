@@ -27,9 +27,9 @@ export class ProjectsService implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.eventEmitter.on("board.deleted", async (event: BoardDeletedEvent) =>
-      this.handleBoardDeleted(event)
-    );
+    this.eventEmitter.on("board.deleted", (event: BoardDeletedEvent) => {
+      void this.handleBoardDeleted(event);
+    });
   }
 
   // Cascade step: triggered by 'board.deleted' event.

@@ -45,7 +45,7 @@ describe("boardApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify(mockResponse)
+        text: () => JSON.stringify(mockResponse)
       });
 
       const result = await boardApi.getBoards();
@@ -65,7 +65,7 @@ describe("boardApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify({ myBoards: [], teamBoards: [] })
+        text: () => JSON.stringify({ myBoards: [], teamBoards: [] })
       });
 
       await boardApi.getBoards();
@@ -85,7 +85,7 @@ describe("boardApi", () => {
     it("should fetch a single board", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify(mockBoard)
+        text: () => JSON.stringify(mockBoard)
       });
 
       const result = await boardApi.getBoardById("board-1");
@@ -102,7 +102,7 @@ describe("boardApi", () => {
         ok: false,
         status: 404,
         statusText: "Not Found",
-        text: async () => JSON.stringify({ message: "Board not found" })
+        text: () => JSON.stringify({ message: "Board not found" })
       });
 
       await expect(boardApi.getBoardById("non-existent")).rejects.toMatchObject({
@@ -121,7 +121,7 @@ describe("boardApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify(mockBoard)
+        text: () => JSON.stringify(mockBoard)
       });
 
       const result = await boardApi.createBoard(input);
@@ -145,7 +145,7 @@ describe("boardApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify({ ...mockBoard, title: "Updated Board" })
+        text: () => JSON.stringify({ ...mockBoard, title: "Updated Board" })
       });
 
       const result = await boardApi.updateBoard("board-1", input);
@@ -165,7 +165,7 @@ describe("boardApi", () => {
     it("should delete a board", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify({})
+        text: () => JSON.stringify({})
       });
 
       await boardApi.deleteBoard("board-1");
@@ -181,7 +181,7 @@ describe("boardApi", () => {
     it("should handle empty response", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => ""
+        text: () => ""
       });
 
       await expect(boardApi.deleteBoard("board-1")).rejects.toMatchObject({
@@ -194,7 +194,7 @@ describe("boardApi", () => {
     it("should add a member to a board", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () =>
+        text: () =>
           JSON.stringify({
             ...mockBoard,
             members: [{ _id: "user-2", name: "New Member", email: "member@example.com" }]
@@ -219,7 +219,7 @@ describe("boardApi", () => {
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
-        text: async () => "Invalid JSON"
+        text: () => "Invalid JSON"
       });
 
       await expect(boardApi.getBoards()).rejects.toMatchObject({
@@ -232,7 +232,7 @@ describe("boardApi", () => {
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
-        text: async () => ""
+        text: () => ""
       });
 
       await expect(boardApi.getBoards()).rejects.toMatchObject({
@@ -262,7 +262,7 @@ describe("boardApi", () => {
         ok: false,
         status: 401,
         statusText: "Unauthorized",
-        text: async () => JSON.stringify({ message: "Unauthorized" })
+        text: () => JSON.stringify({ message: "Unauthorized" })
       });
 
       await expect(boardApi.getBoards()).rejects.toMatchObject({
@@ -274,7 +274,7 @@ describe("boardApi", () => {
     it("should handle empty response from server", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => ""
+        text: () => ""
       });
 
       await expect(boardApi.getBoards()).rejects.toMatchObject({
@@ -287,7 +287,7 @@ describe("boardApi", () => {
     it("should handle Headers object", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify({ myBoards: [], teamBoards: [] })
+        text: () => JSON.stringify({ myBoards: [], teamBoards: [] })
       });
 
       await boardApi.getBoards();
@@ -307,7 +307,7 @@ describe("boardApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: async () => JSON.stringify({ myBoards: [], teamBoards: [] })
+        text: () => JSON.stringify({ myBoards: [], teamBoards: [] })
       });
 
       await boardApi.getBoards();

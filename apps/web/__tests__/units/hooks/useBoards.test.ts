@@ -241,7 +241,7 @@ describe("useBoards", () => {
 
     const { result } = renderHook(() => useBoards());
 
-    result.current.refresh();
+    void result.current.refresh();
 
     expect(mockRefetch).toHaveBeenCalled();
   });

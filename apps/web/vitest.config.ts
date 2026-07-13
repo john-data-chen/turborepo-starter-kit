@@ -30,7 +30,7 @@ export default defineConfig({
     // Pinning react here ensures hooks in Zustand / @repo/store
     // always reference the same React dispatcher.
     alias: {
-      ...rootConfig.test?.alias,
+      ...(rootConfig.test?.alias as Record<string, string> | undefined),
       react: reactPath,
       "react-dom": reactDomPath
     },
@@ -61,7 +61,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      ...rootConfig.resolve?.alias,
+      ...(rootConfig.resolve?.alias as Record<string, string> | undefined),
       "@": path.resolve(__dirname, "./src"),
       "@repo/ui/components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
       "@repo/ui/lib": path.resolve(__dirname, "../../packages/ui/src/lib"),

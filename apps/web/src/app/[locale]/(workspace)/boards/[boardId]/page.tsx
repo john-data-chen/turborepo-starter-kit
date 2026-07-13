@@ -33,10 +33,10 @@ export default function BoardPage() {
       return;
     }
     setCurrentBoardId(boardId);
-    fetchProjectsWithTasks(boardId);
+    void fetchProjectsWithTasks(boardId);
 
     const interval = setInterval(() => {
-      fetchProjectsWithTasks(boardId);
+      void fetchProjectsWithTasks(boardId);
     }, 5000);
 
     return () => {

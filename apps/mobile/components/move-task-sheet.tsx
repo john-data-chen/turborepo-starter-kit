@@ -46,7 +46,7 @@ export function MoveTaskSheet({
       (buttonIndex) => {
         if (buttonIndex < availableProjects.length) {
           const targetProject = availableProjects[buttonIndex];
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           onClose();
           moveTaskMutation.mutate({ taskId, projectId: targetProject._id, orderInProject: 0 });
         } else {
@@ -67,7 +67,7 @@ export function MoveTaskSheet({
   }, [visible, isLoading, availableProjects.length, showActionSheet]);
 
   const handleMove = (targetProjectId: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onClose();
     moveTaskMutation.mutate({ taskId, projectId: targetProjectId, orderInProject: 0 });
   };

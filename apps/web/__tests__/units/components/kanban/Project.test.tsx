@@ -270,7 +270,7 @@ describe("BoardProject", () => {
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: TaskStatus.TODO, search: "" },
       fetchTasksByProject: vi.fn()
-    } as any);
+    });
 
     render(
       <BoardProject
@@ -293,7 +293,7 @@ describe("BoardProject", () => {
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: null, search: "" },
       fetchTasksByProject: mockFetchTasksByProject
-    } as any);
+    });
 
     render(
       <BoardProject
@@ -318,7 +318,7 @@ describe("BoardProject", () => {
     vi.mocked(useWorkspaceStore).mockReturnValue({
       filter: { status: null, search: "" },
       fetchTasksByProject: mockFetchTasksByProject
-    } as any);
+    });
 
     render(
       <BoardProject

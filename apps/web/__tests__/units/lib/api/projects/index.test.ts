@@ -13,10 +13,15 @@ import {
 describe("projects/index exports", () => {
   it("should export projectApi", () => {
     expect(projectApi).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(projectApi.getProjects).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(projectApi.getProjectById).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(projectApi.createProject).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(projectApi.updateProject).toBeDefined();
+    // oxlint-disable-next-line typescript/unbound-method
     expect(projectApi.deleteProject).toBeDefined();
   });
 

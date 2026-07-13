@@ -42,9 +42,9 @@ export const useCreateBoard = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: boardApi.createBoard,
-    onSuccess: () => {
+    onSuccess: async () => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
+      await queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
     }
   });
 };
@@ -54,10 +54,10 @@ export const useUpdateBoard = () => {
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string } & UpdateBoardInput) =>
       boardApi.updateBoard(id, updates),
-    onSuccess: (updatedBoard) => {
+    onSuccess: async (updatedBoard) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
-      queryClient.invalidateQueries({ queryKey: BOARD_KEYS.detail(updatedBoard._id) });
+      await queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
+      await queryClient.invalidateQueries({ queryKey: BOARD_KEYS.detail(updatedBoard._id) });
     }
   });
 };
@@ -66,9 +66,9 @@ export const useDeleteBoard = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: boardApi.deleteBoard,
-    onSuccess: (_, boardId) => {
+    onSuccess: async (_, boardId) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
+      await queryClient.invalidateQueries({ queryKey: BOARD_KEYS.list() });
       queryClient.removeQueries({ queryKey: BOARD_KEYS.detail(boardId) });
     }
   });

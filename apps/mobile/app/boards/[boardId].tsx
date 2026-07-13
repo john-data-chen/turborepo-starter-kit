@@ -186,7 +186,7 @@ export default function BoardDetailScreen() {
               contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 16 }}
               refreshControl=<RefreshControl
                 refreshing={manualRefreshing}
-                onRefresh={handleRefresh}
+                onRefresh={() => void handleRefresh()}
               />
             >
               {sortedProjects.map((project) => (

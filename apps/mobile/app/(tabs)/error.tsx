@@ -12,7 +12,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       <Text className="text-center text-muted-foreground">
         {error.message || t("error.workspaceError")}
       </Text>
-      <Pressable onPress={retry} className="rounded-lg bg-primary px-6 py-3">
+      <Pressable onPress={() => void retry()} className="rounded-lg bg-primary px-6 py-3">
         <Text className="font-semibold text-primary-foreground">{t("error.tryAgain")}</Text>
       </Pressable>
     </View>

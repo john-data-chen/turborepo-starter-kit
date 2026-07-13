@@ -534,7 +534,6 @@ Based on [expo-skills](https://github.com/expo/skills)
 | :--------------------- | :------------------------------- | :--------------------------------------------------------------------- |
 | `building-native-ui`   | Expo Router UI guide             | Building screens, navigation, animations, native tabs, or styling      |
 | `expo-api-routes`      | Expo Router API routes           | Creating server-side API endpoints with EAS Hosting                    |
-| `expo-dev-client`      | Dev client builds & TestFlight   | Custom native code, Apple targets, or third-party native modules       |
 | `expo-tailwind-setup`  | Tailwind + NativeWind setup      | Setting up or configuring Tailwind CSS styling in Expo                 |
 | `native-data-fetching` | Networking & data fetching       | Any API call, fetch, caching, offline support, or auth token handling  |
 | `upgrading-expo`       | Expo SDK upgrades                | Upgrading Expo SDK versions or fixing dependency compatibility issues  |

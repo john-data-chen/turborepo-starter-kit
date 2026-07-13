@@ -34,7 +34,7 @@ export function BoardCard({ board, showOwner }: BoardCardProps) {
   const handlePressIn = useCallback(() => {
     setPressed(true);
     if (process.env.EXPO_OS === "ios") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   }, []);
 

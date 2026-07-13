@@ -43,7 +43,13 @@ export function UserNav() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>{t("logOut")}</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              logout();
+            }}
+          >
+            {t("logOut")}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );

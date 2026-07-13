@@ -43,7 +43,7 @@ describe("BoardService", () => {
       };
       boardRepository.create.mockResolvedValue(expectedBoard);
 
-      const result = await service.create(createBoardDto as any);
+      const result = await service.create(createBoardDto);
 
       expect(result).toEqual(expectedBoard);
       expect(boardRepository.create).toHaveBeenCalled();

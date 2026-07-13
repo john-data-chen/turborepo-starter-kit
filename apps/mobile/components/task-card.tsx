@@ -31,11 +31,13 @@ const StatusBadge = ({ status }: { status: TaskStatus }) => {
   let label = t("kanban.task.statusTodo") || "Todo";
 
   switch (status) {
-    case "IN_PROGRESS":
+    case TaskStatus.TODO:
+      break;
+    case TaskStatus.IN_PROGRESS:
       bgClass = "bg-blue-500";
       label = t("kanban.task.statusInProgress") || "In Progress";
       break;
-    case "DONE":
+    case TaskStatus.DONE:
       bgClass = "bg-green-500";
       label = t("kanban.task.statusDone") || "Done";
       break;
@@ -60,12 +62,12 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
     const safeIndex = currentIndex < 0 ? 0 : currentIndex;
     const nextStatus = STATUS_ORDER[(safeIndex + 1) % STATUS_ORDER.length];
 
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     updateTaskMutation.mutate({ id: task._id, status: nextStatus });
   }, [task._id, task.status, updateTaskMutation]);
 
   const handleMoveTo = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (onMoveToProject) {
       onMoveToProject();
     }
@@ -82,7 +84,7 @@ export function TaskCard({ task, onMoveToProject }: TaskCardProps) {
           text: t("common.delete") || "Delete",
           style: "destructive",
           onPress: () => {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             deleteTaskMutation.mutate(task._id);
           }
         }

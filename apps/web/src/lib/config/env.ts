@@ -3,7 +3,7 @@
 
 // Only load dotenv in Node.js environment
 if (typeof process !== "undefined" && !process.env.VERCEL) {
-  (async () => {
+  void (async () => {
     try {
       // Use dynamic import for ESM compatibility
       const dotenv = await import("dotenv");

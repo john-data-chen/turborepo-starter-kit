@@ -73,7 +73,9 @@ vi.mock("expo-router", () => ({
 // Mock react-native-safe-area-context
 vi.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
+  // oxlint-disable-next-line typescript/promise-function-async -- React.ReactNode type includes Promise (RSC), but this mock returns children synchronously
   SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
+  // oxlint-disable-next-line typescript/promise-function-async -- React.ReactNode type includes Promise (RSC), but this mock returns children synchronously
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children
 }));
 

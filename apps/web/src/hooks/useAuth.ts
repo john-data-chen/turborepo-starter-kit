@@ -98,7 +98,7 @@ export function useAuth() {
       }
     };
 
-    initAuth();
+    void initAuth();
   }, [checkSession, authPathname]);
 
   // Login mutation
@@ -144,10 +144,10 @@ export function useAuth() {
   });
 
   // Logout function
-  const logout = useCallback(async () => {
+  const logout = useCallback(() => {
     try {
       // Clear the JWT cookie
-      await AuthService.logout();
+      AuthService.logout();
 
       // Clear the local session state
       setSession(null);

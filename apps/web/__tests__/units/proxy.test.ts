@@ -57,44 +57,44 @@ describe("Middleware", () => {
 });
 
 describe("proxy execution", () => {
-  it("skips auth for /login route and delegates to intl middleware", async () => {
-    const res = (await middleware(makeRequest("/en/login"))) as { intlHandled?: boolean };
+  it("skips auth for /login route and delegates to intl middleware", () => {
+    const res = middleware(makeRequest("/en/login")) as { intlHandled?: boolean };
     expect(res.intlHandled).toBe(true);
   });
 
-  it("skips auth for /api route", async () => {
-    const res = (await middleware(makeRequest("/api/health"))) as { intlHandled?: boolean };
+  it("skips auth for /api route", () => {
+    const res = middleware(makeRequest("/api/health")) as { intlHandled?: boolean };
     expect(res.intlHandled).toBe(true);
   });
 
-  it("skips auth for /_next route", async () => {
-    const res = (await middleware(makeRequest("/_next/static/x.js"))) as { intlHandled?: boolean };
+  it("skips auth for /_next route", () => {
+    const res = middleware(makeRequest("/_next/static/x.js")) as { intlHandled?: boolean };
     expect(res.intlHandled).toBe(true);
   });
 
-  it("delegates to intl middleware when jwt cookie present", async () => {
-    const res = (await middleware(makeRequest("/en/boards", { jwt: "tok" }))) as {
+  it("delegates to intl middleware when jwt cookie present", () => {
+    const res = middleware(makeRequest("/en/boards", { jwt: "tok" })) as {
       intlHandled?: boolean;
     };
     expect(res.intlHandled).toBe(true);
   });
 
-  it("delegates to intl middleware when isAuthenticated cookie present", async () => {
-    const res = (await middleware(makeRequest("/en/boards", { isAuthenticated: "true" }))) as {
+  it("delegates to intl middleware when isAuthenticated cookie present", () => {
+    const res = middleware(makeRequest("/en/boards", { isAuthenticated: "true" })) as {
       intlHandled?: boolean;
     };
     expect(res.intlHandled).toBe(true);
   });
 
-  it("redirects to login (preserving valid locale + callbackUrl) when unauthenticated", async () => {
-    const res = await middleware(makeRequest("/de/boards"));
+  it("redirects to login (preserving valid locale + callbackUrl) when unauthenticated", () => {
+    const res = middleware(makeRequest("/de/boards"));
     const location = (res as Response).headers.get("location") ?? "";
     expect(location).toContain("/de/login");
     expect(location).toContain("callbackUrl=%2Fde%2Fboards");
   });
 
-  it("falls back to default locale when path locale is invalid", async () => {
-    const res = await middleware(makeRequest("/unknown/boards"));
+  it("falls back to default locale when path locale is invalid", () => {
+    const res = middleware(makeRequest("/unknown/boards"));
     const location = (res as Response).headers.get("location") ?? "";
     expect(location).toContain("/en/login");
   });

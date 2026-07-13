@@ -10,7 +10,7 @@
     "no-unused-vars": "warn",
     "no-debugger": "off",
     "no-var": "warn",
-    "no-void": "warn",
+    "no-void": ["warn", { "allowAsStatement": true }],
     "radix": "warn",
     "eqeqeq": [
       "warn",
@@ -52,7 +52,6 @@
     "typescript/no-misused-spread": "warn",
     "typescript/no-mixed-enums": "warn",
     "typescript/no-redundant-type-constituents": "warn",
-    "typescript/no-unnecessary-boolean-literal-compare": "warn",
     "typescript/no-unnecessary-template-expression": "warn",
     "typescript/no-unnecessary-type-arguments": "warn",
     "typescript/no-unnecessary-type-assertion": "warn",
@@ -78,7 +77,9 @@
     "typescript/return-await": "warn",
     "typescript/switch-exhaustiveness-check": "warn",
     "typescript/unbound-method": "warn",
-    "typescript/use-unknown-in-catch-callback-variable": "warn"
+    "typescript/use-unknown-in-catch-callback-variable": "warn",
+    "typescript/no-useless-default-assignment": "off",
+    "typescript/no-unnecessary-boolean-literal-compare": "off"
   },
   "ignorePatterns": [
     "ai-docs/**/*",
@@ -86,5 +87,9 @@
     "dist/**/*",
     "../../apps/api/database/mongodb/**/*",
     "../../apps/api/database/docker-compose.yml"
-  ]
+  ],
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  }
 }

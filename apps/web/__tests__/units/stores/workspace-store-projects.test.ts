@@ -50,6 +50,7 @@ describe("workspace-store - Project actions", () => {
         }
       ];
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockResolvedValue(mockProjects);
 
       const store = useWorkspaceStore.getState();
@@ -63,6 +64,7 @@ describe("workspace-store - Project actions", () => {
 
     it("should handle fetch projects error", async () => {
       const { projectApi } = await import("@/lib/api/projectApi");
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockRejectedValue(new Error("Failed to fetch"));
 
       const store = useWorkspaceStore.getState();
@@ -79,6 +81,7 @@ describe("workspace-store - Project actions", () => {
       const store = useWorkspaceStore.getState();
       await store.fetchProjects("");
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(projectApi.getProjects).not.toHaveBeenCalled();
     });
 

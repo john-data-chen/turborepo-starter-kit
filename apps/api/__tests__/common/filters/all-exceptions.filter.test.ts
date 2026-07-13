@@ -133,7 +133,7 @@ describe("AllExceptionsFilter", () => {
       const exception = { status: 500, message: "Weird error" };
       const loggerSpy = vi.spyOn(filter["logger"], "error");
 
-      filter.catch(exception as any, mockHost);
+      filter.catch(exception, mockHost);
 
       expect(loggerSpy).toHaveBeenCalledWith("Unhandled exception: Unknown error", undefined);
     });

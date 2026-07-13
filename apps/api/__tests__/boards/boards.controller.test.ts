@@ -1,17 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { BoardController } from "../../src/modules/boards/boards.controller";
 
 describe("BoardController", () => {
   let controller: BoardController;
   let service: {
-    create: vi.Mock;
-    findAll: vi.Mock;
-    findOne: vi.Mock;
-    update: vi.Mock;
-    remove: vi.Mock;
-    addMember: vi.Mock;
-    removeMember: vi.Mock;
+    create: Mock;
+    findAll: Mock;
+    findOne: Mock;
+    update: Mock;
+    remove: Mock;
+    addMember: Mock;
+    removeMember: Mock;
   };
 
   beforeEach(() => {

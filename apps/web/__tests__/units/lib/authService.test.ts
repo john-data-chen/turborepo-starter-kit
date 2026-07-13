@@ -51,7 +51,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse,
+        json: () => mockResponse,
         status: 200
       });
 
@@ -73,7 +73,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse,
+        json: () => mockResponse,
         status: 200
       });
 
@@ -88,7 +88,7 @@ describe("AuthService", () => {
         ok: false,
         status: 401,
         statusText: "Unauthorized",
-        text: async () => "Invalid credentials"
+        text: async () => Promise.resolve("Invalid credentials")
       });
 
       await expect(AuthService.login("invalid@example.com")).rejects.toMatchObject({
@@ -109,9 +109,7 @@ describe("AuthService", () => {
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
-        text: async () => {
-          throw new Error("Failed to parse");
-        }
+        text: async () => Promise.reject(new Error("Failed to parse"))
       });
 
       await expect(AuthService.login("test@example.com")).rejects.toMatchObject({
@@ -132,7 +130,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -164,7 +162,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -193,7 +191,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -209,7 +207,7 @@ describe("AuthService", () => {
         ok: false,
         status: 401,
         statusText: "Unauthorized",
-        text: async () => "Unauthorized"
+        text: async () => Promise.resolve("Unauthorized")
       });
 
       await expect(AuthService.getProfile()).rejects.toMatchObject({
@@ -226,7 +224,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -238,7 +236,7 @@ describe("AuthService", () => {
     it("should throw error on null user data", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => null,
+        json: () => null,
         status: 200
       });
 
@@ -252,9 +250,7 @@ describe("AuthService", () => {
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
-        text: async () => {
-          throw new Error("Failed to parse");
-        }
+        text: async () => Promise.reject(new Error("Failed to parse"))
       });
 
       await expect(AuthService.getProfile()).rejects.toMatchObject({
@@ -273,7 +269,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -294,7 +290,7 @@ describe("AuthService", () => {
         ok: false,
         status: 401,
         statusText: "Unauthorized",
-        text: async () => "Unauthorized"
+        text: async () => Promise.resolve("Unauthorized")
       });
 
       const session = await AuthService.getSession();
@@ -310,7 +306,7 @@ describe("AuthService", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: () => mockUser,
         status: 200
       });
 
@@ -326,6 +322,7 @@ describe("AuthService", () => {
 
       AuthService.logout();
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(Cookies.remove).toHaveBeenCalledWith("jwt", { path: "/" });
       expect(localStorageMock.removeItem).toHaveBeenCalledWith("auth_token");
     });

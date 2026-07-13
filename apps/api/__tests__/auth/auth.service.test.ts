@@ -67,38 +67,38 @@ describe("AuthService", () => {
   });
 
   describe("login", () => {
-    it("should return access_token and user", async () => {
+    it("should return access_token and user", () => {
       const user = {
         _id: new Types.ObjectId("507f1f77bcf86cd799439011"),
         email: "test@test.com",
         name: "Test User",
         createdAt: new Date(),
         updatedAt: new Date()
-      } as User;
+      } as any;
       const token = "token";
       jwtService.sign.mockReturnValue(token);
 
-      const result = await service.login(user);
+      const result = service.login(user);
 
       expect(result.access_token).toEqual(token);
       expect(result.user).toEqual(user);
     });
 
-    it("should throw error if JWT sign fails", async () => {
+    it("should throw error if JWT sign fails", () => {
       const user = {
         _id: new Types.ObjectId("507f1f77bcf86cd799439011"),
         email: "test@test.com",
         name: "Test User",
         createdAt: new Date(),
         updatedAt: new Date()
-      } as User;
+      } as any;
       jwtService.sign.mockImplementation(() => {
         throw new Error("JWT error");
       });
 
       let thrownError: Error | null = null;
       try {
-        await service.login(user);
+        service.login(user);
       } catch (error) {
         thrownError = error as Error;
       }

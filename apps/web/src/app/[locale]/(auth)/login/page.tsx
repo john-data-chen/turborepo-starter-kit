@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // This page is statically generated at build time
 // MIGRATED from: export const dynamic = 'force-static'
 // -> Add "use cache" to opt into caching (dynamic is now the default)
+// oxlint-disable-next-line typescript/require-await -- "use cache" directive requires async function
 export default async function LoginPage() {
   "use cache";
   return <SignInView />;

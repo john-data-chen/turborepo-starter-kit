@@ -36,6 +36,7 @@ describe("useAuth", () => {
   });
 
   it("should return isAuthenticated false when no session", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(null);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -54,6 +55,7 @@ describe("useAuth", () => {
       user: { _id: "1", email: "t@e.com", name: "Test" },
       accessToken: "tk"
     };
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(mockSession);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -67,6 +69,7 @@ describe("useAuth", () => {
   });
 
   it("should expose login function", () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(null);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -76,13 +79,16 @@ describe("useAuth", () => {
   });
 
   it("should call authService.logout and clear on logout", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(null);
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.logout).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
 
     await result.current.logout();
 
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     expect(authService.logout).toHaveBeenCalled();
     const mockValue = vi.mocked(useAuthStore).mock.results[0]?.value;
     const { clear } = mockValue ?? {};
@@ -90,6 +96,7 @@ describe("useAuth", () => {
   });
 
   it("should return error from loginMutation or sessionQuery", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockRejectedValue(new Error("Session failed"));
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -105,7 +112,9 @@ describe("useAuth", () => {
   it("should handle login success with user from response", async () => {
     const mockUser = { _id: "u1", email: "t@e.com", name: "Test" };
     const mockLoginResponse = { access_token: "token123", user: mockUser };
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(null);
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.login).mockResolvedValue(mockLoginResponse);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -118,6 +127,7 @@ describe("useAuth", () => {
     result.current.login("t@e.com");
 
     await waitFor(() => {
+      // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
       expect(authService.login).toHaveBeenCalledWith("t@e.com");
     });
   });
@@ -125,8 +135,11 @@ describe("useAuth", () => {
   it("should handle login success with getProfile fallback", async () => {
     const mockUser = { _id: "u1", email: "t@e.com", name: "Test" };
     const mockLoginResponse = { access_token: "token123", user: undefined };
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getSession).mockResolvedValue(null);
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.login).mockResolvedValue(mockLoginResponse);
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getProfile).mockResolvedValue(mockUser);
 
     const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
@@ -139,6 +152,7 @@ describe("useAuth", () => {
     result.current.login("t@e.com");
 
     await waitFor(() => {
+      // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
       expect(authService.login).toHaveBeenCalledWith("t@e.com");
     });
   });

@@ -75,7 +75,9 @@ function BoardContent() {
         }}
         onDragStart={onDragStart}
         onDragOver={onDragOver}
-        onDragEnd={onDragEnd}
+        onDragEnd={(event) => {
+          void onDragEnd(event);
+        }}
         onDragCancel={onDragCancel}
       >
         <div className="mb-4 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">

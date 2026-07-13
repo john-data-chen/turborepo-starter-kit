@@ -17,10 +17,11 @@ function interpolateAppName(obj: Record<string, unknown>): Record<string, unknow
   return result;
 }
 
+// oxlint-disable-next-line typescript/require-await -- "use cache" directive requires async function
 export async function getCachedMessages(locale: Locale) {
   "use cache";
   cacheLife("days");
 
   const localeMessages = messages[locale] ?? messages.en;
-  return interpolateAppName(localeMessages as unknown as Record<string, unknown>);
+  return interpolateAppName(localeMessages);
 }

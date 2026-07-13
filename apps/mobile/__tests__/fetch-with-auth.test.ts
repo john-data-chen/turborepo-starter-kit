@@ -24,12 +24,13 @@ describe("fetchWithAuth", () => {
   });
 
   it("should attach auth token to request", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue("my-token");
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "10" },
-      json: async () => ({ data: 1 })
+      json: () => ({ data: 1 })
     } as any);
 
     await fetchWithAuth("/test");
@@ -43,12 +44,13 @@ describe("fetchWithAuth", () => {
   });
 
   it("should not attach Authorization when no token", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "5" },
-      json: async () => ({})
+      json: () => ({})
     } as any);
 
     await fetchWithAuth("/test");
@@ -58,53 +60,59 @@ describe("fetchWithAuth", () => {
   });
 
   it("should handle 401 and redirect", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 401,
-      json: async () => ({ message: "Unauthorized" })
+      json: () => ({ message: "Unauthorized" })
     } as any);
 
     await expect(fetchWithAuth("/test")).rejects.toThrow();
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     expect(authService.logout).toHaveBeenCalled();
     expect(router.replace).toHaveBeenCalledWith("/(auth)/login");
   });
 
   it("should handle non-401 error with JSON body", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 500,
-      json: async () => ({ message: "Server Error" })
+      json: () => ({ message: "Server Error" })
     } as any);
 
     await expect(fetchWithAuth("/test")).rejects.toThrow("Server Error");
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     expect(authService.logout).not.toHaveBeenCalled();
   });
 
   it("should handle error with text fallback when JSON parse fails", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 500,
-      json: async () => {
+      json: () => {
         throw new Error("not json");
       },
-      text: async () => "Plain text error"
+      text: () => "Plain text error"
     } as any);
 
     await expect(fetchWithAuth("/test")).rejects.toThrow("Plain text error");
   });
 
   it("should handle error with status fallback when both JSON and text fail", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 503,
-      json: async () => {
+      json: () => {
         throw new Error("not json");
       },
-      text: async () => {
+      text: () => {
         throw new Error("not text");
       }
     } as any);
@@ -113,6 +121,7 @@ describe("fetchWithAuth", () => {
   });
 
   it("should handle 204 with handleEmptyResponse", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
@@ -125,6 +134,7 @@ describe("fetchWithAuth", () => {
   });
 
   it("should handle status 200 with content-length 0", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
@@ -137,12 +147,13 @@ describe("fetchWithAuth", () => {
   });
 
   it("should return json for normal response", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "10" },
-      json: async () => ({ data: 1 })
+      json: () => ({ data: 1 })
     } as any);
 
     const res = await fetchWithAuth("/test");
@@ -150,6 +161,7 @@ describe("fetchWithAuth", () => {
   });
 
   it("should merge Headers object into request headers", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     const headers = new Headers();
     headers.set("X-Custom", "value");
@@ -158,7 +170,7 @@ describe("fetchWithAuth", () => {
       ok: true,
       status: 200,
       headers: { get: () => "5" },
-      json: async () => ({})
+      json: () => ({})
     } as any);
 
     await fetchWithAuth("/test", { headers });
@@ -168,13 +180,14 @@ describe("fetchWithAuth", () => {
   });
 
   it("should merge array headers into request headers", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
 
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "5" },
-      json: async () => ({})
+      json: () => ({})
     } as any);
 
     await fetchWithAuth("/test", { headers: [["X-Array", "arr-val"]] });
@@ -184,13 +197,14 @@ describe("fetchWithAuth", () => {
   });
 
   it("should merge plain object headers", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
 
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "5" },
-      json: async () => ({})
+      json: () => ({})
     } as any);
 
     await fetchWithAuth("/test", { headers: { "X-Obj": "obj-val" } });
@@ -200,12 +214,13 @@ describe("fetchWithAuth", () => {
   });
 
   it("should not parse json when handleEmptyResponse is false", async () => {
+    // oxlint-disable-next-line typescript/unbound-method -- vi.mocked() on a vi.fn() mock is safe, no `this` binding involved
     vi.mocked(authService.getToken).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       headers: { get: () => "0" },
-      json: async () => ({ result: "ok" })
+      json: () => ({ result: "ok" })
     } as any);
 
     // Without handleEmptyResponse flag, it calls json() regardless

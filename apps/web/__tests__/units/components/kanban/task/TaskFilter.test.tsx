@@ -73,7 +73,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
   });
 
   it("should render task filter component", () => {
@@ -100,7 +100,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "test query" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
 
     render(<TaskFilter />);
     const searchInput = screen.getByTestId("search-input");
@@ -120,7 +120,7 @@ describe("TaskFilter", () => {
       filter: { status: TaskStatus.TODO, search: "" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("clear-filter-button")).toBeInTheDocument();
@@ -137,7 +137,7 @@ describe("TaskFilter", () => {
       filter: { status: TaskStatus.TODO, search: "test" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
 
     render(<TaskFilter />);
     const clearButton = screen.getByTestId("clear-filter-button");
@@ -160,7 +160,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "" },
       setFilter: mockSetFilter,
       projects: []
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -172,7 +172,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "" },
       setFilter: mockSetFilter,
       projects: null
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -184,7 +184,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "" },
       setFilter: mockSetFilter,
       projects: [{ _id: "project-1", title: "Empty Project", tasks: [] }]
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -196,7 +196,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "" },
       setFilter: mockSetFilter,
       projects: [{ _id: "project-1", title: "Project", tasks: null }]
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -214,7 +214,7 @@ describe("TaskFilter", () => {
           tasks: [{ _id: "task-1", title: "Task without status", status: undefined }]
         }
       ]
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -226,7 +226,7 @@ describe("TaskFilter", () => {
       filter: { status: TaskStatus.TODO, search: "" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
@@ -238,7 +238,7 @@ describe("TaskFilter", () => {
       filter: { status: null, search: "some query" },
       setFilter: mockSetFilter,
       projects: mockProjects
-    } as any);
+    });
 
     render(<TaskFilter />);
     expect(screen.getByTestId("clear-filter-button")).toBeInTheDocument();

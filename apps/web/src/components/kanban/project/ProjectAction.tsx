@@ -156,16 +156,18 @@ export function ProjectActions({ id, title, description, ownerId }: ProjectActio
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <Button
               variant="destructive"
-              onClick={async () => {
+              onClick={() => {
                 setShowDeleteDialog(false);
-                try {
-                  await removeProject(id, async (projectId) =>
-                    deleteProjectMutation.mutateAsync(projectId)
-                  );
-                  toast.success(t("deleteSuccess", { title }));
-                } catch (error) {
-                  toast.error(t("deleteFailed", { error: (error as Error).message }));
-                }
+                void (async () => {
+                  try {
+                    await removeProject(id, async (projectId) =>
+                      deleteProjectMutation.mutateAsync(projectId)
+                    );
+                    toast.success(t("deleteSuccess", { title }));
+                  } catch (error) {
+                    toast.error(t("deleteFailed", { error: (error as Error).message }));
+                  }
+                })();
               }}
             >
               {t("delete")}

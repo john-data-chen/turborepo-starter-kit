@@ -79,6 +79,7 @@ describe("workspace-store - Task actions", () => {
         projects: [mockProject]
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.getTasks).mockResolvedValue(mockTasks);
 
       const store = useWorkspaceStore.getState();
@@ -93,6 +94,7 @@ describe("workspace-store - Task actions", () => {
 
     it("should return empty array when fetching tasks fails", async () => {
       const { taskApi } = await import("@/lib/api/taskApi");
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.getTasks).mockRejectedValue(new Error("Failed to fetch"));
 
       const store = useWorkspaceStore.getState();
@@ -110,6 +112,7 @@ describe("workspace-store - Task actions", () => {
 
     it("should return empty array when getTasks does not return an array", async () => {
       const { taskApi } = await import("@/lib/api/taskApi");
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.getTasks).mockResolvedValue(null as any);
 
       const store = useWorkspaceStore.getState();
@@ -154,6 +157,7 @@ describe("workspace-store - Task actions", () => {
       });
 
       const createTaskMock = vi.fn().mockResolvedValue(mockTask);
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockResolvedValue([{ ...mockProject, tasks: [mockTask] }]);
 
       const store = useWorkspaceStore.getState();
@@ -231,7 +235,9 @@ describe("workspace-store - Task actions", () => {
         projects: [mockProject]
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.updateTask).mockResolvedValue(undefined as any);
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockResolvedValue([mockProject]);
 
       const store = useWorkspaceStore.getState();
@@ -242,6 +248,7 @@ describe("workspace-store - Task actions", () => {
         "Updated Description"
       );
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.updateTask).toHaveBeenCalledWith(
         "task-1",
         expect.objectContaining({
@@ -302,12 +309,15 @@ describe("workspace-store - Task actions", () => {
         projects: [mockProject]
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.deleteTask).mockResolvedValue(undefined);
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockResolvedValue([{ ...mockProject, tasks: [] }]);
 
       const store = useWorkspaceStore.getState();
       await store.removeTask("task-1");
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.deleteTask).toHaveBeenCalledWith("task-1");
       const state = useWorkspaceStore.getState();
       expect(state.projects[0].tasks).toHaveLength(0);
@@ -338,13 +348,16 @@ describe("workspace-store - Task actions", () => {
       });
 
       const getTaskMock = vi.fn().mockResolvedValue(mockTask);
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(taskApi.updateTask).mockResolvedValue(undefined as any);
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(projectApi.getProjects).mockResolvedValue([]);
 
       const store = useWorkspaceStore.getState();
       await store.dragTaskOnProject("task-1", "project-2", getTaskMock);
 
       expect(getTaskMock).toHaveBeenCalledWith("task-1");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.updateTask).toHaveBeenCalledWith(
         "task-1",
         expect.objectContaining({

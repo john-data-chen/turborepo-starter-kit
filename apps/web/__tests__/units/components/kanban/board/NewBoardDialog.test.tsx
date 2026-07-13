@@ -79,7 +79,7 @@ describe("NewBoardDialog", () => {
 
     vi.mocked(useWorkspaceStore).mockReturnValue({
       addBoard: vi.fn().mockResolvedValue("board-1")
-    } as any);
+    });
 
     vi.mocked(useRouter).mockReturnValue({
       push: vi.fn(),
@@ -169,7 +169,7 @@ describe("NewBoardDialog", () => {
 
     vi.mocked(useWorkspaceStore).mockReturnValue({
       addBoard: mockAddBoard
-    } as any);
+    });
 
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
@@ -217,7 +217,7 @@ describe("NewBoardDialog", () => {
 
     vi.mocked(useWorkspaceStore).mockReturnValue({
       addBoard: mockAddBoard
-    } as any);
+    });
 
     vi.mocked(useBoards).mockReturnValue({
       myBoards: [],

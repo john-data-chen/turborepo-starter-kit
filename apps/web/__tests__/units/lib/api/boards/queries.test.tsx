@@ -61,6 +61,7 @@ describe("Board Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockBoards);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.getBoards).toHaveBeenCalledTimes(1);
     });
 
@@ -78,7 +79,7 @@ describe("Board Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.list() });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should handle fetch error", async () => {
@@ -97,6 +98,7 @@ describe("Board Query Hooks", () => {
 
       expect(result.current.error).toEqual(mockError);
       // Should have retried 3 times (4 total calls)
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.getBoards).toHaveBeenCalledTimes(4);
     }, 70000);
   });
@@ -113,6 +115,7 @@ describe("Board Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockBoard);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.getBoardById).toHaveBeenCalledWith("1");
     });
 
@@ -127,13 +130,14 @@ describe("Board Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: BOARD_KEYS.detail("1") });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should not fetch when boardId is undefined", () => {
       const { result } = renderHook(() => useBoard(undefined), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.getBoardById).not.toHaveBeenCalled();
     });
   });
@@ -184,6 +188,7 @@ describe("Board Query Hooks", () => {
         });
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.updateBoard).toHaveBeenCalledWith("1", { title: "Updated Board" });
     });
   });
@@ -237,6 +242,7 @@ describe("Board Query Hooks", () => {
         });
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.addBoardMember).toHaveBeenCalledWith("1", "user2");
     });
   });

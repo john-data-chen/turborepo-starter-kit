@@ -1,16 +1,16 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { TasksController } from "../../src/modules/tasks/tasks.controller";
 
 describe("TasksController", () => {
   let controller: TasksController;
   let service: {
-    create: vi.Mock;
-    findAll: vi.Mock;
-    findOne: vi.Mock;
-    update: vi.Mock;
-    remove: vi.Mock;
-    moveTask: vi.Mock;
+    create: Mock;
+    findAll: Mock;
+    findOne: Mock;
+    update: Mock;
+    remove: Mock;
+    moveTask: Mock;
   };
 
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe("TasksController", () => {
 
   describe("findAll", () => {
     it("should find all tasks", async () => {
-      const result = [];
+      const result: any[] = [];
 
       vi.spyOn(service, "findAll").mockResolvedValue(result as any);
 

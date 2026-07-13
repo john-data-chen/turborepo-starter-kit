@@ -7,6 +7,7 @@ interface AppLayoutProps {
   params: Promise<{ locale: string }>;
 }
 
+// oxlint-disable-next-line typescript/require-await -- Next.js Server Component layout
 export default async function AppLayout({ children }: Readonly<AppLayoutProps>) {
   return (
     <Suspense fallback=<WorkspaceLoadingSkeleton />>

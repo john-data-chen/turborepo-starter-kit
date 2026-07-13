@@ -27,7 +27,7 @@ describe("authService", () => {
   it("should login successfully and store token", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ access_token: "tk", user: { _id: "1", email: "t@e.com" } })
+      json: () => ({ access_token: "tk", user: { _id: "1", email: "t@e.com" } })
     } as any);
 
     const result = await authService.login("test@e.com");
@@ -40,7 +40,7 @@ describe("authService", () => {
   it("should login and not store token if none returned", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ access_token: "", user: null })
+      json: () => ({ access_token: "", user: null })
     } as any);
 
     const result = await authService.login("test@e.com");
@@ -52,6 +52,7 @@ describe("authService", () => {
   it("should throw on login failure", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
+      // oxlint-disable-next-line typescript/require-await -- must return a real Promise: auth-service.ts calls response.text().catch(...) without awaiting first
       text: async () => "Invalid credentials"
     } as any);
 
@@ -61,6 +62,7 @@ describe("authService", () => {
   it("should throw default message when login error text is empty", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
+      // oxlint-disable-next-line typescript/require-await -- must return a real Promise: auth-service.ts calls response.text().catch(...) without awaiting first
       text: async () => ""
     } as any);
 
@@ -70,6 +72,7 @@ describe("authService", () => {
   it("should throw default message when text() also fails", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
+      // oxlint-disable-next-line typescript/require-await -- must return a real Promise: auth-service.ts calls response.text().catch(...) without awaiting first
       text: async () => {
         throw new Error("fail");
       }
@@ -82,7 +85,7 @@ describe("authService", () => {
     vi.mocked(SecureStore.getItemAsync).mockResolvedValue("my-token");
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ _id: "1", email: "t@e.com", name: "Test User" })
+      json: () => ({ _id: "1", email: "t@e.com", name: "Test User" })
     } as any);
 
     const profile = await authService.getProfile();
@@ -100,7 +103,7 @@ describe("authService", () => {
     vi.mocked(SecureStore.getItemAsync).mockResolvedValue(null);
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ _id: "1", email: "t@e.com" })
+      json: () => ({ _id: "1", email: "t@e.com" })
     } as any);
 
     const profile = await authService.getProfile();
@@ -129,7 +132,7 @@ describe("authService", () => {
     vi.mocked(SecureStore.getItemAsync).mockResolvedValue("tk");
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ _id: "1" })
+      json: () => ({ _id: "1" })
     } as any);
 
     await expect(authService.getProfile()).rejects.toThrow("Invalid user data");
@@ -139,7 +142,7 @@ describe("authService", () => {
     vi.mocked(SecureStore.getItemAsync).mockResolvedValue("tk");
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => null
+      json: () => null
     } as any);
 
     await expect(authService.getProfile()).rejects.toThrow("Invalid user data");
@@ -149,7 +152,7 @@ describe("authService", () => {
     vi.mocked(SecureStore.getItemAsync).mockResolvedValue("tk");
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ _id: "1", email: "t@e.com" })
+      json: () => ({ _id: "1", email: "t@e.com" })
     } as any);
 
     const session = await authService.getSession();
