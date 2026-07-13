@@ -45,7 +45,7 @@ describe("ThemeToggle", () => {
       setTheme: mockSetTheme,
       theme: "light",
       themes: ["light", "dark", "system"]
-    } as any);
+    });
   });
 
   it("should render theme toggle", () => {

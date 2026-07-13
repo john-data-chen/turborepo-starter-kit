@@ -42,6 +42,7 @@ describe("user queries", () => {
         updatedAt: new Date()
       };
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.getUserById).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useUser("user-1"), { wrapper });
@@ -51,6 +52,7 @@ describe("user queries", () => {
       });
 
       expect(result.current.data).toEqual(mockUser);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.getUserById).toHaveBeenCalledWith("user-1");
     });
 
@@ -59,6 +61,7 @@ describe("user queries", () => {
 
       expect(result.current.isPending).toBe(true);
       expect(result.current.fetchStatus).toBe("idle");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.getUserById).not.toHaveBeenCalled();
     });
 
@@ -67,11 +70,13 @@ describe("user queries", () => {
 
       expect(result.current.isPending).toBe(true);
       expect(result.current.fetchStatus).toBe("idle");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.getUserById).not.toHaveBeenCalled();
     });
 
     it("should handle fetch errors", async () => {
       const error = new Error("Failed to fetch user");
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.getUserById).mockRejectedValue(error);
 
       const { result } = renderHook(() => useUser("user-1"), { wrapper });
@@ -93,6 +98,7 @@ describe("user queries", () => {
         updatedAt: new Date()
       };
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.getUserById).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useUser(userId), { wrapper });
@@ -125,6 +131,7 @@ describe("user queries", () => {
         }
       ];
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
 
       const { result } = renderHook(() => useUserSearch("alice"), { wrapper });
@@ -134,6 +141,7 @@ describe("user queries", () => {
       });
 
       expect(result.current.data).toEqual(mockUsers);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).toHaveBeenCalledWith("alice");
     });
 
@@ -142,11 +150,13 @@ describe("user queries", () => {
 
       expect(result.current.isPending).toBe(true);
       expect(result.current.fetchStatus).toBe("idle");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).not.toHaveBeenCalled();
     });
 
     it("should handle search errors", async () => {
       const error = new Error("Search failed");
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.searchUsers).mockRejectedValue(error);
 
       const { result } = renderHook(() => useUserSearch("test"), { wrapper });
@@ -170,6 +180,7 @@ describe("user queries", () => {
         }
       ];
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
 
       const { result } = renderHook(() => useUserSearch(searchQuery), { wrapper });
@@ -179,6 +190,7 @@ describe("user queries", () => {
       });
 
       // Just verify the search was called correctly
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).toHaveBeenCalledWith(searchQuery);
     });
 
@@ -209,6 +221,7 @@ describe("user queries", () => {
         }
       ];
 
+      // oxlint-disable-next-line typescript/unbound-method
       vi.mocked(userApi.searchUsers)
         .mockResolvedValueOnce(mockUsers1)
         .mockResolvedValueOnce(mockUsers2);
@@ -230,8 +243,11 @@ describe("user queries", () => {
         expect(result.current.data).toEqual(mockUsers2);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).toHaveBeenCalledTimes(2);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).toHaveBeenNthCalledWith(1, "alice");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(userApi.searchUsers).toHaveBeenNthCalledWith(2, "bob");
     });
   });

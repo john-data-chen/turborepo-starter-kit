@@ -129,7 +129,7 @@ function BoardProjectComponent({
 
   // Fetch tasks when the project changes
   useEffect(() => {
-    loadTasks();
+    void loadTasks();
   }, [loadTasks]);
 
   const filteredTasks = useMemo(() => {
@@ -253,7 +253,9 @@ function BoardProjectComponent({
                       <TaskCard
                         key={task._id}
                         task={task}
-                        onUpdate={handleTaskUpdate}
+                        onUpdate={() => {
+                          void handleTaskUpdate();
+                        }}
                         isDragEnabled={canDrag}
                       />
                     );

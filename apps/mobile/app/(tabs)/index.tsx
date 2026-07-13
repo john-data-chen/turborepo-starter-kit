@@ -62,7 +62,10 @@ export default function BoardsScreen() {
       className="flex-1 bg-background"
       contentContainerClassName="px-4 pb-8"
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl=<RefreshControl refreshing={manualRefreshing} onRefresh={handleRefresh} />
+      refreshControl=<RefreshControl
+        refreshing={manualRefreshing}
+        onRefresh={() => void handleRefresh()}
+      />
     >
       <Stack.Screen
         options={{

@@ -11,7 +11,7 @@ const resolvedLocale = locales.includes(deviceLocale as (typeof locales)[number]
   ? deviceLocale
   : defaultLocale;
 
-i18n.use(initReactI18next).init({
+void i18n.use(initReactI18next).init({
   resources: {
     en: { translation: messages.en },
     de: { translation: messages.de }
@@ -28,9 +28,9 @@ i18n.use(initReactI18next).init({
 });
 
 // Load persisted language preference (async, overrides device locale if set)
-loadLanguagePreference().then((lang) => {
+void loadLanguagePreference().then((lang) => {
   if (lang && lang !== i18n.language) {
-    i18n.changeLanguage(lang);
+    void i18n.changeLanguage(lang);
   }
 });
 

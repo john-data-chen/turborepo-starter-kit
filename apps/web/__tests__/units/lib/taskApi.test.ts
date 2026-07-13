@@ -44,7 +44,7 @@ describe("taskApi", () => {
     it("should fetch all tasks", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockTask],
+        json: () => [mockTask],
         status: 200,
         headers: new Headers()
       });
@@ -59,7 +59,7 @@ describe("taskApi", () => {
     it("should fetch tasks with projectId filter", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockTask],
+        json: () => [mockTask],
         status: 200,
         headers: new Headers()
       });
@@ -75,7 +75,7 @@ describe("taskApi", () => {
     it("should fetch tasks with assigneeId filter", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockTask],
+        json: () => [mockTask],
         status: 200,
         headers: new Headers()
       });
@@ -91,7 +91,7 @@ describe("taskApi", () => {
     it("should fetch tasks with both filters", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockTask],
+        json: () => [mockTask],
         status: 200,
         headers: new Headers()
       });
@@ -109,7 +109,7 @@ describe("taskApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [],
+        json: () => [],
         status: 200,
         headers: new Headers()
       });
@@ -131,7 +131,7 @@ describe("taskApi", () => {
     it("should fetch a single task", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockTask,
+        json: () => mockTask,
         status: 200,
         headers: new Headers()
       });
@@ -148,7 +148,7 @@ describe("taskApi", () => {
     it("should encode task ID with special characters", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockTask,
+        json: () => mockTask,
         status: 200,
         headers: new Headers()
       });
@@ -164,7 +164,7 @@ describe("taskApi", () => {
     it("should handle not found error", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => "Task not found",
+        text: () => "Task not found",
         status: 404,
         headers: new Headers()
       });
@@ -190,7 +190,7 @@ describe("taskApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockTask,
+        json: () => mockTask,
         status: 201,
         headers: new Headers()
       });
@@ -217,7 +217,7 @@ describe("taskApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ ...mockTask, title: "Updated Task" }),
+        json: () => ({ ...mockTask, title: "Updated Task" }),
         status: 200,
         headers: new Headers()
       });
@@ -239,7 +239,7 @@ describe("taskApi", () => {
     it("should delete a task", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({}),
+        json: () => ({}),
         status: 204,
         headers: new Headers({ "content-length": "0" })
       });
@@ -259,9 +259,10 @@ describe("taskApi", () => {
         ok: true,
         status: 204,
         headers: new Headers({ "content-length": "0" }),
-        json: async () => ({})
+        json: () => ({})
       });
 
+      // oxlint-disable-next-line typescript/no-confusing-void-expression -- runtime resolves to null despite void-typed signature
       const result = await taskApi.deleteTask("task-1");
 
       expect(result).toBeNull();
@@ -278,7 +279,7 @@ describe("taskApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockPermissions,
+        json: () => mockPermissions,
         status: 200,
         headers: new Headers()
       });
@@ -297,7 +298,7 @@ describe("taskApi", () => {
     it("should move task to another project", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ ...mockTask, project: "project-2" }),
+        json: () => ({ ...mockTask, project: "project-2" }),
         status: 200,
         headers: new Headers()
       });
@@ -322,7 +323,7 @@ describe("taskApi", () => {
     it("should handle fetch errors", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => "Server error",
+        text: () => "Server error",
         status: 500,
         headers: new Headers()
       });
@@ -343,7 +344,7 @@ describe("taskApi", () => {
     it("should handle text parsing failure", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => {
+        text: () => {
           throw new Error("Parse error");
         },
         status: 500,
@@ -360,7 +361,7 @@ describe("taskApi", () => {
         ok: true,
         status: 200,
         headers: new Headers({ "content-length": "0" }),
-        json: async () => ({})
+        json: () => ({})
       });
 
       const result = await taskApi.getTasks();

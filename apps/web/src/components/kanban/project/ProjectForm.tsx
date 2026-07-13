@@ -22,7 +22,7 @@ type ProjectFormData = z.infer<typeof projectSchema>;
 
 interface ProjectFormProps {
   children?: React.ReactNode;
-  onSubmit: (data: ProjectFormData) => void;
+  onSubmit: (data: ProjectFormData) => Promise<void>;
   defaultValues?: {
     title: string;
     description?: string;
@@ -41,7 +41,12 @@ export function ProjectForm({ children, onSubmit, defaultValues }: ProjectFormPr
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={(e) => {
+          void form.handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="title"

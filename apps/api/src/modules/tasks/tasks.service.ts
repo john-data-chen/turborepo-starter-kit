@@ -35,9 +35,9 @@ export class TasksService implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.eventEmitter.on("project.deleted", async (event: ProjectDeletedEvent) =>
-      this.handleProjectDeleted(event)
-    );
+    this.eventEmitter.on("project.deleted", (event: ProjectDeletedEvent) => {
+      void this.handleProjectDeleted(event);
+    });
   }
 
   async handleProjectDeleted(event: ProjectDeletedEvent): Promise<void> {
@@ -64,7 +64,9 @@ export class TasksService implements OnModuleInit {
     const orderInProject = createTaskDto.orderInProject ?? 0;
 
     const taskData = {
-      ...createTaskDto,
+      title: createTaskDto.title,
+      description: createTaskDto.description,
+      dueDate: createTaskDto.dueDate,
       project: projectId,
       board: new Types.ObjectId(createTaskDto.board),
       creator: creatorId,
@@ -106,7 +108,12 @@ export class TasksService implements OnModuleInit {
     await this.checkTaskPermission(id, userId);
 
     const updateData: Record<string, unknown> = {
-      ...updateTaskDto,
+      title: updateTaskDto.title,
+      description: updateTaskDto.description,
+      status: updateTaskDto.status,
+      dueDate: updateTaskDto.dueDate,
+      assigneeId: updateTaskDto.assigneeId,
+      orderInProject: updateTaskDto.orderInProject,
       lastModifier: new Types.ObjectId(userId),
       updatedAt: new Date()
     };
@@ -272,11 +279,11 @@ export class TasksService implements OnModuleInit {
       createdAt: populatedTask.createdAt,
       updatedAt: populatedTask.updatedAt,
       orderInProject: populatedTask.orderInProject ?? 0,
-      creator: this.toUserResponse(populatedTask.creator as PopulatedUserRef | null),
-      assignee: this.toUserResponse(populatedTask.assignee as PopulatedUserRef | null),
+      creator: this.toUserResponse(populatedTask.creator),
+      assignee: this.toUserResponse(populatedTask.assignee),
       lastModifier: populatedTask.lastModifier
-        ? this.toUserResponse(populatedTask.lastModifier as PopulatedUserRef | null)
-        : this.toUserResponse(populatedTask.creator as PopulatedUserRef | null)
+        ? this.toUserResponse(populatedTask.lastModifier)
+        : this.toUserResponse(populatedTask.creator)
     };
 
     if (populatedTask.description) {

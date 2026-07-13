@@ -120,7 +120,7 @@ async function bootstrap() {
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => {
-      app.close();
+      void app.close();
     });
   }
 

@@ -5,7 +5,7 @@ import { createTask, deleteTask, getTasks, moveTask, updateTask } from "@/app/ac
 const getMock = vi.fn();
 
 vi.mock("next/headers", () => ({
-  cookies: vi.fn(async () => ({
+  cookies: vi.fn(() => ({
     get: (name: string) => getMock(name)
   }))
 }));
@@ -20,7 +20,7 @@ function mockFetch(ok: boolean, body: unknown = {}) {
 
 describe("task-actions", () => {
   beforeEach(() => {
-    global.fetch = vi.fn() as unknown as typeof fetch;
+    global.fetch = vi.fn();
     getMock.mockReturnValue({ value: "test-token" });
   });
 

@@ -261,7 +261,12 @@ export const BoardActions = React.forwardRef<HTMLButtonElement, BoardActionsProp
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-              <Button variant="destructive" onClick={handleDelete}>
+              <Button
+                variant="destructive"
+                onClick={(e) => {
+                  void handleDelete(e);
+                }}
+              >
                 {t("delete")}
               </Button>
             </AlertDialogFooter>

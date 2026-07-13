@@ -90,7 +90,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
       }
     };
 
-    fetchUsers();
+    void fetchUsers();
   }, [assignOpen, debouncedSearchQuery]);
 
   // Load initial users when the component mounts
@@ -99,12 +99,12 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
       const initialUsers = await searchUsersLocal();
       setUsers(initialUsers);
     };
-    loadInitialUsers();
+    void loadInitialUsers();
   }, []);
 
   // Load assignee data when defaultValues changes
   useEffect(() => {
-    const loadAssigneeData = async () => {
+    const loadAssigneeData = () => {
       // If we already have assignee data in the expected format, use it directly
       if (
         defaultValues?.assignee &&
@@ -154,7 +154,7 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
         }
       };
 
-      fetchUser();
+      void fetchUser();
     };
 
     loadAssigneeData();
@@ -172,7 +172,9 @@ export const useTaskForm = ({ defaultValues, onSubmit }: UseTaskFormProps) => {
       };
       await onSubmit(submitData);
     } catch (error) {
-      toast.error(`Failed to submit task: ${error}`);
+      toast.error(
+        `Failed to submit task: ${error instanceof Error ? error.message : String(error)}`
+      );
     } finally {
       setIsSubmitting(false);
     }

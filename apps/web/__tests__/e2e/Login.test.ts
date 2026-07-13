@@ -48,7 +48,7 @@ test.describe.serial("SignInPage", () => {
         console.log("[Diagnostic] ✓ API health check passed");
         return true;
       },
-      (error) => {
+      (error: unknown) => {
         console.warn("[Diagnostic] ⚠️ API health check failed:", error);
         return false;
       }

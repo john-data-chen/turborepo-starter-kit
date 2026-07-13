@@ -52,13 +52,15 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: taskApi.createTask,
-    onSuccess: (newTask) => {
+    onSuccess: async (newTask) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ project: newTask.project }) });
+      await queryClient.invalidateQueries({
+        queryKey: TASK_KEYS.list({ project: newTask.project })
+      });
       if (newTask.assignee) {
         const assigneeId =
           typeof newTask.assignee === "string" ? newTask.assignee : newTask.assignee._id;
-        queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ assignee: assigneeId }) });
+        await queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ assignee: assigneeId }) });
       }
     }
   });
@@ -78,10 +80,12 @@ export const useUpdateTask = () => {
       }
       return taskApi.updateTask(id, { ...updates, lastModifier: user._id });
     },
-    onSuccess: (updatedTask) => {
+    onSuccess: async (updatedTask) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.list({ project: updatedTask.project }) });
+      await queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
+      await queryClient.invalidateQueries({
+        queryKey: TASK_KEYS.list({ project: updatedTask.project })
+      });
     }
   });
 };
@@ -90,9 +94,9 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: taskApi.deleteTask,
-    onSuccess: () => {
+    onSuccess: async () => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
+      await queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
     }
   });
 };
@@ -109,10 +113,10 @@ export const useMoveTask = () => {
       projectId: string;
       orderInProject: number;
     }) => taskApi.moveTask(taskId, projectId, orderInProject),
-    onSuccess: (updatedTask) => {
+    onSuccess: async (updatedTask) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
-      queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
+      await queryClient.invalidateQueries({ queryKey: TASK_KEYS.lists() });
+      await queryClient.invalidateQueries({ queryKey: TASK_KEYS.detail(updatedTask._id) });
     }
   });
 };

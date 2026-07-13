@@ -35,7 +35,7 @@ export default function NewTaskScreen() {
       return;
     }
 
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     createTaskMutation.mutate(
       {
         title,
@@ -115,7 +115,7 @@ export default function NewTaskScreen() {
               <Pressable
                 key={s}
                 onPress={() => {
-                  Haptics.selectionAsync();
+                  void Haptics.selectionAsync();
                   setStatus(s as TaskStatus);
                 }}
                 className={`flex-1 items-center rounded-lg border p-3 ${

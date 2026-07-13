@@ -25,7 +25,7 @@ describe("auth-store", () => {
     // persist middleware writes synchronously to localStorage under "auth-storage"
     const raw = window.localStorage.getItem("auth-storage");
     expect(raw).not.toBeNull();
-    expect(JSON.parse(raw as string).state.session).toEqual(mockSession);
+    expect(JSON.parse(raw!).state.session).toEqual(mockSession);
   });
 
   it("should have initial state", () => {

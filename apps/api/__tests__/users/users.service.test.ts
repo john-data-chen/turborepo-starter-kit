@@ -37,7 +37,7 @@ describe("UserService", () => {
     });
 
     it("should return null if no email is provided", async () => {
-      const user = await service.findByEmail(null);
+      const user = await service.findByEmail(null as any);
       expect(user).toBeNull();
       expect(userRepository.findByEmail).not.toHaveBeenCalled();
     });
@@ -82,7 +82,7 @@ describe("UserService", () => {
     it("should search with null name", async () => {
       userRepository.searchByName.mockResolvedValue([]);
 
-      await service.searchByName(null);
+      await service.searchByName(null as any);
 
       expect(userRepository.searchByName).toHaveBeenCalledWith(null);
     });

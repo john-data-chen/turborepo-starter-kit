@@ -18,7 +18,10 @@ function getUpdatedAtSet(data: unknown): string {
       if (val instanceof Date) {
         return val.toISOString();
       }
-      return String(val);
+      if (typeof val === "string" || typeof val === "number") {
+        return String(val);
+      }
+      return JSON.stringify(val);
     })
     .sort()
     .join(",");

@@ -61,7 +61,12 @@ export function TaskForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form
+        onSubmit={(e) => {
+          void form.handleSubmit(handleSubmit)(e);
+        }}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="title"

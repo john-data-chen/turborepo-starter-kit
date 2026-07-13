@@ -42,7 +42,7 @@ describe("projectApi", () => {
     it("should fetch projects for a board", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockProject]
+        json: () => [mockProject]
       });
 
       const result = await projectApi.getProjects("board-1");
@@ -60,7 +60,7 @@ describe("projectApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => []
+        json: () => []
       });
 
       await projectApi.getProjects("board-1");
@@ -80,7 +80,7 @@ describe("projectApi", () => {
     it("should fetch a single project", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockProject
+        json: () => mockProject
       });
 
       const result = await projectApi.getProjectById("project-1");
@@ -95,7 +95,7 @@ describe("projectApi", () => {
     it("should handle not found error", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => "Project not found"
+        text: () => "Project not found"
       });
 
       await expect(projectApi.getProjectById("non-existent")).rejects.toMatchObject({
@@ -115,7 +115,7 @@ describe("projectApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockProject
+        json: () => mockProject
       });
 
       const result = await projectApi.createProject(input);
@@ -139,7 +139,7 @@ describe("projectApi", () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ ...mockProject, title: "Updated Project" })
+        json: () => ({ ...mockProject, title: "Updated Project" })
       });
 
       const result = await projectApi.updateProject("project-1", input);
@@ -159,7 +159,7 @@ describe("projectApi", () => {
     it("should delete a project", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({})
+        json: () => ({})
       });
 
       await projectApi.deleteProject("project-1");
@@ -177,7 +177,7 @@ describe("projectApi", () => {
     it("should handle fetch errors", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => "Server error"
+        text: () => "Server error"
       });
 
       await expect(projectApi.getProjects("board-1")).rejects.toMatchObject({
@@ -196,7 +196,7 @@ describe("projectApi", () => {
     it("should handle text parsing failure", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        text: async () => {
+        text: () => {
           throw new Error("Parse error");
         }
       });

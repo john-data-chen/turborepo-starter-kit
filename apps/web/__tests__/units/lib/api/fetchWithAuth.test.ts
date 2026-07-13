@@ -20,7 +20,7 @@ describe("fetchWithAuth", () => {
     localStorage.setItem("auth_token", mockToken);
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true })
+      json: () => ({ success: true })
     });
 
     await fetchWithAuth(mockUrl);
@@ -38,7 +38,7 @@ describe("fetchWithAuth", () => {
   it("should merge custom headers", async () => {
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true })
+      json: () => ({ success: true })
     });
 
     await fetchWithAuth(mockUrl, {
@@ -62,7 +62,7 @@ describe("fetchWithAuth", () => {
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true })
+      json: () => ({ success: true })
     });
 
     await fetchWithAuth(mockUrl, {
@@ -83,7 +83,7 @@ describe("fetchWithAuth", () => {
   it("should handle array of headers", async () => {
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: true })
+      json: () => ({ success: true })
     });
 
     await fetchWithAuth(mockUrl, {
@@ -105,7 +105,7 @@ describe("fetchWithAuth", () => {
     const mockData = { id: 1 };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => mockData
+      json: () => mockData
     });
 
     const result = await fetchWithAuth(mockUrl);
@@ -127,7 +127,7 @@ describe("fetchWithAuth", () => {
     (global.fetch as any).mockResolvedValue({
       ok: false,
       status: 400,
-      json: async () => ({ message: errorMsg })
+      json: () => ({ message: errorMsg })
     });
 
     try {
@@ -143,10 +143,10 @@ describe("fetchWithAuth", () => {
     (global.fetch as any).mockResolvedValue({
       ok: false,
       status: 400,
-      json: async () => {
+      json: () => {
         throw new Error("Not JSON");
       },
-      text: async () => errorMsg
+      text: () => errorMsg
     });
 
     try {
@@ -161,10 +161,10 @@ describe("fetchWithAuth", () => {
     (global.fetch as any).mockResolvedValue({
       ok: false,
       status: 500,
-      json: async () => {
+      json: () => {
         throw new Error("Not JSON");
       },
-      text: async () => {
+      text: () => {
         throw new Error("Not Text");
       }
     });
@@ -181,7 +181,7 @@ describe("fetchWithAuth", () => {
     (global.fetch as any).mockResolvedValue({
       ok: false,
       status: 401,
-      json: async () => ({ message: "Unauthorized" })
+      json: () => ({ message: "Unauthorized" })
     });
 
     try {

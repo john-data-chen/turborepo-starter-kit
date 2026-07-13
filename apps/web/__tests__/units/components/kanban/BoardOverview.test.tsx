@@ -254,6 +254,7 @@ describe("BoardOverview", () => {
       ...mockSearchParams,
       get: vi.fn(() => "true")
     } as any);
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.getSession).mockResolvedValue({
       user: {
         _id: "user-123",
@@ -273,6 +274,7 @@ describe("BoardOverview", () => {
     render(<BoardOverview />);
 
     await waitFor(() => {
+      // oxlint-disable-next-line typescript/unbound-method
       expect(AuthService.getSession).toHaveBeenCalled();
       expect(toast.success).toHaveBeenCalledWith("success");
       expect(mockRefresh).toHaveBeenCalled();
@@ -289,6 +291,7 @@ describe("BoardOverview", () => {
       ...mockSearchParams,
       get: vi.fn(() => "true")
     } as any);
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.getSession).mockRejectedValue(new Error("Session error"));
 
     render(<BoardOverview />);

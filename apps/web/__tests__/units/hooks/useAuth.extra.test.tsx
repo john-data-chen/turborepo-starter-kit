@@ -61,8 +61,11 @@ beforeEach(() => {
 
   vi.mocked(useRouter).mockReturnValue({ replace, push } as any);
   vi.mocked(usePathname).mockReturnValue("/en/boards");
+  // oxlint-disable-next-line typescript/unbound-method
   vi.mocked(AuthService.getProfile).mockResolvedValue(mockUser);
-  vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token", user: mockUser } as any);
+  // oxlint-disable-next-line typescript/unbound-method
+  vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token", user: mockUser });
+  // oxlint-disable-next-line typescript/unbound-method
   vi.mocked(AuthService.logout).mockResolvedValue(undefined);
 
   const authStoreState = { setUser: vi.fn(), clear: vi.fn() };
@@ -93,11 +96,13 @@ describe("useAuth mount session check", () => {
     await waitFor(() => {
       expect(result.current.isAuthenticated).toBe(true);
     });
+    // oxlint-disable-next-line typescript/unbound-method
     expect(AuthService.getProfile).toHaveBeenCalled();
     expect(result.current.user).toEqual(mockUser);
   });
 
   it("leaves session null when getProfile fails on mount", async () => {
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.getProfile).mockRejectedValue(new Error("no session"));
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -117,6 +122,7 @@ describe("useAuth mount session check", () => {
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
+    // oxlint-disable-next-line typescript/unbound-method
     expect(AuthService.getProfile).not.toHaveBeenCalled();
   });
 });
@@ -126,7 +132,8 @@ describe("useAuth login + logout branches", () => {
     vi.mocked(usePathname).mockReturnValue("/en/login");
     setCookie("");
     setLocalStorage(null);
-    vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token" } as any);
+    // oxlint-disable-next-line typescript/unbound-method
+    vi.mocked(AuthService.login).mockResolvedValue({ access_token: "token" });
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -137,19 +144,21 @@ describe("useAuth login + logout branches", () => {
     await waitFor(() => {
       expect(result.current.isAuthenticated).toBe(true);
     });
+    // oxlint-disable-next-line typescript/unbound-method
     expect(AuthService.getProfile).toHaveBeenCalled();
   });
 
-  it("redirects to login even when logout fails", async () => {
+  it("redirects to login even when logout fails", () => {
     vi.mocked(usePathname).mockReturnValue("/en/login");
     setCookie("");
     setLocalStorage(null);
+    // oxlint-disable-next-line typescript/unbound-method
     vi.mocked(AuthService.logout).mockRejectedValue(new Error("logout failed"));
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
-    await act(async () => {
-      await result.current.logout();
+    act(() => {
+      result.current.logout();
     });
 
     expect(replace).toHaveBeenCalledWith("/login");
@@ -174,7 +183,7 @@ describe("useAuthForm redirect", () => {
       await result.current.handleSubmit("test@example.com");
     });
 
-    await act(async () => {
+    act(() => {
       vi.advanceTimersByTime(600);
     });
 

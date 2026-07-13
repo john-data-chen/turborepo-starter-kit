@@ -43,7 +43,7 @@ describe("useTaskForm", () => {
 
   it("should initialize with default values", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -61,7 +61,7 @@ describe("useTaskForm", () => {
 
   it("should load initial users on mount", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -79,7 +79,7 @@ describe("useTaskForm", () => {
 
   it("should initialize with provided default values", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const defaultValues = {
@@ -106,8 +106,8 @@ describe("useTaskForm", () => {
 
   it("should handle assignee as string ID in default values", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
-    vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0]);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
+    vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0]); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const defaultValues = {
@@ -130,7 +130,7 @@ describe("useTaskForm", () => {
 
   it("should handle assignee as object in default values", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const defaultValues = {
@@ -158,7 +158,7 @@ describe("useTaskForm", () => {
 
   it("should search users when search query changes", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -174,7 +174,7 @@ describe("useTaskForm", () => {
 
     await waitFor(
       () => {
-        expect(userApi.searchUsers).toHaveBeenCalledWith("john");
+        expect(userApi.searchUsers).toHaveBeenCalledWith("john"); // oxlint-disable-line typescript/unbound-method
       },
       { timeout: 1000 }
     );
@@ -186,7 +186,7 @@ describe("useTaskForm", () => {
     const searchPromise = new Promise<User[]>((resolve) => {
       resolveSearch = resolve;
     });
-    vi.mocked(userApi.searchUsers).mockReturnValue(searchPromise);
+    vi.mocked(userApi.searchUsers).mockReturnValue(searchPromise); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -215,7 +215,7 @@ describe("useTaskForm", () => {
 
   it("should handle user search errors gracefully", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockRejectedValue(new Error("Search failed"));
+    vi.mocked(userApi.searchUsers).mockRejectedValue(new Error("Search failed")); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -236,7 +236,7 @@ describe("useTaskForm", () => {
 
   it("should call onSubmit when handleSubmit is called", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn().mockResolvedValue(undefined);
     const { result } = renderHook(() =>
@@ -261,7 +261,7 @@ describe("useTaskForm", () => {
 
   it("should handle submit with assignee", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn().mockResolvedValue(undefined);
     const { result } = renderHook(() =>
@@ -299,7 +299,7 @@ describe("useTaskForm", () => {
   it("should handle submit errors", async () => {
     const { userApi } = await import("@/lib/api/userApi");
     const { toast } = await import("sonner");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn().mockRejectedValue(new Error("Submit failed"));
     const { result } = renderHook(() =>
@@ -324,7 +324,7 @@ describe("useTaskForm", () => {
 
   it("should set isSubmitting during submission", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     let resolveSubmit: () => void;
     const submitPromise = new Promise<void>((resolve) => {
@@ -345,7 +345,7 @@ describe("useTaskForm", () => {
     };
 
     act(() => {
-      result.current.handleSubmit(values);
+      void result.current.handleSubmit(values);
     });
 
     await waitFor(() => {
@@ -363,7 +363,7 @@ describe("useTaskForm", () => {
 
   it("should load assignee data when user is found in existing users list", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result, rerender } = renderHook(
@@ -399,8 +399,8 @@ describe("useTaskForm", () => {
 
   it("should fetch assignee data when user is not in existing users list", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue([]);
-    vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0]);
+    vi.mocked(userApi.searchUsers).mockResolvedValue([]); // oxlint-disable-line typescript/unbound-method
+    vi.mocked(userApi.getUserById).mockResolvedValue(mockUsers[0]); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const defaultValues = {
@@ -415,7 +415,7 @@ describe("useTaskForm", () => {
     );
 
     await waitFor(() => {
-      expect(userApi.getUserById).toHaveBeenCalledWith("user-1");
+      expect(userApi.getUserById).toHaveBeenCalledWith("user-1"); // oxlint-disable-line typescript/unbound-method
     });
 
     await waitFor(() => {
@@ -426,8 +426,8 @@ describe("useTaskForm", () => {
 
   it("should handle assignee fetch errors gracefully", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue([]);
-    vi.mocked(userApi.getUserById).mockRejectedValue(new Error("User not found"));
+    vi.mocked(userApi.searchUsers).mockResolvedValue([]); // oxlint-disable-line typescript/unbound-method
+    vi.mocked(userApi.getUserById).mockRejectedValue(new Error("User not found")); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const defaultValues = {
@@ -442,7 +442,7 @@ describe("useTaskForm", () => {
     );
 
     await waitFor(() => {
-      expect(userApi.getUserById).toHaveBeenCalledWith("user-999");
+      expect(userApi.getUserById).toHaveBeenCalledWith("user-999"); // oxlint-disable-line typescript/unbound-method
     });
 
     // Should not throw error
@@ -451,7 +451,7 @@ describe("useTaskForm", () => {
 
   it("should not search users when assignOpen is false", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>
@@ -461,7 +461,7 @@ describe("useTaskForm", () => {
     );
 
     // Clear the initial search call
-    vi.mocked(userApi.searchUsers).mockClear();
+    vi.mocked(userApi.searchUsers).mockClear(); // oxlint-disable-line typescript/unbound-method
 
     act(() => {
       result.current.setSearchQuery("john");
@@ -470,12 +470,12 @@ describe("useTaskForm", () => {
     // Wait a bit to ensure no search happens
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    expect(userApi.searchUsers).not.toHaveBeenCalledWith("john");
+    expect(userApi.searchUsers).not.toHaveBeenCalledWith("john"); // oxlint-disable-line typescript/unbound-method
   });
 
   it("should clear assignee when no assignee in default values", async () => {
     const { userApi } = await import("@/lib/api/userApi");
-    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers);
+    vi.mocked(userApi.searchUsers).mockResolvedValue(mockUsers); // oxlint-disable-line typescript/unbound-method
 
     const onSubmit = vi.fn();
     const { result } = renderHook(() =>

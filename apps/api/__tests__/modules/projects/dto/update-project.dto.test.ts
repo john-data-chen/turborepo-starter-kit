@@ -1,4 +1,5 @@
 import { validate } from "class-validator";
+import { describe, expect, it } from "vitest";
 
 import {
   ProjectStatus,

@@ -20,7 +20,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     private readonly connection: mongoose.Connection
   ) {}
 
-  async onModuleInit() {
+  onModuleInit() {
     this.connection.on("error", (error: Error) => {
       this.logger.error(`MongoDB connection error: ${error.message}`, error.stack);
     });
@@ -40,7 +40,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 @Module({
   imports: [
     MongooseModule.forRootAsync({
-      useFactory: async (configService: ConfigService): Promise<MongooseModuleOptions> => {
+      useFactory: (configService: ConfigService): MongooseModuleOptions => {
         const logger = new Logger("MongoDB");
         const uri = configService.get<string>("DATABASE_URL");
 

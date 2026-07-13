@@ -71,7 +71,7 @@ describe("TasksService", () => {
       };
       taskRepository.create.mockResolvedValue(savedTask);
 
-      const result = await service.create(createTaskDto as any, userId);
+      const result = await service.create(createTaskDto, userId);
 
       expect(result).toBeDefined();
       expect(taskRepository.create).toHaveBeenCalled();
@@ -101,7 +101,7 @@ describe("TasksService", () => {
       };
       taskRepository.create.mockResolvedValue(savedTask);
 
-      const result = await service.create(createTaskDto as any, userId);
+      const result = await service.create(createTaskDto, userId);
 
       expect(result).toBeDefined();
     });
@@ -133,7 +133,7 @@ describe("TasksService", () => {
       projectsService.addMemberIfNotExists.mockRejectedValue(new Error("Failed to add member"));
 
       // Should not throw
-      await service.create(createTaskDto as any, userId);
+      await service.create(createTaskDto, userId);
 
       expect(projectsService.addMemberIfNotExists).toHaveBeenCalled();
     });

@@ -31,7 +31,7 @@ describe("AuthController", () => {
   });
 
   describe("login", () => {
-    it("should return user and access_token", async () => {
+    it("should return user and access_token", () => {
       const user = {
         _id: "1",
         email: "test@test.com",
@@ -46,9 +46,9 @@ describe("AuthController", () => {
         getHeaders: vi.fn().mockReturnValue({})
       };
 
-      authService.login.mockResolvedValue(result as any);
+      authService.login.mockReturnValue(result as any);
 
-      expect(await controller.login(user as any, res as any)).toEqual(result);
+      expect(controller.login(user as any, res as any)).toEqual(result);
       expect(res.cookie).toHaveBeenCalledTimes(2);
     });
   });
@@ -62,12 +62,12 @@ describe("AuthController", () => {
   });
 
   describe("logout", () => {
-    it("should clear cookies and return a message", async () => {
+    it("should clear cookies and return a message", () => {
       const res = {
         clearCookie: vi.fn()
       };
 
-      expect(await controller.logout(res as any)).toEqual({ message: "Successfully logged out" });
+      expect(controller.logout(res as any)).toEqual({ message: "Successfully logged out" });
       expect(res.clearCookie).toHaveBeenCalledTimes(2);
     });
   });

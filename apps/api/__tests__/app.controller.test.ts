@@ -12,7 +12,7 @@ describe("AppController", () => {
     };
 
     // Manually instantiate AppController with the mock AppService
-    appController = new AppController(appService as any);
+    appController = new AppController(appService);
   });
 
   describe("root", () => {

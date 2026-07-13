@@ -47,7 +47,14 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @CurrentUser() user: { _id: string; email: string }
   ) {
-    return this.projectsService.create({ ...createProjectDto, owner: user._id });
+    const { title, description, boardId, orderInBoard } = createProjectDto;
+    return this.projectsService.create({
+      title,
+      description,
+      boardId,
+      orderInBoard,
+      owner: user._id
+    });
   }
 
   @Get()

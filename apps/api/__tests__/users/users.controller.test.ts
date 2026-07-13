@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { UserController } from "../../src/modules/users/users.controller";
 
 describe("UserController", () => {
   let controller: UserController;
-  let service: { findAll: vi.Mock; searchByName: vi.Mock };
+  let service: { findAll: Mock; searchByName: Mock };
 
   beforeEach(() => {
     service = {
@@ -22,7 +22,7 @@ describe("UserController", () => {
 
   describe("findAll", () => {
     it("should return an array of users", async () => {
-      const result = [];
+      const result: any[] = [];
       service.findAll.mockResolvedValue(result as any);
       expect(await controller.findAll()).toEqual({ users: result });
     });
@@ -30,7 +30,7 @@ describe("UserController", () => {
 
   describe("search", () => {
     it("should return an array of users", async () => {
-      const result = [];
+      const result: any[] = [];
       service.searchByName.mockResolvedValue(result as any);
       expect(await controller.search("test")).toEqual({ users: result });
     });

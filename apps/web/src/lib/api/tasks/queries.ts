@@ -83,7 +83,7 @@ export const useCreateTask = () => {
     },
     onSuccess: (variables) => {
       suppressNextSyncToast();
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: TASK_KEYS.list({ project: variables.project })
       });
 
@@ -94,7 +94,7 @@ export const useCreateTask = () => {
       }
 
       if (assigneeId) {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: TASK_KEYS.list({ assignee: assigneeId })
         });
       }
@@ -236,7 +236,7 @@ export const useUpdateTask = () => {
     onSettled: (data, error, variables) => {
       const taskId = variables.id;
       // Invalidate both the specific task and any lists that might contain it
-      Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({
           queryKey: TASK_KEYS.detail(taskId),
           refetchType: "all"
@@ -325,18 +325,18 @@ export const useDeleteTask = () => {
     onSettled: (data, error, taskId, context) => {
       // If we have the deleted task info, invalidate queries for that specific project
       if (context?.taskToDelete?.project) {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: TASK_KEYS.list({ project: context.taskToDelete.project }),
           refetchType: "active"
         });
       }
 
       // Also invalidate general task lists and the specific task
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: TASK_KEYS.lists(),
         refetchType: "active"
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: TASK_KEYS.detail(taskId),
         refetchType: "all"
       });

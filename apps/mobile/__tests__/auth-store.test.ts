@@ -13,7 +13,7 @@ describe("useAuthStore", () => {
     expect(state.session).toBeNull();
   });
 
-  it("should use secureStorageAdapter indirectly", async () => {
+  it("should use secureStorageAdapter indirectly", () => {
     const mockUser = { _id: "1", email: "t@e.com", name: "N" };
     const mockSession = { user: mockUser, accessToken: "token" };
 

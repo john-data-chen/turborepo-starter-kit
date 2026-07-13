@@ -91,7 +91,7 @@ describe("TaskActions", () => {
     const { useTask, useUpdateTask, useDeleteTask } = await import("@/lib/api/tasks/queries");
     const { useWorkspaceStore } = await import("@/stores/workspace-store");
 
-    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-1" } as any);
+    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-1" });
 
     vi.mocked(useTask).mockReturnValue({
       data: mockTask,
@@ -133,7 +133,7 @@ describe("TaskActions", () => {
 
   it("should render with assignee permissions", async () => {
     const { useWorkspaceStore } = await import("@/stores/workspace-store");
-    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-2" } as any);
+    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-2" });
 
     render(<TaskActions {...mockProps} />);
     expect(screen.getByTestId("task-actions-trigger")).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe("TaskActions", () => {
 
   it("should render with no permissions", async () => {
     const { useWorkspaceStore } = await import("@/stores/workspace-store");
-    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-3" } as any);
+    vi.mocked(useWorkspaceStore).mockReturnValue({ userId: "user-3" });
 
     render(<TaskActions {...mockProps} />);
     expect(screen.getByTestId("task-actions-trigger")).toBeInTheDocument();

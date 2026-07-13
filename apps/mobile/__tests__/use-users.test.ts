@@ -32,7 +32,7 @@ describe("useUsers", () => {
   });
 
   it("should fetch with empty query by default", async () => {
-    vi.mocked(userApi.searchUsers).mockResolvedValue([] as any);
+    vi.mocked(userApi.searchUsers).mockResolvedValue([]);
 
     const { result } = renderHook(() => useUsers(), { wrapper: Wrapper });
 

@@ -67,6 +67,7 @@ describe("Task Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockTasks);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTasks).toHaveBeenCalledWith("project1", undefined);
     });
 
@@ -83,7 +84,7 @@ describe("Task Query Hooks", () => {
       const query = queryClient
         .getQueryCache()
         .find({ queryKey: TASK_KEYS.list({ project: "project1" }) });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should fetch tasks by assigneeId", async () => {
@@ -97,6 +98,7 @@ describe("Task Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockTasks);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTasks).toHaveBeenCalledWith(undefined, "user1");
     });
 
@@ -104,6 +106,7 @@ describe("Task Query Hooks", () => {
       const { result } = renderHook(() => useTasks(), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTasks).not.toHaveBeenCalled();
     });
   });
@@ -120,6 +123,7 @@ describe("Task Query Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockTask);
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTaskById).toHaveBeenCalledWith("1");
     });
 
@@ -134,13 +138,14 @@ describe("Task Query Hooks", () => {
       });
 
       const query = queryClient.getQueryCache().find({ queryKey: TASK_KEYS.detail("1") });
-      expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+      expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
     });
 
     it("should not fetch when taskId is undefined", () => {
       const { result } = renderHook(() => useTask(undefined), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTaskById).not.toHaveBeenCalled();
     });
 
@@ -148,6 +153,7 @@ describe("Task Query Hooks", () => {
       const { result } = renderHook(() => useTask("1", { enabled: false }), { wrapper });
 
       expect(result.current.data).toBeUndefined();
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTaskById).not.toHaveBeenCalled();
     });
 
@@ -161,6 +167,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isError).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTaskById).toHaveBeenCalledTimes(1);
     });
 
@@ -192,6 +199,7 @@ describe("Task Query Hooks", () => {
       );
 
       // With retryDelay: 1, it should retry quickly. Check it was called at least 3 times
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.getTaskById).toHaveBeenCalled();
       expect((taskApi.getTaskById as Mock).mock.calls.length).toBeGreaterThanOrEqual(3);
     }, 10000);
@@ -229,6 +237,7 @@ describe("Task Query Hooks", () => {
         });
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.createTask).toHaveBeenCalledWith({
         title: "New Task",
         board: "board1",
@@ -265,6 +274,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.createTask).toHaveBeenCalledWith(
         expect.objectContaining({
           assignee: "user1"
@@ -317,6 +327,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.updateTask).toHaveBeenCalledWith("1", {
         title: "Updated Task",
         lastModifier: "user-123"
@@ -348,6 +359,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.updateTask).toHaveBeenCalledWith("1", {
         title: "Updated Task",
         description: "New description",
@@ -373,6 +385,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.updateTask).toHaveBeenCalledWith("1", {
         assigneeId: null,
         lastModifier: "user-123"
@@ -441,6 +454,7 @@ describe("Task Query Hooks", () => {
         });
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.deleteTask).toHaveBeenCalledWith("2");
     });
 
@@ -471,6 +485,7 @@ describe("Task Query Hooks", () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
+      // oxlint-disable-next-line typescript/unbound-method
       expect(taskApi.deleteTask).toHaveBeenCalledWith("unknown-task");
     });
   });

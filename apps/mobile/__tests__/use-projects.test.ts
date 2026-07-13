@@ -63,7 +63,7 @@ describe("useProjects", () => {
     });
 
     const query = capturedClient?.getQueryCache().find({ queryKey: PROJECT_KEYS.list("b1") });
-    expect((query?.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
+    expect((query!.options as { refetchInterval?: number }).refetchInterval).toBe(5000);
   });
 
   it("should not fetch when boardId is undefined", () => {
@@ -81,6 +81,7 @@ describe("useCreateProject", () => {
 
     const { result } = renderHook(() => useCreateProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New", boardId: "b1" });
     });
@@ -98,6 +99,7 @@ describe("useCreateProject", () => {
 
     const { result } = renderHook(() => useCreateProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ title: "New", boardId: "b2" });
     });
@@ -115,6 +117,7 @@ describe("useUpdateProject", () => {
 
     const { result } = renderHook(() => useUpdateProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "p1", title: "Updated" });
     });
@@ -132,6 +135,7 @@ describe("useUpdateProject", () => {
 
     const { result } = renderHook(() => useUpdateProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "p1", title: "Updated" });
     });
@@ -148,6 +152,7 @@ describe("useDeleteProject", () => {
 
     const { result } = renderHook(() => useDeleteProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "p1", boardId: "b1" });
     });
@@ -164,6 +169,7 @@ describe("useDeleteProject", () => {
 
     const { result } = renderHook(() => useDeleteProject(), { wrapper: Wrapper });
 
+    // oxlint-disable-next-line typescript/require-await -- act() requires an async callback to await the mutation's microtask flush
     await act(async () => {
       result.current.mutate({ id: "p2" });
     });

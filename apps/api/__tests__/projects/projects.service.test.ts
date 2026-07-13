@@ -56,7 +56,7 @@ describe("ProjectsService", () => {
       projectRepository.create.mockResolvedValue(savedProject);
       projectRepository.findByIdPopulated.mockResolvedValue(savedProject);
 
-      const result = await service.create(createProjectDto as any);
+      const result = await service.create(createProjectDto);
 
       expect(result).toBeDefined();
       expect(projectRepository.create).toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe("ProjectsService", () => {
       projectRepository.findById.mockResolvedValue(project);
       projectRepository.updateById.mockResolvedValue(project);
 
-      await service.update(projectId, updateProjectDto as any, userId);
+      await service.update(projectId, updateProjectDto, userId);
 
       expect(projectRepository.findById).toHaveBeenCalledWith(projectId);
       expect(projectRepository.updateById).toHaveBeenCalled();

@@ -164,7 +164,7 @@ describe("NewTaskDialog", () => {
     expect(screen.getByTestId("task-form")).toBeInTheDocument();
   });
 
-  it("should handle form submission", async () => {
+  it("should handle form submission", () => {
     const { container } = render(<NewTaskDialog projectId={mockProjectId} />);
 
     const form = container.querySelector("form");

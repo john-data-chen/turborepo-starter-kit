@@ -39,6 +39,7 @@ describe("board-store slice", () => {
       const id = await store.getState().addBoard("B", "desc");
 
       expect(id).toBe("b1");
+      // oxlint-disable-next-line typescript/unbound-method
       expect(boardApi.createBoard).toHaveBeenCalledWith({
         title: "B",
         description: "desc",
