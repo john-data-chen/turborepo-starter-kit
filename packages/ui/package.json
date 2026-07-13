@@ -41,17 +41,17 @@
   },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",
-    "@storybook/addon-a11y": "^10.4.6",
-    "@storybook/addon-docs": "^10.4.6",
-    "@storybook/addon-links": "^10.4.6",
-    "@storybook/addon-themes": "^10.4.6",
-    "@storybook/react": "^10.4.6",
-    "@storybook/react-vite": "^10.4.6",
+    "@storybook/addon-a11y": "^10.5.0",
+    "@storybook/addon-docs": "^10.5.0",
+    "@storybook/addon-links": "^10.5.0",
+    "@storybook/addon-themes": "^10.5.0",
+    "@storybook/react": "^10.5.0",
+    "@storybook/react-vite": "^10.5.0",
     "@storybook/test-runner": "0.24.4",
     "@typescript/native-preview": "catalog:",
     "playwright": "1.61.1",
     "playwright-core": "1.61.1",
-    "storybook": "^10.4.6"
+    "storybook": "^10.5.0"
   },
   "peerDependencies": {
     "react": "catalog:",
