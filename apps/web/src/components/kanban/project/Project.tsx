@@ -35,12 +35,11 @@ interface BoardProjectProps {
 // Memoize the component to prevent unnecessary re-renders
 export const BoardProject = memo(BoardProjectComponent, (prevProps, nextProps) => {
   // Only re-render if these props change
-  // Efficient comparison: check task IDs array instead of JSON.stringify
-  const prevTaskIds = prevProps.tasks.map((t) => t._id);
-  const nextTaskIds = nextProps.tasks.map((t) => t._id);
+  // Compare id+status+updatedAt so remote field changes (e.g. mobile status update) aren't missed
+  const prevSig = prevProps.tasks.map((t) => `${t._id}:${t.status}:${String(t.updatedAt)}`);
+  const nextSig = nextProps.tasks.map((t) => `${t._id}:${t.status}:${String(t.updatedAt)}`);
   const tasksMatch =
-    prevTaskIds.length === nextTaskIds.length &&
-    prevTaskIds.every((id, i) => id === nextTaskIds[i]);
+    prevSig.length === nextSig.length && prevSig.every((sig, i) => sig === nextSig[i]);
 
   return (
     prevProps.project._id === nextProps.project._id &&

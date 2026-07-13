@@ -1,1 +1,1 @@
-pnpm dlx commitlint --edit $1 --config commitlint.config.mjs
+pnpm exec commitlint --edit $1 --config commitlint.config.mjs
