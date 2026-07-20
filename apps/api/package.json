@@ -29,7 +29,7 @@
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.28",
-    "@nestjs/swagger": "^11.4.5",
+    "@nestjs/swagger": "^11.4.6",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
@@ -55,7 +55,7 @@
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
     "cross-env": "^10.1.0",
-    "tsx": "^4.23.0",
+    "tsx": "^4.23.1",
     "webpack-node-externals": "^3.0.0"
   }
 }
