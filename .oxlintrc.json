@@ -85,8 +85,8 @@
     "ai-docs/**/*",
     "node_modules/**/*",
     "dist/**/*",
-    "../../apps/api/database/mongodb/**/*",
-    "../../apps/api/database/docker-compose.yml"
+    "apps/api/database/mongodb/**/*",
+    "apps/api/database/docker-compose.yml"
   ],
   "options": {
     "typeAware": true,
